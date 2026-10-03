@@ -207,17 +207,8 @@ fun CharacterCreationScreen(
             return
         }
 
-        // 1c. Selfie / Portrait commands
-        if (selfieConfig.isEnabled) {
-            if (lower.contains("selfie") || lower.contains("camera") || lower.contains("picture") || lower.contains("photo")) {
-                if (!selfieConfig.disclaimerText.isNullOrBlank()) {
-                    showWarningDialog = true
-                    combatNarrator?.speak(selfieConfig.disclaimerText, force = true)
-                } else {
-                    showSourceDialog = true
-                }
-                return
-            }
+        // 1c. Portrait reset voice commands (custom portrait generation disabled)
+        if (hasCustomPortrait) {
             if (lower.contains("reset portrait") || lower.contains("reset photo") || lower.contains("default portrait")) {
                 SelfiePortraitProcessor.deleteCustomPortrait(context, slot)
                 StoryAssetLoader.clearSlot(slot)
@@ -555,17 +546,6 @@ fun CharacterCreationScreen(
                             .shadow(8.dp, RoundedCornerShape(10.dp), spotColor = auraColorVal)
                             .clip(RoundedCornerShape(10.dp))
                             .border(2.dp, auraColorVal, RoundedCornerShape(10.dp))
-                            .then(
-                                if (selfieConfig.isEnabled) {
-                                    Modifier.clickable {
-                                        if (!selfieConfig.disclaimerText.isNullOrBlank()) {
-                                            showWarningDialog = true
-                                        } else {
-                                            showSourceDialog = true
-                                        }
-                                    }
-                                } else Modifier
-                            )
                     ) {
                         val activePortrait = customPortraitBitmap ?: defaultHeroBitmap
                         if (activePortrait != null) {
@@ -587,22 +567,6 @@ fun CharacterCreationScreen(
                                     color = auraColorVal,
                                     fontSize = 28.sp,
                                     fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-
-                        if (selfieConfig.isEnabled) {
-                            // Camera icon overlay badge
-                            Box(
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .clip(RoundedCornerShape(topStart = 6.dp))
-                                    .background(RetroBlack.copy(alpha = 0.8f))
-                                    .padding(horizontal = 4.dp, vertical = 2.dp)
-                            ) {
-                                Text(
-                                    text = "📷",
-                                    fontSize = 11.sp
                                 )
                             }
                         }
@@ -651,61 +615,30 @@ fun CharacterCreationScreen(
                     }
                 }
 
-                if (selfieConfig.isEnabled) {
+                if (hasCustomPortrait) {
                     Spacer(modifier = Modifier.height(10.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(RetroBlack)
-                                .border(1.dp, LogosGold, RoundedCornerShape(6.dp))
-                                .clickable {
-                                    if (!selfieConfig.disclaimerText.isNullOrBlank()) {
-                                        showWarningDialog = true
-                                    } else {
-                                        showSourceDialog = true
-                                    }
-                                }
-                                .padding(vertical = 8.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "📷 SNAP SELFIE / PHOTO",
-                                color = LogosGold,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace
-                            )
-                        }
-
-                        if (hasCustomPortrait) {
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .background(RetroBlack)
-                                    .border(1.dp, Color.Gray, RoundedCornerShape(6.dp))
-                                    .clickable {
-                                        SelfiePortraitProcessor.deleteCustomPortrait(context, slot)
-                                        StoryAssetLoader.clearSlot(slot)
-                                        customPortraitBitmap = defaultHeroBitmap
-                                        hasCustomPortrait = false
-                                        combatNarrator?.speak("Portrait reset to default.", force = true)
-                                    }
-                                    .padding(horizontal = 10.dp, vertical = 8.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "↺ RESET DEFAULT",
-                                    color = Color.LightGray,
-                                    fontSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace
-                                )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(RetroBlack)
+                            .border(1.dp, Color.Gray, RoundedCornerShape(6.dp))
+                            .clickable {
+                                SelfiePortraitProcessor.deleteCustomPortrait(context, slot)
+                                StoryAssetLoader.clearSlot(slot)
+                                customPortraitBitmap = defaultHeroBitmap
+                                hasCustomPortrait = false
+                                combatNarrator?.speak("Portrait reset to default.", force = true)
                             }
-                        }
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "↺ RESET DEFAULT PORTRAIT",
+                            color = Color.LightGray,
+                            fontSize = 11.sp,
+                            fontFamily = FontFamily.Monospace
+                        )
                     }
                 }
             }

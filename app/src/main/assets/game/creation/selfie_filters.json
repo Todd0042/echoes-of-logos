@@ -1,6 +1,6 @@
 {
   "_doc": "Echoes of the Logos selfie portrait generator and fantasy JRPG filter settings.",
-  "isEnabled": true,
+  "isEnabled": false,
   "disclaimerTitle": "🔮 AWAKENED HERO'S VISAGE",
   "disclaimerText": "Channeling your physical likeness into the Chronicles of Solaria will project your portrait into the fellowship dialogue, battle HUD, and status codex. Step forward to capture your visage, or keep the traditional hero illustration.",
   "disclaimerConfirmButton": "CHANNEL VISAGE ➔",

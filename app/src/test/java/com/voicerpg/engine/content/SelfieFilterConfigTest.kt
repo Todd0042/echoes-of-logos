@@ -20,7 +20,7 @@ class SelfieFilterConfigTest {
     fun testSelfieFilterConfigLoadedFromAssets() {
         val config = GameContent.selfieConfig
         assertNotNull("SelfieFilterConfig should not be null", config)
-        assertTrue("Template selfie filter should be enabled by default", config.isEnabled)
+        assertFalse("Selfie filter should be disabled in echoes-of-logos", config.isEnabled)
         assertNotNull("Disclaimer title should be present", config.disclaimerTitle)
         assertNotNull("Disclaimer text should be present", config.disclaimerText)
         assertTrue("Available backgrounds should not be empty", config.availableBackgrounds.isNotEmpty())
