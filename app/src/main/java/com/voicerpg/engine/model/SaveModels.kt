@@ -94,6 +94,7 @@ data class GameSaveData(
     // 6. User Accessibility & Audio Options
     val isEyesFreeMode: Boolean = false,
     val isAutoListen: Boolean = false,
+    val isAutoPlayEnabled: Boolean = false,
     val isChimeMuted: Boolean = true,
     val isNarrationEnabled: Boolean = true,
     val isCombatNarrationEnabled: Boolean = true,
@@ -111,5 +112,8 @@ data class GameSaveData(
 
     // 8. Multi-Language / Locale Selection (en, es, de, fr, pt, it) & Preferred Region (e.g. US, GB, MX, ES)
     val selectedLanguage: String = "en",
-    val selectedRegion: String = ""
+    val selectedRegion: String = "",
+
+    // 9. Dynamic Simulation & Metric Tracking (Data-driven and opt-in per game)
+    val dynamicMetrics: Map<String, Float> = emptyMap()
 )

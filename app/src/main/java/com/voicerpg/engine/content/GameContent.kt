@@ -17,6 +17,8 @@ import com.voicerpg.engine.model.BattleEnvironment
 import com.voicerpg.engine.model.DialogueChoice
 import com.voicerpg.engine.model.DialogueNode
 import com.voicerpg.engine.model.DialogueSpeaker
+import com.voicerpg.engine.model.CommandCatalog
+import com.voicerpg.engine.model.MetaCommand
 import com.voicerpg.engine.model.Enemy
 import com.voicerpg.engine.model.EncounterDefinition
 import com.voicerpg.engine.model.BossPhaseRule
@@ -29,9 +31,14 @@ import com.voicerpg.engine.model.SpeakerSide
 import com.voicerpg.engine.model.Spell
 import com.voicerpg.engine.model.SpellSchool
 import com.voicerpg.engine.model.StoryScene
+import com.voicerpg.engine.model.MetricDefinition
+import com.voicerpg.engine.model.IncidentDefinition
+import com.voicerpg.engine.model.IncidentCondition
+import com.voicerpg.engine.model.IncidentConditionType
+import com.voicerpg.engine.model.IncidentWeightMultiplier
+import com.voicerpg.engine.model.MiniGameConfig
+import com.voicerpg.engine.model.MiniGameOutcomeTier
 import com.voicerpg.engine.ui.sprites.SpriteFrame
-import com.voicerpg.engine.model.CommandCatalog
-import com.voicerpg.engine.model.MetaCommand
 import java.io.File
 
 // =============================================================================
@@ -65,7 +72,11 @@ data class ManifestDto(
     val voicePermissionPrompt: String = "",
     val resonance: ResonanceProfileDto? = null,
     val ttsReplacements: Map<String, String>? = null,
-    val selfieConfig: SelfieFilterConfig? = null
+    val selfieConfig: SelfieFilterConfig? = null,
+    val allowClassSelectionInCreation: Boolean? = null,
+    val creationNameLabel: String? = null,
+    val creationAestheticsLabel: String? = null,
+    val creationStatusSubtitle: String? = null
 )
 
 data class ResonanceProfileDto(
@@ -177,7 +188,8 @@ data class ClassDto(
     val preferredSchool: String = "PHYSICAL",
     val starterSpellIds: List<String>? = null,
     val voiceKeywords: List<String>? = null,
-    val growth: GrowthDto? = null
+    val growth: GrowthDto? = null,
+    val portraitAsset: String? = null
 )
 
 data class SpellGraphicsDto(
@@ -361,7 +373,10 @@ data class ChoiceDto(
     val voiceKeywords: List<String>? = null,
     val nextNodeId: String = "",
     val completionFlag: String? = null,
-    val requiredFlags: List<String>? = null
+    val requiredFlags: List<String>? = null,
+    val metricDeltas: Map<String, Float>? = null,
+    val assignHeroClassId: String? = null,
+    val triggerMiniGameId: String? = null
 )
 
 data class HubCompletionDto(
@@ -378,13 +393,139 @@ data class NodeDto(
     val choices: List<ChoiceDto>? = null,
     val nextNodeId: String? = null,
     val triggerBattleEncounterId: String? = null,
+    val triggerMiniGameId: String? = null,
     val changeSceneId: String? = null,
     val setFlagOnEnter: String? = null,
     val hubCompletion: HubCompletionDto? = null,
-    val healPartyOnEnter: String? = null
+    val healPartyOnEnter: String? = null,
+    val metricDeltas: Map<String, Float>? = null,
+    val metricOverrides: Map<String, Float>? = null,
+    val assignHeroClassId: String? = null,
+    val allowIncidents: Boolean? = null,
+    val blacklistIncidents: Boolean? = null
 )
 
 data class NodeFileDto(val nodes: List<NodeDto>? = null)
+
+data class MetricDto(
+    val id: String = "",
+    val label: String = "",
+    val icon: String = "",
+    val minValue: Float = 0f,
+    val maxValue: Float = 100f,
+    val initialValue: Float = 50f,
+    val isDangerHigh: Boolean = false,
+    val displayColor: String? = null
+) {
+    fun toDefinition(): MetricDefinition = MetricDefinition(
+        id = id,
+        label = label,
+        icon = icon,
+        minValue = minValue,
+        maxValue = maxValue,
+        initialValue = initialValue,
+        isDangerHigh = isDangerHigh,
+        displayColor = displayColor
+    )
+}
+
+data class MetricFileDto(val metrics: List<MetricDto>? = null)
+
+data class IncidentConditionDto(
+    val type: String = "HAS_FLAG",
+    val flag: String? = null,
+    val metricId: String? = null,
+    val threshold: Float = 0f,
+    val nodeId: String? = null
+) {
+    fun toCondition(): IncidentCondition = IncidentCondition(
+        type = runCatching { IncidentConditionType.valueOf(type) }.getOrDefault(IncidentConditionType.HAS_FLAG),
+        flag = flag,
+        metricId = metricId,
+        threshold = threshold,
+        nodeId = nodeId
+    )
+}
+
+data class IncidentMultiplierDto(
+    val metricId: String = "",
+    val threshold: Float = 0f,
+    val multiplier: Float = 1f
+) {
+    fun toMultiplier(): IncidentWeightMultiplier = IncidentWeightMultiplier(
+        metricId = metricId,
+        threshold = threshold,
+        multiplier = multiplier
+    )
+}
+
+data class IncidentDto(
+    val id: String = "",
+    val title: String = "",
+    val baseWeight: Float = 10f,
+    val conditions: List<IncidentConditionDto>? = null,
+    val weightMultipliers: List<IncidentMultiplierDto>? = null,
+    val triggerNodeId: String? = null,
+    val triggerEncounterId: String? = null,
+    val oneTimeOnly: Boolean = false,
+    val cooldownTurns: Int = 0
+) {
+    fun toDefinition(): IncidentDefinition = IncidentDefinition(
+        id = id,
+        title = title,
+        baseWeight = baseWeight,
+        conditions = (conditions ?: emptyList()).map { it.toCondition() },
+        weightMultipliers = (weightMultipliers ?: emptyList()).map { it.toMultiplier() },
+        triggerNodeId = triggerNodeId,
+        triggerEncounterId = triggerEncounterId,
+        oneTimeOnly = oneTimeOnly,
+        cooldownTurns = cooldownTurns
+    )
+}
+
+data class IncidentFileDto(val incidents: List<IncidentDto>? = null)
+
+data class MiniGameDto(
+    val id: String = "",
+    val title: String = "",
+    val department: String = "",
+    val description: String = "",
+    val durationSeconds: Int = 45,
+    val targetSpeed: Float = 1.0f,
+    val errorPenalty: Float = 10f,
+    val quota: Int = 20,
+    val metricDeltasOnTier: Map<String, Map<String, Float>>? = null,
+    val blurbOnTier: Map<String, String>? = null
+) {
+    fun toConfig(): MiniGameConfig {
+        val parsedDeltas = (metricDeltasOnTier ?: emptyMap()).mapNotNull { (tierStr, deltas) ->
+            runCatching { MiniGameOutcomeTier.valueOf(tierStr.uppercase()) }.getOrNull()?.let { tier ->
+                tier to deltas
+            }
+        }.toMap()
+
+        val parsedBlurbs = (blurbOnTier ?: emptyMap()).mapNotNull { (tierStr, blurb) ->
+            runCatching { MiniGameOutcomeTier.valueOf(tierStr.uppercase()) }.getOrNull()?.let { tier ->
+                tier to blurb
+            }
+        }.toMap()
+
+        return MiniGameConfig(
+            id = id,
+            title = title,
+            department = department,
+            description = description,
+            durationSeconds = durationSeconds,
+            targetSpeed = targetSpeed,
+            errorPenalty = errorPenalty,
+            quota = quota,
+            metricDeltasOnTier = parsedDeltas,
+            blurbOnTier = parsedBlurbs
+        )
+    }
+}
+
+data class MiniGameFileDto(val minigames: List<MiniGameDto>? = null)
 
 data class EnvironmentDefinitionDto(
     val id: String = "",
@@ -446,11 +587,9 @@ data class CommandCatalogDto(
         val resolvedMeta = metaCommands?.mapNotNull { (key, phrases) ->
             runCatching { MetaCommand.valueOf(key) }.getOrNull()?.let { it to phrases }
         }?.toMap() ?: emptyMap()
-
         val resolvedOrdinals = targeting?.ordinals?.mapNotNull { (key, phrases) ->
             key.toIntOrNull()?.let { it to phrases }
         }?.toMap() ?: emptyMap()
-
         return CommandCatalog(
             locale = locale,
             metaCommands = resolvedMeta,
@@ -461,6 +600,7 @@ data class CommandCatalogDto(
         )
     }
 }
+
 
 // =============================================================================
 // RESOLVED ENGINE MODELS
@@ -492,8 +632,28 @@ data class GameManifest(
     val voicePermissionPrompt: String = "",
     val resonanceProfile: ResonanceProfile = ResonanceProfile.CLASSIC,
     val ttsReplacements: Map<String, String> = emptyMap(),
-    val selfieConfig: SelfieFilterConfig = SelfieFilterConfig()
-)
+    val selfieConfig: SelfieFilterConfig = SelfieFilterConfig(),
+    val allowClassSelectionInCreation: Boolean = true,
+    val creationNameLabel: String? = null,
+    val creationAestheticsLabel: String? = null,
+    val creationStatusSubtitle: String? = null
+) {
+    fun resolveDefaultHeroName(): String = resolveTemplateTokens(defaultHeroName)
+
+    companion object {
+        fun resolveTemplateTokens(template: String): String {
+            if (!template.contains("{random")) return template
+            val regex = Regex("""\{random(?::?(\d+))?\}""")
+            return regex.replace(template) { match ->
+                val digits = match.groupValues[1].toIntOrNull() ?: 9
+                val count = digits.coerceIn(1, 18)
+                val first = kotlin.random.Random.nextInt(1, 10).toString()
+                val rest = (1 until count).map { kotlin.random.Random.nextInt(0, 10) }.joinToString("")
+                first + rest
+            }
+        }
+    }
+}
 
 data class ResonanceProfile(
     val mode: String = "CLASSIC",
@@ -561,7 +721,8 @@ data class HeroClassDef(
     val preferredSchool: SpellSchool,
     val starterSpellIds: List<String>,
     val voiceKeywords: List<String>,
-    val growth: StatGrowth
+    val growth: StatGrowth,
+    val portraitAsset: String? = null
 )
 
 enum class CharacterRole { HERO, NPC, NARRATOR }
@@ -726,6 +887,9 @@ class GameContentPack(
     val statusCatalog: Map<String, StatusDef> = emptyMap(),
     val affinityMatrix: AffinityMatrix? = null,
     val thesaurusRoots: Map<SpellSchool, List<String>> = emptyMap(),
+    val metrics: Map<String, MetricDefinition> = emptyMap(),
+    val incidents: Map<String, IncidentDefinition> = emptyMap(),
+    val minigames: Map<String, MiniGameConfig> = emptyMap(),
     val commandCatalogs: Map<String, CommandCatalog> = emptyMap()
 ) {
     val heroCharacter: GameCharacter? = characters.values.firstOrNull { it.role == CharacterRole.HERO }
@@ -756,6 +920,8 @@ class GameContentPack(
         classes.firstOrNull { it.id == id } ?: classes.firstOrNull() ?: FALLBACK_CLASS
 
     fun encounterById(id: String?): EncounterDefinition? = if (id == null) null else encounters[id]
+
+    fun minigameById(id: String?): MiniGameConfig? = if (id == null) null else minigames[id]
 
     fun environmentById(id: String?): EnvironmentDefinition? {
         if (id == null) return null
@@ -855,7 +1021,8 @@ class GameContentPack(
             preferredSchool = SpellSchool.PHYSICAL,
             starterSpellIds = emptyList(),
             voiceKeywords = listOf("adventurer", "hero"),
-            growth = StatGrowth(14, 10, 1, 1, 0.035f)
+            growth = StatGrowth(14, 10, 1, 1, 0.035f),
+            portraitAsset = null
         )
     }
 }
@@ -976,7 +1143,27 @@ class GameContentLoader(private val source: ContentSource) {
             }
         }?.toMap() ?: emptyMap()
 
-        val narrator = characters.values.firstOrNull { it.role == CharacterRole.NARRATOR }?.speaker
+        val metrics = (read("metrics/metrics.json", MetricFileDto::class.java)?.metrics ?: emptyList())
+            .filter { it.id.isNotBlank() }
+            .map { it.toDefinition() }
+            .associateBy { it.id }
+
+        val incidents = (read("incidents/incidents.json", IncidentFileDto::class.java)?.incidents ?: emptyList())
+            .filter { it.id.isNotBlank() }
+            .map { it.toDefinition() }
+            .associateBy { it.id }
+
+        val minigames = (read("minigames/minigames.json", MiniGameFileDto::class.java)?.minigames ?: emptyList())
+            .filter { it.id.isNotBlank() }
+            .map { it.toConfig() }
+            .associateBy { it.id }
+
+        val commandCatalogs = source.listFiles("commands").mapNotNull { file ->
+            read("commands/$file", CommandCatalogDto::class.java)?.toCatalog()
+        }.associateBy { it.locale }
+
+        val narrator = characters["narrator"]?.speaker
+            ?: characters.values.firstOrNull { it.role == CharacterRole.NARRATOR }?.speaker
             ?: DialogueSpeaker.NARRATOR
 
         val selfieConfig = read("creation/selfie_filters.json", SelfieFilterConfig::class.java)
@@ -1011,7 +1198,11 @@ class GameContentLoader(private val source: ContentSource) {
                 voicePermissionPrompt = manifestDto.voicePermissionPrompt,
                 resonanceProfile = manifestDto.resonance?.toProfile() ?: ResonanceProfile.CLASSIC,
                 ttsReplacements = manifestDto.ttsReplacements ?: emptyMap(),
-                selfieConfig = selfieConfig
+                selfieConfig = selfieConfig,
+                allowClassSelectionInCreation = manifestDto.allowClassSelectionInCreation ?: true,
+                creationNameLabel = manifestDto.creationNameLabel,
+                creationAestheticsLabel = manifestDto.creationAestheticsLabel,
+                creationStatusSubtitle = manifestDto.creationStatusSubtitle
             ),
             characters = characters,
             classes = classes,
@@ -1027,9 +1218,10 @@ class GameContentLoader(private val source: ContentSource) {
             statusCatalog = statusCatalog,
             affinityMatrix = affinityMatrix,
             thesaurusRoots = thesaurusRoots,
-            commandCatalogs = source.listFiles("commands").mapNotNull { file ->
-                read("commands/$file", CommandCatalogDto::class.java)?.toCatalog()
-            }.associateBy { it.locale }
+            metrics = metrics,
+            incidents = incidents,
+            minigames = minigames,
+            commandCatalogs = commandCatalogs
         )
         return if (pack.scenes.isEmpty() || pack.nodes.isEmpty()) EmergencyFallback.build() else pack
     }
@@ -1071,7 +1263,8 @@ class GameContentLoader(private val source: ContentSource) {
         preferredSchool = runCatching { SpellSchool.valueOf(preferredSchool) }.getOrDefault(SpellSchool.PHYSICAL),
         starterSpellIds = starterSpellIds ?: emptyList(),
         voiceKeywords = voiceKeywords ?: emptyList(),
-        growth = (growth ?: GrowthDto()).toStatGrowth()
+        growth = (growth ?: GrowthDto()).toStatGrowth(),
+        portraitAsset = portraitAsset
     )
 
     private fun CharacterDto.toCharacter(spells: Map<String, Spell>): GameCharacter {
@@ -1250,17 +1443,25 @@ class GameContentLoader(private val source: ContentSource) {
                 voiceKeywords = it.voiceKeywords ?: emptyList(),
                 nextNodeId = it.nextNodeId,
                 completionFlag = it.completionFlag,
-                requiredFlags = it.requiredFlags ?: emptyList()
+                requiredFlags = it.requiredFlags ?: emptyList(),
+                metricDeltas = it.metricDeltas ?: emptyMap(),
+                assignHeroClassId = it.assignHeroClassId,
+                triggerMiniGameId = it.triggerMiniGameId
             )
         },
         nextNodeId = nextNodeId,
         triggerBattleEncounterId = triggerBattleEncounterId,
+        triggerMiniGameId = triggerMiniGameId,
         changeSceneId = changeSceneId,
         setFlagOnEnter = setFlagOnEnter,
         hubCompletion = hubCompletion?.let {
             HubCompletion(it.requiredFlags ?: emptyList(), it.redirectToNodeId)
         },
-        healPartyOnEnter = healPartyOnEnter
+        healPartyOnEnter = healPartyOnEnter,
+        metricDeltas = metricDeltas ?: emptyMap(),
+        metricOverrides = metricOverrides ?: emptyMap(),
+        assignHeroClassId = assignHeroClassId,
+        allowIncidents = if (blacklistIncidents == true) false else (allowIncidents ?: true)
     )
 
     private fun EnvironmentDefinitionDto.toDefinition(): EnvironmentDefinition = EnvironmentDefinition(
@@ -1426,6 +1627,13 @@ object GameContent {
     val affinityMatrix: AffinityMatrix? get() = pack.affinityMatrix
     val thesaurusRoots: Map<SpellSchool, List<String>> get() = pack.thesaurusRoots
     val selfieConfig: SelfieFilterConfig get() = manifest.selfieConfig
+    val metrics: Map<String, MetricDefinition> get() = pack.metrics
+    val incidents: Map<String, IncidentDefinition> get() = pack.incidents
+    val minigames: Map<String, MiniGameConfig> get() = pack.minigames
+
+    fun metricById(id: String?): MetricDefinition? = pack.metrics[id]
+    fun incidentById(id: String?): IncidentDefinition? = pack.incidents[id]
+    fun minigameById(id: String?): MiniGameConfig? = pack.minigameById(id)
 
     fun speakerById(id: String?): DialogueSpeaker? = pack.speakerById(id)
     fun characterById(id: String?): GameCharacter? = pack.characterById(id)

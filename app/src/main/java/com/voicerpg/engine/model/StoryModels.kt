@@ -54,7 +54,10 @@ data class DialogueChoice(
     val voiceKeywords: List<String>,
     val nextNodeId: String,
     val completionFlag: String? = null,
-    val requiredFlags: List<String> = emptyList()
+    val requiredFlags: List<String> = emptyList(),
+    val metricDeltas: Map<String, Float> = emptyMap(),
+    val assignHeroClassId: String? = null,
+    val triggerMiniGameId: String? = null
 )
 
 /**
@@ -75,11 +78,17 @@ data class DialogueNode(
     val choices: List<DialogueChoice> = emptyList(),
     val nextNodeId: String? = null,
     val triggerBattleEncounterId: String? = null,
+    val triggerMiniGameId: String? = null,
     val changeSceneId: String? = null,
     val setFlagOnEnter: String? = null,
     val hubCompletion: HubCompletion? = null,
     /** "half" or "full": restores party HP/MP when the node is entered. */
-    val healPartyOnEnter: String? = null
+    val healPartyOnEnter: String? = null,
+    val metricDeltas: Map<String, Float> = emptyMap(),
+    val metricOverrides: Map<String, Float> = emptyMap(),
+    val assignHeroClassId: String? = null,
+    val allowIncidents: Boolean = true,
+    val blacklistIncidents: Boolean = false
 )
 
 data class StoryScene(
@@ -108,7 +117,9 @@ enum class GameScreen {
     AUDIO_SETUP,
     CHARACTER_CREATION,
     STORY_EXPLORATION,
-    COMBAT_ARENA
+    COMBAT_ARENA,
+    MINI_GAME,
+    ASSET_VIEWER
 }
 
 data class SaveSummary(
@@ -118,7 +129,8 @@ data class SaveSummary(
     val chapterTitle: String,
     val sceneName: String,
     val partySize: Int,
-    val timestamp: Long
+    val timestamp: Long,
+    val dynamicMetrics: Map<String, Float> = emptyMap()
 )
 
 data class SaveSlotInfo(

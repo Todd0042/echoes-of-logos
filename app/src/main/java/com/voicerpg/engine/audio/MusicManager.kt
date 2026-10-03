@@ -234,6 +234,27 @@ class MusicManager(
         }
     }
 
+    val isPlaying: Boolean get() = mediaPlayer?.isPlaying == true
+
+    fun isTrackPlaying(assetPath: String): Boolean {
+        return _currentTrack.value == assetPath && mediaPlayer?.isPlaying == true
+    }
+
+    fun stop() {
+        volumeFadeJob?.cancel()
+        mediaPlayer?.let {
+            try {
+                if (it.isPlaying) it.stop()
+            } catch (_: Exception) {}
+        }
+        abandonAudioFocus()
+    }
+
+    fun stopTrack() {
+        stop()
+        _currentTrack.value = null
+    }
+
     fun destroy() {
         volumeFadeJob?.cancel()
         mediaPlayer?.let {

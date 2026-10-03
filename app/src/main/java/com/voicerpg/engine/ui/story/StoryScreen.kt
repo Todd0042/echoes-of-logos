@@ -14,6 +14,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -340,11 +342,21 @@ fun StoryScreen(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(6.dp))
                                         .background(Color(0xFFC62828))
-                                        .clickable { storyViewModel.returnToTitle() }
+                                        .clickable {
+                                            if (storyState.currentSlot == com.voicerpg.engine.engine.SaveManager.STORY_MODE_SLOT) {
+                                                storyViewModel.returnToTitle()
+                                            } else {
+                                                storyViewModel.setPureStoryMode(false)
+                                            }
+                                        }
                                         .padding(horizontal = 8.dp, vertical = 5.dp)
                                 ) {
                                     Text(
-                                        text = com.voicerpg.engine.localization.TranslationManager.translate("EXIT"),
+                                        text = if (storyState.currentSlot == com.voicerpg.engine.engine.SaveManager.STORY_MODE_SLOT) {
+                                            com.voicerpg.engine.localization.TranslationManager.translate("EXIT")
+                                        } else {
+                                            com.voicerpg.engine.localization.TranslationManager.translate("STOP")
+                                        },
                                         color = Color.White,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.Bold,
@@ -395,6 +407,32 @@ fun StoryScreen(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
+                        if (com.voicerpg.engine.content.GameContent.metrics.isNotEmpty() && storyState.dynamicMetrics.isNotEmpty()) {
+                            @OptIn(ExperimentalLayoutApi::class)
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalArrangement = Arrangement.spacedBy(1.dp),
+                                modifier = Modifier.padding(top = 1.dp)
+                            ) {
+                                for (metric in com.voicerpg.engine.content.GameContent.metrics.values) {
+                                    val currVal = storyState.dynamicMetrics[metric.id] ?: metric.initialValue
+                                    val chipColor = try {
+                                        Color(android.graphics.Color.parseColor(metric.displayColor))
+                                    } catch (_: Exception) {
+                                        Color(0xFF4CAF50)
+                                    }
+                                    Text(
+                                        text = "${metric.label}: ${currVal.toInt()}%",
+                                        color = chipColor,
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = FontFamily.Monospace,
+                                        softWrap = false,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 

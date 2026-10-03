@@ -51,6 +51,7 @@ fun OptionsDialog(
     isOpen: Boolean,
     isEyesFreeMode: Boolean,
     isNarrationEnabled: Boolean,
+    isAutoPlayEnabled: Boolean = false,
     isCombatNarrationEnabled: Boolean = true,
     isPocketGuardEnabled: Boolean = true,
     isReadChoicesEnabled: Boolean,
@@ -65,6 +66,7 @@ fun OptionsDialog(
     musicVolume: Float = 0.55f,
     onToggleEyesFreeMode: () -> Unit,
     onToggleNarration: () -> Unit,
+    onToggleAutoPlay: () -> Unit = {},
     onToggleCombatNarration: () -> Unit = {},
     onTogglePocketGuard: () -> Unit = {},
     onToggleReadChoices: () -> Unit,
@@ -386,6 +388,18 @@ fun OptionsDialog(
                     checked = isNarrationEnabled,
                     activeColor = Color(0xFFFFD54F),
                     onCheckedChange = { onToggleNarration() }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Toggle: Auto-Play / Story Mode
+                OptionToggleRow(
+                    title = "🤖 Auto-Play / Story Mode",
+                    subtitle = "Phone automatically reads story, picks choices hands-free, and executes combat turns across any save slot.",
+                    voiceHint = "Voice command: \"Auto Play\" or \"Story Mode\"",
+                    checked = isAutoPlayEnabled,
+                    activeColor = Color(0xFFBA68C8),
+                    onCheckedChange = { onToggleAutoPlay() }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
