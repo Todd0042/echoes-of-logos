@@ -1,3 +1,11 @@
+<p align="center">
+  <a href="https://ko-fi.com/todd0042">
+    <img src="https://raw.githubusercontent.com/Todd0042/creator-assets/main/banners/todd_creator_banner_v1.0.png" alt="Support Todd on Ko-fi" width="100%" />
+  </a>
+</p>
+
+---
+
 # VoiceRPG Android: Echoes of the Logos
 
 [![Latest Release](https://img.shields.io/github/v/release/Todd0042/voice-rpg-android?label=Latest%20Release&color=blue)](https://github.com/Todd0042/voice-rpg-android/releases)
@@ -187,3 +195,12 @@ adb shell am start -n com.voicerpg.android/com.voicerpg.engine.MainActivity
 
 ## 🤝 Community & Contributions
 Pull requests and bug reports are welcome! When adding new localized dialects, voice commands, or story branches, ensure all changes pass `./gradlew testDebugUnitTest` and adhere to the guidelines in [AGENTS.md](AGENTS.md).
+
+---
+
+<p align="center">
+  <a href="https://ko-fi.com/todd0042">
+    <img src="https://raw.githubusercontent.com/Todd0042/creator-assets/main/banners/todd_creator_banner_v2.0.png" alt="Support Todd on Ko-fi" width="100%" />
+  </a>
+</p>
+
