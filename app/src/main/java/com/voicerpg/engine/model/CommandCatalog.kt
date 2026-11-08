@@ -11,7 +11,11 @@ data class CommandCatalog(
     val ordinals: Map<Int, List<String>> = emptyMap(),
     val positionals: Map<String, List<String>> = emptyMap(),
     val groups: Map<String, List<String>> = emptyMap(),
-    val actions: Map<String, List<String>> = emptyMap()
+    val actions: Map<String, List<String>> = emptyMap(),
+    val progressionPhrases: List<String> = emptyList(),
+    val continueStoryPhrases: List<String> = emptyList(),
+    val restartBattlePhrases: List<String> = emptyList(),
+    val systemConfirmations: Map<String, String> = emptyMap()
 ) {
 
     companion object {

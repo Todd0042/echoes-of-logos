@@ -1,8 +1,5 @@
 package com.voicerpg.engine.ui.setup
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,11 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,8 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.voicerpg.engine.localization.TranslationManager
+import com.voicerpg.engine.localization.tr
 import com.voicerpg.engine.model.LanguageCatalog
+import com.voicerpg.engine.model.LanguageOption
 import com.voicerpg.engine.ui.theme.FrostCyan
 import com.voicerpg.engine.ui.theme.HolyYellow
 import com.voicerpg.engine.ui.theme.LogosGold
@@ -50,21 +48,33 @@ import com.voicerpg.engine.ui.theme.RetroBorderGold
 import com.voicerpg.engine.ui.theme.RetroPanel
 
 /**
- * Dedicated first-boot Language and Regional Accent Selection Screen.
- * Renders BEFORE the Title Screen is ever shown, ensuring the player never sees English
- * menus if they prefer Spanish, German, French, Portuguese, or Italian.
+ * Screen 1 of 2: Full-screen scrollable Language Selection.
+ * Lets the player search and select from all 59 supported on-device languages.
+ * Tapping a language advances directly to Screen 2: Dialect / Regional Accent Selection.
  */
 @Composable
 fun LanguageSelectionScreen(
-    initialLanguage: String = "en",
-    initialRegion: String = "",
-    onConfirmSelection: (language: String, region: String) -> Unit,
+    currentLanguageCode: String = "en",
+    canCancel: Boolean = false,
+    onLanguageSelected: (String) -> Unit,
+    onCancel: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var selectedLang by remember { mutableStateOf(initialLanguage.lowercase().take(2).ifBlank { "en" }) }
-    var selectedReg by remember { mutableStateOf(initialRegion.uppercase()) }
+    var searchQuery by remember { mutableStateOf("") }
+    val allLanguages = remember { LanguageCatalog.SUPPORTED_LANGUAGES }
 
-    val currentRegions = LanguageCatalog.getRegionsForLanguage(selectedLang)
+    val filteredLanguages = remember(searchQuery) {
+        if (searchQuery.isBlank()) {
+            allLanguages
+        } else {
+            val q = searchQuery.trim().lowercase()
+            allLanguages.filter {
+                it.displayName.lowercase().contains(q) ||
+                it.nativeName.lowercase().contains(q) ||
+                it.code.lowercase().contains(q)
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -82,177 +92,180 @@ fun LanguageSelectionScreen(
                             RetroBlack
                         )
                     )
-                ),
-            contentAlignment = Alignment.Center
+                )
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.92f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(vertical = 24.dp),
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Header Emblem / Icon
-                Text(
-                    text = "🌐",
-                    fontSize = 36.sp,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                )
-
-                // Title - dynamically rendered in the selected language
-                Text(
-                    text = TranslationManager.translate("SELECT YOUR LANGUAGE", selectedLang),
-                    color = LogosGold,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace,
-                    textAlign = TextAlign.Center,
-                    letterSpacing = 1.sp
-                )
-
-                Text(
-                    text = "Choose your spoken language and regional accent",
-                    color = Color.LightGray.copy(alpha = 0.8f),
-                    fontSize = 11.sp,
-                    fontFamily = FontFamily.Monospace,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
-                )
-
-                // 1. Language Cards Grid
-                val languages = LanguageCatalog.SUPPORTED_LANGUAGES
-                languages.chunked(2).forEach { rowLanguages ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        rowLanguages.forEach { langOpt ->
-                            val isSelected = selectedLang.equals(langOpt.code, ignoreCase = true)
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(if (isSelected) LogosGold else Color(0xFF1B2230))
-                                    .border(
-                                        2.dp,
-                                        if (isSelected) LogosGlow else RetroBorder,
-                                        RoundedCornerShape(10.dp)
-                                    )
-                                    .clickable {
-                                        selectedLang = langOpt.code
-                                        val newRegions = LanguageCatalog.getRegionsForLanguage(langOpt.code)
-                                        if (newRegions.none { it.code == selectedReg }) {
-                                            selectedReg = ""
-                                        }
-                                        TranslationManager.setLanguageAndRegion(langOpt.code, selectedReg)
-                                    }
-                                    .padding(vertical = 12.dp, horizontal = 8.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(
-                                        text = langOpt.nativeName,
-                                        color = if (isSelected) RetroBlack else Color.White,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Black,
-                                        fontFamily = FontFamily.Monospace,
-                                        textAlign = TextAlign.Center
-                                    )
-                                    Text(
-                                        text = "[${langOpt.code.uppercase()}]",
-                                        color = if (isSelected) RetroBlack.copy(alpha = 0.8f) else Color.Gray,
-                                        fontSize = 10.sp,
-                                        fontFamily = FontFamily.Monospace
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                // 2. Regional Accent Selection
-                Text(
-                    text = TranslationManager.translate("SELECT YOUR REGIONAL ACCENT", selectedLang),
-                    color = HolyYellow,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                )
-
-                val chunkedRegions = currentRegions.chunked(2)
-                chunkedRegions.forEach { rowRegions ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        rowRegions.forEach { regOpt ->
-                            val isSelected = selectedReg.equals(regOpt.code, ignoreCase = true)
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(if (isSelected) FrostCyan else RetroPanel)
-                                    .border(
-                                        1.dp,
-                                        if (isSelected) Color.White else RetroBorder,
-                                        RoundedCornerShape(8.dp)
-                                    )
-                                    .clickable {
-                                        selectedReg = regOpt.code
-                                        TranslationManager.setLanguageAndRegion(selectedLang, regOpt.code)
-                                    }
-                                    .padding(vertical = 8.dp, horizontal = 6.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = regOpt.displayName,
-                                    color = if (isSelected) RetroBlack else Color.White,
-                                    fontSize = 11.sp,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                    fontFamily = FontFamily.Monospace,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-                        if (rowRegions.size == 1) {
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // 3. Confirm & Enter Realm Button
-                Button(
-                    onClick = {
-                        TranslationManager.setLanguageAndRegion(selectedLang, selectedReg)
-                        onConfirmSelection(selectedLang, selectedReg)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp)
-                        .border(2.dp, RetroBorderGold, RoundedCornerShape(10.dp)),
-                    colors = ButtonDefaults.buttonColors(containerColor = LogosGold),
-                    shape = RoundedCornerShape(10.dp)
+                // Top Header Row with optional Cancel/Back
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    if (canCancel) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(RetroPanel)
+                                .border(1.dp, RetroBorder, RoundedCornerShape(6.dp))
+                                .clickable { onCancel() }
+                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = tr("◀ CANCEL"),
+                                color = Color.LightGray,
+                                fontSize = 11.sp,
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.width(1.dp))
+                    }
+
                     Text(
-                        text = TranslationManager.translate("ENTER THE REALM ▶", selectedLang),
-                        color = RetroBlack,
-                        fontSize = 14.sp,
+                        text = "🌐 ${tr("CHOOSE YOUR LANGUAGE")}",
+                        color = LogosGold,
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.Black,
                         fontFamily = FontFamily.Monospace,
-                        letterSpacing = 1.sp
+                        textAlign = TextAlign.Center
                     )
+
+                    Spacer(modifier = Modifier.width(if (canCancel) 60.dp else 1.dp))
                 }
+
+                Text(
+                    text = tr("Swipe or search to find your preferred spoken tongue"),
+                    color = Color.LightGray,
+                    fontSize = 11.sp,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                )
+
+                // Search Filter Box
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = {
+                        Text(
+                            text = tr("Search language (e.g. Spanish, 日本語)..."),
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                            fontFamily = FontFamily.Monospace
+                        )
+                    },
+                    singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedBorderColor = LogosGold,
+                        unfocusedBorderColor = RetroBorder,
+                        focusedContainerColor = RetroPanel,
+                        unfocusedContainerColor = RetroPanel
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                )
+
+                // Full Scrollable List of 59 Languages
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(filteredLanguages, key = { it.code }) { langOpt ->
+                        LanguageCard(
+                            language = langOpt,
+                            isCurrent = langOpt.code.equals(currentLanguageCode, ignoreCase = true),
+                            onClick = { onLanguageSelected(langOpt.code) }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LanguageCard(
+    language: LanguageOption,
+    isCurrent: Boolean,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(if (isCurrent) Color(0xFF1B2E3D) else RetroPanel)
+            .border(
+                1.dp,
+                if (isCurrent) FrostCyan else if (language.isFeatured) RetroBorderGold else RetroBorder,
+                RoundedCornerShape(10.dp)
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = language.nativeName,
+                        color = if (isCurrent) FrostCyan else Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace
+                    )
+                    if (language.isFeatured) {
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(LogosGold.copy(alpha = 0.2f))
+                                .padding(horizontal = 5.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = "POPULAR",
+                                color = HolyYellow,
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
+                    }
+                }
+                Text(
+                    text = "${language.displayName} • [${language.code.uppercase()}]",
+                    color = Color.LightGray,
+                    fontSize = 11.sp,
+                    fontFamily = FontFamily.Monospace
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(if (isCurrent) FrostCyan else Color(0xFF263238))
+                    .padding(horizontal = 10.dp, vertical = 6.dp)
+            ) {
+                Text(
+                    text = "SELECT ➔",
+                    color = if (isCurrent) RetroBlack else Color.White,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace
+                )
             }
         }
     }

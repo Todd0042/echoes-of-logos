@@ -1,0 +1,54 @@
+{
+  "_doc": "Wally's World associate badge portrait generator and filter settings.",
+  "isEnabled": true,
+  "disclaimerTitle": "⚠️ MEMOIR ADVISORY",
+  "disclaimerText": "This game is the personal memoirs of an actual human.\n\nThis person has decided to allow you to put yourself in their shoes, but beware...\n\nYou're going to be putting yourself through absolute hell.",
+  "disclaimerConfirmButton": "STEP INTO SHOES ➔",
+  "disclaimerCancelButton": "CANCEL / KEEP DEFAULT",
+  "sourceDialogTitle": "📸 ASSOCIATE PHOTO ID",
+  "sourceDialogSubtitle": "Snap a real selfie or pick a photo to generate your customized retail badge portrait.",
+  "filterDialogTitle": "📸 ASSOCIATE BADGE FILTER",
+  "filterDialogSubtitle": "Warehouse Graveyard Shift Simulator",
+  "filterConfirmButton": "USE BADGE ✔",
+  "backgroundToggleLabel": "🏬 Warehouse Background",
+  "backgroundToggleDescription": "AI person cutout over store aisle",
+  "availableBackgrounds": [
+    { "id": "trench", "label": "Trench", "assetPath": "environments/trench.jpg" },
+    { "id": "break_room", "label": "Break Room", "assetPath": "environments/break_room.jpg" },
+    { "id": "sales_floor", "label": "Sales Floor", "assetPath": "environments/sales_floor.jpg" },
+    { "id": "service_bay", "label": "Service Bay", "assetPath": "environments/service_bay.jpg" },
+    { "id": "parking_lot", "label": "Overnight Lot", "assetPath": "environments/parking_lot.jpg" }
+  ],
+  "eyeEffect": {
+    "enabledByDefault": true,
+    "label": "🦝 Raccoon Eyes",
+    "description": "Sub-orbital dark exhaustion circles",
+    "darkCenterColorHex": "#872D192A",
+    "radiusFactor": 0.28,
+    "yOffsetFactor": 0.55
+  },
+  "colorGrade": {
+    "enabledByDefault": true,
+    "label": "💡 3 AM Fluorescents",
+    "description": "Cold cyan store ballast color grading",
+    "colorMatrix": [
+      0.92, 0.00, 0.00, 0.0, -5.0,
+      0.00, 1.05, 0.00, 0.0, 8.0,
+      0.00, 0.00, 1.08, 0.0, 12.0,
+      0.00, 0.00, 0.00, 1.0, 0.0
+    ]
+  },
+  "scanlines": {
+    "enabledByDefault": true,
+    "label": "📺 CRT Scanlines",
+    "description": "Retro surveillance monitor lines",
+    "lineAlpha": 32,
+    "lineSpacing": 3.8,
+    "strokeWidth": 1.8
+  },
+  "vignette": {
+    "enabled": true,
+    "radiusFactor": 0.7,
+    "colorHex": "#550A0C12"
+  }
+}

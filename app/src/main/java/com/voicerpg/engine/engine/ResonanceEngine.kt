@@ -200,7 +200,11 @@ class ResonanceEngine(
         val terms = listOf(
             "now", "quick", "fast", "stay", "clear",
             "focus", "survive", "don't", "keep", "come on", "together", "dig deep",
-            "ready", "let's go", "hurry"
+            "ready", "let's go", "hurry",
+            "ahora", "rapido", "vamos", "pronto", "foco",
+            "jetzt", "schnell", "beeilung", "los",
+            "maintenant", "vite", "allons", "courage",
+            "agora", "rapido", "forca", "ora", "presto"
         )
         return terms.any { lower.contains(it) }
     }
@@ -209,6 +213,11 @@ class ResonanceEngine(
         val normalized = java.text.Normalizer.normalize(word.lowercase(), java.text.Normalizer.Form.NFD)
             .replace(Regex("\\p{M}"), "")
         val clean = normalized.replace(Regex("[^a-z]"), "")
+        if (clean.isEmpty()) {
+            // CJK / non-Latin characters count directly as phonetic moras/syllables
+            val nonLatinCount = word.filter { Character.isLetter(it) }.length
+            return nonLatinCount.coerceAtLeast(1)
+        }
         if (clean.length <= 3) return 1
         var count = 0
         var prevIsVowel = false

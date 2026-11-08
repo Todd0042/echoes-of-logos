@@ -18,7 +18,16 @@ data class TutorialSpellDef(
     val manaRestorePct: Float = 0f,
     val description: String,
     val aliases: List<String> = emptyList()
-)
+) {
+    val category: com.voicerpg.engine.model.SpellCategory
+        get() = when {
+            isHeal -> com.voicerpg.engine.model.SpellCategory.HEAL
+            manaRestorePct > 0f -> com.voicerpg.engine.model.SpellCategory.MANA
+            isGuard || (basePower == 0 && !hitsAll) -> com.voicerpg.engine.model.SpellCategory.DEFENSE
+            hitsAll -> com.voicerpg.engine.model.SpellCategory.AOE_ATTACK
+            else -> com.voicerpg.engine.model.SpellCategory.ATTACK
+        }
+}
 
 data class TutorialCharacterDef(
     val id: String,
@@ -84,9 +93,12 @@ sealed class TutorialBattleStep {
 object TutorialBattleContent {
 
     val CHARACTERS: List<TutorialCharacterDef>
-        get() = GameContent.characters.values
-            .filter { it.combat != null && it.role != com.voicerpg.engine.content.CharacterRole.NARRATOR }
-            .map { it.toTutorialDef() }
+        get() {
+            val hero = GameContent.heroCharacter?.takeIf { it.combat != null }
+            val others = GameContent.characters.values
+                .filter { it.combat != null && it.role != com.voicerpg.engine.content.CharacterRole.NARRATOR && it.id != hero?.id }
+            return listOfNotNull(hero?.toTutorialDef()) + others.map { it.toTutorialDef() }
+        }
 
     private fun GameCharacter.toTutorialDef(): TutorialCharacterDef {
         val combat = combat!!

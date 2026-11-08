@@ -94,7 +94,6 @@ fun StoryScreen(
     val isEyesFreeMode by combatViewModel.combatNarrator.isEyesFreeMode.collectAsState()
     val isAutoListen by storyViewModel.speechManager.isAutoListen.collectAsState()
     val isChimeMuted by storyViewModel.speechManager.isChimeMuted.collectAsState()
-    val translationVersion by com.voicerpg.engine.localization.TranslationManager.translationVersion.collectAsState()
 
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
@@ -292,7 +291,7 @@ fun StoryScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = if (storyState.isStoryAutoPlayPaused) "⏸ " + com.voicerpg.engine.localization.TranslationManager.translate("PAUSED") else "▶ " + com.voicerpg.engine.localization.TranslationManager.translate("STORY MODE"),
+                                text = if (storyState.isStoryAutoPlayPaused) "⏸ PAUSED" else "▶ STORY MODE",
                                 color = Color(0xFFF3E5F5),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Black,
@@ -316,7 +315,7 @@ fun StoryScreen(
                                         .padding(horizontal = 8.dp, vertical = 5.dp)
                                 ) {
                                     Text(
-                                        text = "🔒 " + com.voicerpg.engine.localization.TranslationManager.translate("POCKET"),
+                                        text = "🔒 POCKET",
                                         color = Color.White,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.Bold,
@@ -331,7 +330,7 @@ fun StoryScreen(
                                         .padding(horizontal = 8.dp, vertical = 5.dp)
                                 ) {
                                     Text(
-                                        text = if (storyState.isStoryAutoPlayPaused) com.voicerpg.engine.localization.TranslationManager.translate("RESUME") else com.voicerpg.engine.localization.TranslationManager.translate("PAUSE"),
+                                        text = if (storyState.isStoryAutoPlayPaused) "RESUME" else "PAUSE",
                                         color = Color.White,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.Bold,
@@ -352,11 +351,7 @@ fun StoryScreen(
                                         .padding(horizontal = 8.dp, vertical = 5.dp)
                                 ) {
                                     Text(
-                                        text = if (storyState.currentSlot == com.voicerpg.engine.engine.SaveManager.STORY_MODE_SLOT) {
-                                            com.voicerpg.engine.localization.TranslationManager.translate("EXIT")
-                                        } else {
-                                            com.voicerpg.engine.localization.TranslationManager.translate("STOP")
-                                        },
+                                        text = if (storyState.currentSlot == com.voicerpg.engine.engine.SaveManager.STORY_MODE_SLOT) "EXIT" else "STOP",
                                         color = Color.White,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.Bold,
@@ -389,7 +384,7 @@ fun StoryScreen(
                         verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         Text(
-                            text = com.voicerpg.engine.localization.TranslationManager.translate(storyState.currentScene.chapterTitle).uppercase(),
+                            text = storyState.currentScene.chapterTitle.uppercase(),
                             color = LogosGold,
                             fontSize = if (isLandscape) 10.sp else 11.sp,
                             fontWeight = FontWeight.Black,
@@ -400,21 +395,21 @@ fun StoryScreen(
                             lineHeight = 14.sp
                         )
                         Text(
-                            text = "📍 ${com.voicerpg.engine.localization.TranslationManager.translate(storyState.currentScene.name)}",
+                            text = "📍 ${storyState.currentScene.name}",
                             color = Color.LightGray,
                             fontSize = 9.sp,
                             fontFamily = FontFamily.Monospace,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                        if (com.voicerpg.engine.content.GameContent.metrics.isNotEmpty() && storyState.dynamicMetrics.isNotEmpty()) {
+                        if (GameContent.metrics.isNotEmpty() && storyState.dynamicMetrics.isNotEmpty()) {
                             @OptIn(ExperimentalLayoutApi::class)
                             FlowRow(
                                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                                 verticalArrangement = Arrangement.spacedBy(1.dp),
                                 modifier = Modifier.padding(top = 1.dp)
                             ) {
-                                for (metric in com.voicerpg.engine.content.GameContent.metrics.values) {
+                                for (metric in GameContent.metrics.values) {
                                     val currVal = storyState.dynamicMetrics[metric.id] ?: metric.initialValue
                                     val chipColor = try {
                                         Color(android.graphics.Color.parseColor(metric.displayColor))
@@ -438,7 +433,7 @@ fun StoryScreen(
 
                 // Stacked Action Buttons (Outside the banner: 2x2 grid for Log, Options, Skip, Battle)
                 Column(
-                    modifier = Modifier.width(if (isLandscape) 152.dp else 144.dp),
+                    modifier = Modifier.width(if (isLandscape) 144.dp else 134.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     horizontalAlignment = Alignment.End
                 ) {
@@ -461,13 +456,12 @@ fun StoryScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "📜 " + com.voicerpg.engine.localization.TranslationManager.translate("LOG"),
+                                text = "📜 LOG",
                                 color = LogosGold,
-                                fontSize = 8.5.sp,
+                                fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Monospace,
-                                maxLines = 1,
-                                softWrap = false
+                                maxLines = 1
                             )
                         }
 
@@ -483,22 +477,42 @@ fun StoryScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = if (isEyesFreeMode) "🎧 " + com.voicerpg.engine.localization.TranslationManager.translate("POCKET") else "⚙️ " + com.voicerpg.engine.localization.TranslationManager.translate("OPT"),
+                                text = if (isEyesFreeMode) "🎧 POCKET" else "⚙️ OPT",
                                 color = if (isEyesFreeMode) Color(0xFFE3F2FD) else LogosGold,
-                                fontSize = 8.5.sp,
+                                fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Monospace,
-                                maxLines = 1,
-                                softWrap = false
+                                maxLines = 1
                             )
                         }
                     }
 
-                    // Row 2: Skip/Fast-Forward + Battle Sandbox
+                    // Row 2: Auto-Play Toggle + Skip/Fast-Forward
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
+                        // Auto-Play Toggle Button (Available for all slots)
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(btnHeight)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(if (storyState.isPureStoryMode) Color(0xFF4A148C) else RetroPanel.copy(alpha = 0.92f))
+                                .border(1.dp, if (storyState.isPureStoryMode) Color(0xFFCE93D8) else RetroBorder, RoundedCornerShape(6.dp))
+                                .clickable { storyViewModel.toggleAutoPlay() },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = if (storyState.isPureStoryMode) "🤖 AUTO: ON" else "🤖 AUTO",
+                                color = if (storyState.isPureStoryMode) Color(0xFFF3E5F5) else LogosGold,
+                                fontSize = 8.5.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Monospace,
+                                maxLines = 1
+                            )
+                        }
+
                         // Skip / Fast-Forward Button
                         Box(
                             modifier = Modifier
@@ -511,35 +525,12 @@ fun StoryScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = if (storyState.isFastForwarding) "⏹️ " + com.voicerpg.engine.localization.TranslationManager.translate("STOP") else "⏩ " + com.voicerpg.engine.localization.TranslationManager.translate("SKIP"),
+                                text = if (storyState.isFastForwarding) "⏹️ STOP" else "⏩ SKIP",
                                 color = if (storyState.isFastForwarding) Color.White else LogosGold,
                                 fontSize = 8.5.sp,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Monospace,
-                                maxLines = 1,
-                                softWrap = false
-                            )
-                        }
-
-                        // Switch to Combat Sandbox Button
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(btnHeight)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(Color(0xFF37474F).copy(alpha = 0.92f))
-                                .border(1.dp, Color(0xFF78909C), RoundedCornerShape(6.dp))
-                                .clickable { storyViewModel.switchToCombat() },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "⚔️ " + com.voicerpg.engine.localization.TranslationManager.translate("BTL"),
-                                color = Color.White,
-                                fontSize = 8.5.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace,
-                                maxLines = 1,
-                                softWrap = false
+                                maxLines = 1
                             )
                         }
                     }
@@ -676,6 +667,27 @@ fun StoryScreen(
                         ) {
                             Text(
                                 text = "⚔️ COMMENCE BATTLE (TAP OR SAY 'FIREBALL')",
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+
+                    // Mini-Game Trigger Prompt if node triggers a mini-game
+                    if (currentNode.triggerMiniGameId != null) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Button(
+                            onClick = { storyViewModel.advanceDialogue() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF00897B),
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "🎮 START MINI-GAME (TAP OR SAY 'START')",
                                 fontFamily = FontFamily.Monospace,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp
@@ -836,6 +848,27 @@ fun StoryScreen(
                         ) {
                             Text(
                                 text = "⚔️ COMMENCE BATTLE (TAP OR SAY 'FIREBALL')",
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 11.sp
+                            )
+                        }
+                    }
+
+                    // Mini-Game Trigger Prompt if node triggers a mini-game
+                    if (currentNode.triggerMiniGameId != null) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Button(
+                            onClick = { storyViewModel.advanceDialogue() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF00897B),
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "🎮 START MINI-GAME (TAP OR SAY 'START')",
                                 fontFamily = FontFamily.Monospace,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 11.sp
@@ -1023,7 +1056,7 @@ private fun RetroSpeechBubble(
                         Spacer(modifier = Modifier.width(6.dp))
                     }
                     Text(
-                        text = "💬 ${com.voicerpg.engine.localization.TranslationManager.translate(node.speaker.name).uppercase()}",
+                        text = "💬 ${node.speaker.name.uppercase()}",
                         color = speakerColor,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Black,
@@ -1037,6 +1070,7 @@ private fun RetroSpeechBubble(
                     val promptText = when {
                         node.id == "epilogue_credits" -> "👑 PLAY AGAIN"
                         node.triggerBattleEncounterId != null -> "⚔️ TO BATTLE"
+                        node.triggerMiniGameId != null -> "🎮 TO MINI-GAME"
                         isEyesFreeMode && node.nextNodeId != null -> "⏩ AUTO NEXT (1.5s)"
                         node.nextNodeId != null -> "▼ NEXT"
                         isEyesFreeMode -> "⏩ AUTO CAMP (1.5s)"
@@ -1044,7 +1078,7 @@ private fun RetroSpeechBubble(
                     }
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = com.voicerpg.engine.localization.TranslationManager.translate(promptText),
+                        text = promptText,
                         color = LogosGold.copy(alpha = arrowAlpha),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
@@ -1058,7 +1092,7 @@ private fun RetroSpeechBubble(
             if (node.speaker.title.isNotBlank()) {
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "• ${com.voicerpg.engine.localization.TranslationManager.translate(node.speaker.title)}",
+                    text = "• ${node.speaker.title}",
                     color = Color.Gray,
                     fontSize = 9.sp,
                     fontFamily = FontFamily.Monospace,
@@ -1071,7 +1105,7 @@ private fun RetroSpeechBubble(
 
             // Spoken Dialogue Content
             Text(
-                text = com.voicerpg.engine.localization.TranslationManager.translate(node.text.trim()),
+                text = node.text.trim(),
                 color = Color.White,
                 fontSize = 12.sp,
                 fontFamily = FontFamily.Monospace,
@@ -1102,9 +1136,9 @@ private fun VoiceInputPromptBar(
     ) {
         Text(
             text = when {
-                isStandby -> "⏸️ " + com.voicerpg.engine.localization.TranslationManager.translate("Ready. Tap mic or speak...")
-                !hasChoices -> com.voicerpg.engine.localization.TranslationManager.translate("Tap anywhere or say 'Continue' to advance")
-                else -> com.voicerpg.engine.localization.TranslationManager.translate("Choose an option or speak voice keyword")
+                isStandby -> "⏸️ Standing by — tap screen to resume"
+                !hasChoices -> "Tap or say 'Next' to continue"
+                else -> "Tap choice or speak your decision"
             },
             modifier = Modifier
                 .weight(1f)
@@ -1116,7 +1150,7 @@ private fun VoiceInputPromptBar(
             overflow = TextOverflow.Ellipsis
         )
 
-        // Hands-free Mic Quick Tap (Pill button that never wraps text vertically)
+        // Hands-free Mic Quick Tap
         Box(
             modifier = Modifier
                 .wrapContentWidth()
@@ -1134,9 +1168,9 @@ private fun VoiceInputPromptBar(
         ) {
             Text(
                 text = when {
-                    isListening -> "🎙️ " + com.voicerpg.engine.localization.TranslationManager.translate("LISTENING...")
-                    isStandby -> "⏸️ " + com.voicerpg.engine.localization.TranslationManager.translate("STANDBY")
-                    else -> "🎤 " + com.voicerpg.engine.localization.TranslationManager.translate("SPEAK")
+                    isListening -> "🎙️ LISTENING..."
+                    isStandby -> "⏸️ STANDBY"
+                    else -> "🎤 SPEAK"
                 },
                 color = if (isStandby) Color(0xFFFFD54F) else LogosGold,
                 fontSize = 9.5.sp,
@@ -1209,9 +1243,8 @@ private fun DialogueChoiceItem(
                     fontFamily = FontFamily.Monospace
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                val translatedChoiceText = com.voicerpg.engine.localization.TranslationManager.translate(choice.text)
                 Text(
-                    text = if (isLocked) "🔒 " + translatedChoiceText else translatedChoiceText,
+                    text = if (isLocked) "🔒 " + choice.text else choice.text,
                     color = textColor,
                     fontSize = 11.sp,
                     fontFamily = FontFamily.Monospace,
@@ -1234,7 +1267,7 @@ private fun DialogueChoiceItem(
                             .padding(horizontal = 5.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = "✓ " + com.voicerpg.engine.localization.TranslationManager.translate("DONE"),
+                            text = "✓ DONE",
                             color = Color(0xFF81C784),
                             fontSize = 8.sp,
                             fontFamily = FontFamily.Monospace,
@@ -1252,7 +1285,7 @@ private fun DialogueChoiceItem(
                             .padding(horizontal = 5.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = "🔒 " + com.voicerpg.engine.localization.TranslationManager.translate("LOCKED"),
+                            text = "🔒 LOCKED",
                             color = Color(0xFF90A4AE),
                             fontSize = 8.sp,
                             fontFamily = FontFamily.Monospace,
@@ -1265,10 +1298,8 @@ private fun DialogueChoiceItem(
                     // Spoken keyword cue
                     val keywordHint = choice.voiceKeywords.firstOrNull() ?: ""
                     if (keywordHint.isNotBlank()) {
-                        val translatedSay = com.voicerpg.engine.localization.TranslationManager.translate("Say")
-                        val translatedHint = com.voicerpg.engine.localization.TranslationManager.translate(keywordHint)
                         Text(
-                            text = "$translatedSay \"$translatedHint\"",
+                            text = "Say \"$keywordHint\"",
                             color = Color(0xFF80D8FF),
                             fontSize = 8.sp,
                             fontFamily = FontFamily.Monospace,

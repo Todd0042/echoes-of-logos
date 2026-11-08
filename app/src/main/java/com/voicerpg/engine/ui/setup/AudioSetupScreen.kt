@@ -50,7 +50,6 @@ import com.voicerpg.engine.audio.CombatNarrator
 import com.voicerpg.engine.audio.SpeechManager
 import com.voicerpg.engine.audio.SpeechState
 import com.voicerpg.engine.model.DialogueSpeaker
-import com.voicerpg.engine.model.LanguageCatalog
 import com.voicerpg.engine.ui.theme.FrostCyan
 import com.voicerpg.engine.ui.theme.HolyYellow
 import com.voicerpg.engine.ui.theme.LogosGold
@@ -78,6 +77,7 @@ fun AudioSetupScreen(
     isNewGameFlow: Boolean = false,
     onBack: (() -> Unit)? = null,
     onVoiceChanged: () -> Unit = {},
+    onOpenLanguageSelection: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -95,9 +95,6 @@ fun AudioSetupScreen(
     val speechRate by combatNarrator.speechRate.collectAsState()
     val availableVoiceCount by combatNarrator.availableVoiceCount.collectAsState()
     val installedVoiceCount by combatNarrator.installedVoiceCount.collectAsState()
-    val currentLang by combatNarrator.selectedLanguage.collectAsState()
-    val currentReg by combatNarrator.selectedRegion.collectAsState()
-    var showLanguageDialog by remember { mutableStateOf(false) }
     var voiceUpdateKey by remember { mutableStateOf(0) }
 
     // Auto-refresh voices when returning from Android TTS settings
@@ -299,60 +296,71 @@ fun AudioSetupScreen(
             Spacer(modifier = Modifier.height(14.dp))
 
             // =============================================================
-            // Card 0: Language & Regional Accent Selection
+            // Language & Regional Dialect Selection
             // =============================================================
-            val currentLangOpt = remember(currentLang) { LanguageCatalog.getLanguage(currentLang) }
-            val currentRegOpt = remember(currentLang, currentReg) {
-                LanguageCatalog.getRegionsForLanguage(currentLang).firstOrNull { it.code == currentReg }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFF1B2230))
-                    .border(1.dp, RetroBorderGold, RoundedCornerShape(12.dp))
-                    .clickable { showLanguageDialog = true }
-                    .padding(14.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+            if (onOpenLanguageSelection != null) {
+                val currentLang = com.voicerpg.engine.localization.TranslationManager.currentLanguage.value
+                val currentReg = com.voicerpg.engine.localization.TranslationManager.currentRegion.value
+                val langOpt = com.voicerpg.engine.model.LanguageCatalog.getLanguage(currentLang)
+                val dialectDesc = if (currentReg.isNotBlank()) " ($currentReg)" else ""
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(RetroPanel.copy(alpha = 0.9f))
+                        .border(1.dp, FrostCyan, RoundedCornerShape(12.dp))
+                        .clickable { onOpenLanguageSelection() }
+                        .padding(14.dp)
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "🌐 SPOKEN LANGUAGE & REGION",
-                            color = LogosGold,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Black,
-                            fontFamily = FontFamily.Monospace
-                        )
-                        Spacer(modifier = Modifier.height(3.dp))
-                        Text(
-                            text = "${currentLangOpt.nativeName} • ${currentRegOpt?.displayName ?: "Any / Default"}",
-                            color = Color.White,
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(LogosGold)
-                            .padding(horizontal = 10.dp, vertical = 6.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "CHANGE",
-                            color = RetroBlack,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
-                        )
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "🌐 LANGUAGE & DIALECT",
+                                color = FrostCyan,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Black,
+                                fontFamily = FontFamily.Monospace
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Current: ${langOpt.nativeName} - ${langOpt.displayName}$dialectDesc",
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Monospace
+                            )
+                            Text(
+                                text = "Tap to switch to any of 59 supported languages & regional accents.",
+                                color = Color.LightGray,
+                                fontSize = 10.sp,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(FrostCyan)
+                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = "CHANGE ➔",
+                                color = RetroBlack,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+            }
 
             // =============================================================
             // Card 1: The Fellowship & Why Multiple Voices Matter
@@ -793,25 +801,10 @@ fun AudioSetupScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
     }
-
-    LanguageRegionDialog(
-        isOpen = showLanguageDialog,
-        initialLanguage = currentLang,
-        initialRegion = currentReg,
-        onConfirm = { lang, reg ->
-            combatNarrator.setSelectedLanguageAndRegion(lang, reg)
-            speechManager.setSelectedLocale(lang)
-            speechManager.setSelectedRegion(reg)
-            com.voicerpg.engine.engine.IntentParser.currentLocale = lang
-            showLanguageDialog = false
-            voiceUpdateKey++
-            onVoiceChanged()
-        },
-        onDismiss = { showLanguageDialog = false }
-    )
 }
 
 @Composable

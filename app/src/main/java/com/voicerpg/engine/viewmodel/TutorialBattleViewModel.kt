@@ -116,12 +116,12 @@ class TutorialBattleViewModel(
     }
 
     private fun createInitialState(): TutorialBattleUiState {
-        val firstChar = TutorialBattleContent.CHARACTERS[0].toPartyMember()
+        val firstChar = TutorialBattleContent.CHARACTERS.firstOrNull()?.toPartyMember()
         return TutorialBattleUiState(
             stepIndex = 0,
             currentStep = TutorialBattleContent.STEPS[0],
-            party = listOf(firstChar),
-            activePartyMemberId = firstChar.id,
+            party = listOfNotNull(firstChar),
+            activePartyMemberId = firstChar?.id ?: "hero",
             enemies = TutorialBattleContent.ENEMIES.map { it.copy() }
         )
     }
@@ -317,7 +317,7 @@ class TutorialBattleViewModel(
                     modalSpeaker = DialogueSpeaker.NARRATOR,
                     modalTitle = "FREE BREATH ABILITY",
                     modalMessage = step.actionText,
-                    modalHintChant = "Attune",
+                    modalHintChant = step.hintChant,
                     modalSpellToCast = null
                 )
                 narrate(step.actionText, DialogueSpeaker.NARRATOR)
@@ -592,9 +592,8 @@ class TutorialBattleViewModel(
             delay(500)
             sfxManager.playHitImpact()
 
-            // Damage Cedric or first hero
-            val targetHeroId = _state.value.party.firstOrNull { it.id == "cedric" }?.id
-                ?: _state.value.party.first().id
+            // Damage first hero in party
+            val targetHeroId = _state.value.party.first().id
 
             val enemyDmg = 35
             val updatedParty = _state.value.party.map { hero ->

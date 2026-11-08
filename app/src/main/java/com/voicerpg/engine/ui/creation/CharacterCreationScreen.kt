@@ -48,6 +48,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import com.voicerpg.engine.content.GameManifest
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
@@ -58,7 +59,6 @@ import androidx.compose.ui.window.Dialog
 import com.voicerpg.engine.audio.CombatNarrator
 import com.voicerpg.engine.audio.SpeechManager
 import com.voicerpg.engine.audio.SpeechState
-import com.voicerpg.engine.localization.TranslationManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.voicerpg.engine.content.GameContent
@@ -94,8 +94,6 @@ fun CharacterCreationScreen(
     val isAutoListen = speechManager?.isAutoListen?.collectAsState()?.value ?: false
     val speechState = speechManager?.speechState?.collectAsState()?.value ?: SpeechState.Idle
     val coroutineScope = rememberCoroutineScope()
-    val translationVersion by com.voicerpg.engine.localization.TranslationManager.translationVersion.collectAsState()
-    fun t(text: String): String = com.voicerpg.engine.localization.TranslationManager.translate(text)
 
     val context = LocalContext.current
     val manifest = GameContent.manifest
@@ -153,10 +151,12 @@ fun CharacterCreationScreen(
         }
     }
 
-    val quickNames = remember {
-        manifest.quickNames.ifEmpty {
-            listOf(defaultHeroName)
-        }
+    var quickNames by remember {
+        mutableStateOf(
+            manifest.quickNames.ifEmpty {
+                listOf(defaultHeroName)
+            }
+        )
     }
 
     fun confirmAndAwaken() {
@@ -207,8 +207,17 @@ fun CharacterCreationScreen(
             return
         }
 
-        // 1c. Portrait reset voice commands (custom portrait generation disabled)
-        if (hasCustomPortrait) {
+        // 1c. Selfie / Portrait commands
+        if (selfieConfig.isEnabled) {
+            if (lower.contains("selfie") || lower.contains("camera") || lower.contains("picture") || lower.contains("photo")) {
+                if (!selfieConfig.disclaimerText.isNullOrBlank()) {
+                    showWarningDialog = true
+                    combatNarrator?.speak(selfieConfig.disclaimerText, force = true)
+                } else {
+                    showSourceDialog = true
+                }
+                return
+            }
             if (lower.contains("reset portrait") || lower.contains("reset photo") || lower.contains("default portrait")) {
                 SelfiePortraitProcessor.deleteCustomPortrait(context, slot)
                 StoryAssetLoader.clearSlot(slot)
@@ -288,7 +297,7 @@ fun CharacterCreationScreen(
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Text(
-                            text = t("◀ BACK TO AUDIO SETUP"),
+                            text = "◀ BACK TO AUDIO SETUP",
                             color = LogosGold,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
@@ -300,14 +309,14 @@ fun CharacterCreationScreen(
 
             // Header
             Text(
-                text = t(manifest.creationTitle ?: "⚔️ CHARACTER CREATION ⚔️"),
+                text = manifest.creationTitle ?: "⚔️ CHARACTER CREATION ⚔️",
                 color = LogosGold,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Black,
                 fontFamily = FontFamily.Monospace
             )
             Text(
-                text = t(manifest.creationSubtitle ?: "Character Setup & Initial Loadout"),
+                text = manifest.creationSubtitle ?: "Character Setup & Initial Loadout",
                 color = Color.LightGray,
                 fontSize = 11.sp,
                 fontFamily = FontFamily.Monospace
@@ -546,6 +555,17 @@ fun CharacterCreationScreen(
                             .shadow(8.dp, RoundedCornerShape(10.dp), spotColor = auraColorVal)
                             .clip(RoundedCornerShape(10.dp))
                             .border(2.dp, auraColorVal, RoundedCornerShape(10.dp))
+                            .then(
+                                if (selfieConfig.isEnabled) {
+                                    Modifier.clickable {
+                                        if (!selfieConfig.disclaimerText.isNullOrBlank()) {
+                                            showWarningDialog = true
+                                        } else {
+                                            showSourceDialog = true
+                                        }
+                                    }
+                                } else Modifier
+                            )
                     ) {
                         val activePortrait = customPortraitBitmap ?: defaultHeroBitmap
                         if (activePortrait != null) {
@@ -570,6 +590,22 @@ fun CharacterCreationScreen(
                                 )
                             }
                         }
+
+                        if (selfieConfig.isEnabled) {
+                            // Camera icon overlay badge
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .clip(RoundedCornerShape(topStart = 6.dp))
+                                    .background(RetroBlack.copy(alpha = 0.8f))
+                                    .padding(horizontal = 4.dp, vertical = 2.dp)
+                            ) {
+                                Text(
+                                    text = "📷",
+                                    fontSize = 11.sp
+                                )
+                            }
+                        }
                     }
 
                     Spacer(modifier = Modifier.width(14.dp))
@@ -582,19 +618,32 @@ fun CharacterCreationScreen(
                             fontWeight = FontWeight.Black,
                             fontFamily = FontFamily.Monospace
                         )
-                        Text(
-                            text = selectedTitle,
-                            color = auraColorVal,
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(
-                            text = "Class: ${selectedClass.title} • Affinity: ${selectedAffinity.name}",
-                            color = Color.LightGray,
-                            fontSize = 10.sp,
-                            fontFamily = FontFamily.Monospace
-                        )
+                        if (manifest.allowClassSelectionInCreation) {
+                            Text(
+                                text = selectedTitle,
+                                color = auraColorVal,
+                                fontSize = 11.sp,
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = "Class: ${selectedClass.title} • Affinity: ${selectedAffinity.name}",
+                                color = Color.LightGray,
+                                fontSize = 10.sp,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        } else {
+                            val subtitleText = manifest.creationStatusSubtitle ?: selectedTitle
+                            if (subtitleText.isNotBlank()) {
+                                Text(
+                                    text = subtitleText,
+                                    color = auraColorVal,
+                                    fontSize = 11.sp,
+                                    fontFamily = FontFamily.Monospace,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
                         if (hasCustomPortrait) {
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
@@ -615,30 +664,61 @@ fun CharacterCreationScreen(
                     }
                 }
 
-                if (hasCustomPortrait) {
+                if (selfieConfig.isEnabled) {
                     Spacer(modifier = Modifier.height(10.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(RetroBlack)
-                            .border(1.dp, Color.Gray, RoundedCornerShape(6.dp))
-                            .clickable {
-                                SelfiePortraitProcessor.deleteCustomPortrait(context, slot)
-                                StoryAssetLoader.clearSlot(slot)
-                                customPortraitBitmap = defaultHeroBitmap
-                                hasCustomPortrait = false
-                                combatNarrator?.speak("Portrait reset to default.", force = true)
-                            }
-                            .padding(vertical = 8.dp),
-                        contentAlignment = Alignment.Center
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            text = "↺ RESET DEFAULT PORTRAIT",
-                            color = Color.LightGray,
-                            fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace
-                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(RetroBlack)
+                                .border(1.dp, LogosGold, RoundedCornerShape(6.dp))
+                                .clickable {
+                                    if (!selfieConfig.disclaimerText.isNullOrBlank()) {
+                                        showWarningDialog = true
+                                    } else {
+                                        showSourceDialog = true
+                                    }
+                                }
+                                .padding(vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "📷 SNAP SELFIE / PHOTO",
+                                color = LogosGold,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
+
+                        if (hasCustomPortrait) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(RetroBlack)
+                                    .border(1.dp, Color.Gray, RoundedCornerShape(6.dp))
+                                    .clickable {
+                                        SelfiePortraitProcessor.deleteCustomPortrait(context, slot)
+                                        StoryAssetLoader.clearSlot(slot)
+                                        customPortraitBitmap = defaultHeroBitmap
+                                        hasCustomPortrait = false
+                                        combatNarrator?.speak("Portrait reset to default.", force = true)
+                                    }
+                                    .padding(horizontal = 10.dp, vertical = 8.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "↺ RESET DEFAULT",
+                                    color = Color.LightGray,
+                                    fontSize = 11.sp,
+                                    fontFamily = FontFamily.Monospace
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -647,8 +727,9 @@ fun CharacterCreationScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Section 1: Name Input
+            val nameSectionLabel = manifest.creationNameLabel ?: if (manifest.allowClassSelectionInCreation) "1. INVOCATOR'S TRUE NAME" else "1. CHARACTER NAME"
             Text(
-                text = t("HERO'S NAME"),
+                text = nameSectionLabel,
                 color = LogosGold,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -661,7 +742,7 @@ fun CharacterCreationScreen(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text(t("Hero Name"), fontFamily = FontFamily.Monospace) },
+                label = { Text("Character Name", fontFamily = FontFamily.Monospace) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = LogosGold,
@@ -677,7 +758,7 @@ fun CharacterCreationScreen(
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Quick Name Suggestions
+            // Quick Name Suggestions & Reroll Button
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -701,37 +782,63 @@ fun CharacterCreationScreen(
                         )
                     }
                 }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Section 2: Class Selection
-            Text(
-                text = t("ARCHETYPE & CALLING"),
-                color = LogosGold,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
-                modifier = Modifier.align(Alignment.Start)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                GameContent.classes.forEach { hc ->
-                    ClassOptionCard(
-                        heroClass = hc,
-                        isSelected = hc == selectedClass,
-                        onSelect = { selectedClass = hc }
-                    )
+                if (manifest.defaultHeroName.contains("{random") || manifest.quickNames.any { it.contains("{random") }) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(RetroPanel)
+                            .border(1.dp, LogosGold, RoundedCornerShape(6.dp))
+                            .clickable {
+                                val baseList = manifest.quickNames.ifEmpty { listOf(manifest.defaultHeroName) }
+                                quickNames = baseList.map { GameManifest.resolveTemplateTokens(it) }
+                                name = manifest.resolveDefaultHeroName()
+                            }
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = "🎲 Reroll ID",
+                            color = LogosGold,
+                            fontSize = 10.sp,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Section 3: Aesthetics (Aura Color & Title)
+            if (manifest.allowClassSelectionInCreation) {
+                // Section 2: Class Selection
+                Text(
+                    text = "2. CHOOSE YOUR DISCIPLINE (CLASS)",
+                    color = LogosGold,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    GameContent.classes.forEach { hc ->
+                        ClassOptionCard(
+                            heroClass = hc,
+                            isSelected = hc == selectedClass,
+                            onSelect = { selectedClass = hc }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Section: Aesthetics (Aura Color)
+            val aestheticSectionNum = if (manifest.allowClassSelectionInCreation) "3" else "2"
+            val aestheticSectionTitle = manifest.creationAestheticsLabel ?: "$aestheticSectionNum. AURA LUMINESCENCE (AESTHETICS)"
             Text(
-                text = t("VOICE RESONANCE AFFINITY"),
+                text = aestheticSectionTitle,
                 color = LogosGold,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -756,7 +863,7 @@ fun CharacterCreationScreen(
                             modifier = Modifier
                                 .size(36.dp)
                                 .shadow(if (isSelected) 10.dp else 2.dp, CircleShape, spotColor = col)
-                                .clip(CircleShape)
+                            .clip(CircleShape)
                                 .background(col)
                                 .border(if (isSelected) 3.dp else 1.dp, if (isSelected) Color.White else RetroBorder, CircleShape)
                         )
@@ -774,42 +881,46 @@ fun CharacterCreationScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Epithet Title Selector
-            Text(
-                text = t("HONORIFIC TITLE"),
-                color = LogosGold,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
-                modifier = Modifier.align(Alignment.Start)
-            )
+            // Epithet Title Selector (only if manifest has characterTitles configured)
+            if (titles.isNotEmpty()) {
+                val titleSectionNum = if (manifest.allowClassSelectionInCreation) "4" else "3"
+                Text(
+                    text = "$titleSectionNum. HONORIFIC TITLE",
+                    color = LogosGold,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.align(Alignment.Start)
+                )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                titles.forEach { t ->
-                    val isSelected = t == selectedTitle
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(if (isSelected) LogosGold.copy(alpha = 0.2f) else RetroPanel)
-                            .border(1.dp, if (isSelected) LogosGold else RetroBorder, RoundedCornerShape(6.dp))
-                            .clickable { selectedTitle = t }
-                            .padding(horizontal = 10.dp, vertical = 6.dp)
-                    ) {
-                        Text(
-                            text = t,
-                            color = if (isSelected) LogosGold else Color.LightGray,
-                            fontSize = 10.sp,
-                            fontFamily = FontFamily.Monospace
-                        )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    titles.forEach { t ->
+                        val isSelected = t == selectedTitle
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(if (isSelected) LogosGold.copy(alpha = 0.2f) else RetroPanel)
+                                .border(1.dp, if (isSelected) LogosGold else RetroBorder, RoundedCornerShape(6.dp))
+                                .clickable { selectedTitle = t }
+                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = t,
+                                color = if (isSelected) LogosGold else Color.LightGray,
+                                fontSize = 10.sp,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -827,7 +938,7 @@ fun CharacterCreationScreen(
                     .height(48.dp)
             ) {
                 Text(
-                    text = t(manifest.creationEmbarkPrompt.ifBlank { "AWAKEN ➔" }),
+                    text = manifest.creationEmbarkPrompt.ifBlank { "AWAKEN ➔" },
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Black,
                     fontSize = 14.sp
@@ -843,7 +954,7 @@ fun CharacterCreationScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "🎤 " + t("Speak class or say 'Awaken' to start"),
+                    text = "🎤 Speak class or say 'Awaken' to start",
                     color = Color.Gray,
                     fontSize = 10.sp,
                     fontFamily = FontFamily.Monospace
@@ -865,7 +976,7 @@ fun CharacterCreationScreen(
                             .padding(horizontal = 10.dp, vertical = 5.dp)
                     ) {
                         Text(
-                            text = if (speechState is SpeechState.Listening) "🎙️ LISTENING..." else "🎤 " + t("SPEAK"),
+                            text = if (speechState is SpeechState.Listening) "🎙️ LISTENING..." else "🎤 SPEAK",
                             color = LogosGold,
                             fontSize = 9.sp,
                             fontWeight = FontWeight.Bold,
@@ -907,14 +1018,14 @@ private fun ClassOptionCard(
             ) {
                 Column {
                     Text(
-                        text = TranslationManager.translate(heroClass.title).uppercase(),
+                        text = heroClass.title.uppercase(),
                         color = if (isSelected) LogosGold else Color.White,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Black,
                         fontFamily = FontFamily.Monospace
                     )
                     Text(
-                        text = TranslationManager.translate(heroClass.subtitle),
+                        text = heroClass.subtitle,
                         color = if (isSelected) LogosGlow else Color.Gray,
                         fontSize = 10.sp,
                         fontFamily = FontFamily.Monospace
@@ -923,16 +1034,16 @@ private fun ClassOptionCard(
 
                 // Stats Pills
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    StatPill(TranslationManager.translate("HP"), heroClass.startingHp.toString(), Color(0xFF4CAF50))
-                    StatPill(TranslationManager.translate("MP"), heroClass.startingMp.toString(), Color(0xFF00B0FF))
-                    StatPill(TranslationManager.translate("SPD"), heroClass.startingSpeed.toString(), Color(0xFFFFB74D))
+                    StatPill("HP", heroClass.startingHp.toString(), Color(0xFF4CAF50))
+                    StatPill("MP", heroClass.startingMp.toString(), Color(0xFF00B0FF))
+                    StatPill("SPD", heroClass.startingSpeed.toString(), Color(0xFFFFB74D))
                 }
             }
 
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = TranslationManager.translate(heroClass.description),
+                text = heroClass.description,
                 color = Color.LightGray,
                 fontSize = 10.sp,
                 fontFamily = FontFamily.Monospace,
@@ -957,7 +1068,7 @@ private fun ClassOptionCard(
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = "⚡ ${TranslationManager.translate(sp.name)}",
+                            text = "⚡ ${sp.name}",
                             color = Color(0xFF80D8FF),
                             fontSize = 9.sp,
                             fontFamily = FontFamily.Monospace,

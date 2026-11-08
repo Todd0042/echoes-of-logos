@@ -19,25 +19,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import com.voicerpg.engine.audio.CombatNarrator
 import com.voicerpg.engine.audio.MusicManager
 import com.voicerpg.engine.audio.SpeechManager
 import com.voicerpg.engine.engine.SaveManager
-import com.voicerpg.engine.localization.ModelDownloadStatus
-import com.voicerpg.engine.localization.TranslationManager
-import com.voicerpg.engine.ui.setup.LanguageModelDownloadBanner
 import kotlinx.coroutines.launch
 import com.voicerpg.engine.model.GameScreen
 import com.voicerpg.engine.ui.combat.DebugWarpDialog
@@ -49,7 +50,6 @@ import com.voicerpg.engine.ui.pocket.PocketHeroVitals
 import com.voicerpg.engine.ui.pocket.PocketModeTouchGuard
 import com.voicerpg.engine.ui.pocket.PocketModeUnlockedBanner
 import com.voicerpg.engine.ui.setup.AudioSetupScreen
-import com.voicerpg.engine.ui.setup.LanguageRegionDialog
 import com.voicerpg.engine.ui.setup.MicPermissionRationaleDialog
 import com.voicerpg.engine.ui.story.StoryScreen
 import com.voicerpg.engine.ui.theme.VoiceRPGTheme
@@ -94,7 +94,6 @@ class MainActivity : ComponentActivity() {
         // without this the engine would fall back to the empty EmergencyFallback and every
         // battle/tutorial/story screen would crash on boot. Content stays JSON + assets only.
         com.voicerpg.engine.content.GameContent.initialize(applicationContext)
-        com.voicerpg.engine.localization.TranslationManager.initialize(this)
 
         speechManager = SpeechManager(this)
         combatNarrator = CombatNarrator(this)
@@ -236,7 +235,7 @@ class MainActivity : ComponentActivity() {
                     musicManager.playCombatMusic()
                 } else if (storyState.gameScreen == GameScreen.STORY_EXPLORATION) {
                     musicManager.playTrack(storyState.currentScene.musicAsset)
-                } else if (storyState.gameScreen == GameScreen.TITLE || storyState.gameScreen == GameScreen.TUTORIAL || storyState.gameScreen == GameScreen.LANGUAGE_SELECTION) {
+                } else if (storyState.gameScreen == GameScreen.TITLE || storyState.gameScreen == GameScreen.TUTORIAL) {
                     musicManager.playTrack(MusicManager.TRACK_TITLE)
                 } else {
                     musicManager.playTrack(MusicManager.TRACK_EXPLORATION)
@@ -244,35 +243,26 @@ class MainActivity : ComponentActivity() {
             }
 
             VoiceRPGTheme {
-                val downloadStatus by TranslationManager.downloadStatus.collectAsState()
-                val downloadProgress by TranslationManager.downloadProgress.collectAsState()
-                val downloadTargetName by TranslationManager.downloadTargetName.collectAsState()
+                val downloadStatus by com.voicerpg.engine.localization.TranslationManager.downloadStatus.collectAsState()
+                val downloadProgress by com.voicerpg.engine.localization.TranslationManager.downloadProgress.collectAsState()
+                val downloadTargetName by com.voicerpg.engine.localization.TranslationManager.downloadTargetName.collectAsState()
 
                 Column(modifier = Modifier.fillMaxSize()) {
-                    AnimatedVisibility(
-                        visible = downloadStatus != ModelDownloadStatus.IDLE,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = downloadStatus != com.voicerpg.engine.localization.ModelDownloadStatus.IDLE,
+                        enter = androidx.compose.animation.expandVertically() + androidx.compose.animation.fadeIn(),
+                        exit = androidx.compose.animation.shrinkVertically() + androidx.compose.animation.fadeOut()
                     ) {
-                        LanguageModelDownloadBanner(
+                        com.voicerpg.engine.ui.setup.LanguageModelDownloadBanner(
                             status = downloadStatus,
                             progress = downloadProgress,
                             languageName = downloadTargetName,
-                            onDismiss = { TranslationManager.dismissDownloadBanner() }
+                            onDismiss = { com.voicerpg.engine.localization.TranslationManager.dismissDownloadBanner() }
                         )
                     }
 
                     Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                         when (storyState.gameScreen) {
-                        GameScreen.LANGUAGE_SELECTION -> {
-                            com.voicerpg.engine.ui.setup.LanguageSelectionScreen(
-                                initialLanguage = storyState.selectedLanguage,
-                                initialRegion = storyState.selectedRegion,
-                                onConfirmSelection = { lang, reg ->
-                                    storyViewModel.completeLanguageSetup(lang, reg)
-                                }
-                            )
-                        }
                         GameScreen.TITLE -> {
                             val speechState by speechManager.speechState.collectAsState()
                             TitleScreen(
@@ -297,7 +287,7 @@ class MainActivity : ComponentActivity() {
                                 onAudioSetup = { storyViewModel.openAudioSetup() },
                                 onOptions = { combatViewModel.openOptions() },
                                 storyModeSummary = storyViewModel.getStoryModeSaveSummary(),
-                                onPureStoryMode = { fresh -> storyViewModel.startPureStoryMode(fresh) },
+                                onPureStoryMode = { fresh, trackId -> storyViewModel.startPureStoryMode(fresh, trackId) },
                                 onTutorial = {
                                     tutorialBattleViewModel.resetTutorial()
                                     storyViewModel.openTutorial()
@@ -336,6 +326,46 @@ class MainActivity : ComponentActivity() {
                                     } else {
                                         storyViewModel.returnFromAudioSetup()
                                     }
+                                },
+                                onOpenLanguageSelection = {
+                                    storyViewModel.openLanguageSelection(fromOptions = false)
+                                }
+                            )
+                        }
+                        GameScreen.LANGUAGE_SELECTION -> {
+                            com.voicerpg.engine.ui.setup.LanguageSelectionScreen(
+                                currentLanguageCode = storyState.pendingSelectedLanguage,
+                                canCancel = storyState.previousScreen != null,
+                                onLanguageSelected = { langCode ->
+                                    storyViewModel.onLanguageChosen(langCode)
+                                },
+                                onCancel = {
+                                    storyViewModel.cancelLanguageSelection()
+                                }
+                            )
+                        }
+                        GameScreen.DIALECT_SELECTION -> {
+                            com.voicerpg.engine.ui.setup.DialectSelectionScreen(
+                                languageCode = storyState.pendingSelectedLanguage,
+                                initialRegionCode = storyState.pendingSelectedRegion,
+                                combatNarrator = combatNarrator,
+                                onBack = {
+                                    storyViewModel.returnToLanguageSelection()
+                                },
+                                onConfirm = { langCode, regionCode ->
+                                    storyViewModel.onDialectConfirmed(langCode, regionCode)
+                                }
+                            )
+                        }
+                        GameScreen.LANGUAGE_DOWNLOAD_STANDBY -> {
+                            com.voicerpg.engine.ui.setup.LanguageDownloadStandbyScreen(
+                                languageCode = storyState.pendingSelectedLanguage,
+                                regionCode = storyState.pendingSelectedRegion,
+                                onDownloadComplete = { langCode, regionCode ->
+                                    storyViewModel.applyLanguageAndFinish(langCode, regionCode)
+                                },
+                                onChangeLanguage = {
+                                    storyViewModel.returnToLanguageSelection()
                                 }
                             )
                         }
@@ -513,6 +543,10 @@ class MainActivity : ComponentActivity() {
                             combatViewModel.closeOptions()
                             storyViewModel.openAudioSetup()
                         },
+                        onOpenLanguageSelection = {
+                            combatViewModel.closeOptions()
+                            storyViewModel.openLanguageSelection(fromOptions = true)
+                        },
                         onTriggerCheaterDialogue = {
                             combatNarrator.speak(
                                 "Cheater detected! You have invoked the ancient Konami incantation to bend time and space. Do you boldly embrace your dishonor?",
@@ -524,17 +558,8 @@ class MainActivity : ComponentActivity() {
                             combatViewModel.closeOptions()
                             storyViewModel.returnToTitle()
                         },
-                        selectedLanguage = storyState.selectedLanguage,
-                        selectedRegion = storyState.selectedRegion,
-                        onSelectLanguage = { lang ->
-                            storyViewModel.setSelectedLanguage(lang)
-                        },
-                        onSelectRegion = { reg ->
-                            storyViewModel.setSelectedRegion(reg)
-                        },
                         onClose = { combatViewModel.closeOptions() }
                     )
-
 
                     // Universal chapter warp & developer tools dialog
                     DebugWarpDialog(
@@ -678,8 +703,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        }
     }
-}
 
     override fun onDestroy() {
         super.onDestroy()

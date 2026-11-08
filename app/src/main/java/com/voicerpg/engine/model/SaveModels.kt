@@ -16,6 +16,21 @@ enum class AuraColor(
 }
 
 /**
+ * Data-driven storyline track definition (e.g. Track A, Track B).
+ * Games with multiple storylines or perspectives configure these in manifest or GameContent.
+ */
+data class CampaignTrackDef(
+    val id: String = "track_a",
+    val displayName: String = "Main Campaign",
+    val subtitle: String = "",
+    val startNodeId: String = "",
+    val startSceneId: String = "",
+    val rosterDescription: String = "",
+    val badgeText: String = "1P",
+    val voiceKeywords: List<String> = emptyList()
+)
+
+/**
  * Player-created hero identity. Hero classes are data-driven: [heroClassId]
  * resolves against assets/game/classes/<name>.json via the content registry.
  */
@@ -25,7 +40,8 @@ data class PlayerCustomization(
     val title: String = "The Awakened Hero",
     val auraColor: AuraColor = AuraColor.SAPPHIRE_FROST,
     val voiceAffinityBonusSchool: SpellSchool = SpellSchool.PHYSICAL,
-    val customPortraitAsset: String? = null
+    val customPortraitAsset: String? = null,
+    val campaignTrackId: String = "track_a"
 ) {
     val heroClass get() = GameContent.classById(heroClassId)
 }
@@ -110,10 +126,10 @@ data class GameSaveData(
     // 7. Per-speaker TTS voice assignments (installed Android voice model names keyed by speaker id)
     val voiceAssignments: Map<String, String> = emptyMap(),
 
-    // 8. Multi-Language / Locale Selection (en, es, de, fr, pt, it) & Preferred Region (e.g. US, GB, MX, ES)
-    val selectedLanguage: String = "en",
-    val selectedRegion: String = "",
+    // 8. Dynamic Simulation & Metric Tracking (Data-driven and opt-in per game)
+    val dynamicMetrics: Map<String, Float> = emptyMap(),
 
-    // 9. Dynamic Simulation & Metric Tracking (Data-driven and opt-in per game)
-    val dynamicMetrics: Map<String, Float> = emptyMap()
+    // 9. Multilingual Localization Options
+    val selectedLanguage: String = "en",
+    val selectedRegion: String = ""
 )

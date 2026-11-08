@@ -13,6 +13,20 @@ enum class SpellSchool(val displayName: String, val themeColor: Color) {
     PHYSICAL("Martial", Color(0xFFCFD8DC))
 }
 
+enum class SpellCategory(
+    val label: String,
+    val icon: String,
+    val displayName: String,
+    val tagColor: Color,
+    val tagBg: Color
+) {
+    ATTACK("ATK", "⚔️", "Attack", Color(0xFFFF5252), Color(0x33FF5252)),
+    AOE_ATTACK("AOE", "💥", "AoE Attack", Color(0xFFFF7043), Color(0x33FF7043)),
+    HEAL("HEAL", "💚", "Heal", Color(0xFF69F0AE), Color(0x3369F0AE)),
+    DEFENSE("DEF", "🛡️", "Defensive", Color(0xFF64B5F6), Color(0x3364B5F6)),
+    MANA("MANA", "✨", "Mana Restore", Color(0xFF40C4FF), Color(0x3340C4FF))
+}
+
 data class SpellGraphics(
     val effectType: String = "PROJECTILE", // PROJECTILE, SLASH, PILLAR, BURST, WAVE
     val primaryColor: String? = null,
@@ -40,6 +54,15 @@ data class Spell(
     val cleansesDebuffs: Boolean = false
 ) {
     val isCleanse: Boolean get() = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true)
+
+    val category: SpellCategory
+        get() = when {
+            isHeal -> SpellCategory.HEAL
+            manaRestorePct > 0f -> SpellCategory.MANA
+            isGuard || (basePower == 0 && !hitsAll) -> SpellCategory.DEFENSE
+            hitsAll -> SpellCategory.AOE_ATTACK
+            else -> SpellCategory.ATTACK
+        }
 }
 
 enum class CharacterStance {
@@ -111,10 +134,21 @@ data class Enemy(
 enum class TargetSelection {
     FIRST_ALIVE_ENEMY,
     SPECIFIC_ENEMY,
+    ORC,
+    ARCHER,
+    SHAMAN,
     ALL_ENEMIES,
     PARTY_LOWEST,
     SELF,
-    SPECIFIC_HERO
+    SPECIFIC_HERO,
+    HERO,
+    CEDRIC,
+    LYRA,
+    ZEPHYR,
+    MARCO,
+    VANCE,
+    KASH,
+    KENNEDY
 }
 
 enum class MetaCommand {
@@ -151,7 +185,10 @@ data class ParsedIntent(
     val rawUtterance: String,
     val targetEnemyId: String? = null,
     val targetHeroId: String? = null,
-    val metaCommand: MetaCommand = MetaCommand.NONE
+    val metaCommand: MetaCommand = MetaCommand.NONE,
+    val isWrongCharacterSpell: Boolean = false,
+    val wrongCharacterOwnerId: String? = null,
+    val wrongCharacterOwnerName: String? = null
 )
 
 /**

@@ -317,7 +317,7 @@ private fun BattleConclusionOverlay(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = if (isVictory) com.voicerpg.engine.localization.TranslationManager.translate("⚔️ VICTORY ⚔️") else com.voicerpg.engine.localization.TranslationManager.translate("💀 CLOCKED OUT (DEFEAT) 💀"),
+                text = if (isVictory) "⚔️ VICTORY ⚔️" else "💀 CLOCKED OUT (DEFEAT) 💀",
                 color = if (isVictory) LogosGlow else Color(0xFFFF5252),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
@@ -336,7 +336,7 @@ private fun BattleConclusionOverlay(
             }
 
             Text(
-                text = com.voicerpg.engine.localization.TranslationManager.translate(conclusionText),
+                text = conclusionText,
                 color = Color.LightGray,
                 fontSize = 12.sp,
                 fontFamily = FontFamily.Monospace,
@@ -358,7 +358,7 @@ private fun BattleConclusionOverlay(
                     shape = RoundedCornerShape(6.dp)
                 ) {
                     Text(
-                        text = if (isVictory) com.voicerpg.engine.localization.TranslationManager.translate("CONTINUE STORY ➔") else com.voicerpg.engine.localization.TranslationManager.translate("PRESS ON (STILL ON THE CLOCK) ➔"),
+                        text = if (isVictory) "CONTINUE STORY ➔" else "PRESS ON (STILL ON THE CLOCK) ➔",
                         fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Black
                     )
@@ -376,7 +376,7 @@ private fun BattleConclusionOverlay(
                 shape = RoundedCornerShape(6.dp)
             ) {
                 Text(
-                    text = com.voicerpg.engine.localization.TranslationManager.translate("RESTART BATTLE"),
+                    text = "RESTART BATTLE",
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Bold
                 )

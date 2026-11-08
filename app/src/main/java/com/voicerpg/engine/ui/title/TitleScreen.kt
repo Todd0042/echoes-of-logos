@@ -63,9 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.window.Dialog
-import com.voicerpg.engine.localization.TranslationManager
 import com.voicerpg.engine.audio.SpeechState
 import com.voicerpg.engine.content.GameContent
 import com.voicerpg.engine.content.GameManifest
@@ -113,7 +111,7 @@ fun TitleScreen(
     onCloseMiniGameTestMenu: () -> Unit = {},
     onLaunchMiniGame: (String) -> Unit = {},
     storyModeSummary: SaveSummary? = null,
-    onPureStoryMode: (fresh: Boolean) -> Unit = {},
+    onPureStoryMode: (fresh: Boolean, campaignTrackId: String?) -> Unit = { _, _ -> },
     onStartListening: () -> Unit,
     onStopListening: () -> Unit,
     manifest: GameManifest = GameManifest(
@@ -130,12 +128,10 @@ fun TitleScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val translationVersion by TranslationManager.translationVersion.collectAsState()
-    fun t(text: String): String = TranslationManager.translate(text)
-
     var showOverwriteDialog by remember { mutableStateOf(false) }
     var showSlotArchivesDialog by remember { mutableStateOf(false) }
     var showStoryModePromptDialog by remember { mutableStateOf(false) }
+    var showStoryModeTrackDialog by remember { mutableStateOf(false) }
     var slotDialogIsNewGameMode by remember { mutableStateOf(false) }
 
     val configuration = androidx.compose.ui.platform.LocalConfiguration.current
@@ -203,7 +199,7 @@ fun TitleScreen(
                 modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text(
-                    text = t("VOICE-FIRST RPG"),
+                    text = "VOICE-FIRST RPG",
                     color = LogosGold.copy(alpha = 0.9f),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
@@ -240,7 +236,7 @@ fun TitleScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = t(manifest.gameSubtitle.ifBlank { "Voice-Commanded Storytelling RPG" }),
+                    text = manifest.gameSubtitle.ifBlank { "Voice-Commanded Storytelling RPG" },
                     color = Color.LightGray.copy(alpha = 0.85f),
                     fontSize = 11.sp,
                     fontFamily = FontFamily.Monospace,
@@ -289,7 +285,7 @@ fun TitleScreen(
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(
-                                        text = t("CONTINUE [SLOT $currentSlot]"),
+                                        text = "CONTINUE [SLOT $currentSlot]",
                                         color = LogosGold,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Black,
@@ -315,7 +311,7 @@ fun TitleScreen(
                             Spacer(modifier = Modifier.height(4.dp))
 
                             Text(
-                                text = "⚔️ ${saveSummary.heroName} • ${t(saveSummary.heroClassTitle)}  |  👥 ${saveSummary.partySize} ${t("In Fellowship")}",
+                                text = "⚔️ ${saveSummary.heroName} • ${saveSummary.heroClassTitle}  |  👥 ${saveSummary.partySize} In Fellowship",
                                 color = FrostCyan,
                                 fontSize = 11.sp,
                                 fontFamily = FontFamily.Monospace,
@@ -362,7 +358,7 @@ fun TitleScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = t("CHRONICLE ARCHIVES (3 SLOTS)"),
+                            text = "CHRONICLE ARCHIVES (3 SLOTS)",
                             color = LogosGold,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -406,7 +402,7 @@ fun TitleScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = if (hasSave) t("START NEW JOURNEY") else t("BEGIN JOURNEY"),
+                            text = if (hasSave) "START NEW JOURNEY" else "BEGIN JOURNEY",
                             color = if (!hasSave) HolyYellow else Color.White,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
@@ -420,8 +416,10 @@ fun TitleScreen(
                     onClick = {
                         if (storyModeSummary != null) {
                             showStoryModePromptDialog = true
+                        } else if (manifest.campaignTracks.size > 1) {
+                            showStoryModeTrackDialog = true
                         } else {
-                            onPureStoryMode(true)
+                            onPureStoryMode(true, null)
                         }
                     },
                     modifier = Modifier
@@ -444,7 +442,7 @@ fun TitleScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = t("PURE STORY MODE (AUTO-PLAY)"),
+                            text = "PURE STORY MODE (AUTO-PLAY)",
                             color = Color(0xFFF3E5F5),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -476,7 +474,7 @@ fun TitleScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = t("AUDIO SETUP & VOICES"),
+                            text = "AUDIO SETUP & VOICES",
                             color = Color.White,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -508,7 +506,7 @@ fun TitleScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = t("GAME OPTIONS & ACCESSIBILITY"),
+                            text = "GAME OPTIONS & ACCESSIBILITY",
                             color = Color.White,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -540,7 +538,7 @@ fun TitleScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = t("CHRONICLE GUIDE"),
+                            text = "CHRONICLE GUIDE",
                             color = Color.White,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -572,7 +570,7 @@ fun TitleScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = t("ASSET VIEWER & JUKEBOX"),
+                            text = "ASSET VIEWER & JUKEBOX",
                             color = Color.White,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -603,7 +601,7 @@ fun TitleScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = t("MINI-GAME ARCADE (QA)"),
+                                text = "MINI-GAME ARCADE (QA)",
                                 color = Color.White,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
@@ -645,9 +643,9 @@ fun TitleScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = if (isListening) {
-                            "🎤 " + t("Listening... Speak 'Continue', 'New Game', 'Asset Viewer', or 'Options'")
+                            "🎤 Listening... Speak 'Continue', 'New Game', 'Asset Viewer', or 'Options'"
                         } else {
-                            "🎤 " + t("Speak 'Continue', 'New Game', 'Asset Viewer', or Tap to Talk")
+                            "🎤 Speak 'Continue', 'New Game', 'Asset Viewer', or Tap to Talk"
                         },
                         color = if (isListening) Color.White else Color.LightGray,
                         fontSize = 11.sp,
@@ -773,7 +771,7 @@ fun TitleScreen(
                         Button(
                             onClick = {
                                 showStoryModePromptDialog = false
-                                onPureStoryMode(false)
+                                onPureStoryMode(false, null)
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -793,7 +791,11 @@ fun TitleScreen(
                         Button(
                             onClick = {
                                 showStoryModePromptDialog = false
-                                onPureStoryMode(true)
+                                if (manifest.campaignTracks.size > 1) {
+                                    showStoryModeTrackDialog = true
+                                } else {
+                                    onPureStoryMode(true, null)
+                                }
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -812,6 +814,96 @@ fun TitleScreen(
 
                         Button(
                             onClick = { showStoryModePromptDialog = false },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, RetroBorder, RoundedCornerShape(8.dp)),
+                            colors = ButtonDefaults.buttonColors(containerColor = RetroDeepSlate),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = "CANCEL",
+                                color = Color.LightGray,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // Multi-Track Campaign Selector Dialog (Data-driven for games with multiple storylines)
+        if (showStoryModeTrackDialog && manifest.campaignTracks.size > 1) {
+            Dialog(onDismissRequest = { showStoryModeTrackDialog = false }) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(RetroBlack.copy(alpha = 0.98f))
+                        .border(2.dp, LogosGold, RoundedCornerShape(12.dp))
+                        .padding(20.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text(
+                            text = "SELECT CAMPAIGN TRACK",
+                            color = LogosGold,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Black,
+                            fontFamily = FontFamily.Monospace,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Text(
+                            text = "Choose which storyline track to play in Pure Story Mode:\n(Regular battles are auto-won, story advances automatically)",
+                            color = Color.LightGray,
+                            fontSize = 10.sp,
+                            fontFamily = FontFamily.Monospace,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 15.sp
+                        )
+
+                        manifest.campaignTracks.forEach { track ->
+                            Button(
+                                onClick = {
+                                    showStoryModeTrackDialog = false
+                                    onPureStoryMode(true, track.id)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(1.5.dp, LogosGold, RoundedCornerShape(8.dp)),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E1C00)),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(vertical = 4.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "${track.displayName.uppercase()} (${track.badgeText})",
+                                        color = LogosGold,
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Black,
+                                        fontFamily = FontFamily.Monospace
+                                    )
+                                    if (track.rosterDescription.isNotBlank() || track.subtitle.isNotBlank()) {
+                                        Text(
+                                            text = track.rosterDescription.ifBlank { track.subtitle },
+                                            color = Color.LightGray,
+                                            fontSize = 9.sp,
+                                            fontFamily = FontFamily.Monospace
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Button(
+                            onClick = { showStoryModeTrackDialog = false },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .border(1.dp, RetroBorder, RoundedCornerShape(8.dp)),

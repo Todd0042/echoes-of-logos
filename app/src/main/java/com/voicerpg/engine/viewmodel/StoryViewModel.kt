@@ -68,6 +68,9 @@ data class StoryState(
     val activeHubNodeId: String? = null,
     val activeMiniGameConfig: MiniGameConfig? = null,
     val isMiniGameTestMenuOpen: Boolean = false,
+    val returnToOptionsOnConfirm: Boolean = false,
+    val pendingSelectedLanguage: String = "en",
+    val pendingSelectedRegion: String = "",
     val selectedLanguage: String = "en",
     val selectedRegion: String = "",
     val showFirstLaunchLanguagePrompt: Boolean = false
@@ -362,7 +365,7 @@ class StoryViewModel(
         return newPaused
     }
 
-    fun startPureStoryMode(fresh: Boolean = false) {
+    fun startPureStoryMode(fresh: Boolean = false, campaignTrackId: String? = null) {
         cancelPendingAutoAdvance()
         cancelPendingStoryMode()
         speechManager.cancel()
@@ -392,7 +395,12 @@ class StoryViewModel(
             val manifest = GameContent.manifest
             val defaultName = manifest.defaultHeroName.ifBlank { "Hero" }
             val defaultTitle = manifest.defaultHeroTitle.ifBlank { "The Awakened Hero" }
-            val defaultPlayer = PlayerCustomization(name = defaultName, title = defaultTitle)
+            val resolvedTrackId = campaignTrackId ?: manifest.campaignTracks.firstOrNull()?.id ?: "track_a"
+            val defaultPlayer = PlayerCustomization(
+                name = defaultName,
+                title = defaultTitle,
+                campaignTrackId = resolvedTrackId
+            )
             saveManager.createInitialSave(defaultPlayer, storySlot)
             saveManager.currentSlot = storySlot
             StoryAssetLoader.activeSlot = storySlot
@@ -503,7 +511,7 @@ class StoryViewModel(
 
             _state.value = StoryState(
                 currentScene = restoredScene,
-                currentNode = formatNodeForPlayer(restoredNode, existingSave.player, existingSave.dynamicMetrics),
+                currentNode = formatNodeForPlayer(restoredNode, existingSave.player),
                 gameScreen = initialGameScreen,
                 player = existingSave.player,
                 decisionsMade = existingSave.decisionsMade,
@@ -516,10 +524,9 @@ class StoryViewModel(
                 currentSlot = initialSlot,
                 saveSlots = allSlots,
                 dialogueHistory = restoredHistory,
-                dynamicMetrics = existingSave.dynamicMetrics,
                 selectedLanguage = lang,
                 selectedRegion = reg,
-                showFirstLaunchLanguagePrompt = false
+                showFirstLaunchLanguagePrompt = !globalSettings.isLanguageSetupCompleted
             )
             combatNarrator.setEyesFreeMode(existingSave.isEyesFreeMode, lockGuard = false)
             combatNarrator.setPocketGuardEnabled(existingSave.isPocketGuardEnabled)
@@ -537,7 +544,7 @@ class StoryViewModel(
             musicManager?.setVolume(existingSave.musicVolume)
             musicManager?.playTrack(com.voicerpg.engine.audio.MusicManager.TRACK_EXPLORATION)
         } else {
-            // First time player: start at Title Screen or Language Selection
+            // First time player: start at Language Selection or Title Screen
             musicManager?.playTrack(com.voicerpg.engine.audio.MusicManager.TRACK_EXPLORATION)
             _state.value = StoryState(
                 gameScreen = initialGameScreen,
@@ -547,7 +554,7 @@ class StoryViewModel(
                 saveSlots = allSlots,
                 selectedLanguage = lang,
                 selectedRegion = reg,
-                showFirstLaunchLanguagePrompt = false
+                showFirstLaunchLanguagePrompt = !globalSettings.isLanguageSetupCompleted
             )
         }
     }
@@ -560,13 +567,6 @@ class StoryViewModel(
         saveManager.currentSlot = targetSlot
         StoryAssetLoader.activeSlot = targetSlot
         val existingSave = saveManager.load(targetSlot) ?: return
-        val lang = existingSave.selectedLanguage.ifBlank { "en" }
-        val reg = existingSave.selectedRegion
-        _state.value = _state.value.copy(selectedLanguage = lang, selectedRegion = reg)
-        speechManager.setSelectedLocale(lang)
-        speechManager.setSelectedRegion(reg)
-        combatNarrator.setSelectedLanguageAndRegion(lang, reg)
-        com.voicerpg.engine.engine.IntentParser.currentLocale = lang
         if (startInAutoPlay && !existingSave.isAutoPlayEnabled) {
             saveManager.save(existingSave.copy(isAutoPlayEnabled = true), targetSlot)
         }
@@ -714,6 +714,91 @@ class StoryViewModel(
             currentSlot = targetSlot,
             isPureStoryMode = (targetSlot == SaveManager.STORY_MODE_SLOT),
             player = PlayerCustomization(name = defaultName, title = defaultTitle)
+        )
+    }
+
+    /**
+     * Opens Screen 1: Language Selection (e.g. from Options, Audio Setup, or first boot).
+     */
+    fun openLanguageSelection(fromOptions: Boolean = false) {
+        val prev = _state.value.gameScreen
+        _state.value = _state.value.copy(
+            gameScreen = GameScreen.LANGUAGE_SELECTION,
+            previousScreen = prev,
+            returnToOptionsOnConfirm = fromOptions,
+            pendingSelectedLanguage = com.voicerpg.engine.localization.TranslationManager.currentLanguage.value,
+            pendingSelectedRegion = com.voicerpg.engine.localization.TranslationManager.currentRegion.value
+        )
+    }
+
+    /**
+     * Advances from Screen 1 (Language selected) to Screen 2 (Dialect / Accent selection).
+     */
+    fun onLanguageChosen(languageCode: String) {
+        val clean = languageCode.lowercase().trim().take(2)
+        _state.value = _state.value.copy(
+            gameScreen = GameScreen.DIALECT_SELECTION,
+            pendingSelectedLanguage = clean,
+            pendingSelectedRegion = ""
+        )
+    }
+
+    /**
+     * Returns from Screen 2 (Dialect) back to Screen 1 (Language).
+     */
+    fun returnToLanguageSelection() {
+        _state.value = _state.value.copy(
+            gameScreen = GameScreen.LANGUAGE_SELECTION
+        )
+    }
+
+    /**
+     * Cancels language selection and returns to previous screen without applying changes.
+     */
+    fun cancelLanguageSelection() {
+        val dest = _state.value.previousScreen ?: GameScreen.TITLE
+        _state.value = _state.value.copy(
+            gameScreen = dest,
+            previousScreen = null,
+            returnToOptionsOnConfirm = false
+        )
+    }
+
+    /**
+     * Called when user confirms dialect on Screen 2. Checks if model is downloaded;
+     * if not, routes to LANGUAGE_DOWNLOAD_STANDBY gatekeeper screen.
+     */
+    fun onDialectConfirmed(languageCode: String, regionCode: String) {
+        val cleanLang = languageCode.lowercase().trim().take(2)
+        val cleanReg = regionCode.uppercase().trim()
+        _state.value = _state.value.copy(
+            pendingSelectedLanguage = cleanLang,
+            pendingSelectedRegion = cleanReg
+        )
+
+        viewModelScope.launch {
+            val isInstalled = com.voicerpg.engine.localization.TranslationManager.isModelInstalled(cleanLang)
+            if (isInstalled) {
+                applyLanguageAndFinish(cleanLang, cleanReg)
+            } else {
+                _state.value = _state.value.copy(
+                    gameScreen = GameScreen.LANGUAGE_DOWNLOAD_STANDBY
+                )
+                com.voicerpg.engine.localization.TranslationManager.setLanguageAndRegion(cleanLang, cleanReg)
+            }
+        }
+    }
+
+    fun applyLanguageAndFinish(languageCode: String, regionCode: String) {
+        com.voicerpg.engine.localization.TranslationManager.setLanguageAndRegion(languageCode, regionCode)
+        combatNarrator.setSelectedLanguageAndRegion(languageCode, regionCode)
+        speechManager.setSelectedLocale(languageCode)
+        speechManager.setSelectedRegion(regionCode)
+
+        val dest = _state.value.previousScreen ?: GameScreen.TITLE
+        _state.value = _state.value.copy(
+            gameScreen = dest,
+            previousScreen = null
         )
     }
 
@@ -1273,9 +1358,7 @@ class StoryViewModel(
             isMusicEnabled = musicManager?.isMusicEnabled?.value ?: currentSave.isMusicEnabled,
             musicVolume = musicManager?.musicVolume?.value ?: currentSave.musicVolume,
             voiceAssignments = combatNarrator.getVoiceAssignments(),
-            dynamicMetrics = s.dynamicMetrics,
-            selectedLanguage = s.selectedLanguage,
-            selectedRegion = s.selectedRegion
+            dynamicMetrics = s.dynamicMetrics
         )
         saveManager.save(updatedSave, slot)
     }

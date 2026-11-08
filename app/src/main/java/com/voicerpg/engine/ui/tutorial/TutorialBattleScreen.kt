@@ -404,6 +404,7 @@ private fun TutorialCommandDock(
                     val isTargetSpell = (state.currentStep as? TutorialBattleStep.PracticeCast)?.let {
                         it.spellName.equals(spell.name, ignoreCase = true)
                     } ?: false
+                    val category = spell.category
 
                     Box(
                         modifier = Modifier
@@ -417,18 +418,38 @@ private fun TutorialCommandDock(
                             .clickable(enabled = !state.isAnimating) {
                                 onCastSpell(spell.name)
                             }
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .padding(horizontal = 7.dp, vertical = 4.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
+                            // Category Badge: Icon + Label (e.g. ⚔️ ATK, 💥 AOE, 💚 HEAL, 🛡️ DEF, ✨ MANA)
                             Box(
                                 modifier = Modifier
-                                    .size(6.dp)
-                                    .clip(CircleShape)
-                                    .background(spell.school.themeColor)
-                            )
+                                    .clip(RoundedCornerShape(3.dp))
+                                    .background(category.tagBg)
+                                    .border(0.5.dp, category.tagColor.copy(alpha = 0.7f), RoundedCornerShape(3.dp))
+                                    .padding(horizontal = 3.dp, vertical = 1.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    Text(
+                                        text = category.icon,
+                                        fontSize = 8.sp
+                                    )
+                                    Text(
+                                        text = category.label,
+                                        color = category.tagColor,
+                                        fontSize = 7.5.sp,
+                                        fontWeight = FontWeight.Black,
+                                        fontFamily = FontFamily.Monospace
+                                    )
+                                }
+                            }
+
                             Text(
                                 text = spell.name,
                                 color = if (isTargetSpell) LogosGold else Color.White,
@@ -447,7 +468,7 @@ private fun TutorialCommandDock(
                                 Text(
                                     text = "FREE",
                                     color = Color(0xFF81C784),
-                                    fontSize = 9.sp,
+                                    fontSize = 8.5.sp,
                                     fontWeight = FontWeight.Bold,
                                     fontFamily = FontFamily.Monospace
                                 )

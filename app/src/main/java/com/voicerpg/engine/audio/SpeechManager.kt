@@ -54,7 +54,7 @@ class SpeechManager(private val context: Context? = null) {
     val selectedRegion: StateFlow<String> = _selectedRegion.asStateFlow()
 
     fun setSelectedLocale(locale: String) {
-        _selectedLocale.value = locale
+        _selectedLocale.value = locale.lowercase().take(2)
     }
 
     fun setSelectedRegion(region: String) {
@@ -211,14 +211,7 @@ class SpeechManager(private val context: Context? = null) {
                 val langTag = if (region.isNotBlank()) {
                     "$locale-$region"
                 } else {
-                    when (locale) {
-                        "es" -> "es-ES"
-                        "de" -> "de-DE"
-                        "fr" -> "fr-FR"
-                        "pt" -> "pt-BR"
-                        "it" -> "it-IT"
-                        else -> "en-US"
-                    }
+                    locale
                 }
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, langTag)
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, langTag)

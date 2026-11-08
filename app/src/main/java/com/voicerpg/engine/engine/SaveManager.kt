@@ -256,10 +256,14 @@ class SaveManager(private val context: Context? = null) {
             spellIds = starterSpells.map { it.id }
         )
 
+        val trackDef = manifest.campaignTracks.firstOrNull { it.id == customization.campaignTrackId }
+        val initialSceneId = trackDef?.startSceneId?.ifBlank { null } ?: manifest.initialSceneId
+        val initialNodeId = trackDef?.startNodeId?.ifBlank { null } ?: manifest.initialNodeId
+
         val newSave = GameSaveData(
             player = customization,
-            currentSceneId = manifest.initialSceneId,
-            currentNodeId = manifest.initialNodeId,
+            currentSceneId = initialSceneId,
+            currentNodeId = initialNodeId,
             decisionsMade = emptyList(),
             partyStats = listOf(initialHeroStats),
             defeatedEncounters = emptyList(),

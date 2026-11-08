@@ -74,16 +74,19 @@ object StoryChoiceMatcher {
     /**
      * Scores all available choices against the spoken utterance and returns the best matching
      * choice. Allows loud, nerdy, spell-like roleplay sentences as well as casual phrasing.
+     * Supports matching in the player's active language by dynamically testing translated choice text.
      */
     fun matchChoice(
         utterance: String,
         choices: List<DialogueChoice>,
-        completedFlags: Map<String, Boolean> = emptyMap()
+        completedFlags: Map<String, Boolean> = emptyMap(),
+        locale: String = com.voicerpg.engine.localization.TranslationManager.currentLanguage.value
     ): DialogueChoice? {
         val lower = utterance.lowercase().trim()
+        val unaccentedLower = com.voicerpg.engine.model.CommandCatalog.stripDiacritics(lower)
         if (lower.isBlank() || choices.isEmpty()) return null
 
-        val tokens = lower.split(Regex("[^a-zA-Z0-9]+"))
+        val tokens = lower.split(Regex("[^\\p{L}0-9]+"))
             .map { it.trim() }
             .filter { it.length >= 2 && it !in STOP_WORDS }
 
@@ -92,13 +95,21 @@ object StoryChoiceMatcher {
             choice.completionFlag == null || completedFlags[choice.completionFlag] != true
         }.ifEmpty { choices }
 
+        val isNonEnglish = locale != "en" && locale.isNotBlank()
+
         val scoredChoices = validChoices.map { choice ->
             var score = 0
             val choiceTextLower = choice.text.lowercase()
+            val translatedChoiceText = if (isNonEnglish) {
+                com.voicerpg.engine.localization.TranslationManager.translate(choice.text, locale).lowercase()
+            } else ""
 
-            // 1. Direct whole-text or exact keyword match
+            // 1. Direct whole-text match (original or translated)
             if (lower.contains(choiceTextLower)) {
                 score += 150
+            }
+            if (isNonEnglish && translatedChoiceText.isNotBlank() && (lower.contains(translatedChoiceText) || unaccentedLower.contains(com.voicerpg.engine.model.CommandCatalog.stripDiacritics(translatedChoiceText)))) {
+                score += 160
             }
 
             for (keyword in choice.voiceKeywords) {
@@ -106,14 +117,26 @@ object StoryChoiceMatcher {
                 if (lower.contains(kwLower)) {
                     score += if (kwLower.contains(" ")) 120 else 100
                 }
+                if (isNonEnglish) {
+                    val transKw = com.voicerpg.engine.localization.TranslationManager.translate(keyword, locale).lowercase()
+                    if (transKw.isNotBlank() && (lower.contains(transKw) || unaccentedLower.contains(com.voicerpg.engine.model.CommandCatalog.stripDiacritics(transKw)))) {
+                        score += if (transKw.contains(" ")) 130 else 110
+                    }
+                }
             }
 
-            val choiceWords = choiceTextLower.split(Regex("[^a-zA-Z0-9]+"))
+            val choiceWords = choiceTextLower.split(Regex("[^\\p{L}0-9]+"))
                 .map { it.trim() }
                 .filter { it.length >= 2 && it !in STOP_WORDS }
 
+            val translatedWords = if (isNonEnglish && translatedChoiceText.isNotBlank()) {
+                translatedChoiceText.split(Regex("[^\\p{L}0-9]+"))
+                    .map { it.trim() }
+                    .filter { it.length >= 2 }
+            } else emptyList()
+
             val keywordWords = choice.voiceKeywords.flatMap { kw ->
-                kw.lowercase().split(Regex("[^a-zA-Z0-9]+"))
+                kw.lowercase().split(Regex("[^\\p{L}0-9]+"))
             }.filter { it.length >= 2 && it !in STOP_WORDS }
 
             // 2. Token overlap with choice text and keywords
@@ -155,26 +178,26 @@ object StoryChoiceMatcher {
     /**
      * Determines whether an utterance represents a progression command when in a non-branching node.
      */
-    fun isProgressionUtterance(utterance: String): Boolean {
+    fun isProgressionUtterance(
+        utterance: String,
+        locale: String = com.voicerpg.engine.localization.TranslationManager.currentLanguage.value
+    ): Boolean {
         val lower = utterance.lowercase().trim()
+        val unaccentedLower = com.voicerpg.engine.model.CommandCatalog.stripDiacritics(lower)
         if (lower.isBlank()) return false
 
-        val progressionPhrases = listOf(
-            "next", "continue", "proceed", "go on", "forward", "onward", "advance",
-            "ahead", "let's go", "lets go", "lead on", "lead the way", "tell me more",
-            "what happened", "and then", "yes", "okay", "alright", "sure", "step forward",
-            "enter", "listen", "keep going", "glory awaits", "march on", "press forward",
-            "venture forth", "let us go", "let us proceed", "we ride", "to battle",
-            "into the dark", "let's do it", "ready", "i am ready", "we are ready",
-            "commence", "start", "agreed", "understood", "as you say", "i will",
-            "we will", "indeed", "speak on", "i am listening", "what lies ahead",
-            "very well", "make haste", "into the fray", "fight", "attack", "strike"
-        )
+        val catalog = com.voicerpg.engine.content.GameContent.commandCatalogFor(locale)
+        val defaultCatalog = com.voicerpg.engine.content.GameContent.DEFAULT_COMMAND_CATALOG
+        val progressionPhrases = (catalog.progressionPhrases + defaultCatalog.progressionPhrases).distinct()
 
-        if (progressionPhrases.any { lower.contains(it) }) return true
+        if (progressionPhrases.any { phrase ->
+            val clean = phrase.lowercase().trim()
+            val unacc = com.voicerpg.engine.model.CommandCatalog.stripDiacritics(clean)
+            clean.isNotBlank() && (lower.contains(clean) || unaccentedLower.contains(unacc))
+        }) return true
 
         // Roleplay utterances in a progression node (e.g. "We must be careful", "Onward, friends")
-        val words = lower.split(Regex("[^a-zA-Z0-9]+")).filter { it.isNotBlank() }
+        val words = lower.split(Regex("[^\\p{L}0-9]+")).filter { it.isNotBlank() }
         val isNonMetaRoleplay = words.size >= 2 && !lower.contains("options") && !lower.contains("settings") &&
                 !lower.contains("status") && !lower.contains("help") && !lower.contains("menu")
 
@@ -184,37 +207,36 @@ object StoryChoiceMatcher {
     /**
      * Determines whether an utterance in the Battle Victory/Defeat screen means "Commence Story" or "Restart Battle".
      */
-    fun parseBattleConclusionIntent(utterance: String): ConclusionAction {
+    fun parseBattleConclusionIntent(
+        utterance: String,
+        locale: String = com.voicerpg.engine.localization.TranslationManager.currentLanguage.value
+    ): ConclusionAction {
         val lower = utterance.lowercase().trim()
+        val unaccentedLower = com.voicerpg.engine.model.CommandCatalog.stripDiacritics(lower)
         if (lower.isBlank()) return ConclusionAction.NONE
 
-        val continueKeywords = listOf(
-            "commence story", "commence", "story", "continue", "onward", "proceed", "advance",
-            "next", "glory", "glory awaits", "forward", "press on", "victory", "venture forth",
-            "let's go", "leave", "done", "journey", "march", "we ride", "head out", "explore",
-            "continue story", "next chapter", "march onward", "press forward", "lead on",
-            "to the next", "venture onward", "awaken"
-        )
+        val catalog = com.voicerpg.engine.content.GameContent.commandCatalogFor(locale)
+        val defaultCatalog = com.voicerpg.engine.content.GameContent.DEFAULT_COMMAND_CATALOG
 
-        val restartKeywords = listOf(
-            "restart battle", "restart", "rematch", "retry", "fight again", "again", "redo",
-            "once more", "run it back", "try again", "arise", "rebattle", "face them again",
-            "challenge again", "not dead yet", "rise again", "strike again", "re-battle",
-            "one more time", "restart fight", "reset"
-        )
+        val continueKeywords = (catalog.continueStoryPhrases + defaultCatalog.continueStoryPhrases).distinct()
+        val restartKeywords = (catalog.restartBattlePhrases + defaultCatalog.restartBattlePhrases).distinct()
 
         var continueScore = 0
         var restartScore = 0
 
         for (kw in continueKeywords) {
-            if (lower.contains(kw)) {
-                continueScore += if (kw.contains(" ")) 100 else 40
+            val clean = kw.lowercase().trim()
+            val unacc = com.voicerpg.engine.model.CommandCatalog.stripDiacritics(clean)
+            if (clean.isNotBlank() && (lower.contains(clean) || unaccentedLower.contains(unacc))) {
+                continueScore += if (clean.contains(" ")) 100 else 40
             }
         }
 
         for (kw in restartKeywords) {
-            if (lower.contains(kw)) {
-                restartScore += if (kw.contains(" ")) 100 else 40
+            val clean = kw.lowercase().trim()
+            val unacc = com.voicerpg.engine.model.CommandCatalog.stripDiacritics(clean)
+            if (clean.isNotBlank() && (lower.contains(clean) || unaccentedLower.contains(unacc))) {
+                restartScore += if (clean.contains(" ")) 100 else 40
             }
         }
 
