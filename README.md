@@ -137,7 +137,7 @@ Echoes of the Logos utilizes the engine's data-driven asset pipeline:
 
 ## 3. Multilingual Speech Recognition & Dialect Bundling
 
-Through [`BuiltInDictionaries.kt`](file:///home/todd/Documents/GitHub/echoes-of-logos/app/src/main/java/com/voicerpg/engine/localization/BuiltInDictionaries.kt), localized speech utterances are mapped directly to engine action IDs:
+Through [`BuiltInDictionaries.kt`](app/src/main/java/com/voicerpg/engine/localization/BuiltInDictionaries.kt), localized speech utterances are mapped directly to engine action IDs:
 - In Spanish, saying *"atacar"* or *"bola de fuego"* maps directly to `ATTACK` and `fireball`.
 - In German, saying *"heilen"* or *"feuerball"* triggers instant party heals and pyromancy.
 
@@ -145,7 +145,7 @@ Through [`BuiltInDictionaries.kt`](file:///home/todd/Documents/GitHub/echoes-of-
 
 ## 4. Calibrated Elemental Magic Resonance Formulas
 
-Incantation phrases are calibrated in [`SpellChantPresets.kt`](file:///home/todd/Documents/GitHub/echoes-of-logos/app/src/main/java/com/voicerpg/engine/engine/SpellChantPresets.kt) to ensure equitable scoring across all languages:
+Incantation phrases are calibrated in [`SpellChantPresets.kt`](app/src/main/java/com/voicerpg/engine/engine/SpellChantPresets.kt) to ensure equitable scoring across all languages:
 - **Spanish MYTHIC:** 7-word phrases with `"por el poder"` achieve 100%–150% resonance.
 - **German MYTHIC:** 7-word phrases with `"durch die macht"` guarantee consistent tier scaling without accidental transcendental overshoot.
 
@@ -153,7 +153,7 @@ Incantation phrases are calibrated in [`SpellChantPresets.kt`](file:///home/todd
 
 ## 5. Interactive Chronicle & Backlog Architecture
 
-The narrative backlog in [`StoryScreen.kt`](file:///home/todd/Documents/GitHub/echoes-of-logos/app/src/main/java/com/voicerpg/engine/ui/story/StoryScreen.kt) maintains an in-memory chronological journal:
+The narrative backlog in [`StoryScreen.kt`](app/src/main/java/com/voicerpg/engine/ui/story/StoryScreen.kt) maintains an in-memory chronological journal:
 - Records key narrative decisions, companion campfire conversations, and boss defeat milestones.
 - Automatically generates recap cards formatted for quick review.
 
