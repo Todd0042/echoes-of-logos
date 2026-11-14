@@ -3,6 +3,7 @@ package com.voicerpg.engine.ui.combat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,19 +32,24 @@ fun EnemyFlank(
     val isLargeHorde = enemies.size > 3
 
     if (!isLargeHorde) {
-        // Standard Classic Layout (1 to 3 enemies)
+        // Diagonal SNES-style staggered enemy formation
         Column(
-            modifier = modifier.padding(end = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = modifier.padding(end = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.End
         ) {
-            enemies.forEach { enemy ->
+            enemies.forEachIndexed { index, enemy ->
+                val depthRatio = if (enemies.size <= 1) 0.5f else index.toFloat() / (enemies.size - 1)
+                val depthScale = 0.92f + depthRatio * 0.14f
+                val staggerX = (-index * 10).dp
                 EnemyCard(
                     enemy = enemy,
                     isCompact = false,
+                    depthScale = depthScale,
                     onSelectEnemy = onSelectEnemy,
                     onPositionEnemy = onPositionEnemy,
-                    arenaCoordinates = arenaCoordinates
+                    arenaCoordinates = arenaCoordinates,
+                    modifier = Modifier.offset(x = staggerX)
                 )
             }
         }
@@ -63,10 +69,12 @@ fun EnemyFlank(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                frontRow.forEach { enemy ->
+                frontRow.forEachIndexed { index, enemy ->
+                    val depthScale = 0.96f + index * 0.05f
                     EnemyCard(
                         enemy = enemy,
                         isCompact = true,
+                        depthScale = depthScale,
                         onSelectEnemy = onSelectEnemy,
                         onPositionEnemy = onPositionEnemy,
                         arenaCoordinates = arenaCoordinates
@@ -79,10 +87,12 @@ fun EnemyFlank(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                backRow.forEach { enemy ->
+                backRow.forEachIndexed { index, enemy ->
+                    val depthScale = 0.88f + index * 0.04f
                     EnemyCard(
                         enemy = enemy,
                         isCompact = true,
+                        depthScale = depthScale,
                         onSelectEnemy = onSelectEnemy,
                         onPositionEnemy = onPositionEnemy,
                         arenaCoordinates = arenaCoordinates
@@ -97,9 +107,11 @@ fun EnemyFlank(
 private fun EnemyCard(
     enemy: Enemy,
     isCompact: Boolean,
+    depthScale: Float = 1f,
     onSelectEnemy: (Enemy) -> Unit,
     onPositionEnemy: ((String, Offset) -> Unit)? = null,
-    arenaCoordinates: LayoutCoordinates? = null
+    arenaCoordinates: LayoutCoordinates? = null,
+    modifier: Modifier = Modifier
 ) {
     val stance = when {
         !enemy.isAlive -> CharacterStance.DEAD
@@ -136,7 +148,8 @@ private fun EnemyCard(
         stance = stance,
         isFlippedHorizontally = true,
         pixelSize = if (isCompact) 1.65.dp else 2.2.dp,
+        depthScale = depthScale,
         onClick = if (enemy.isAlive) { { onSelectEnemy(enemy) } } else null,
-        modifier = Modifier.onGloballyPositioned { cardCoords = it }
+        modifier = modifier.onGloballyPositioned { cardCoords = it }
     )
 }

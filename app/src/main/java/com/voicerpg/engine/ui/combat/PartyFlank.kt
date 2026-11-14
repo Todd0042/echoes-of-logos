@@ -3,6 +3,7 @@ package com.voicerpg.engine.ui.combat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,20 +31,25 @@ fun PartyFlank(
     modifier: Modifier = Modifier
 ) {
     if (party.size <= 3) {
-        // Standard 1-column layout for small parties
+        // Diagonal SNES-style staggered column anchored to the floor plane
         Column(
-            modifier = modifier.padding(start = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = modifier.padding(start = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            party.forEach { member ->
+            party.forEachIndexed { index, member ->
+                val depthRatio = if (party.size <= 1) 0.5f else index.toFloat() / (party.size - 1)
+                val depthScale = 0.92f + depthRatio * 0.14f
+                val staggerX = (index * 10).dp
                 PartyFlankMemberItem(
                     member = member,
                     isActiveTurn = member.id == activePartyMemberId,
                     scaledPixelSize = 2.0.dp,
+                    depthScale = depthScale,
                     arenaCoordinates = arenaCoordinates,
                     onSelectHero = onSelectHero,
-                    onPositionHero = onPositionHero
+                    onPositionHero = onPositionHero,
+                    modifier = Modifier.offset(x = staggerX)
                 )
             }
         }
@@ -90,11 +96,13 @@ fun PartyFlank(
                     verticalArrangement = Arrangement.spacedBy(verticalSpacing),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    backRowMembers.forEach { member ->
+                    backRowMembers.forEachIndexed { index, member ->
+                        val depthScale = 0.88f + index * 0.05f
                         PartyFlankMemberItem(
                             member = member,
                             isActiveTurn = member.id == activePartyMemberId,
                             scaledPixelSize = scaledPixelSize,
+                            depthScale = depthScale,
                             arenaCoordinates = arenaCoordinates,
                             onSelectHero = onSelectHero,
                             onPositionHero = onPositionHero
@@ -109,11 +117,13 @@ fun PartyFlank(
                     verticalArrangement = Arrangement.spacedBy(frontVerticalSpacing),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    frontRowMembers.forEach { member ->
+                    frontRowMembers.forEachIndexed { index, member ->
+                        val depthScale = 0.98f + index * 0.06f
                         PartyFlankMemberItem(
                             member = member,
                             isActiveTurn = member.id == activePartyMemberId,
                             scaledPixelSize = scaledPixelSize,
+                            depthScale = depthScale,
                             arenaCoordinates = arenaCoordinates,
                             onSelectHero = onSelectHero,
                             onPositionHero = onPositionHero
@@ -130,9 +140,11 @@ private fun PartyFlankMemberItem(
     member: PartyMember,
     isActiveTurn: Boolean,
     scaledPixelSize: Dp,
+    depthScale: Float = 1f,
     arenaCoordinates: LayoutCoordinates?,
     onSelectHero: (PartyMember) -> Unit,
-    onPositionHero: ((String, Offset) -> Unit)?
+    onPositionHero: ((String, Offset) -> Unit)?,
+    modifier: Modifier = Modifier
 ) {
     var cardCoords by remember { mutableStateOf<LayoutCoordinates?>(null) }
 
@@ -165,7 +177,8 @@ private fun PartyFlankMemberItem(
         isGhost = member.isGhost,
         spriteAlpha = member.spriteAlpha,
         pixelSize = scaledPixelSize,
+        depthScale = depthScale,
         onClick = { onSelectHero(member) },
-        modifier = Modifier.onGloballyPositioned { cardCoords = it }
+        modifier = modifier.onGloballyPositioned { cardCoords = it }
     )
 }

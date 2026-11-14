@@ -2,10 +2,12 @@ package com.voicerpg.engine.ui.sprites
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -65,6 +67,7 @@ fun PixelCharacterView(
     isGhost: Boolean = false,
     spriteAlpha: Float? = null,
     pixelSize: Dp = 2.2.dp,
+    depthScale: Float = 1f,
     onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -109,17 +112,27 @@ fun PixelCharacterView(
 
     val (matrix, palette) = PixelSpriteData.getPixelMatrix(characterId, currentFrame)
 
-    val stepForwardOffset = when {
+    val targetStepOffset = when {
         isDead -> 0.dp
-        stance == CharacterStance.CASTING -> if (isFlippedHorizontally) -14.dp else 14.dp
+        stance == CharacterStance.CASTING -> if (isFlippedHorizontally) -16.dp else 16.dp
         isActiveTurn || isTurnReady -> if (isFlippedHorizontally) -8.dp else 8.dp
         stance == CharacterStance.DAMAGED -> if (isFlippedHorizontally) 8.dp else -8.dp
         else -> 0.dp
     }
+    val stepForwardOffset by animateDpAsState(
+        targetValue = targetStepOffset,
+        animationSpec = tween(durationMillis = 180, easing = FastOutSlowInEasing),
+        label = "step_offset_$characterId"
+    )
 
     Column(
         modifier = modifier
             .offset(x = stepForwardOffset)
+            .graphicsLayer {
+                scaleX = depthScale
+                scaleY = depthScale
+                transformOrigin = TransformOrigin(0.5f, 1.0f)
+            }
             .clickable(enabled = !isDead && onClick != null) { onClick?.invoke() }
             .padding(horizontal = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -221,11 +234,22 @@ fun PixelCharacterView(
                         .background(if (isTurnReady) LogosGold else Color(0xFFFF9800))
                 )
             }
+
+            Text(
+                text = "$currentHp/$maxHp",
+                color = Color(0xFFD0D8DC),
+                fontSize = 7.5.sp,
+                fontFamily = FontFamily.Monospace,
+                modifier = Modifier.padding(top = 1.dp)
+            )
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(3.dp))
 
-        // Pixel Art Canvas (Lying down on the ground if dead)
+        // Pixel Art Canvas anchored to a perspective ground contact shadow
+        val spriteWidth = pixelSize * (matrix.firstOrNull()?.length ?: 12)
+        val spriteHeight = pixelSize * matrix.size
+
         Box(
             modifier = Modifier
                 .padding(top = if (isDead) 16.dp else 0.dp)
@@ -240,21 +264,50 @@ fun PixelCharacterView(
                 },
             contentAlignment = Alignment.BottomCenter
         ) {
-            // Glowing aura on ground for active hero
-            if (!isDead && (isActiveTurn || isTurnReady)) {
-                Box(
-                    modifier = Modifier
-                        .width(44.dp)
-                        .height(10.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(LogosGold.copy(alpha = 0.35f))
+            // Ground contact shadow + turn readiness floor ring locked directly under the soles
+            Canvas(
+                modifier = Modifier
+                    .width(spriteWidth + 18.dp)
+                    .height(14.dp)
+                    .offset(y = 4.dp)
+            ) {
+                val shadowW = size.width
+                val shadowH = size.height
+                drawOval(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xB8000000),
+                            Color(0x66000000),
+                            Color.Transparent
+                        ),
+                        center = Offset(shadowW / 2f, shadowH / 2f),
+                        radius = shadowW * 0.5f
+                    ),
+                    topLeft = Offset.Zero,
+                    size = Size(shadowW, shadowH)
                 )
+                if (!isDead && (isActiveTurn || isTurnReady)) {
+                    val ringColor = if (isActiveTurn) LogosGold else Color(0xFFFFB74D)
+                    drawOval(
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                ringColor.copy(alpha = 0.45f),
+                                ringColor.copy(alpha = 0.16f),
+                                Color.Transparent
+                            ),
+                            center = Offset(shadowW / 2f, shadowH / 2f),
+                            radius = shadowW * 0.52f
+                        ),
+                        topLeft = Offset(-2f, -1f),
+                        size = Size(shadowW + 4f, shadowH + 2f)
+                    )
+                }
             }
 
             Canvas(
                 modifier = Modifier.size(
-                    width = pixelSize * (matrix.firstOrNull()?.length ?: 12),
-                    height = pixelSize * matrix.size
+                    width = spriteWidth,
+                    height = spriteHeight
                 )
             ) {
                 val pPx = pixelSize.toPx()
@@ -268,7 +321,7 @@ fun PixelCharacterView(
                             val color = palette[char] ?: Color.Magenta
                             val targetCol = if (isFlippedHorizontally) (numCols - 1 - col) else col
                             drawRect(
-                                color = if (stance == CharacterStance.DAMAGED) Color.Red else color,
+                                color = if (stance == CharacterStance.DAMAGED) Color(0xFFFF5252) else color,
                                 topLeft = Offset(targetCol * pPx, row * pPx),
                                 size = Size(pPx, pPx)
                             )
@@ -276,16 +329,6 @@ fun PixelCharacterView(
                     }
                 }
             }
-        }
-
-        if (!isDead) {
-            Text(
-                text = "$currentHp/$maxHp",
-                color = Color(0xFFB0BEC5),
-                fontSize = 8.sp,
-                fontFamily = FontFamily.Monospace,
-                modifier = Modifier.padding(top = 2.dp)
-            )
         }
     }
 }

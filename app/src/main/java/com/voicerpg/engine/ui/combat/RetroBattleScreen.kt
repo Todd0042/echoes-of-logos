@@ -48,6 +48,7 @@ import com.voicerpg.engine.content.GameContent
 import com.voicerpg.engine.model.CombatPhase
 import com.voicerpg.engine.model.FloatingCombatText
 import com.voicerpg.engine.ui.environment.BattleEnvironmentCanvas
+import com.voicerpg.engine.ui.environment.BattleForegroundOverlay
 import com.voicerpg.engine.ui.theme.LogosGold
 import com.voicerpg.engine.ui.theme.LogosGlow
 import com.voicerpg.engine.ui.theme.RetroBlack
@@ -190,7 +191,7 @@ fun RetroBattleScreen(
                             arenaCoordinates = coords
                         }
                 ) {
-                    // 4-Frame Living Environmental Background Canvas
+                    // SNES BG3/BG2 Layer: Backdrop + Horizon Mist + Mode-7 Perspective Floor
                     BattleEnvironmentCanvas(
                         environment = state.currentEnvironment,
                         environmentId = state.currentEnvironmentId,
@@ -200,20 +201,13 @@ fun RetroBattleScreen(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // 25% black contrast overlay between background and sprites
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.25f))
-                    )
-
-                    // Battle Grid
+                    // SNES OBJ Layer: Combatants anchored onto the floor stage
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(vertical = 12.dp),
+                            .padding(top = 44.dp, bottom = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.Bottom
                     ) {
                         // Left Flank (Heroes / Party)
                         PartyFlank(
@@ -238,6 +232,13 @@ fun RetroBattleScreen(
                             modifier = Modifier.weight(1f)
                         )
                     }
+
+                    // SNES BG1 + Color Math Foreground Layer (silhouettes, light shafts & vignette)
+                    BattleForegroundOverlay(
+                        environment = state.currentEnvironment,
+                        environmentId = state.currentEnvironmentId,
+                        modifier = Modifier.fillMaxSize()
+                    )
 
                     // Spell Projectiles Layer
                     SpellVfxCanvas(

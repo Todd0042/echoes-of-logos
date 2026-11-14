@@ -60,268 +60,232 @@ object SpellChantPresets {
         )
     }
 
-    fun handcraftedChantFor(spellId: String, tier: ResonanceTier): String? = when (spellId) {
-            "fireball" -> when (tier) {
-                ResonanceTier.BASIC -> "Fireball archer"
-                ResonanceTier.ADEPT -> "Cast fireball at archer"
-                ResonanceTier.MASTER -> "Spirits of cinder burn archer"
-                ResonanceTier.MYTHIC -> "Arise blazing inferno consume the archer now!"
-                ResonanceTier.TRANSCENDENTAL -> "O primordial flame of the solar core descend from the heavens and reduce that wretched archer to eternal ash and inferno!"
-            }
-            "frost_spike" -> when (tier) {
-                ResonanceTier.BASIC -> "Frost orc"
-                ResonanceTier.ADEPT -> "Cast frost spike orc"
-                ResonanceTier.MASTER -> "Spirits of ice freeze orc"
-                ResonanceTier.MYTHIC -> "Arise glacial blizzard freeze the orc now!"
-                ResonanceTier.TRANSCENDENTAL -> "O celestial winter of absolute zero arise from the void and encase that monstrous orc in eternal glacial frostbite and crystal shards!"
-            }
-            "chain_lightning" -> when (tier) {
-                ResonanceTier.BASIC -> "Lightning all"
-                ResonanceTier.ADEPT -> "Cast chain lightning all"
-                ResonanceTier.MASTER -> "Spirits of tempest shock all"
-                ResonanceTier.MYTHIC -> "Arise tempest lightning shock all enemies now!"
-                ResonanceTier.TRANSCENDENTAL -> "O primordial tempest of celestial wrath awaken and discharge roaring thunderclaps to strike all enemies with galvanic lightning and plasma!"
-            }
-            "holy_smite" -> when (tier) {
-                ResonanceTier.BASIC -> "Smite heretic"
-                ResonanceTier.ADEPT -> "Cast holy smite heretic"
-                ResonanceTier.MASTER -> "Spirits of dawn smite enemy"
-                ResonanceTier.MYTHIC -> "Arise celestial dawn smite the wicked enemy!"
-                ResonanceTier.TRANSCENDENTAL -> "O celestial seraph of the sacred dawn descend from the heavens and unleash divine radiance to smite the abominable darkness unto purity!"
-            }
-            "lay_on_hands" -> when (tier) {
-                ResonanceTier.BASIC -> "Mend Cedric"
-                ResonanceTier.ADEPT -> "Mend wounds of Cedric"
-                ResonanceTier.MASTER -> "Spirits of grace mend Cedric"
-                ResonanceTier.MYTHIC -> "Arise celestial grace mend Cedric with healing!"
-                ResonanceTier.TRANSCENDENTAL -> "O primordial celestial light of pure dawn descend from the heavens to bless mend and cure our valiant guardian Cedric with restorative aegis!"
-            }
-            "shield_wall" -> when (tier) {
-                ResonanceTier.BASIC -> "Raise shield"
-                ResonanceTier.ADEPT -> "Raise shield against foes"
-                ResonanceTier.MASTER -> "Spirits shield our line"
-                ResonanceTier.MYTHIC -> "Arise steel vanguard shield our line now!"
-                ResonanceTier.TRANSCENDENTAL -> "By the power of celestial steel and unyielding vanguard valor arise and smash the foe to shield all allies with an impenetrable aegis!"
-            }
-            "soothing_rain" -> when (tier) {
-                ResonanceTier.BASIC -> "Rain party"
-                ResonanceTier.ADEPT -> "Send gentle rain party"
-                ResonanceTier.MASTER -> "Spirits of grove rain party"
-                ResonanceTier.MYTHIC -> "Arise restorative grove rain upon the party!"
-                ResonanceTier.TRANSCENDENTAL -> "O celestial grove of sacred dawn hearken unto our prayer and unleash soothing rain to mend and rejuvenate the entire party with divine grace!"
-            }
-            "briar_entangle" -> when (tier) {
-                ResonanceTier.BASIC -> "Briar archer"
-                ResonanceTier.ADEPT -> "Cast great briar archer"
-                ResonanceTier.MASTER -> "Spirits of briar thorns archer"
-                ResonanceTier.MYTHIC -> "Arise thorny briar vines ensnare that archer!"
-                ResonanceTier.TRANSCENDENTAL -> "O ancient spirits of the primordial grove awaken from the earth and ensnare that vile archer within crushing briar vines and thorns!"
-            }
-            "shadow_strike" -> when (tier) {
-                ResonanceTier.BASIC -> "Shadow shaman"
-                ResonanceTier.ADEPT -> "Cast swift shadow shaman"
-                ResonanceTier.MASTER -> "Spirits of umbra strike shaman"
-                ResonanceTier.MYTHIC -> "Arise abyssal umbra strike the shaman now!"
-                ResonanceTier.TRANSCENDENTAL -> "O primordial abyss of the endless umbra awaken from the void and cloak my blade to strike the treacherous shaman into eternal silence!"
-            }
-            "venom_flurry" -> when (tier) {
-                ResonanceTier.BASIC -> "Venom all"
-                ResonanceTier.ADEPT -> "Cast swift venom all"
-                ResonanceTier.MASTER -> "Spirits of venom drench all"
-                ResonanceTier.MYTHIC -> "Arise abyssal venom surge drench all foes now!"
-                ResonanceTier.TRANSCENDENTAL -> "O dark spirits of the void awaken and unleash a drenching flurry of venomous serpents to engulf all enemies in lethal poison!"
-            }
-            "verdant_cataclysm" -> when (tier) {
-                ResonanceTier.BASIC -> "Grove erupt all"
-                ResonanceTier.ADEPT -> "Cast grove-warcry all"
-                ResonanceTier.MASTER -> "Spirits of the grove surge and awaken!"
-                ResonanceTier.MYTHIC -> "Arise ancient grove cataclysm crush all enemies!"
-                ResonanceTier.TRANSCENDENTAL -> "O ancient spirits of the deep earth awaken and unleash the full fury of the grove-warcry to crush all foes within an erupting cataclysm of vines and stone!"
-            }
-            "umbral_siphon" -> when (tier) {
-                ResonanceTier.BASIC -> "Mend Zephyr"
-                ResonanceTier.ADEPT -> "Siphon Zephyr"
-                ResonanceTier.MASTER -> "Spirits of umbra siphon Zephyr"
-                ResonanceTier.MYTHIC -> "Arise abyssal siphon restore Zephyr now!"
-                ResonanceTier.TRANSCENDENTAL -> "O primordial abyss of the endless umbra awaken and siphon a torrent of restorative essence to mend and rejuvenate Zephyr with eldritch healing!"
-            }
-            "ca_tremendous_strike" -> when (tier) {
-                ResonanceTier.BASIC -> "Tremendous blow!"
-                ResonanceTier.ADEPT -> "Hit them tremendous blow!"
-                ResonanceTier.MASTER -> "Unleash tremendous strike upon enemies!"
-                ResonanceTier.MYTHIC -> "Arise tremendous strike crush all enemies now!"
-                ResonanceTier.TRANSCENDENTAL -> "By the power of celestial steel arise and crush all enemies with a tremendous winning strike!"
-            }
-            "ca_art_of_the_deal" -> when (tier) {
-                ResonanceTier.BASIC -> "The deal!"
-                ResonanceTier.ADEPT -> "Impose the deal"
-                ResonanceTier.MASTER -> "Unleash the golden deal now!"
-                ResonanceTier.MYTHIC -> "Arise divine art of golden liberty!"
-                ResonanceTier.TRANSCENDENTAL -> "By the power of celestial liberty arise and negotiate the golden art of the deal for total victory!"
-            }
-            "ca_obama_did_it_first" -> when (tier) {
-                ResonanceTier.BASIC -> "Blame Obama!"
-                ResonanceTier.ADEPT -> "Search the ancient archives"
-                ResonanceTier.MASTER -> "Unleash shadow Obama records now!"
-                ResonanceTier.MYTHIC -> "Arise abyssal shadows and expose Obama!"
-                ResonanceTier.TRANSCENDENTAL -> "By the power of celestial truth descend from the void to expose the shadow archives of Obama and shatter all hypocrisy!"
-            }
-            "ca_build_the_wall" -> when (tier) {
-                ResonanceTier.BASIC -> "Build wall!"
-                ResonanceTier.ADEPT -> "Build strong wall now"
-                ResonanceTier.MASTER -> "Unleash the steel wall now!"
-                ResonanceTier.MYTHIC -> "Arise steel vanguard build impenetrable wall!"
-                ResonanceTier.TRANSCENDENTAL -> "By the power of celestial steel and vanguard valor arise and fortify the great golden wall to shield all patriots!"
-            }
-            "ca_rally_patriots" -> when (tier) {
-                ResonanceTier.BASIC -> "Rally now!"
-                ResonanceTier.ADEPT -> "Rally all allies now"
-                ResonanceTier.MASTER -> "Unleash the golden rally now!"
-                ResonanceTier.MYTHIC -> "Arise celestial dawn rally the patriots!"
-                ResonanceTier.TRANSCENDENTAL -> "By the power of celestial freedom arise and inspire the sacred rally of patriots to bless and mend all champions!"
-            }
-            "ca_presidential_veto" -> when (tier) {
-                ResonanceTier.BASIC -> "Presidential veto!"
-                ResonanceTier.ADEPT -> "I issue a presidential veto now!"
-                ResonanceTier.MASTER -> "Unleash presidential veto upon corrupt spending!"
-                ResonanceTier.MYTHIC -> "Arise executive authority, shut down the opposition with a presidential veto!"
-                ResonanceTier.TRANSCENDENTAL -> "By absolute constitutional executive authority, I hereby issue a presidential veto to crush bureaucratic overreach and stun all enemies into silence!"
-            }
-            "ca_executive_action" -> when (tier) {
-                ResonanceTier.BASIC -> "Executive action!"
-                ResonanceTier.ADEPT -> "Sign the executive action now!"
-                ResonanceTier.MASTER -> "Unleash swift executive action across the swamp!"
-                ResonanceTier.MYTHIC -> "Arise presidential power, sign executive action against all opposition!"
-                ResonanceTier.TRANSCENDENTAL -> "By the sacred authority of the Constitution, I enact sweeping executive action to purge corruption and strike all foes across the nation!"
-            }
-            "ca_tired_of_winning" -> when (tier) {
-                ResonanceTier.BASIC -> "Tired of winning!"
-                ResonanceTier.ADEPT -> "We are never tired of winning!"
-                ResonanceTier.MASTER -> "Take a breath, because we are winning so much!"
-                ResonanceTier.MYTHIC -> "Arise glorious momentum, tired of winning restores our energy!"
-                ResonanceTier.TRANSCENDENTAL -> "Folks, they said we would get tired of winning, but we will never stop winning as our sacred spirit and mana are fully restored!"
-            }
-            "ca_marco_filibuster" -> when (tier) {
-                ResonanceTier.BASIC -> "Filibuster strike!"
-                ResonanceTier.ADEPT -> "Deliver the filibuster strike now!"
-                ResonanceTier.MASTER -> "Deliver an uninterrupted filibuster strike on the Senate floor!"
-                ResonanceTier.MYTHIC -> "Arise diplomatic resolve, filibuster strike to freeze the opposition!"
-                ResonanceTier.TRANSCENDENTAL -> "By the sacred traditions of the United States Senate, I deliver an unstoppable filibuster strike to stun all adversaries into total submission!"
-            }
-            "ca_marco_sanction" -> when (tier) {
-                ResonanceTier.BASIC -> "Maximum sanctions!"
-                ResonanceTier.ADEPT -> "Impose maximum sanctions now!"
-                ResonanceTier.MASTER -> "Freeze all foreign assets with maximum sanctions!"
-                ResonanceTier.MYTHIC -> "Arise diplomatic retribution, maximum sanctions against every adversary!"
-                ResonanceTier.TRANSCENDENTAL -> "By full international statutory authority, freeze all foreign assets and bombard all hostile regimes with maximum sanctions of crippling power!"
-            }
-            "ca_marco_hydrate" -> when (tier) {
-                ResonanceTier.BASIC -> "Water sip!"
-                ResonanceTier.ADEPT -> "Take a refreshing water sip!"
-                ResonanceTier.MASTER -> "Water sip restores the spirit and party health!"
-                ResonanceTier.MYTHIC -> "Arise refreshing clarity, water sip heals all allies with holy resolve!"
-                ResonanceTier.TRANSCENDENTAL -> "With laser diplomatic focus and pure crystalline hydration, take a historic water sip to bless, heal, and revitalize our entire fellowship!"
-            }
-            "ca_marco_tariff" -> when (tier) {
-                ResonanceTier.BASIC -> "Tariff dividend!"
-                ResonanceTier.ADEPT -> "Levy the tariff dividend now!"
-                ResonanceTier.MASTER -> "Collect the tariff dividend from unfair trade partners!"
-                ResonanceTier.MYTHIC -> "Arise domestic prosperity, tariff dividend recovers national energy!"
-                ResonanceTier.TRANSCENDENTAL -> "By strategic economic sovereignty, levy massive tariffs on cheating foreign adversaries and harvest the rich tariff dividend to restore our team's mana!"
-            }
-            "ca_vance_debate" -> when (tier) {
-                ResonanceTier.BASIC -> "Debate dismantle!"
-                ResonanceTier.ADEPT -> "Debate dismantle on live television!"
-                ResonanceTier.MASTER -> "Debate dismantle opponent rhetoric with calm facts!"
-                ResonanceTier.MYTHIC -> "Arise heartland eloquence, debate dismantle the corrupt moderators!"
-                ResonanceTier.TRANSCENDENTAL -> "With devastating poise and razor-sharp intellect, debate dismantle the entire hostile media apparatus and stun our opponents on national television!"
-            }
-            "ca_vance_slam" -> when (tier) {
-                ResonanceTier.BASIC -> "Appalachian slam!"
-                ResonanceTier.ADEPT -> "Deliver the Appalachian slam now!"
-                ResonanceTier.MASTER -> "Unleash the Appalachian slam of industrial grit!"
-                ResonanceTier.MYTHIC -> "Arise steel heartland fury, Appalachian slam across all enemies!"
-                ResonanceTier.TRANSCENDENTAL -> "From the iron hills and manufacturing heartland, unleash the thunderous Appalachian slam to pulverize every corrupt obstacle across the field!"
-            }
-            "ca_vance_fortitude" -> when (tier) {
-                ResonanceTier.BASIC -> "Hillbilly fortitude!"
-                ResonanceTier.ADEPT -> "Channel hillbilly fortitude now!"
-                ResonanceTier.MASTER -> "Channel generational hillbilly fortitude to mend our ranks!"
-                ResonanceTier.MYTHIC -> "Arise family resilience, hillbilly fortitude restores the party!"
-                ResonanceTier.TRANSCENDENTAL -> "Through generations of unwavering faith, relentless grit, and family devotion, channel hillbilly fortitude to bless and restore our comrades with heroic resolve!"
-            }
-            "ca_vance_commonsense" -> when (tier) {
-                ResonanceTier.BASIC -> "Common sense!"
-                ResonanceTier.ADEPT -> "Apply straightforward common sense!"
-                ResonanceTier.MASTER -> "Middle-American common sense refreshes our clear minds!"
-                ResonanceTier.MYTHIC -> "Arise working-class truth, common sense clears the mental fog!"
-                ResonanceTier.TRANSCENDENTAL -> "With the pure and unyielding logic of Middle America, apply straightforward common sense to sweep away coastal madness and renew our vital energy!"
-            }
-            "ca_kash_declassify" -> when (tier) {
-                ResonanceTier.BASIC -> "Declassify now!"
-                ResonanceTier.ADEPT -> "Declassify the FISA memo now!"
-                ResonanceTier.MASTER -> "Declassify now and expose the hidden archives!"
-                ResonanceTier.MYTHIC -> "Arise unredacted truth, declassify now to stun the conspirators!"
-                ResonanceTier.TRANSCENDENTAL -> "Slap down the unredacted documents, break the deep state classification, and declassify now to shatter all federal corruption in blazing sunlight!"
-            }
-            "ca_kash_binder" -> when (tier) {
-                ResonanceTier.BASIC -> "Binder of truth!"
-                ResonanceTier.ADEPT -> "Throw the binder of truth now!"
-                ResonanceTier.MASTER -> "Unleash the three-ring binder of truth across the room!"
-                ResonanceTier.MYTHIC -> "Arise documented receipts, heavy binder of truth hits all enemies!"
-                ResonanceTier.TRANSCENDENTAL -> "By the unyielding weight of declassified cross-examination, slam the three-ring binder of truth across the opposition line to crush all false narratives!"
-            }
-            "ca_kash_clearance" -> when (tier) {
-                ResonanceTier.BASIC -> "Security clearance!"
-                ResonanceTier.ADEPT -> "Grant security clearance to our team!"
-                ResonanceTier.MASTER -> "Issue security clearance and purge political sabotage!"
-                ResonanceTier.MYTHIC -> "Arise top-secret trust, security clearance heals party wounds!"
-                ResonanceTier.TRANSCENDENTAL -> "By presidential intelligence decree, issue top-secret security clearance, purge foreign disinformation, and cleanse and heal our entire fellowship!"
-            }
-            "ca_kash_leak" -> when (tier) {
-                ResonanceTier.BASIC -> "Plug the leaks!"
-                ResonanceTier.ADEPT -> "Plug the leaks across the agencies!"
-                ResonanceTier.MASTER -> "Plug the leaks and stop anonymous deep state whispers!"
-                ResonanceTier.MYTHIC -> "Arise institutional integrity, plug the leaks to reclaim power!"
-                ResonanceTier.TRANSCENDENTAL -> "Seal every corrupt anonymous channel, plug the leaks across the bureaucratic swamp, and redirect the torrent of power to refresh our party's mana!"
-            }
-            "ca_kennedy_english" -> when (tier) {
-                ResonanceTier.BASIC -> "Plain English cross-exam!"
-                ResonanceTier.ADEPT -> "Plain English cross-exam for the witness!"
-                ResonanceTier.MASTER -> "Plain English cross-exam leaves the witness speechless!"
-                ResonanceTier.MYTHIC -> "Arise Southern logic, plain English cross-exam freezes the bureaucrat!"
-                ResonanceTier.TRANSCENDENTAL -> "Now look here son, in plain English cross-exam, explain why the American taxpayer is funding this nonsense until the enemy freezes in stunned silence!"
-            }
-            "ca_kennedy_officer" -> when (tier) {
-                ResonanceTier.BASIC -> "Call an officer!"
-                ResonanceTier.ADEPT -> "Call an officer on this absurdity!"
-                ResonanceTier.MASTER -> "Call an officer, someone is looting the public purse!"
-                ResonanceTier.MYTHIC -> "Arise common decency, call an officer across the whole swamp!"
-                ResonanceTier.TRANSCENDENTAL -> "Someone call an officer right this second, because what these bureaucrats are doing to the taxpayer is a felony that rocks every enemy on the field!"
-            }
-            "ca_kennedy_remedy" -> when (tier) {
-                ResonanceTier.BASIC -> "Common sense remedy!"
-                ResonanceTier.ADEPT -> "Apply a common sense remedy now!"
-                ResonanceTier.MASTER -> "A common sense remedy heals better than expensive red tape!"
-                ResonanceTier.MYTHIC -> "Arise down-home folk wisdom, common sense remedy mends our team!"
-                ResonanceTier.TRANSCENDENTAL -> "Forget your fancy committee consultant reports, apply a pure common sense remedy of down-home wisdom to heal and bless our entire squad!"
-            }
-            "ca_kennedy_oneliner" -> when (tier) {
-                ResonanceTier.BASIC -> "Devastating one-liner!"
-                ResonanceTier.ADEPT -> "Drop a devastating one-liner now!"
-                ResonanceTier.MASTER -> "A devastating one-liner silences the committee hearing!"
-                ResonanceTier.MYTHIC -> "Arise folk humor, devastating one-liner restores our good spirit!"
-                ResonanceTier.TRANSCENDENTAL -> "Deliver a mic-drop devastating one-liner with folksy Louisiana wit that leaves the opposition speechless and completely refreshes our energy!"
-            }
-            "aegis_dawn" -> when (tier) {
-                ResonanceTier.BASIC -> "Aegis"
-                ResonanceTier.ADEPT -> "Aegis"
-                ResonanceTier.MASTER -> "Spirits of dawn, aegis shield"
-                ResonanceTier.MYTHIC -> "Arise celestial dawn, aegis shield our line!"
-                ResonanceTier.TRANSCENDENTAL -> "O celestial seraph of the sacred dawn descend from the heavens and grant impenetrable aegis to protect all allies in eternal glory!"
-            }
-        else -> null
-    }
+    private val HANDCRAFTED_CHANTS: Map<Pair<String, ResonanceTier>, String> = mapOf(
+        ("fireball" to ResonanceTier.BASIC) to "Fireball archer",
+        ("fireball" to ResonanceTier.ADEPT) to "Cast fireball at archer",
+        ("fireball" to ResonanceTier.MASTER) to "Spirits of cinder burn archer",
+        ("fireball" to ResonanceTier.MYTHIC) to "Arise blazing inferno consume the archer now!",
+        ("fireball" to ResonanceTier.TRANSCENDENTAL) to "O primordial flame of the solar core descend from the heavens and reduce that wretched archer to eternal ash and inferno!",
+
+        ("frost_spike" to ResonanceTier.BASIC) to "Frost orc",
+        ("frost_spike" to ResonanceTier.ADEPT) to "Cast frost spike orc",
+        ("frost_spike" to ResonanceTier.MASTER) to "Spirits of ice freeze orc",
+        ("frost_spike" to ResonanceTier.MYTHIC) to "Arise glacial blizzard freeze the orc now!",
+        ("frost_spike" to ResonanceTier.TRANSCENDENTAL) to "O celestial winter of absolute zero arise from the void and encase that monstrous orc in eternal glacial frostbite and crystal shards!",
+
+        ("chain_lightning" to ResonanceTier.BASIC) to "Lightning all",
+        ("chain_lightning" to ResonanceTier.ADEPT) to "Cast chain lightning all",
+        ("chain_lightning" to ResonanceTier.MASTER) to "Spirits of tempest shock all",
+        ("chain_lightning" to ResonanceTier.MYTHIC) to "Arise tempest lightning shock all enemies now!",
+        ("chain_lightning" to ResonanceTier.TRANSCENDENTAL) to "O primordial tempest of celestial wrath awaken and discharge roaring thunderclaps to strike all enemies with galvanic lightning and plasma!",
+
+        ("holy_smite" to ResonanceTier.BASIC) to "Smite heretic",
+        ("holy_smite" to ResonanceTier.ADEPT) to "Cast holy smite heretic",
+        ("holy_smite" to ResonanceTier.MASTER) to "Spirits of dawn smite enemy",
+        ("holy_smite" to ResonanceTier.MYTHIC) to "Arise celestial dawn smite the wicked enemy!",
+        ("holy_smite" to ResonanceTier.TRANSCENDENTAL) to "O celestial seraph of the sacred dawn descend from the heavens and unleash divine radiance to smite the abominable darkness unto purity!",
+
+        ("lay_on_hands" to ResonanceTier.BASIC) to "Mend Cedric",
+        ("lay_on_hands" to ResonanceTier.ADEPT) to "Mend wounds of Cedric",
+        ("lay_on_hands" to ResonanceTier.MASTER) to "Spirits of grace mend Cedric",
+        ("lay_on_hands" to ResonanceTier.MYTHIC) to "Arise celestial grace mend Cedric with healing!",
+        ("lay_on_hands" to ResonanceTier.TRANSCENDENTAL) to "O primordial celestial light of pure dawn descend from the heavens to bless mend and cure our valiant guardian Cedric with restorative aegis!",
+
+        ("shield_wall" to ResonanceTier.BASIC) to "Raise shield",
+        ("shield_wall" to ResonanceTier.ADEPT) to "Raise shield against foes",
+        ("shield_wall" to ResonanceTier.MASTER) to "Spirits shield our line",
+        ("shield_wall" to ResonanceTier.MYTHIC) to "Arise steel vanguard shield our line now!",
+        ("shield_wall" to ResonanceTier.TRANSCENDENTAL) to "By the power of celestial steel and unyielding vanguard valor arise and smash the foe to shield all allies with an impenetrable aegis!",
+
+        ("soothing_rain" to ResonanceTier.BASIC) to "Rain party",
+        ("soothing_rain" to ResonanceTier.ADEPT) to "Send gentle rain party",
+        ("soothing_rain" to ResonanceTier.MASTER) to "Spirits of grove rain party",
+        ("soothing_rain" to ResonanceTier.MYTHIC) to "Arise restorative grove rain upon the party!",
+        ("soothing_rain" to ResonanceTier.TRANSCENDENTAL) to "O celestial grove of sacred dawn hearken unto our prayer and unleash soothing rain to mend and rejuvenate the entire party with divine grace!",
+
+        ("briar_entangle" to ResonanceTier.BASIC) to "Briar archer",
+        ("briar_entangle" to ResonanceTier.ADEPT) to "Cast great briar archer",
+        ("briar_entangle" to ResonanceTier.MASTER) to "Spirits of briar thorns archer",
+        ("briar_entangle" to ResonanceTier.MYTHIC) to "Arise thorny briar vines ensnare that archer!",
+        ("briar_entangle" to ResonanceTier.TRANSCENDENTAL) to "O ancient spirits of the primordial grove awaken from the earth and ensnare that vile archer within crushing briar vines and thorns!",
+
+        ("shadow_strike" to ResonanceTier.BASIC) to "Shadow shaman",
+        ("shadow_strike" to ResonanceTier.ADEPT) to "Cast swift shadow shaman",
+        ("shadow_strike" to ResonanceTier.MASTER) to "Spirits of umbra strike shaman",
+        ("shadow_strike" to ResonanceTier.MYTHIC) to "Arise abyssal umbra strike the shaman now!",
+        ("shadow_strike" to ResonanceTier.TRANSCENDENTAL) to "O primordial abyss of the endless umbra awaken from the void and cloak my blade to strike the treacherous shaman into eternal silence!",
+
+        ("venom_flurry" to ResonanceTier.BASIC) to "Venom all",
+        ("venom_flurry" to ResonanceTier.ADEPT) to "Cast swift venom all",
+        ("venom_flurry" to ResonanceTier.MASTER) to "Spirits of venom drench all",
+        ("venom_flurry" to ResonanceTier.MYTHIC) to "Arise abyssal venom surge drench all foes now!",
+        ("venom_flurry" to ResonanceTier.TRANSCENDENTAL) to "O dark spirits of the void awaken and unleash a drenching flurry of venomous serpents to engulf all enemies in lethal poison!",
+
+        ("verdant_cataclysm" to ResonanceTier.BASIC) to "Grove erupt all",
+        ("verdant_cataclysm" to ResonanceTier.ADEPT) to "Cast grove-warcry all",
+        ("verdant_cataclysm" to ResonanceTier.MASTER) to "Spirits of the grove surge and awaken!",
+        ("verdant_cataclysm" to ResonanceTier.MYTHIC) to "Arise ancient grove cataclysm crush all enemies!",
+        ("verdant_cataclysm" to ResonanceTier.TRANSCENDENTAL) to "O ancient spirits of the deep earth awaken and unleash the full fury of the grove-warcry to crush all foes within an erupting cataclysm of vines and stone!",
+
+        ("umbral_siphon" to ResonanceTier.BASIC) to "Mend Zephyr",
+        ("umbral_siphon" to ResonanceTier.ADEPT) to "Siphon Zephyr",
+        ("umbral_siphon" to ResonanceTier.MASTER) to "Spirits of umbra siphon Zephyr",
+        ("umbral_siphon" to ResonanceTier.MYTHIC) to "Arise abyssal siphon restore Zephyr now!",
+        ("umbral_siphon" to ResonanceTier.TRANSCENDENTAL) to "O primordial abyss of the endless umbra awaken and siphon a torrent of restorative essence to mend and rejuvenate Zephyr with eldritch healing!",
+
+        ("ca_tremendous_strike" to ResonanceTier.BASIC) to "Tremendous blow!",
+        ("ca_tremendous_strike" to ResonanceTier.ADEPT) to "Hit them tremendous blow!",
+        ("ca_tremendous_strike" to ResonanceTier.MASTER) to "Unleash tremendous strike upon enemies!",
+        ("ca_tremendous_strike" to ResonanceTier.MYTHIC) to "Arise tremendous strike crush all enemies now!",
+        ("ca_tremendous_strike" to ResonanceTier.TRANSCENDENTAL) to "By the power of celestial steel arise and crush all enemies with a tremendous winning strike!",
+
+        ("ca_art_of_the_deal" to ResonanceTier.BASIC) to "The deal!",
+        ("ca_art_of_the_deal" to ResonanceTier.ADEPT) to "Impose the deal",
+        ("ca_art_of_the_deal" to ResonanceTier.MASTER) to "Unleash the golden deal now!",
+        ("ca_art_of_the_deal" to ResonanceTier.MYTHIC) to "Arise divine art of golden liberty!",
+        ("ca_art_of_the_deal" to ResonanceTier.TRANSCENDENTAL) to "By the power of celestial liberty arise and negotiate the golden art of the deal for total victory!",
+
+        ("ca_obama_did_it_first" to ResonanceTier.BASIC) to "Blame Obama!",
+        ("ca_obama_did_it_first" to ResonanceTier.ADEPT) to "Search the ancient archives",
+        ("ca_obama_did_it_first" to ResonanceTier.MASTER) to "Unleash shadow Obama records now!",
+        ("ca_obama_did_it_first" to ResonanceTier.MYTHIC) to "Arise abyssal shadows and expose Obama!",
+        ("ca_obama_did_it_first" to ResonanceTier.TRANSCENDENTAL) to "By the power of celestial truth descend from the void to expose the shadow archives of Obama and shatter all hypocrisy!",
+
+        ("ca_build_the_wall" to ResonanceTier.BASIC) to "Build wall!",
+        ("ca_build_the_wall" to ResonanceTier.ADEPT) to "Build strong wall now",
+        ("ca_build_the_wall" to ResonanceTier.MASTER) to "Unleash the steel wall now!",
+        ("ca_build_the_wall" to ResonanceTier.MYTHIC) to "Arise steel vanguard build impenetrable wall!",
+        ("ca_build_the_wall" to ResonanceTier.TRANSCENDENTAL) to "By the power of celestial steel and vanguard valor arise and fortify the great golden wall to shield all patriots!",
+
+        ("ca_rally_patriots" to ResonanceTier.BASIC) to "Rally now!",
+        ("ca_rally_patriots" to ResonanceTier.ADEPT) to "Rally all allies now",
+        ("ca_rally_patriots" to ResonanceTier.MASTER) to "Unleash the golden rally now!",
+        ("ca_rally_patriots" to ResonanceTier.MYTHIC) to "Arise celestial dawn rally the patriots!",
+        ("ca_rally_patriots" to ResonanceTier.TRANSCENDENTAL) to "By the power of celestial freedom arise and inspire the sacred rally of patriots to bless and mend all champions!",
+
+        ("ca_presidential_veto" to ResonanceTier.BASIC) to "Presidential veto!",
+        ("ca_presidential_veto" to ResonanceTier.ADEPT) to "I issue a presidential veto now!",
+        ("ca_presidential_veto" to ResonanceTier.MASTER) to "Unleash presidential veto upon corrupt spending!",
+        ("ca_presidential_veto" to ResonanceTier.MYTHIC) to "Arise executive authority, shut down the opposition with a presidential veto!",
+        ("ca_presidential_veto" to ResonanceTier.TRANSCENDENTAL) to "By absolute constitutional executive authority, I hereby issue a presidential veto to crush bureaucratic overreach and stun all enemies into silence!",
+
+        ("ca_executive_action" to ResonanceTier.BASIC) to "Executive action!",
+        ("ca_executive_action" to ResonanceTier.ADEPT) to "Sign the executive action now!",
+        ("ca_executive_action" to ResonanceTier.MASTER) to "Unleash swift executive action across the swamp!",
+        ("ca_executive_action" to ResonanceTier.MYTHIC) to "Arise presidential power, sign executive action against all opposition!",
+        ("ca_executive_action" to ResonanceTier.TRANSCENDENTAL) to "By the sacred authority of the Constitution, I enact sweeping executive action to purge corruption and strike all foes across the nation!",
+
+        ("ca_tired_of_winning" to ResonanceTier.BASIC) to "Tired of winning!",
+        ("ca_tired_of_winning" to ResonanceTier.ADEPT) to "We are never tired of winning!",
+        ("ca_tired_of_winning" to ResonanceTier.MASTER) to "Take a breath, because we are winning so much!",
+        ("ca_tired_of_winning" to ResonanceTier.MYTHIC) to "Arise glorious momentum, tired of winning restores our energy!",
+        ("ca_tired_of_winning" to ResonanceTier.TRANSCENDENTAL) to "Folks, they said we would get tired of winning, but we will never stop winning as our sacred spirit and mana are fully restored!",
+
+        ("ca_marco_filibuster" to ResonanceTier.BASIC) to "Filibuster strike!",
+        ("ca_marco_filibuster" to ResonanceTier.ADEPT) to "Deliver the filibuster strike now!",
+        ("ca_marco_filibuster" to ResonanceTier.MASTER) to "Deliver an uninterrupted filibuster strike on the Senate floor!",
+        ("ca_marco_filibuster" to ResonanceTier.MYTHIC) to "Arise diplomatic resolve, filibuster strike to freeze the opposition!",
+        ("ca_marco_filibuster" to ResonanceTier.TRANSCENDENTAL) to "By the sacred traditions of the United States Senate, I deliver an unstoppable filibuster strike to stun all adversaries into total submission!",
+
+        ("ca_marco_sanction" to ResonanceTier.BASIC) to "Maximum sanctions!",
+        ("ca_marco_sanction" to ResonanceTier.ADEPT) to "Impose maximum sanctions now!",
+        ("ca_marco_sanction" to ResonanceTier.MASTER) to "Freeze all foreign assets with maximum sanctions!",
+        ("ca_marco_sanction" to ResonanceTier.MYTHIC) to "Arise diplomatic retribution, maximum sanctions against every adversary!",
+        ("ca_marco_sanction" to ResonanceTier.TRANSCENDENTAL) to "By full international statutory authority, freeze all foreign assets and bombard all hostile regimes with maximum sanctions of crippling power!",
+
+        ("ca_marco_hydrate" to ResonanceTier.BASIC) to "Water sip!",
+        ("ca_marco_hydrate" to ResonanceTier.ADEPT) to "Take a refreshing water sip!",
+        ("ca_marco_hydrate" to ResonanceTier.MASTER) to "Water sip restores the spirit and party health!",
+        ("ca_marco_hydrate" to ResonanceTier.MYTHIC) to "Arise refreshing clarity, water sip heals all allies with holy resolve!",
+        ("ca_marco_hydrate" to ResonanceTier.TRANSCENDENTAL) to "With laser diplomatic focus and pure crystalline hydration, take a historic water sip to bless, heal, and revitalize our entire fellowship!",
+
+        ("ca_marco_tariff" to ResonanceTier.BASIC) to "Tariff dividend!",
+        ("ca_marco_tariff" to ResonanceTier.ADEPT) to "Levy the tariff dividend now!",
+        ("ca_marco_tariff" to ResonanceTier.MASTER) to "Collect the tariff dividend from unfair trade partners!",
+        ("ca_marco_tariff" to ResonanceTier.MYTHIC) to "Arise domestic prosperity, tariff dividend recovers national energy!",
+        ("ca_marco_tariff" to ResonanceTier.TRANSCENDENTAL) to "By strategic economic sovereignty, levy massive tariffs on cheating foreign adversaries and harvest the rich tariff dividend to restore our team's mana!",
+
+        ("ca_vance_debate" to ResonanceTier.BASIC) to "Debate dismantle!",
+        ("ca_vance_debate" to ResonanceTier.ADEPT) to "Debate dismantle on live television!",
+        ("ca_vance_debate" to ResonanceTier.MASTER) to "Debate dismantle opponent rhetoric with calm facts!",
+        ("ca_vance_debate" to ResonanceTier.MYTHIC) to "Arise heartland eloquence, debate dismantle the corrupt moderators!",
+        ("ca_vance_debate" to ResonanceTier.TRANSCENDENTAL) to "With devastating poise and razor-sharp intellect, debate dismantle the entire hostile media apparatus and stun our opponents on national television!",
+
+        ("ca_vance_slam" to ResonanceTier.BASIC) to "Appalachian slam!",
+        ("ca_vance_slam" to ResonanceTier.ADEPT) to "Deliver the Appalachian slam now!",
+        ("ca_vance_slam" to ResonanceTier.MASTER) to "Unleash the Appalachian slam of industrial grit!",
+        ("ca_vance_slam" to ResonanceTier.MYTHIC) to "Arise steel heartland fury, Appalachian slam across all enemies!",
+        ("ca_vance_slam" to ResonanceTier.TRANSCENDENTAL) to "From the iron hills and manufacturing heartland, unleash the thunderous Appalachian slam to pulverize every corrupt obstacle across the field!",
+
+        ("ca_vance_fortitude" to ResonanceTier.BASIC) to "Hillbilly fortitude!",
+        ("ca_vance_fortitude" to ResonanceTier.ADEPT) to "Channel hillbilly fortitude now!",
+        ("ca_vance_fortitude" to ResonanceTier.MASTER) to "Channel generational hillbilly fortitude to mend our ranks!",
+        ("ca_vance_fortitude" to ResonanceTier.MYTHIC) to "Arise family resilience, hillbilly fortitude restores the party!",
+        ("ca_vance_fortitude" to ResonanceTier.TRANSCENDENTAL) to "Through generations of unwavering faith, relentless grit, and family devotion, channel hillbilly fortitude to bless and restore our comrades with heroic resolve!",
+
+        ("ca_vance_commonsense" to ResonanceTier.BASIC) to "Common sense!",
+        ("ca_vance_commonsense" to ResonanceTier.ADEPT) to "Apply straightforward common sense!",
+        ("ca_vance_commonsense" to ResonanceTier.MASTER) to "Middle-American common sense refreshes our clear minds!",
+        ("ca_vance_commonsense" to ResonanceTier.MYTHIC) to "Arise working-class truth, common sense clears the mental fog!",
+        ("ca_vance_commonsense" to ResonanceTier.TRANSCENDENTAL) to "With the pure and unyielding logic of Middle America, apply straightforward common sense to sweep away coastal madness and renew our vital energy!",
+
+        ("ca_kash_declassify" to ResonanceTier.BASIC) to "Declassify now!",
+        ("ca_kash_declassify" to ResonanceTier.ADEPT) to "Declassify the FISA memo now!",
+        ("ca_kash_declassify" to ResonanceTier.MASTER) to "Declassify now and expose the hidden archives!",
+        ("ca_kash_declassify" to ResonanceTier.MYTHIC) to "Arise unredacted truth, declassify now to stun the conspirators!",
+        ("ca_kash_declassify" to ResonanceTier.TRANSCENDENTAL) to "Slap down the unredacted documents, break the deep state classification, and declassify now to shatter all federal corruption in blazing sunlight!",
+
+        ("ca_kash_binder" to ResonanceTier.BASIC) to "Binder of truth!",
+        ("ca_kash_binder" to ResonanceTier.ADEPT) to "Throw the binder of truth now!",
+        ("ca_kash_binder" to ResonanceTier.MASTER) to "Unleash the three-ring binder of truth across the room!",
+        ("ca_kash_binder" to ResonanceTier.MYTHIC) to "Arise documented receipts, heavy binder of truth hits all enemies!",
+        ("ca_kash_binder" to ResonanceTier.TRANSCENDENTAL) to "By the unyielding weight of declassified cross-examination, slam the three-ring binder of truth across the opposition line to crush all false narratives!",
+
+        ("ca_kash_clearance" to ResonanceTier.BASIC) to "Security clearance!",
+        ("ca_kash_clearance" to ResonanceTier.ADEPT) to "Grant security clearance to our team!",
+        ("ca_kash_clearance" to ResonanceTier.MASTER) to "Issue security clearance and purge political sabotage!",
+        ("ca_kash_clearance" to ResonanceTier.MYTHIC) to "Arise top-secret trust, security clearance heals party wounds!",
+        ("ca_kash_clearance" to ResonanceTier.TRANSCENDENTAL) to "By presidential intelligence decree, issue top-secret security clearance, purge foreign disinformation, and cleanse and heal our entire fellowship!",
+
+        ("ca_kash_leak" to ResonanceTier.BASIC) to "Plug the leaks!",
+        ("ca_kash_leak" to ResonanceTier.ADEPT) to "Plug the leaks across the agencies!",
+        ("ca_kash_leak" to ResonanceTier.MASTER) to "Plug the leaks and stop anonymous deep state whispers!",
+        ("ca_kash_leak" to ResonanceTier.MYTHIC) to "Arise institutional integrity, plug the leaks to reclaim power!",
+        ("ca_kash_leak" to ResonanceTier.TRANSCENDENTAL) to "Seal every corrupt anonymous channel, plug the leaks across the bureaucratic swamp, and redirect the torrent of power to refresh our party's mana!",
+
+        ("ca_kennedy_english" to ResonanceTier.BASIC) to "Plain English cross-exam!",
+        ("ca_kennedy_english" to ResonanceTier.ADEPT) to "Plain English cross-exam for the witness!",
+        ("ca_kennedy_english" to ResonanceTier.MASTER) to "Plain English cross-exam leaves the witness speechless!",
+        ("ca_kennedy_english" to ResonanceTier.MYTHIC) to "Arise Southern logic, plain English cross-exam freezes the bureaucrat!",
+        ("ca_kennedy_english" to ResonanceTier.TRANSCENDENTAL) to "Now look here son, in plain English cross-exam, explain why the American taxpayer is funding this nonsense until the enemy freezes in stunned silence!",
+
+        ("ca_kennedy_officer" to ResonanceTier.BASIC) to "Call an officer!",
+        ("ca_kennedy_officer" to ResonanceTier.ADEPT) to "Call an officer on this absurdity!",
+        ("ca_kennedy_officer" to ResonanceTier.MASTER) to "Call an officer, someone is looting the public purse!",
+        ("ca_kennedy_officer" to ResonanceTier.MYTHIC) to "Arise common decency, call an officer across the whole swamp!",
+        ("ca_kennedy_officer" to ResonanceTier.TRANSCENDENTAL) to "Someone call an officer right this second, because what these bureaucrats are doing to the taxpayer is a felony that rocks every enemy on the field!",
+
+        ("ca_kennedy_remedy" to ResonanceTier.BASIC) to "Common sense remedy!",
+        ("ca_kennedy_remedy" to ResonanceTier.ADEPT) to "Apply a common sense remedy now!",
+        ("ca_kennedy_remedy" to ResonanceTier.MASTER) to "A common sense remedy heals better than expensive red tape!",
+        ("ca_kennedy_remedy" to ResonanceTier.MYTHIC) to "Arise down-home folk wisdom, common sense remedy mends our team!",
+        ("ca_kennedy_remedy" to ResonanceTier.TRANSCENDENTAL) to "Forget your fancy committee consultant reports, apply a pure common sense remedy of down-home wisdom to heal and bless our entire squad!",
+
+        ("ca_kennedy_oneliner" to ResonanceTier.BASIC) to "Devastating one-liner!",
+        ("ca_kennedy_oneliner" to ResonanceTier.ADEPT) to "Drop a devastating one-liner now!",
+        ("ca_kennedy_oneliner" to ResonanceTier.MASTER) to "A devastating one-liner silences the committee hearing!",
+        ("ca_kennedy_oneliner" to ResonanceTier.MYTHIC) to "Arise folk humor, devastating one-liner restores our good spirit!",
+        ("ca_kennedy_oneliner" to ResonanceTier.TRANSCENDENTAL) to "Deliver a mic-drop devastating one-liner with folksy Louisiana wit that leaves the opposition speechless and completely refreshes our energy!",
+
+        ("aegis_dawn" to ResonanceTier.BASIC) to "Aegis",
+        ("aegis_dawn" to ResonanceTier.ADEPT) to "Aegis",
+        ("aegis_dawn" to ResonanceTier.MASTER) to "Spirits of dawn, aegis shield",
+        ("aegis_dawn" to ResonanceTier.MYTHIC) to "Arise celestial dawn, aegis shield our line!",
+        ("aegis_dawn" to ResonanceTier.TRANSCENDENTAL) to "O celestial seraph of the sacred dawn descend from the heavens and grant impenetrable aegis to protect all allies in eternal glory!"
+    )
+
+    fun handcraftedChantFor(spellId: String, tier: ResonanceTier): String? =
+        HANDCRAFTED_CHANTS[spellId to tier]
 
     fun defaultChantFor(spell: Spell, tier: ResonanceTier, locale: String = "en"): String = when (locale.lowercase()) {
         "es" -> when (tier) {

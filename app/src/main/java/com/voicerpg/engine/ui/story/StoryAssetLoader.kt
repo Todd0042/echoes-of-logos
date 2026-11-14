@@ -72,8 +72,10 @@ object StoryAssetLoader {
         val targetSlot = slot ?: activeSlot
         val defaultHeroPortrait = GameContent.manifest.defaultHeroPortrait
         val isHeroPortrait = (defaultHeroPortrait != null && assetPath.equals(defaultHeroPortrait, ignoreCase = true)) ||
+                GameContent.classes.any { it.portraitAsset != null && assetPath.equals(it.portraitAsset, ignoreCase = true) } ||
                 assetPath.contains("custom", ignoreCase = true) ||
-                assetPath.contains("hero", ignoreCase = true)
+                assetPath.contains("hero", ignoreCase = true) ||
+                assetPath.contains("applicant", ignoreCase = true)
 
         val cacheKey = if (isHeroPortrait) "${assetPath}_slot_${targetSlot}" else assetPath
         if (bitmapCache.containsKey(cacheKey)) return bitmapCache[cacheKey]

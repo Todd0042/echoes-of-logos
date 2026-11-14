@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -71,23 +72,19 @@ fun BattleEnvironmentCanvas(
     Canvas(modifier = modifier.fillMaxSize()) {
         val w = size.width
         val h = size.height
-        val horizonY = h * 0.54f // Perspective horizon where back scenery meets floor
+        val horizonY = h * 0.43f // SNES horizon line separating BG3/BG2 wall from Mode-7 floor plane
 
         if (backgroundBitmap != null) {
-            // 1. Draw Authentic 16-Bit Pixel Art Artwork Backdrop
+            // 1. BG3/BG2 Backdrop Artwork
             drawImage(
                 image = backgroundBitmap,
                 dstSize = IntSize(w.toInt(), h.toInt())
             )
-
-            // 2. Layer Dynamic 4-Frame Living Environmental Animation
-            when (overlayEnv) {
-                BattleEnvironment.FOREST -> drawForestAnimationOverlay(w, h, horizonY, frameIndex)
-                BattleEnvironment.CASTLE -> drawCastleAnimationOverlay(w, h, horizonY, frameIndex)
-                BattleEnvironment.DUNGEON -> drawDungeonAnimationOverlay(w, h, horizonY, frameIndex)
-                BattleEnvironment.CAVE -> drawCaveAnimationOverlay(w, h, horizonY, frameIndex)
-                BattleEnvironment.SWAMP -> drawSwampAnimationOverlay(w, h, horizonY, frameIndex)
-            }
+            // Soft darkening over backdrop to push it into depth behind the stage
+            drawRect(
+                color = Color.Black.copy(alpha = 0.22f),
+                size = Size(w, horizonY + 12f)
+            )
         } else {
             // Procedural fallback if bitmap fails to load
             when (overlayEnv) {
@@ -99,9 +96,232 @@ fun BattleEnvironmentCanvas(
             }
         }
 
-        // Contact shadows beneath heroes (left) and enemies (right)
-        drawGroundContactShadows(w, h, horizonY, environment, frameIndex, partyCount, enemyCount)
+        // 2. Mode-7 Style Perspective Battle Floor + Horizon Mist Seam
+        drawPerspectiveFloorPlane(w, h, horizonY, overlayEnv, frameIndex)
+
+        // 3. Dynamic 4-Frame Living Environmental Animation (midground torches, banners, crystals)
+        if (backgroundBitmap != null) {
+            when (overlayEnv) {
+                BattleEnvironment.FOREST -> drawForestAnimationOverlay(w, h, horizonY, frameIndex)
+                BattleEnvironment.CASTLE -> drawCastleAnimationOverlay(w, h, horizonY, frameIndex)
+                BattleEnvironment.DUNGEON -> drawDungeonAnimationOverlay(w, h, horizonY, frameIndex)
+                BattleEnvironment.CAVE -> drawCaveAnimationOverlay(w, h, horizonY, frameIndex)
+                BattleEnvironment.SWAMP -> drawSwampAnimationOverlay(w, h, horizonY, frameIndex)
+            }
+        }
     }
+}
+
+/**
+ * SNES BG1 + Color Math Foreground Layer:
+ * Rendered ON TOP of combatants so characters sit inside a true 3-layer diorama
+ * with foreground framing silhouettes, additive light shafts, and drifting atmospheric motes.
+ */
+@Composable
+fun BattleForegroundOverlay(
+    environment: BattleEnvironment = BattleEnvironment.FOREST,
+    environmentId: String? = null,
+    modifier: Modifier = Modifier
+) {
+    val envDef = remember(environmentId, environment) {
+        GameContent.environmentById(environmentId) ?: GameContent.environmentById(environment.name)
+    }
+    val overlayEnv = remember(envDef, environment) {
+        envDef?.let { runCatching { BattleEnvironment.valueOf(it.overlayType) }.getOrNull() } ?: environment
+    }
+
+    val infiniteTransition = rememberInfiniteTransition(label = "FgAnimation")
+    val driftProgress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3600, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "FgDrift"
+    )
+
+    Canvas(modifier = modifier.fillMaxSize()) {
+        val w = size.width
+        val h = size.height
+
+        // 1. Additive Color Math Light Shafts / Ambient Beams
+        val beamColor = when (overlayEnv) {
+            BattleEnvironment.FOREST -> Color(0xFFB9F6CA)
+            BattleEnvironment.CASTLE -> Color(0xFFFFD180)
+            BattleEnvironment.DUNGEON -> Color(0xFFFFAB40)
+            BattleEnvironment.CAVE -> Color(0xFF80D8FF)
+            BattleEnvironment.SWAMP -> Color(0xFF64FFDA)
+        }
+        val beamAlpha = 0.055f + driftProgress * 0.035f
+        val beam1 = Path().apply {
+            moveTo(w * 0.14f, 0f)
+            lineTo(w * 0.28f, 0f)
+            lineTo(w * 0.48f, h)
+            lineTo(w * 0.26f, h)
+            close()
+        }
+        val beam2 = Path().apply {
+            moveTo(w * 0.62f, 0f)
+            lineTo(w * 0.74f, 0f)
+            lineTo(w * 0.90f, h)
+            lineTo(w * 0.72f, h)
+            close()
+        }
+        drawPath(beam1, color = beamColor.copy(alpha = beamAlpha), blendMode = BlendMode.Plus)
+        drawPath(beam2, color = beamColor.copy(alpha = beamAlpha * 0.8f), blendMode = BlendMode.Plus)
+
+        // 2. BG1 Foreground Corner Framing Silhouettes (gives diorama depth behind HUD edges)
+        val fgColor = when (overlayEnv) {
+            BattleEnvironment.FOREST -> Color(0xFF07150A)
+            BattleEnvironment.CASTLE -> Color(0xFF10131C)
+            BattleEnvironment.DUNGEON -> Color(0xFF0A080E)
+            BattleEnvironment.CAVE -> Color(0xFF090612)
+            BattleEnvironment.SWAMP -> Color(0xFF06110D)
+        }
+        val sway = (driftProgress - 0.5f) * 8f
+
+        when (overlayEnv) {
+            BattleEnvironment.FOREST, BattleEnvironment.SWAMP -> {
+                // Bottom-left and bottom-right grass/reed silhouettes
+                for (i in 0..4) {
+                    val bx = i * 18f
+                    val blade = Path().apply {
+                        moveTo(bx, h)
+                        lineTo(bx + 7f + sway, h - 26f - (i % 3) * 8f)
+                        lineTo(bx + 14f, h)
+                        close()
+                    }
+                    drawPath(blade, fgColor.copy(alpha = 0.85f))
+
+                    val rx = w - bx
+                    val rBlade = Path().apply {
+                        moveTo(rx, h)
+                        lineTo(rx - 7f + sway, h - 24f - ((i + 1) % 3) * 8f)
+                        lineTo(rx - 14f, h)
+                        close()
+                    }
+                    drawPath(rBlade, fgColor.copy(alpha = 0.85f))
+                }
+            }
+            BattleEnvironment.CASTLE, BattleEnvironment.DUNGEON -> {
+                // Foreground stone corner ledges
+                drawRect(fgColor.copy(alpha = 0.75f), topLeft = Offset(0f, h - 18f), size = Size(w * 0.08f, 18f))
+                drawRect(fgColor.copy(alpha = 0.75f), topLeft = Offset(w * 0.92f, h - 18f), size = Size(w * 0.08f, 18f))
+            }
+            BattleEnvironment.CAVE -> {
+                // Foreground stalagmite silhouettes in bottom corners
+                val leftStal = Path().apply {
+                    moveTo(0f, h)
+                    lineTo(w * 0.04f, h - 38f)
+                    lineTo(w * 0.09f, h)
+                    close()
+                }
+                val rightStal = Path().apply {
+                    moveTo(w, h)
+                    lineTo(w * 0.95f, h - 42f)
+                    lineTo(w * 0.90f, h)
+                    close()
+                }
+                drawPath(leftStal, fgColor.copy(alpha = 0.85f))
+                drawPath(rightStal, fgColor.copy(alpha = 0.85f))
+            }
+        }
+
+        // 3. Soft Cinema Vignette (keeps focus on the central battle floor)
+        drawRect(
+            brush = Brush.radialGradient(
+                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.36f)),
+                center = Offset(w * 0.5f, h * 0.55f),
+                radius = maxOf(w, h) * 0.78f
+            ),
+            size = Size(w, h)
+        )
+    }
+}
+
+private fun DrawScope.drawPerspectiveFloorPlane(
+    w: Float,
+    h: Float,
+    horizonY: Float,
+    environment: BattleEnvironment,
+    frame: Int
+) {
+    val floorH = (h - horizonY).coerceAtLeast(1f)
+    val (horizonTint, nearTint, lineColor, glowColor) = when (environment) {
+        BattleEnvironment.FOREST -> listOf(
+            Color(0xFF18301D), Color(0xFF0A140C), Color(0x3366BB6A), Color(0x2881C784)
+        )
+        BattleEnvironment.CASTLE -> listOf(
+            Color(0xFF232936), Color(0xFF10141C), Color(0x3390A4AE), Color(0x24FFB74D)
+        )
+        BattleEnvironment.DUNGEON -> listOf(
+            Color(0xFF1E1928), Color(0xFF0C0912), Color(0x337E57C2), Color(0x28FF8A65)
+        )
+        BattleEnvironment.CAVE -> listOf(
+            Color(0xFF1A1228), Color(0xFF090610), Color(0x334FC3F7), Color(0x2800E5FF)
+        )
+        BattleEnvironment.SWAMP -> listOf(
+            Color(0xFF13261F), Color(0xFF07110D), Color(0x334DB6AC), Color(0x2864FFDA)
+        )
+    }
+
+    // Horizon mist band smoothing the seam where vertical scenery meets the floor
+    drawRect(
+        brush = Brush.verticalGradient(
+            colors = listOf(
+                Color.Transparent,
+                horizonTint.copy(alpha = 0.82f),
+                nearTint.copy(alpha = 0.78f)
+            ),
+            startY = horizonY - 26f,
+            endY = h
+        ),
+        topLeft = Offset(0f, horizonY - 26f),
+        size = Size(w, floorH + 26f)
+    )
+
+    // Mode-7 perspective horizontal depth bands (exponential spacing toward viewer)
+    val depthSteps = 6
+    for (i in 1..depthSteps) {
+        val t = i.toFloat() / depthSteps
+        val y = horizonY + floorH * (t * t)
+        drawLine(
+            color = lineColor.copy(alpha = lineColor.alpha * (0.35f + t * 0.65f)),
+            start = Offset(0f, y),
+            end = Offset(w, y),
+            strokeWidth = 1f + t * 0.8f
+        )
+    }
+
+    // Mode-7 converging perspective rays from vanishing point above horizon
+    val vanishX = w * 0.5f
+    val vanishY = horizonY * 0.35f
+    val rayCount = 8
+    for (i in -rayCount..rayCount) {
+        val bottomX = vanishX + i * (w * 0.14f)
+        val t = (horizonY - vanishY) / (h - vanishY).coerceAtLeast(1f)
+        val startX = vanishX + (bottomX - vanishX) * t
+        drawLine(
+            color = lineColor.copy(alpha = lineColor.alpha * 0.75f),
+            start = Offset(startX, horizonY),
+            end = Offset(bottomX, h),
+            strokeWidth = 1.2f
+        )
+    }
+
+    // Ambient center-stage light spill on the floor (pulses slightly with frame)
+    val pulse = 0.88f + (frame % 2) * 0.12f
+    drawOval(
+        brush = Brush.radialGradient(
+            colors = listOf(glowColor.copy(alpha = glowColor.alpha * pulse), Color.Transparent),
+            center = Offset(w * 0.5f, horizonY + floorH * 0.56f),
+            radius = w * 0.42f
+        ),
+        topLeft = Offset(w * 0.08f, horizonY + floorH * 0.16f),
+        size = Size(w * 0.84f, floorH * 0.80f),
+        blendMode = BlendMode.Plus
+    )
 }
 
 // =========================================================================
@@ -618,91 +838,4 @@ private fun DrawScope.drawSwampScene(w: Float, h: Float, horizonY: Float, frame:
         topLeft = Offset(0f, horizonY),
         size = Size(w, h - horizonY)
     )
-}
-
-// =========================================================================
-// Ground Contact Shadows Beneath Characters
-// =========================================================================
-private fun DrawScope.drawGroundContactShadows(
-    w: Float,
-    h: Float,
-    horizonY: Float,
-    environment: BattleEnvironment,
-    frame: Int,
-    partyCount: Int = 4,
-    enemyCount: Int = 3
-) {
-    val shadowOffsetX = when (environment) {
-        BattleEnvironment.DUNGEON -> when (frame) {
-            0 -> 0f
-            1 -> 6f
-            2 -> -4f
-            else -> 2f
-        }
-        BattleEnvironment.CASTLE -> when (frame) {
-            0 -> 0f
-            1 -> 4f
-            2 -> 8f
-            else -> 2f
-        }
-        else -> 0f
-    }
-
-    val shadowColor = Color(0x55000000)
-
-    // Party Members Shadow Positions (Left Flank)
-    val safePartyCount = partyCount.coerceIn(1, 4)
-    for (i in 0 until safePartyCount) {
-        val heroShadowX = w * 0.20f + shadowOffsetX
-        val spacing = (h - horizonY) / (safePartyCount + 1)
-        val heroShadowY = horizonY + spacing * (i + 1)
-        drawOval(
-            color = shadowColor,
-            topLeft = Offset(heroShadowX - 24f, heroShadowY - 6f),
-            size = Size(48f, 12f)
-        )
-    }
-
-    // Enemy Shadows Positions (Right Flank)
-    val safeEnemyCount = enemyCount.coerceIn(1, 6)
-    if (safeEnemyCount <= 3) {
-        for (i in 0 until safeEnemyCount) {
-            val enemyShadowX = w * 0.80f + shadowOffsetX
-            val spacing = (h - horizonY) / (safeEnemyCount + 1)
-            val enemyShadowY = horizonY + spacing * (i + 1)
-            drawOval(
-                color = shadowColor,
-                topLeft = Offset(enemyShadowX - 28f, enemyShadowY - 7f),
-                size = Size(56f, 14f)
-            )
-        }
-    } else {
-        // 2-Column Staggered layout for 4-6 enemies
-        val frontCount = (safeEnemyCount + 1) / 2
-        val backCount = safeEnemyCount / 2
-
-        // Front row (closer to center)
-        for (i in 0 until frontCount) {
-            val enemyShadowX = w * 0.70f + shadowOffsetX
-            val spacing = (h - horizonY) / (frontCount + 1)
-            val enemyShadowY = horizonY + spacing * (i + 1)
-            drawOval(
-                color = shadowColor,
-                topLeft = Offset(enemyShadowX - 22f, enemyShadowY - 5f),
-                size = Size(44f, 10f)
-            )
-        }
-
-        // Back row (rearguard)
-        for (i in 0 until backCount) {
-            val enemyShadowX = w * 0.86f + shadowOffsetX
-            val spacing = (h - horizonY) / (backCount + 1)
-            val enemyShadowY = horizonY + spacing * (i + 1)
-            drawOval(
-                color = shadowColor,
-                topLeft = Offset(enemyShadowX - 22f, enemyShadowY - 5f),
-                size = Size(44f, 10f)
-            )
-        }
-    }
 }
