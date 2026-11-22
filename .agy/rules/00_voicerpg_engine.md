@@ -31,3 +31,9 @@ editing `.engine-sync/` by hand is detected too. Do not use `--no-verify`.
 An engine test failing on this game's content means either the content breaks an engine contract
 (fix the content) or the test assumes template data (fix the test in the engine, e.g. with
 `TemplateFixture`). Never change or delete an engine test inside a game.
+
+## 16 KB page size (release blocker)
+Every APK must pass `bash ../voice-rpg-engine/scripts/check_16kb.sh app/build/outputs/apk/debug/app-debug.apk`
+(or `check-16kb` if installed). Dependencies live in this game's `app/build.gradle.kts`: when adding or
+upgrading one, rebuild and re-check. A failing `.so` means that dependency needs a 16 KB-aligned version
+(e.g. TensorFlow Lite -> LiteRT `com.google.ai.edge.litert:litert`).
