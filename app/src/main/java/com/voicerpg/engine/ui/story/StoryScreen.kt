@@ -1071,8 +1071,8 @@ private fun RetroSpeechBubble(
                         node.id == "epilogue_credits" -> "👑 PLAY AGAIN"
                         node.triggerBattleEncounterId != null -> "⚔️ TO BATTLE"
                         node.triggerMiniGameId != null -> "🎮 TO MINI-GAME"
-                        isEyesFreeMode && node.nextNodeId != null -> "⏩ AUTO NEXT (1.5s)"
-                        node.nextNodeId != null -> "▼ NEXT"
+                        isEyesFreeMode && node.allNextNodeIds.isNotEmpty() -> "⏩ AUTO NEXT (1.5s)"
+                        node.allNextNodeIds.isNotEmpty() -> "▼ NEXT"
                         isEyesFreeMode -> "⏩ AUTO CAMP (1.5s)"
                         else -> "⭐ NEXT (CAMP)"
                     }

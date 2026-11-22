@@ -16,6 +16,7 @@ import com.voicerpg.engine.model.SpellGraphics
 import com.voicerpg.engine.model.BattleEnvironment
 import com.voicerpg.engine.model.DialogueChoice
 import com.voicerpg.engine.model.DialogueNode
+import com.voicerpg.engine.model.FlagRoute
 import com.voicerpg.engine.model.DialogueSpeaker
 import com.voicerpg.engine.model.Enemy
 import com.voicerpg.engine.model.EncounterDefinition
@@ -392,7 +393,14 @@ data class HubCompletionDto(
     val redirectToNodeId: String = ""
 )
 
+data class FlagRouteDto(
+    val requiredFlags: List<String>? = null,
+    val nextNodeId: String = ""
+)
+
 data class NodeDto(
+    /** Optional automatic branching on story flags (see DialogueNode.flagRoutes). */
+    val flagRoutes: List<FlagRouteDto>? = null,
     val id: String = "",
     val speakerId: String = "narrator",
     val side: String = "CENTER_NARRATOR",
@@ -1490,7 +1498,10 @@ class GameContentLoader(private val source: ContentSource) {
         metricDeltas = metricDeltas ?: emptyMap(),
         metricOverrides = metricOverrides ?: emptyMap(),
         assignHeroClassId = assignHeroClassId,
-        allowIncidents = if (blacklistIncidents == true) false else (allowIncidents ?: true)
+        allowIncidents = if (blacklistIncidents == true) false else (allowIncidents ?: true),
+        flagRoutes = (flagRoutes ?: emptyList())
+            .filter { it.nextNodeId.isNotBlank() }
+            .map { FlagRoute(it.requiredFlags ?: emptyList(), it.nextNodeId) }
     )
 
     private fun EnvironmentDefinitionDto.toDefinition(): EnvironmentDefinition = EnvironmentDefinition(

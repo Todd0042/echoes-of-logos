@@ -88,8 +88,24 @@ data class DialogueNode(
     val metricOverrides: Map<String, Float> = emptyMap(),
     val assignHeroClassId: String? = null,
     val allowIncidents: Boolean = true,
-    val blacklistIncidents: Boolean = false
-)
+    val blacklistIncidents: Boolean = false,
+    /**
+     * Automatic branching on story flags: the first route whose [FlagRoute.requiredFlags] are all set
+     * decides where the story goes next; otherwise [nextNodeId]. Lets one shared node send players
+     * down different paths (a role chosen earlier, a campaign perspective) without asking them.
+     */
+    val flagRoutes: List<FlagRoute> = emptyList()
+) {
+    /** Where "next" leads with these story flags: the first matching [flagRoutes] entry, else [nextNodeId]. */
+    fun nextNodeIdFor(flags: Map<String, Boolean>): String? =
+        flagRoutes.firstOrNull { route -> route.requiredFlags.all { flags[it] == true } }?.nextNodeId ?: nextNodeId
+
+    /** Every node "next" can lead to, whatever the flags (for graph checks and tools). */
+    val allNextNodeIds: List<String> get() = flagRoutes.map { it.nextNodeId } + listOfNotNull(nextNodeId)
+}
+
+/** One branch of [DialogueNode.flagRoutes]. */
+data class FlagRoute(val requiredFlags: List<String>, val nextNodeId: String)
 
 data class StoryScene(
     val id: String,

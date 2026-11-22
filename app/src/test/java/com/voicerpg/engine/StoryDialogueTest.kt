@@ -382,6 +382,20 @@ class StoryGraphSchemaTest {
     fun everyStoryLinkResolves() {
         assertTrue("Game content must ship at least one story node", GameContent.nodes.isNotEmpty())
         for (node in GameContent.nodes.values) {
+            for (route in node.flagRoutes) {
+                assertTrue(
+                    "Node '${node.id}' flag route to '${route.nextNodeId}' does not resolve",
+                    GameContent.nodes.containsKey(route.nextNodeId)
+                )
+                assertTrue("Node '${node.id}' has a flag route with no requiredFlags", route.requiredFlags.isNotEmpty())
+            }
+            // A node that branches on flags needs a fallback, or a player matching no route is stranded.
+            if (node.flagRoutes.isNotEmpty()) {
+                assertTrue(
+                    "Node '${node.id}' has flagRoutes but no nextNodeId or choices to fall back on",
+                    node.nextNodeId != null || node.choices.isNotEmpty()
+                )
+            }
             node.nextNodeId?.let { next ->
                 assertTrue(
                     "Node '${node.id}' nextNodeId '$next' does not resolve",
@@ -475,7 +489,7 @@ class StoryGraphSchemaTest {
             val id = queue.removeFirst()
             if (!visited.add(id)) continue
             val node = GameContent.nodes[id] ?: continue
-            node.nextNodeId?.let { queue.add(it) }
+            queue.addAll(node.allNextNodeIds)
             node.choices.forEach { queue.add(it.nextNodeId) }
             node.hubCompletion?.let { queue.add(it.redirectToNodeId) }
             node.changeSceneId?.let { sceneId ->
