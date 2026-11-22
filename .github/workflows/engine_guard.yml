@@ -1,0 +1,15 @@
+# Installed by voice-rpg-engine/scripts/sync_engine_to_games.sh.
+# Fails if engine files in this game differ from the synced engine version (see .engine-sync/).
+name: Engine guard
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  engine-guard:
+    name: Engine files match the synced engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash .engine-sync/guard.sh --ci

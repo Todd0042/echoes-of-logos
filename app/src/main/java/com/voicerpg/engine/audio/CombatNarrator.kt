@@ -57,31 +57,12 @@ class CombatNarrator(
             }
         }
 
-        val DEFAULT_BUILTIN_PREFERRED_VOICE_IDS: Map<String, String> = mapOf(
-            "commander_america" to "en-us-x-iob-local",
-            "elon" to "en-us-x-tpc-local",
-            "narrator_karoline" to "en-us-x-tpf-local",
-            "narrator_kayleigh" to "en-us-x-sfg-local",
-            "narrator_hulk" to "en-gb-x-gbd-local",
-            "pelosi" to "en-us-x-tpf-local",
-            "kamala" to "en-us-x-sfg-local",
-            "obama" to "en-us-x-iog-local",
-            "biden" to "en-us-x-iol-local",
-            "rocket_man" to "en-au-x-aub-local",
-            "media_anchor" to "en-us-x-tpd-local",
-            "cedric" to "en-gb-x-gbd-local",
-            "aethel" to "en-gb-x-gba-local",
-            "lyra" to "en-us-x-tpf-local",
-            "zephyr" to "en-us-x-tpc-local",
-            "malakor" to "en-us-x-tpd-local"
-        )
-
         /**
          * Fallback preferred voice packs per speaker, declared by the active game's
          * character data files (assets/game/characters/<name>.json).
          */
         val PREFERRED_VOICE_IDS: Map<String, String>
-            get() = com.voicerpg.engine.content.GameContent.preferredVoiceIds.ifEmpty { DEFAULT_BUILTIN_PREFERRED_VOICE_IDS }
+            get() = com.voicerpg.engine.content.GameContent.preferredVoiceIds
 
         /**
          * Resolves the voice a speaker should use: a persisted player override wins when its

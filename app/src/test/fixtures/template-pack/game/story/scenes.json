@@ -1,0 +1,39 @@
+{
+  "_doc": "TEMPLATE STORY SCENES. A scene binds a background image, a music track, and an entry dialogue node. Chapter/act/milestone fields feed the spoken Quest Recap and the debug chapter-warp menu — no story metadata is hardcoded in engine classes.",
+  "scenes": [
+    {
+      "id": "scene_proving_grounds",
+      "name": "The Proving Grounds",
+      "chapterTitle": "Sandbox: The Voice Sanctuary",
+      "backgroundAsset": "story/template_scene.jpg",
+      "initialNodeId": "template_intro",
+      "ambientDescription": "An ancient vaulted chamber where stone glyphs hum in resonance with spoken incantations.",
+      "musicAsset": "audio/music/bgm_exploration.ogg",
+      "chapterIndex": 0,
+      "actNumber": 1,
+      "actTitle": "Act I: The Template Sandbox",
+      "milestoneTitle": "Sandbox: The Voice Sanctuary",
+      "milestoneLocation": "The Proving Grounds",
+      "milestoneSummary": "You entered the proving grounds, learned to speak commands aloud, and tested your voice in trial combat.",
+      "milestoneIcon": "🎙️",
+      "defaultObjective": "Speak with the chronicle, learn the mechanics, and run the combat trials."
+    },
+    {
+      "id": "scene_echo_hall",
+      "name": "The Echo Hall",
+      "chapterTitle": "Chapter 1: The Guardian Trial",
+      "backgroundAsset": "story/template_scene_alt.jpg",
+      "initialNodeId": "hall_intro",
+      "ambientDescription": "A vast hall of polished stone where every spoken word returns twice, testing the clarity of your intent.",
+      "musicAsset": "audio/music/bgm_exploration.ogg",
+      "chapterIndex": 1,
+      "actNumber": 1,
+      "actTitle": "Act I: The Template Sandbox",
+      "milestoneTitle": "Chapter 1: The Guardian Trial",
+      "milestoneLocation": "The Echo Hall",
+      "milestoneSummary": "You rested in the Echo Hall, then faced the Proving Guardian and conquered its phased assault.",
+      "milestoneIcon": "🛡️",
+      "defaultObjective": "Rest to restore the party, then defeat the Proving Guardian."
+    }
+  ]
+}

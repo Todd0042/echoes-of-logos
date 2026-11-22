@@ -317,8 +317,9 @@ private fun BattleConclusionOverlay(
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            val manifest = GameContent.manifest
             Text(
-                text = if (isVictory) "⚔️ VICTORY ⚔️" else "💀 CLOCKED OUT (DEFEAT) 💀",
+                text = if (isVictory) manifest.victoryTitle else manifest.defeatTitle,
                 color = if (isVictory) LogosGlow else Color(0xFFFF5252),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
@@ -327,14 +328,7 @@ private fun BattleConclusionOverlay(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Pull conclusion lines from manifest so game-specific narrative can shine hands-free
-            val conclusionText = if (isVictory) {
-                GameContent.manifest.victoryLine.ifBlank { "Shift complete. You held the line." }
-            } else {
-                GameContent.manifest.defeatLine.ifBlank {
-                    "Your team was decisively crushed, but this is retail — corporate policy does not recognize death as an excused absence. Dust off the vest, clock back in, and press on."
-                }
-            }
+            val conclusionText = if (isVictory) manifest.victoryLine else manifest.defeatLine
 
             Text(
                 text = conclusionText,
@@ -347,8 +341,7 @@ private fun BattleConclusionOverlay(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // GAME SPECIFIC (Wally's World / The Squeeze): Never upstream to core engine repo.
-            // In retail, defeat is not a game over — the shift must go on. The player presses on even in death.
+            // Win or lose, the story can continue (labels from the manifest).
             if (onContinueStory != null) {
                 Button(
                     onClick = onContinueStory,
@@ -359,7 +352,7 @@ private fun BattleConclusionOverlay(
                     shape = RoundedCornerShape(6.dp)
                 ) {
                     Text(
-                        text = if (isVictory) "CONTINUE STORY ➔" else "PRESS ON (STILL ON THE CLOCK) ➔",
+                        text = if (isVictory) manifest.victoryContinueLabel else manifest.defeatContinueLabel,
                         fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Black
                     )

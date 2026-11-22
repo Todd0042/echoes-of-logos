@@ -71,11 +71,13 @@ object StoryAssetLoader {
     fun loadBitmap(context: Context, assetPath: String, slot: Int? = null): ImageBitmap? {
         val targetSlot = slot ?: activeSlot
         val defaultHeroPortrait = GameContent.manifest.defaultHeroPortrait
+        // The player's portrait (which a selfie portrait replaces) is whatever the content declares as
+        // the hero's: the manifest default, a class portrait, or the hero character's own portrait.
+        val heroCharacterPortrait = GameContent.heroCharacter?.speaker?.portraitAsset
         val isHeroPortrait = (defaultHeroPortrait != null && assetPath.equals(defaultHeroPortrait, ignoreCase = true)) ||
+                (heroCharacterPortrait != null && assetPath.equals(heroCharacterPortrait, ignoreCase = true)) ||
                 GameContent.classes.any { it.portraitAsset != null && assetPath.equals(it.portraitAsset, ignoreCase = true) } ||
-                assetPath.contains("custom", ignoreCase = true) ||
-                assetPath.contains("hero", ignoreCase = true) ||
-                assetPath.contains("applicant", ignoreCase = true)
+                assetPath.contains("custom", ignoreCase = true)
 
         val cacheKey = if (isHeroPortrait) "${assetPath}_slot_${targetSlot}" else assetPath
         if (bitmapCache.containsKey(cacheKey)) return bitmapCache[cacheKey]

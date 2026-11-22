@@ -1,5 +1,7 @@
 package com.voicerpg.engine
 
+import org.junit.Rule
+import com.voicerpg.engine.testing.TemplateFixture
 import com.voicerpg.engine.content.GameContent
 import com.voicerpg.engine.model.SpellSchool
 import org.junit.Assert.assertEquals
@@ -9,44 +11,43 @@ import org.junit.Test
 
 class TemplateEngineTest {
 
+    /** Mechanics test: runs on the engine's frozen template content, whatever game it's in. */
+    @get:Rule val templateFixture = TemplateFixture()
+
     @Test
     fun testTemplateHeroInitialization() {
         val hero = GameContent.heroCharacter!!.toPartyMember()!!
-        assertEquals("Aethel", hero.name)
+        assertEquals("Template Hero", hero.name)
         assertEquals(240, hero.maxHp)
         assertEquals(140, hero.maxMp)
         assertTrue(hero.isAlive)
-        assertEquals(4, hero.spells.size)
+        assertEquals(5, hero.spells.size)
 
-        val fireball = hero.spells.first { it.id == "fireball" }
-        assertEquals(SpellSchool.PYROMANCY, fireball.school)
-        assertTrue(fireball.aliases.isEmpty())
+        val strike = hero.spells.first { it.id == "power_strike" }
+        assertEquals(SpellSchool.PHYSICAL, strike.school)
+        assertTrue(strike.aliases.contains("strike"))
 
-        val frost = hero.spells.first { it.id == "frost_spike" }
-        assertEquals(SpellSchool.CRYOMANCY, frost.school)
-        assertTrue(frost.aliases.isEmpty())
+        val flame = hero.spells.first { it.id == "flame_spark" }
+        assertEquals(SpellSchool.PYROMANCY, flame.school)
+        assertTrue(flame.aliases.contains("spark"))
 
-        val chain = hero.spells.first { it.id == "chain_lightning" }
-        assertEquals(SpellSchool.ELECTROMANCY, chain.school)
-        assertTrue(chain.aliases.isEmpty())
-
-        val attune = hero.spells.first { it.id == "attune" }
-        assertEquals(SpellSchool.PHYSICAL, attune.school)
-        assertTrue(attune.aliases.contains("attune"))
+        val mend = hero.spells.first { it.id == "mending_touch" }
+        assertTrue(mend.isHeal)
+        assertTrue(mend.aliases.contains("heal"))
     }
 
     @Test
     fun testTemplateEnemySpawningSingleAndSquad() {
-        val soloEnemy = GameContent.enemyTemplates.getValue("shadow_wisp").toEnemy(
-            instanceId = "wisp_test",
-            nameOverride = "Test Wisp",
+        val soloEnemy = GameContent.enemyTemplates.getValue("training_drone").toEnemy(
+            instanceId = "drone_test",
+            nameOverride = "Test Drone",
             hpOverride = 100
         )
-        assertEquals("wisp_test", soloEnemy.id)
+        assertEquals("drone_test", soloEnemy.id)
         assertEquals(100, soloEnemy.maxHp)
         assertTrue(soloEnemy.isAlive)
 
-        // Test spawning a squad of 3 minions with unique IDs
+        // Test spawning a squad of 3 enemies with unique IDs
         val squad = (1..3).map { idx ->
             GameContent.createMinion("combat_drone_$idx", "Combat Drone $idx")
         }
@@ -59,14 +60,12 @@ class TemplateEngineTest {
 
     @Test
     fun testTemplateEncountersConfigured() {
-        val solo = GameContent.encounters.getValue("prologue_solo")
-        assertEquals(2, solo.enemies.size)
+        val solo = GameContent.encounters.getValue("template_solo_battle")
+        assertEquals(1, solo.enemies.size)
         assertNotNull(solo.initialParty)
         assertEquals(1, solo.initialParty?.size)
-        val soloIds = solo.enemies.map { it.id }.toSet()
-        assertEquals(2, soloIds.size)
 
-        val trio = GameContent.encounters.getValue("ch9_penitent_gate")
+        val trio = GameContent.encounters.getValue("template_trio_battle")
         assertEquals(3, trio.enemies.size)
         val enemyIds = trio.enemies.map { it.id }.toSet()
         assertEquals(3, enemyIds.size)
@@ -74,7 +73,7 @@ class TemplateEngineTest {
 
     @Test
     fun testTemplateStoryGraphIntegrity() {
-        val hub = GameContent.nodes.getValue("camp_belfry_hub")
+        val hub = GameContent.nodes.getValue("template_choice_hub")
         assertTrue(hub.choices.size >= 4)
 
         // Verify choices have voice keywords and valid next nodes
@@ -83,18 +82,16 @@ class TemplateEngineTest {
             assertTrue(GameContent.nodes.containsKey(choice.nextNodeId))
         }
 
-        // Verify choice elimination flags exist on the bell and lyra branches
-        val bellChoice = hub.choices.first { it.id == "camp_belfry_c_bell" }
-        assertNotNull(bellChoice.completionFlag)
-        assertEquals("camp_belfry_bell_complete", bellChoice.completionFlag)
+        // Verify choice elimination flags exist on inquiry branches
+        val loreChoice = hub.choices.first { it.id == "choice_history" }
+        assertNotNull(loreChoice.completionFlag)
 
-        val lyraChoice = hub.choices.first { it.id == "camp_belfry_c_lyra" }
-        assertNotNull(lyraChoice.completionFlag)
-        assertEquals("camp_belfry_lyra_complete", lyraChoice.completionFlag)
+        val counselChoice = hub.choices.first { it.id == "choice_counsel" }
+        assertNotNull(counselChoice.completionFlag)
 
         // Verify combat triggers lead to encounters
-        val combatNode = GameContent.nodes.getValue("village_battle_trigger")
-        assertEquals("prologue_solo", combatNode.triggerBattleEncounterId)
-        assertEquals("village_post_battle", combatNode.nextNodeId)
+        val combatNode = GameContent.nodes.getValue("template_trigger_solo_combat")
+        assertEquals("template_solo_battle", combatNode.triggerBattleEncounterId)
+        assertEquals("template_post_victory", combatNode.nextNodeId)
     }
 }

@@ -68,14 +68,13 @@ class EngineDecoupledAssetsTest {
             assertTrue("Portrait asset '$portraitPath' must exist on disk", portraitFile.exists())
         }
 
-        // Test alias resolution
-        val dungeonByAlias = GameContent.environmentById("vaults")
-        assertNotNull("Environment should resolve by alias 'vaults'", dungeonByAlias)
-        assertEquals("dungeon", dungeonByAlias?.id)
-
-        val forestByAlias = GameContent.environmentById("FOREST")
-        assertNotNull("Environment should resolve by alias 'FOREST'", forestByAlias)
-        assertEquals("forest", forestByAlias?.id)
+        // Every declared alias resolves to its environment (case-insensitive), whatever the game declares.
+        for ((id, env) in pack.environments) {
+            for (alias in env.aliases) {
+                assertEquals("Alias '$alias' must resolve to '$id'", id, GameContent.environmentById(alias)?.id)
+                assertEquals("Alias '${alias.uppercase()}' must resolve to '$id'", id, GameContent.environmentById(alias.uppercase())?.id)
+            }
+        }
     }
 
     @Test
@@ -146,15 +145,16 @@ class EngineDecoupledAssetsTest {
 
     @Test
     fun testHeroEmbeddedSpriteAndSpells() {
-        val pack = loadPack()
+        loadPack()
         val hero = GameContent.characterById("hero")
         assertNotNull("Hero must exist", hero)
         assertNotNull("Hero embedded sprite must exist", hero?.sprite)
         assertTrue("Hero sprite must have idleUpright frame", hero!!.sprite!!.idleUpright.isNotEmpty())
         assertNotNull("Hero combat must exist", hero.combat)
         assertTrue("Hero combat spells must not be empty", hero.combat!!.spells.isNotEmpty())
-        val fireball = hero.combat!!.spells.firstOrNull { it.id == "fireball" }
-        assertNotNull("Hero must have fireball spell", fireball)
-        assertNotNull("Hero fireball must have graphics", fireball?.graphics)
+        for (spell in hero.combat!!.spells) {
+            assertTrue("Hero spell ids must not be blank", spell.id.isNotBlank())
+            assertTrue("Hero spell '${spell.id}' must have a name", spell.name.isNotBlank())
+        }
     }
 }

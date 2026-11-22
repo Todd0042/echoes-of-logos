@@ -624,7 +624,7 @@ class MainActivity : ComponentActivity() {
                         } else if (storyState.gameScreen == GameScreen.TUTORIAL) {
                             "Chronicle Guide"
                         } else {
-                            "Echoes of the Logos"
+                            com.voicerpg.engine.content.GameContent.manifest.gameTitle
                         }
                     }
 

@@ -1,0 +1,239 @@
+{
+  "locale": "pt",
+  "metaCommands": {
+    "STATUS_REPORT": [
+      "status",
+      "relatorio",
+      "relatorio de status",
+      "relatorio de estado",
+      "relatório de estado",
+      "vida",
+      "saude",
+      "hp"
+    ],
+    "CHECK_ENEMIES": [
+      "inimigos",
+      "monstros",
+      "alvos",
+      "quem esta vivo"
+    ],
+    "CHECK_PARTY": [
+      "grupo",
+      "aliados",
+      "equipe",
+      "companheiros"
+    ],
+    "UNLOCK_SCREEN": [
+      "desbloquear",
+      "desbloquear tela",
+      "ligar tela"
+    ],
+    "LOCK_SCREEN": [
+      "bloquear tela",
+      "apagar tela",
+      "tela preta"
+    ],
+    "DISABLE_EYES_FREE": [
+      "sair do modo bolso",
+      "desativar modo bolso"
+    ],
+    "ENABLE_EYES_FREE": [
+      "ativar modo bolso",
+      "iniciar modo bolso"
+    ],
+    "TOGGLE_EYES_FREE": [
+      "modo bolso",
+      "sem tela",
+      "modo audio",
+      "narrador"
+    ],
+    "TOGGLE_AUTO_LISTEN": [
+      "escuta automatica",
+      "maos livres",
+      "auto microfone"
+    ],
+    "TOGGLE_NARRATION": [
+      "alternar narracao",
+      "narracao",
+      "ler dialogo"
+    ],
+    "TOGGLE_READ_CHOICES": [
+      "ler escolhas",
+      "ler opcoes",
+      "opcoes em voz alta"
+    ],
+    "TOGGLE_SPEAKER_ATTRIBUTION": [
+      "nome de quem fala",
+      "quem fala",
+      "atribuicao"
+    ],
+    "TOGGLE_MUSIC": [
+      "musica",
+      "musica ligada",
+      "musica desligada",
+      "mutar musica"
+    ],
+    "OPEN_OPTIONS": [
+      "opcoes",
+      "configuracoes",
+      "menu",
+      "abrir opcoes"
+    ],
+    "CLOSE_OPTIONS": [
+      "fechar opcoes",
+      "voltar",
+      "continuar",
+      "fechar menu"
+    ],
+    "OPEN_BACKLOG": [
+      "historico",
+      "registro",
+      "abrir historico"
+    ],
+    "CLOSE_BACKLOG": [
+      "fechar historico",
+      "fechar registro"
+    ],
+    "FAST_FORWARD": [
+      "pular",
+      "avancar",
+      "avancar rapido"
+    ],
+    "STOP_FAST_FORWARD": [
+      "pare",
+      "parar",
+      "pausa"
+    ],
+    "STORY_RECAP": [
+      "recapitular",
+      "resumo",
+      "historia ate agora"
+    ],
+    "HELP": [
+      "ajuda",
+      "comandos",
+      "o que posso dizer"
+    ],
+    "SPEED_UP_NARRATION": [
+      "falar mais rapido",
+      "voz mais rapida",
+      "mais rapido"
+    ],
+    "SLOW_DOWN_NARRATION": [
+      "falar mais devagar",
+      "voz mais lenta",
+      "mais devagar"
+    ],
+    "RESET_NARRATION_SPEED": [
+      "velocidade normal",
+      "resetar velocidade"
+    ]
+  },
+  "targeting": {
+    "ordinals": {
+      "0": [
+        "primeiro",
+        "primeira",
+        "inimigo 1",
+        "monstro 1",
+        "1"
+      ],
+      "1": [
+        "segundo",
+        "segunda",
+        "inimigo 2",
+        "monstro 2",
+        "2"
+      ],
+      "2": [
+        "terceiro",
+        "terceira",
+        "inimigo 3",
+        "monstro 3",
+        "3"
+      ],
+      "3": [
+        "quarto",
+        "quarta",
+        "inimigo 4",
+        "monstro 4",
+        "4"
+      ],
+      "4": [
+        "quinto",
+        "quinta",
+        "inimigo 5",
+        "monstro 5",
+        "5"
+      ],
+      "5": [
+        "sexto",
+        "sexta",
+        "inimigo 6",
+        "monstro 6",
+        "6"
+      ]
+    },
+    "positionals": {
+      "leftmost": [
+        "mais a esquerda",
+        "extremo esquerdo"
+      ],
+      "rightmost": [
+        "mais a direita",
+        "extremo direito"
+      ],
+      "left": [
+        "esquerda",
+        "a esquerda"
+      ],
+      "right": [
+        "direita",
+        "a direita"
+      ],
+      "center": [
+        "centro",
+        "meio",
+        "no meio"
+      ]
+    },
+    "groups": {
+      "all": [
+        "todos",
+        "todas",
+        "todos os inimigos",
+        "horda"
+      ],
+      "party": [
+        "grupo",
+        "aliados",
+        "equipe"
+      ],
+      "self": [
+        "eu",
+        "mim",
+        "a mim",
+        "eu mesmo"
+      ]
+    }
+  },
+  "actions": {
+    "heal": [
+      "curar",
+      "sarar",
+      "restaurar",
+      "purificar"
+    ],
+    "defend": [
+      "defender",
+      "bloquear",
+      "escudo",
+      "proteger"
+    ],
+    "attack": [
+      "atacar",
+      "golpear",
+      "ataque"
+    ]
+  }
+}

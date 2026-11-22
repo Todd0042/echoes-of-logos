@@ -1,5 +1,7 @@
 package com.voicerpg.engine
 
+import org.junit.Rule
+import com.voicerpg.engine.testing.TemplateFixture
 import com.voicerpg.engine.audio.SpeechManager
 import com.voicerpg.engine.combat.MovesetTable
 import com.voicerpg.engine.content.GameContent
@@ -29,6 +31,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 class DynamicEncounterTest {
+
+    /** Mechanics test: runs on the engine's frozen template content, whatever game it's in. */
+    @get:Rule val templateFixture = TemplateFixture()
 
     private lateinit var viewModel: CombatViewModel
 
@@ -63,8 +68,8 @@ class DynamicEncounterTest {
         loreClass = "Elementalist",
         currentHp = 240,
         maxHp = 240,
-        currentMp = 140,
-        maxMp = 140,
+        currentMp = 160,
+        maxMp = 160,
         spells = elementalistSpells(),
         speed = 70
     )
@@ -75,33 +80,33 @@ class DynamicEncounterTest {
         loreClass = "Templar",
         currentHp = 420,
         maxHp = 420,
-        currentMp = 80,
-        maxMp = 80,
-        spells = spellIds("holy_smite", "lay_on_hands", "shield_wall", "steady_breath"),
-        speed = 55
+        currentMp = 90,
+        maxMp = 90,
+        spells = spellIds("power_strike", "mending_touch", "aegis_guard", "attune"),
+        speed = 40
     )
 
     private fun lyra() = PartyMember(
         id = "lyra",
         name = "Lyra",
-        loreClass = "Grove Warden",
-        currentHp = 280,
-        maxHp = 280,
-        currentMp = 120,
-        maxMp = 120,
-        spells = spellIds("soothing_rain", "briar_entangle", "deep_root"),
-        speed = 65
+        loreClass = "Warden",
+        currentHp = 320,
+        maxHp = 320,
+        currentMp = 160,
+        maxMp = 160,
+        spells = spellIds("mending_touch", "haste_cadence", "attune"),
+        speed = 55
     )
 
     private fun zephyr() = PartyMember(
         id = "zephyr",
         name = "Zephyr",
         loreClass = "Shadowblade",
-        currentHp = 250,
-        maxHp = 250,
-        currentMp = 90,
-        maxMp = 90,
-        spells = spellIds("shadow_strike", "venom_flurry", "quiet_lungs"),
+        currentHp = 300,
+        maxHp = 300,
+        currentMp = 140,
+        maxMp = 140,
+        spells = spellIds("shadow_spike", "void_drain", "umbral_veil", "attune"),
         speed = 85
     )
 
@@ -121,7 +126,7 @@ class DynamicEncounterTest {
             name = id,
             environment = BattleEnvironment.FOREST,
             enemies = listOf(
-                GameContent.enemyTemplates.getValue("shadow_wisp").toEnemy(
+                GameContent.enemyTemplates.getValue("training_drone").toEnemy(
                     instanceId = "${id}_enemy",
                     nameOverride = "Encounter Guard"
                 )
@@ -146,7 +151,7 @@ class DynamicEncounterTest {
         assertFalse(viewModel.isDeveloperToolsEnabled.value)
 
         // Survives encounter start/restart state reconstructions
-        viewModel.startEncounter(GameContent.encounters.getValue("prologue_solo"))
+        viewModel.startEncounter(GameContent.encounters.getValue("template_solo_battle"))
         viewModel.toggleDeveloperTools()
         assertTrue(viewModel.isDeveloperToolsEnabled.value)
         viewModel.restartBattle()
@@ -158,12 +163,12 @@ class DynamicEncounterTest {
         viewModel.startEncounter(
             party = listOf(heroElementalist()),
             enemies = listOf(
-                GameContent.enemyTemplates.getValue("shadow_wisp").toEnemy(
+                GameContent.enemyTemplates.getValue("training_drone").toEnemy(
                     instanceId = "wisp_1",
                     nameOverride = "Shadow Wisp",
                     subtitleOverride = "Void Wisp"
                 ),
-                GameContent.enemyTemplates.getValue("shadow_wisp").toEnemy(
+                GameContent.enemyTemplates.getValue("training_drone").toEnemy(
                     instanceId = "wisp_2",
                     nameOverride = "Shadow Wisp Beta",
                     subtitleOverride = "Void Wisp"
@@ -313,7 +318,7 @@ class DynamicEncounterTest {
             activeEnemies = emptyList(),
             party = party
         )
-        assertEquals("soothing_rain", healIntentCedric.spell.id)
+        assertEquals("mending_touch", healIntentCedric.spell.id)
         assertEquals("cedric", healIntentCedric.targetHeroId)
 
         val healIntentParty = IntentParser.parse(
@@ -333,7 +338,7 @@ class DynamicEncounterTest {
                 name = "Dungeon Descent",
                 environment = BattleEnvironment.DUNGEON,
                 enemies = listOf(
-                    GameContent.enemyTemplates.getValue("shadow_wisp").toEnemy(
+                    GameContent.enemyTemplates.getValue("training_drone").toEnemy(
                         instanceId = "ch1_drone",
                         nameOverride = "Dungeon Drone"
                     )
@@ -354,13 +359,13 @@ class DynamicEncounterTest {
 
         // Target the summoned minion by voice
         val intent = IntentParser.parse(
-            utterance = "Holy smite the bone vanguard!",
+            utterance = "Power strike the bone vanguard!",
             availableSpells = cedric().spells,
             activeEnemies = activeEnemies,
             party = viewModel.state.value.party
         )
 
-        assertEquals("holy_smite", intent.spell.id)
+        assertEquals("power_strike", intent.spell.id)
         assertEquals("minion_bone_guard", intent.targetEnemyId)
     }
 
@@ -436,19 +441,19 @@ class DynamicEncounterTest {
         val duo = createDuoParty()
         val cedric = duo.first { it.id == "cedric" }
         assertFalse("Cedric starter kit should not include Chain Lightning", cedric.spells.any { it.id == "chain_lightning" })
-        assertTrue("Cedric starter kit should include Lay on Hands", cedric.spells.any { it.id == "lay_on_hands" })
-        assertTrue("Cedric starter kit should include Steady Breath", cedric.spells.any { it.id == "steady_breath" })
+        assertTrue("Cedric starter kit should include Mending Touch", cedric.spells.any { it.id == "mending_touch" })
+        assertTrue("Cedric starter kit should include Attune", cedric.spells.any { it.id == "attune" })
 
         val trio = createTrioParty()
         val lyra = trio.first { it.id == "lyra" }
         assertFalse("Lyra starter kit should not include Temporal Stasis", lyra.spells.any { it.id == "temporal_stasis" })
-        assertTrue("Lyra starter kit should include Soothing Rain", lyra.spells.any { it.id == "soothing_rain" })
-        assertTrue("Lyra starter kit should include Deep Root", lyra.spells.any { it.id == "deep_root" })
+        assertTrue("Lyra starter kit should include Mending Touch", lyra.spells.any { it.id == "mending_touch" })
+        assertTrue("Lyra starter kit should include Attune", lyra.spells.any { it.id == "attune" })
 
         val zephyr = createZephyrMember()
         assertFalse("Zephyr starter kit should not include Resonant Surge", zephyr.spells.any { it.id == "resonant_surge" })
-        assertTrue("Zephyr starter kit should include Shadow Strike", zephyr.spells.any { it.id == "shadow_strike" })
-        assertTrue("Zephyr starter kit should include Quiet Lungs", zephyr.spells.any { it.id == "quiet_lungs" })
+        assertTrue("Zephyr starter kit should include Shadow Spike", zephyr.spells.any { it.id == "shadow_spike" })
+        assertTrue("Zephyr starter kit should include Attune", zephyr.spells.any { it.id == "attune" })
     }
 
     @Test
@@ -486,7 +491,7 @@ class DynamicEncounterTest {
                 speed = 40,
                 level = 10,
                 xp = 100,
-                spellIds = listOf("holy_smite", "lay_on_hands", "shield_wall")
+                spellIds = listOf("power_strike", "mending_touch", "aegis_guard")
             )
         )
         viewModel.applySavedStats(savedParty)
@@ -496,7 +501,7 @@ class DynamicEncounterTest {
                 name = "Proving Grounds Duo",
                 environment = BattleEnvironment.FOREST,
                 enemies = listOf(
-                    GameContent.enemyTemplates.getValue("shadow_wisp").toEnemy(
+                    GameContent.enemyTemplates.getValue("training_drone").toEnemy(
                         instanceId = "duo_drone",
                         nameOverride = "Duo Drone"
                     )
@@ -507,10 +512,11 @@ class DynamicEncounterTest {
 
         val cedric = viewModel.state.value.party.first { it.id == "cedric" }
         assertEquals(10, cedric.level)
-        assertTrue(cedric.spells.any { it.id == "shield_wall" })
-        // GameContent ships a breath discipline for Cedric (steady_breath), so the
-        // imported kit's final spell is the engine-appended breath spell.
-        assertEquals("steady_breath", cedric.spells.last().id)
+        assertTrue(cedric.spells.any { it.id == "aegis_guard" })
+        // GameContent ships no breath/attune discipline for Cedric (breathSpellFor("cedric")
+        // returns null), so the imported kit's final spell is the last persisted spell rather
+        // than an engine-appended breath.
+        assertEquals("aegis_guard", cedric.spells.last().id)
     }
 
     @Test
@@ -521,7 +527,7 @@ class DynamicEncounterTest {
                 name = "Archive Enforcers",
                 environment = BattleEnvironment.DUNGEON,
                 enemies = (1..4).map { idx ->
-                    GameContent.enemyTemplates.getValue("shadow_wisp").toEnemy(
+                    GameContent.enemyTemplates.getValue("training_drone").toEnemy(
                         instanceId = "archive_enforcer_$idx",
                         nameOverride = "Archive Enforcer $idx",
                         hpOverride = 160
@@ -679,11 +685,11 @@ class DynamicEncounterTest {
             name = "Mirror Gauntlet",
             environment = BattleEnvironment.CASTLE,
             enemies = listOf(
-                GameContent.enemyTemplates.getValue("void_shaman").toEnemy(instanceId = "mirror_occultist", nameOverride = "Mirror Occultist"),
-                GameContent.enemyTemplates.getValue("blighted_orc").toEnemy(instanceId = "mirror_vanguard", nameOverride = "Mirror Vanguard"),
-                GameContent.enemyTemplates.getValue("corrupted_archer").toEnemy(instanceId = "mirror_sniper", nameOverride = "Mirror Sniper"),
-                GameContent.enemyTemplates.getValue("shadow_wisp").toEnemy(instanceId = "mirror_automaton", nameOverride = "Mirror Automaton"),
-                GameContent.enemyTemplates.getValue("bone_acolyte").toEnemy(instanceId = "mirror_oracle", nameOverride = "Mirror Oracle")
+                GameContent.enemyTemplates.getValue("template_caster").toEnemy(instanceId = "mirror_occultist", nameOverride = "Mirror Occultist"),
+                GameContent.enemyTemplates.getValue("template_brute").toEnemy(instanceId = "mirror_vanguard", nameOverride = "Mirror Vanguard"),
+                GameContent.enemyTemplates.getValue("template_sniper").toEnemy(instanceId = "mirror_sniper", nameOverride = "Mirror Sniper"),
+                GameContent.enemyTemplates.getValue("training_drone").toEnemy(instanceId = "mirror_automaton", nameOverride = "Mirror Automaton"),
+                GameContent.enemyTemplates.getValue("template_caster").toEnemy(instanceId = "mirror_oracle", nameOverride = "Mirror Oracle")
             )
         )
         viewModel.startEncounter(gauntlet)
@@ -709,7 +715,7 @@ class DynamicEncounterTest {
     fun testStrictTurnEnforcementZephyrActiveCannotCastFireball() {
         val quad = createQuadParty()
         applyElementalistCustomization()
-        viewModel.startEncounter(GameContent.encounters.getValue("prologue_solo").copy(initialParty = quad))
+        viewModel.startEncounter(GameContent.encounters.getValue("template_solo_battle").copy(initialParty = quad))
 
         // Set Zephyr as active turn holder with ATB full; other heroes are not turn ready
         viewModel.setPlayerInputPhaseForTesting("zephyr")
@@ -752,7 +758,7 @@ class DynamicEncounterTest {
     fun testStrictTurnEnforcementCannotCommandOtherHeroOutOfTurn() {
         val quad = createQuadParty()
         applyElementalistCustomization()
-        viewModel.startEncounter(GameContent.encounters.getValue("prologue_solo").copy(initialParty = quad))
+        viewModel.startEncounter(GameContent.encounters.getValue("template_solo_battle").copy(initialParty = quad))
 
         viewModel.setPlayerInputPhaseForTesting("zephyr")
         viewModel.setPartyMemberAtbForTesting("cedric", 0.30f)
@@ -777,7 +783,7 @@ class DynamicEncounterTest {
     fun testStrictTurnEnforcementZephyrActsConsumesTurn() {
         val quad = createQuadParty()
         applyElementalistCustomization()
-        viewModel.startEncounter(GameContent.encounters.getValue("prologue_solo").copy(initialParty = quad))
+        viewModel.startEncounter(GameContent.encounters.getValue("template_solo_battle").copy(initialParty = quad))
 
         viewModel.setPlayerInputPhaseForTesting("zephyr")
         val initialZephyrMp = viewModel.state.value.party.first { it.id == "zephyr" }.currentMp
@@ -802,7 +808,7 @@ class DynamicEncounterTest {
     @Test
     fun testVoiceHeroSwitchingTurnReadyVsNotReady() {
         val quad = createQuadParty()
-        viewModel.startEncounter(GameContent.encounters.getValue("prologue_solo").copy(initialParty = quad))
+        viewModel.startEncounter(GameContent.encounters.getValue("template_solo_battle").copy(initialParty = quad))
 
         viewModel.setPlayerInputPhaseForTesting("zephyr")
         viewModel.setPartyMemberAtbForTesting("cedric", 0.40f)
@@ -828,7 +834,7 @@ class DynamicEncounterTest {
         viewModel.setPureStoryMode(true)
         assertTrue(viewModel.state.value.isPureStoryMode)
 
-        viewModel.startEncounter(GameContent.encounters.getValue("prologue_solo"))
+        viewModel.startEncounter(GameContent.encounters.getValue("template_solo_battle"))
         assertTrue("isPureStoryMode must be preserved when starting an encounter", viewModel.state.value.isPureStoryMode)
 
         viewModel.restartBattle()
@@ -838,7 +844,7 @@ class DynamicEncounterTest {
     @Test
     fun testPureStoryModeAutoHeroActionExecutesChantAndDamagesEnemies() {
         viewModel.setPureStoryMode(true)
-        viewModel.startEncounter(GameContent.encounters.getValue("prologue_solo"))
+        viewModel.startEncounter(GameContent.encounters.getValue("template_solo_battle"))
 
         val activeHero = viewModel.state.value.party.first { it.id == "hero" }
         val targetEnemy = viewModel.state.value.enemies.first { it.isAlive }

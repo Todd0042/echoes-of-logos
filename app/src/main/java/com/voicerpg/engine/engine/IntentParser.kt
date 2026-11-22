@@ -130,28 +130,24 @@ object IntentParser {
         var targetEnemyId: String? = null
         var targetHeroId: String? = null
 
-        // 1. Detect target — dynamic with legacy fallback
+        // 1. Detect target. Heroes are matched by name, lore class or voiceAliases from their character
+        //    file: the party in battle, or (without one, e.g. presets) every combat character in the game.
+        val heroCandidates: List<Pair<String, (String) -> Boolean>> = if (party.isNotEmpty()) {
+            party.map { m -> m.id to { l: String -> memberMatchesUtterance(m, l) } }
+        } else {
+            com.voicerpg.engine.content.GameContent.characters.values.filter { it.combat != null }.map { c ->
+                c.id to { l: String ->
+                    (c.speaker.name.isNotBlank() && l.contains(c.speaker.name.lowercase())) ||
+                        (c.loreClass.isNotBlank() && l.contains(c.loreClass.lowercase())) ||
+                        c.voiceAliases.any { it.isNotBlank() && l.contains(it.lowercase()) }
+                }
+            }
+        }
+        val matchedHeroId = heroCandidates.firstOrNull { (_, matches) -> matches(lower) }?.first
         var target: TargetSelection = when {
-            party.any { memberMatchesUtterance(it, lower) } -> {
-                val matchedHero = party.first { memberMatchesUtterance(it, lower) }
-                targetHeroId = matchedHero.id
+            matchedHeroId != null -> {
+                targetHeroId = matchedHeroId
                 TargetSelection.SPECIFIC_HERO
-            }
-            lower.contains("cedric") || lower.contains("paladin") || lower.contains("templar") -> {
-                targetHeroId = party.firstOrNull { it.id == "cedric" }?.id ?: "cedric"
-                TargetSelection.CEDRIC
-            }
-            lower.contains("lyra") || lower.contains("warden") || lower.contains("druid") -> {
-                targetHeroId = party.firstOrNull { it.id == "lyra" }?.id ?: "lyra"
-                TargetSelection.LYRA
-            }
-            lower.contains("zephyr") || lower.contains("assassin") -> {
-                targetHeroId = party.firstOrNull { it.id == "zephyr" }?.id ?: "zephyr"
-                TargetSelection.ZEPHYR
-            }
-            lower.contains("aethel") || ((lower.contains("mage") || lower.contains("elementalist")) && hasHealKeyword) -> {
-                targetHeroId = party.firstOrNull { it.id == "hero" || it.id == "aethel" }?.id ?: "hero"
-                TargetSelection.HERO
             }
             com.voicerpg.engine.content.GameContent.hasGroup(utterance, "self", locale) || "self" in wordsInUtterance || "me" in wordsInUtterance -> TargetSelection.SELF
             com.voicerpg.engine.content.GameContent.hasGroup(utterance, "party", locale) || lower.contains("party") || lower.contains("allies") || lower.contains("team") -> TargetSelection.PARTY_LOWEST
@@ -191,8 +187,9 @@ object IntentParser {
                     var score = 0
 
                     if (lower.contains(nameLower)) score += 100
-                    if (lower.contains(subtitleLower)) score += 30
+                    if (subtitleLower.isNotBlank() && lower.contains(subtitleLower)) score += 30
                     if (lower.contains(idLower)) score += 40
+                    if (enemy.voiceAliases.any { it.isNotBlank() && lower.contains(it.lowercase()) }) score += 60
 
                     val words = (nameLower.split(" ") + subtitleLower.split(" "))
                         .map { it.trim().trimEnd('!', '.', ',', '?') }
@@ -212,30 +209,14 @@ object IntentParser {
                     target = TargetSelection.SPECIFIC_ENEMY
                     targetEnemyId = matchedByName.id
                 } else {
-                    // C. Fallback to classic keyword matching (useful when activeEnemies list is empty or for presets)
-                    when {
-                        lower.contains("orc") || lower.contains("warrior") -> {
-                            target = TargetSelection.ORC
-                            targetEnemyId = "orc"
-                        }
-                        lower.contains("archer") || lower.contains("skeleton") -> {
-                            target = TargetSelection.ARCHER
-                            targetEnemyId = "archer"
-                        }
-                        lower.contains("shaman") || lower.contains("caster") || (lower.contains("mage") && !hasHealKeyword) -> {
-                            target = TargetSelection.SHAMAN
-                            targetEnemyId = "shaman"
-                        }
-                        else -> {
-                            val currentTargeted = activeEnemies.firstOrNull { it.isTargeted && it.isAlive }
-                            if (currentTargeted != null) {
-                                target = TargetSelection.SPECIFIC_ENEMY
-                                targetEnemyId = currentTargeted.id
-                            } else {
-                                target = TargetSelection.FIRST_ALIVE_ENEMY
-                                targetEnemyId = aliveEnemies.firstOrNull()?.id
-                            }
-                        }
+                    // C. No name matched: the enemy the player marked, else the first one standing.
+                    val currentTargeted = activeEnemies.firstOrNull { it.isTargeted && it.isAlive }
+                    if (currentTargeted != null) {
+                        target = TargetSelection.SPECIFIC_ENEMY
+                        targetEnemyId = currentTargeted.id
+                    } else {
+                        target = TargetSelection.FIRST_ALIVE_ENEMY
+                        targetEnemyId = aliveEnemies.firstOrNull()?.id
                     }
                 }
             }

@@ -1,0 +1,51 @@
+{
+  "_doc": "Thematic root lexicon per spell school used by the Resonance engine for spoken chant scoring.",
+  "schools": {
+    "PYROMANCY": [
+      "cinder", "inferno", "ash", "blaze", "blazing", "ignite", "scorching",
+      "incandescent", "solar", "phoenix", "wrath", "embers", "consume",
+      "flame", "flames", "fire", "fireball", "burn", "combustion",
+      "conflagration", "pyre", "hellfire", "searing", "flare", "magma",
+      "resonant", "heat"
+    ],
+    "CRYOMANCY": [
+      "glacial", "glacier", "permafrost", "frostbite", "frost", "blizzard",
+      "crystalline", "crystal", "absolute zero", "tundra", "shards", "bitter",
+      "freeze", "frozen", "ice", "icicle", "hail", "sleet", "avalanche",
+      "rime", "chill", "chilling", "cold", "zero"
+    ],
+    "ELECTROMANCY": [
+      "tempest", "thunderclap", "galvanic", "arc", "storm", "fulgur",
+      "lightning", "volt", "voltage", "flash", "strike", "spark", "sparks",
+      "thunder", "thunderbolt", "shock", "discharge", "surge", "electrify",
+      "static", "plasma", "stasis", "charge"
+    ],
+    "HOLY": [
+      "radiance", "radiant", "divine", "seraph", "celestial", "dawn",
+      "sanctify", "blessing", "blessed", "mend", "mending", "aegis",
+      "purity", "pure", "heal", "healing", "grace", "light", "halo", "cadence",
+      "restorative", "prayer", "cure", "sanctuary", "smite", "soothing",
+      "steady", "calm", "soothe", "listen",
+      "backrub", "inspiring", "lunch", "groceries", "breath", "remember"
+    ],
+    "NATURE": [
+      "grove", "briar", "thorns", "thorn", "vines", "vine", "rain", "nature",
+      "rejuvenate", "verdant", "root", "roots", "canopy", "bloom", "petal",
+      "moss", "fern", "blossom", "undergrowth", "bark", "seed", "sprout",
+      "wildwood", "pollen", "bramble", "nettle", "willow", "oaken", "earthen",
+      "grow"
+    ],
+    "SHADOW": [
+      "umbra", "abyss", "abyssal", "venom", "venomous", "phantom", "whisper",
+      "shroud", "eclipse", "silent", "silence", "strike", "hollow", "dark",
+      "darkness", "shade", "shadow", "void", "backstab", "stealth", "dread",
+      "nocturnal", "creeping", "siphon", "mend", "drain", "night"
+    ],
+    "PHYSICAL": [
+      "blade", "cleave", "rend", "slash", "steel", "shatter", "strike",
+      "vanguard", "shield", "smash", "pulverize", "bash", "crush", "charge",
+      "aegis", "barrier", "attune",
+      "breathe", "push", "hold", "haul", "clear", "grind", "line"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "_doc": "TEMPLATE HERO CLASS. See elementalist.json for the schema.",
+  "id": "battlemage",
+  "title": "Battlemage",
+  "subtitle": "Frontline Spellblade Vanguard",
+  "description": "Combines heavy martial fortitude with devastating close-range elemental inflections. High vitality and defense.",
+  "startingHp": 320,
+  "startingMp": 110,
+  "startingSpeed": 60,
+  "startingBaseAttack": 28,
+  "preferredSchool": "PHYSICAL",
+  "starterSpellIds": ["flame_strike", "arcane_barrier", "thunder_cleave", "attune"],
+  "voiceKeywords": ["battlemage", "spellblade", "templar", "paladin", "knight", "crusader", "warrior", "vanguard"],
+  "growth": { "maxHp": 16, "maxMp": 10, "speed": 1, "defense": 2, "potencyPct": 0.035 }
+}

@@ -1,5 +1,7 @@
 package com.voicerpg.engine.combat
 
+import org.junit.Rule
+import com.voicerpg.engine.testing.TemplateFixture
 import com.voicerpg.engine.content.GameContent
 import com.voicerpg.engine.engine.IntentParser
 import org.junit.Assert.assertEquals
@@ -7,6 +9,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class EconomyActionsTest {
+
+    /** Mechanics test: runs on the engine's frozen template content, whatever game it's in. */
+    @get:Rule val templateFixture = TemplateFixture()
 
     @Test
     fun `every hero class carries the free attune`() {

@@ -1,5 +1,7 @@
 package com.voicerpg.engine
 
+import org.junit.Rule
+import com.voicerpg.engine.testing.TemplateFixture
 import com.voicerpg.engine.audio.CombatNarrator
 import com.voicerpg.engine.audio.SpeechManager
 import com.voicerpg.engine.content.GameContent
@@ -19,6 +21,9 @@ import org.junit.Before
 import org.junit.Test
 
 class StoryDialogueTest {
+
+    /** Mechanics test: runs on the engine's frozen template content, whatever game it's in. */
+    @get:Rule val templateFixture = TemplateFixture()
 
     private lateinit var storyViewModel: StoryViewModel
     private lateinit var dummySpeech: SpeechManager
@@ -42,151 +47,97 @@ class StoryDialogueTest {
         storyViewModel.cancelPendingAutoAdvance()
     }
 
-    // ---------------------------------------------------------------------
-    // Shared drive helpers (content-agnostic: they walk nodes declared in the
-    // bundled story graph, never references specific fiction).
-    // ---------------------------------------------------------------------
-
-    private fun selectChoice(choiceId: String) {
-        val choice = storyViewModel.state.value.currentNode.choices.first { it.id == choiceId }
-        storyViewModel.selectChoice(choice)
-    }
-
-    private fun settle() {
-        Thread.sleep(15)
-    }
-
-    /** cottage_intro → c1_speak → cottage_voice → advance → cottage_sparks → c2_outside → cottage_to_village (scene_village) → advance → village_intro */
-    private fun driveToVillageIntro() {
-        selectChoice("c1_speak")
-        storyViewModel.advanceDialogue()
-        selectChoice("c2_outside")
-        var state = storyViewModel.state.value
-        assertEquals("cottage_to_village", state.currentNode.id)
-        assertEquals("scene_village", state.currentScene.id)
-        storyViewModel.advanceDialogue()
-        assertEquals("village_intro", storyViewModel.state.value.currentNode.id)
-    }
-
-    /** Drive from cottage_intro to the village battle trigger (pending, pre-combat). */
-    private fun driveToVillageBattleTrigger() {
-        driveToVillageIntro()
-        selectChoice("v1_inspect")
-        storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-        assertEquals("village_battle_trigger", storyViewModel.state.value.currentNode.id)
-    }
-
-    /** village_battle_trigger → COMBAT → victory → village_post_battle (scene_crossroads). */
-    private fun fightVillageBattleAndContinueToCrossroadsBattleTrigger() {
-        storyViewModel.advanceDialogue()
-        settle()
-        var state = storyViewModel.state.value
-        assertEquals(GameScreen.COMBAT_ARENA, state.gameScreen)
-        storyViewModel.onCombatVictory()
-        settle()
-        state = storyViewModel.state.value
-        assertEquals("village_post_battle", state.currentNode.id)
-        assertEquals("scene_crossroads", state.currentScene.id)
-        storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-        selectChoice("cr_yes")
-        storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-        assertEquals("crossroads_battle_trigger", storyViewModel.state.value.currentNode.id)
-    }
-
-    /** Drive from cottage_intro all the way to the camp hub (scene_camp, cedric recruited). */
-    private fun driveToCampHub() {
-        driveToVillageBattleTrigger()
-        fightVillageBattleAndContinueToCrossroadsBattleTrigger()
-        storyViewModel.advanceDialogue()
-        settle()
-        var state = storyViewModel.state.value
-        assertEquals(GameScreen.COMBAT_ARENA, state.gameScreen)
-        storyViewModel.onCombatVictory()
-        settle()
-        state = storyViewModel.state.value
-        assertEquals("crossroads_post_battle", state.currentNode.id)
-        selectChoice("cr_ask_towers")
-        storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-        assertEquals("camp_intro", storyViewModel.state.value.currentNode.id)
-    }
-
     @Test
     fun testTemplateInitialStoryState() {
         val state = storyViewModel.state.value
-        assertEquals("scene_cottage", state.currentScene.id)
-        assertEquals("Aethel's Cottage", state.currentScene.name)
-        assertEquals("cottage_intro", state.currentNode.id)
+        assertEquals("scene_proving_grounds", state.currentScene.id)
+        assertEquals("The Proving Grounds", state.currentScene.name)
+        assertEquals("template_intro", state.currentNode.id)
         assertEquals(SpeakerSide.CENTER_NARRATOR, state.currentNode.side)
-        assertEquals(3, state.currentNode.choices.size)
+        assertTrue(state.currentNode.choices.isEmpty())
         assertEquals(GameScreen.STORY_EXPLORATION, state.gameScreen)
-        assertFalse(storyViewModel.canAdvanceDialogue())
     }
 
     @Test
     fun testTemplateIntroAdvancesToChoiceHub() {
-        selectChoice("c1_speak")
+        storyViewModel.advanceDialogue()
         var state = storyViewModel.state.value
-        assertEquals("cottage_voice", state.currentNode.id)
+        assertEquals("template_hero_greeting", state.currentNode.id)
         assertEquals("hero", state.currentNode.speaker.id)
         assertEquals("Kaelen", state.currentNode.speaker.name)
         assertEquals(SpeakerSide.LEFT, state.currentNode.side)
 
         storyViewModel.advanceDialogue()
         state = storyViewModel.state.value
-        assertEquals("cottage_sparks", state.currentNode.id)
-        assertEquals(2, state.currentNode.choices.size)
+        assertEquals("template_choice_hub", state.currentNode.id)
+        assertEquals(5, state.currentNode.choices.size)
         assertFalse(storyViewModel.canAdvanceDialogue())
     }
 
     @Test
     fun testTemplateVoiceKeywordsEliminateCompletedHubChoices() {
-        driveToCampHub()
-        assertEquals("camp_intro", storyViewModel.state.value.currentNode.id)
+        storyViewModel.advanceDialogue()
+        storyViewModel.advanceDialogue()
+        assertEquals("template_choice_hub", storyViewModel.state.value.currentNode.id)
 
-        // Voice command selects the rest branch; its completion flag is set at selection.
-        storyViewModel.handleStoryVoiceInput("rest")
+        storyViewModel.handleStoryVoiceInput("lore")
         var state = storyViewModel.state.value
-        assertEquals("camp_vigil_entry", state.currentNode.id)
-        assertTrue(state.narrativeFlags["substory_rest_complete"] == true)
+        assertEquals("template_branch_history", state.currentNode.id)
+        assertTrue(state.narrativeFlags["flag_template_history_read"] == true)
 
-        // Finish the vigil chain back to the camp hub.
-        selectChoice("c_vigil_meditate")
-        assertEquals("camp_vigil_meditate", storyViewModel.state.value.currentNode.id)
         storyViewModel.advanceDialogue()
-        assertEquals("camp_vigil_restored", storyViewModel.state.value.currentNode.id)
-        storyViewModel.advanceDialogue()
-        assertEquals("camp_return_hub", storyViewModel.state.value.currentNode.id)
-        storyViewModel.advanceDialogue()
+        assertEquals("template_choice_hub", storyViewModel.state.value.currentNode.id)
 
-        // Back at the hub: rest is complete, three choices still surface, hub is not auto-advancing.
+        storyViewModel.handleStoryVoiceInput("advice")
         state = storyViewModel.state.value
-        assertEquals("camp_intro", state.currentNode.id)
-        assertTrue(state.narrativeFlags["substory_rest_complete"] == true)
-        assertEquals(3, state.currentNode.choices.size)
+        assertEquals("template_branch_counsel", state.currentNode.id)
+        assertTrue(state.narrativeFlags["flag_template_counsel_received"] == true)
+
+        storyViewModel.advanceDialogue()
+        state = storyViewModel.state.value
+        assertEquals("template_choice_hub", state.currentNode.id)
+        assertTrue(state.narrativeFlags["flag_template_history_read"] == true)
+        assertTrue(state.narrativeFlags["flag_template_counsel_received"] == true)
+        assertEquals(5, state.currentNode.choices.size)
         assertFalse(storyViewModel.canAdvanceDialogue())
 
-        // Completed choice can no longer be re-selected or re-uttered.
-        selectChoice("c_rest")
-        assertEquals("camp_intro", storyViewModel.state.value.currentNode.id)
-        storyViewModel.handleStoryVoiceInput("rest")
-        assertEquals("camp_intro", storyViewModel.state.value.currentNode.id)
+        val historyChoice = state.currentNode.choices.first { it.id == "choice_history" }
+        storyViewModel.selectChoice(historyChoice)
+        assertEquals("template_choice_hub", storyViewModel.state.value.currentNode.id)
 
-        // Remaining branch still selectable.
-        selectChoice("c_towers")
-        assertEquals("camp_shrine_entry", storyViewModel.state.value.currentNode.id)
+        val counselChoice = storyViewModel.state.value.currentNode.choices.first { it.id == "choice_counsel" }
+        storyViewModel.selectChoice(counselChoice)
+        assertEquals("template_choice_hub", storyViewModel.state.value.currentNode.id)
+
+        storyViewModel.handleStoryVoiceInput("lore")
+        assertEquals("template_choice_hub", storyViewModel.state.value.currentNode.id)
+
+        storyViewModel.selectChoice(
+            storyViewModel.state.value.currentNode.choices.first { it.id == "choice_solo_battle" }
+        )
+        assertEquals("template_trigger_solo_combat", storyViewModel.state.value.currentNode.id)
     }
 
     @Test
     fun testTemplateEchoHallSceneSwitchAndRestHealFlow() {
-        driveToCampHub()
+        storyViewModel.advanceDialogue()
+        storyViewModel.advanceDialogue()
+        val hubChoices = storyViewModel.state.value.currentNode.choices
+        storyViewModel.selectChoice(hubChoices.first { it.id == "choice_echo_hall" })
 
-        // Damage the whole fellowship before resting.
+        var state = storyViewModel.state.value
+        assertEquals("template_to_echo_hall", state.currentNode.id)
+        assertEquals("scene_echo_hall", state.currentScene.id)
+
+        storyViewModel.advanceDialogue()
+        state = storyViewModel.state.value
+        assertEquals("hall_intro", state.currentNode.id)
+        assertEquals("scene_echo_hall", state.currentScene.id)
+        assertEquals("The Echo Hall", state.currentScene.name)
+
+        storyViewModel.advanceDialogue()
+        assertEquals("hall_hub", storyViewModel.state.value.currentNode.id)
+
         val damagedParty = storyViewModel.state.value.partyStats.map { member ->
             PartyMember(
                 id = member.id,
@@ -203,117 +154,114 @@ class StoryDialogueTest {
         storyViewModel.updatePartyStatsFromCombat(damagedParty)
         assertEquals(10, storyViewModel.state.value.partyStats.first().currentHp)
 
-        // Rest branch heals the party fully and records the substory flag.
-        selectChoice("c_rest")
-        assertEquals("camp_vigil_entry", storyViewModel.state.value.currentNode.id)
-        assertTrue(storyViewModel.state.value.narrativeFlags["substory_rest_complete"] == true)
-
-        selectChoice("c_vigil_meditate")
-        storyViewModel.advanceDialogue()
-        var state = storyViewModel.state.value
-        assertEquals("camp_vigil_restored", state.currentNode.id)
-        assertTrue(state.narrativeFlags["substory_rest_complete"] == true)
-        assertEquals(state.partyStats.first().maxHp, state.partyStats.first().currentHp)
-        assertEquals(state.partyStats.first().maxMp, state.partyStats.first().currentMp)
+        val restChoice = storyViewModel.state.value.currentNode.choices.first { it.id == "choice_rest" }
+        storyViewModel.selectChoice(restChoice)
+        state = storyViewModel.state.value
+        assertEquals("hall_rest", state.currentNode.id)
+        assertTrue(state.narrativeFlags["hall_rest_complete"] == true)
+        val hero = state.partyStats.first()
+        assertEquals(hero.maxHp, hero.currentHp)
+        assertEquals(hero.maxMp, hero.currentMp)
 
         storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-        assertEquals("camp_intro", storyViewModel.state.value.currentNode.id)
+        state = storyViewModel.state.value
+        assertEquals("hall_hub", state.currentNode.id)
 
-        // Complete substory rest choice can no longer be re-selected.
-        selectChoice("c_rest")
-        assertEquals("camp_intro", storyViewModel.state.value.currentNode.id)
+        val completedRestChoice = state.currentNode.choices.first { it.id == "choice_rest" }
+        storyViewModel.selectChoice(completedRestChoice)
+        assertEquals("hall_hub", storyViewModel.state.value.currentNode.id)
+
+        storyViewModel.advanceDialogue()
+        assertEquals("hall_trigger_boss", storyViewModel.state.value.currentNode.id)
     }
 
     @Test
     fun testTemplateBossBattlePendingAndHubCompletionRedirect() {
-        driveToVillageBattleTrigger()
+        storyViewModel.advanceDialogue()
+        storyViewModel.advanceDialogue()
+        val hubChoices = storyViewModel.state.value.currentNode.choices
+        storyViewModel.selectChoice(hubChoices.first { it.id == "choice_echo_hall" })
+        storyViewModel.advanceDialogue()
+        storyViewModel.advanceDialogue()
+        assertEquals("hall_hub", storyViewModel.state.value.currentNode.id)
 
-        // Battle trigger is pending within the story screen.
+        storyViewModel.selectChoice(
+            storyViewModel.state.value.currentNode.choices.first { it.id == "choice_rest" }
+        )
+        storyViewModel.advanceDialogue()
+        assertTrue(storyViewModel.state.value.narrativeFlags["hall_rest_complete"] == true)
+        assertEquals("hall_hub", storyViewModel.state.value.currentNode.id)
+
+        storyViewModel.selectChoice(
+            storyViewModel.state.value.currentNode.choices.first { it.id == "choice_boss" }
+        )
         var state = storyViewModel.state.value
-        assertEquals("village_battle_trigger", state.currentNode.id)
-        assertEquals("prologue_solo", state.currentNode.triggerBattleEncounterId)
+        assertEquals("hall_trigger_boss", state.currentNode.id)
+        assertEquals("template_boss_battle", state.currentNode.triggerBattleEncounterId)
         assertEquals(GameScreen.STORY_EXPLORATION, state.gameScreen)
         assertNull(state.activeEncounter)
+        assertNotNull(GameContent.encounterById("template_boss_battle"))
 
-        // Advancing prompts the encounter.
         storyViewModel.advanceDialogue()
         state = storyViewModel.state.value
         assertEquals(GameScreen.COMBAT_ARENA, state.gameScreen)
-        assertEquals("prologue_solo", state.activeEncounter?.id)
-        assertEquals(1, state.activeEncounter?.initialParty?.size)
-        assertEquals("hero", state.activeEncounter?.initialParty?.first()?.id)
+        assertEquals("template_boss_battle", state.activeEncounter?.id)
 
-        settle()
         storyViewModel.onCombatVictory()
-        settle()
-
-        // Victory resolves to the declared post-battle node within the crossroads scene.
         state = storyViewModel.state.value
         assertEquals(GameScreen.STORY_EXPLORATION, state.gameScreen)
         assertNull(state.activeEncounter)
-        assertEquals("village_post_battle", state.currentNode.id)
+        assertEquals("hall_victory", state.currentNode.id)
         assertEquals("hero", state.currentNode.speaker.id)
-        assertEquals(SpeakerSide.LEFT, state.currentNode.side)
-        assertEquals("scene_crossroads", state.currentScene.id)
-        assertTrue(state.defeatedEncounters.contains("prologue_solo"))
+        assertTrue(state.narrativeFlags["hall_boss_complete"] == true)
+
+        storyViewModel.advanceDialogue()
+        state = storyViewModel.state.value
+        assertEquals("hall_conclusion", state.currentNode.id)
+        assertTrue(state.narrativeFlags[StoryViewModel.GAME_COMPLETED_FLAG] == true)
     }
 
     @Test
     fun testTemplateSoloBattlePendingAndPostVictoryFlow() {
-        driveToCampHub()
-
-        // Sub-story 1: Scout the woods (blight tracker ambush).
-        selectChoice("c_lore")
-        assertEquals("camp_scout_entry", storyViewModel.state.value.currentNode.id)
-        selectChoice("c_scout_tracks")
         storyViewModel.advanceDialogue()
+        storyViewModel.advanceDialogue()
+        val hub = storyViewModel.state.value.currentNode
+        assertEquals(5, hub.choices.size)
+
+        storyViewModel.selectChoice(hub.choices.first { it.id == "choice_solo_battle" })
         var state = storyViewModel.state.value
-        assertEquals("camp_scout_ambush", state.currentNode.id)
-        assertEquals("blight_trackers", state.currentNode.triggerBattleEncounterId)
+        assertEquals("template_trigger_solo_combat", state.currentNode.id)
+        assertEquals("template_solo_battle", state.currentNode.triggerBattleEncounterId)
         assertEquals(GameScreen.STORY_EXPLORATION, state.gameScreen)
         assertNull(state.activeEncounter)
 
         storyViewModel.advanceDialogue()
-        settle()
+        state = storyViewModel.state.value
+        assertEquals(GameScreen.COMBAT_ARENA, state.gameScreen)
+        assertEquals("template_solo_battle", state.activeEncounter?.id)
+        assertEquals(1, state.activeEncounter?.initialParty?.size)
+        assertEquals("hero", state.activeEncounter?.initialParty?.first()?.id)
+
         storyViewModel.onCombatVictory()
-        settle()
         state = storyViewModel.state.value
-        assertEquals("camp_scout_victory", state.currentNode.id)
-        assertTrue(state.narrativeFlags["substory_blight_complete"] == true)
-        storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-        assertEquals("camp_intro", storyViewModel.state.value.currentNode.id)
+        assertEquals(GameScreen.STORY_EXPLORATION, state.gameScreen)
+        assertNull(state.activeEncounter)
+        assertEquals("template_post_victory", state.currentNode.id)
+        assertEquals("hero", state.currentNode.speaker.id)
+        assertTrue(state.defeatedEncounters.contains("template_solo_battle"))
 
-        // Sub-story 2: Inspect the shrine ruins.
-        selectChoice("c_towers")
-        assertEquals("camp_shrine_entry", storyViewModel.state.value.currentNode.id)
-        selectChoice("c_shrine_chant")
         storyViewModel.advanceDialogue()
+        assertEquals("template_conclusion", storyViewModel.state.value.currentNode.id)
         storyViewModel.advanceDialogue()
+        assertEquals("template_choice_hub", storyViewModel.state.value.currentNode.id)
+
+        storyViewModel.selectChoice(
+            storyViewModel.state.value.currentNode.choices.first { it.id == "choice_trio_battle" }
+        )
         state = storyViewModel.state.value
-        assertEquals("camp_shrine_lore", state.currentNode.id)
-        assertTrue(state.narrativeFlags["substory_towers_complete"] == true)
-        storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-        assertEquals("camp_intro", storyViewModel.state.value.currentNode.id)
-
-        // Sub-story 3: Midnight vigil. Completing the last sub-story auto-redirects
-        // the hub to its declared completion node.
-        selectChoice("c_rest")
-        assertEquals("camp_vigil_entry", storyViewModel.state.value.currentNode.id)
-        assertTrue(storyViewModel.state.value.narrativeFlags["substory_rest_complete"] == true)
-        selectChoice("c_vigil_meditate")
-        storyViewModel.advanceDialogue()
-        assertEquals("camp_vigil_restored", storyViewModel.state.value.currentNode.id)
-        storyViewModel.advanceDialogue()
-        storyViewModel.advanceDialogue()
-
-        state = storyViewModel.state.value
-        assertEquals("camp_all_completed", state.currentNode.id)
-        assertTrue(state.narrativeFlags["substory_blight_complete"] == true)
-        assertTrue(state.narrativeFlags["substory_towers_complete"] == true)
-        assertTrue(state.narrativeFlags["substory_rest_complete"] == true)
+        assertEquals("template_trigger_trio_combat", state.currentNode.id)
+        assertEquals("template_trio_battle", state.currentNode.triggerBattleEncounterId)
+        assertNotNull(GameContent.encounterById("template_trio_battle"))
     }
 
     @Test
@@ -521,6 +469,8 @@ class StoryGraphSchemaTest {
         val visited = mutableSetOf<String>()
         val queue = ArrayDeque<String>()
         queue.add(startId)
+        // Incidents are entry points the engine jumps to on its own (IncidentManager), not story links.
+        GameContent.incidents.values.forEach { incident -> incident.triggerNodeId?.let { queue.add(it) } }
         while (queue.isNotEmpty()) {
             val id = queue.removeFirst()
             if (!visited.add(id)) continue

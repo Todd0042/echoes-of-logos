@@ -54,6 +54,11 @@ data class ManifestDto(
     val startingAchievementId: String = "QUEST_BEGUN",
     val victoryLine: String = "Victory! The battle is won.",
     val defeatLine: String = "Defeat. Your voice fades.",
+    /** Battle result overlay: titles and the continue-story button labels. */
+    val victoryTitle: String = "⚔️ VICTORY ⚔️",
+    val defeatTitle: String = "💀 DEFEAT 💀",
+    val victoryContinueLabel: String = "CONTINUE STORY ➔",
+    val defeatContinueLabel: String = "PRESS ON ➔",
     val titleBackgroundAsset: String? = null,
     val defaultHeroName: String = "Hero",
     val defaultHeroTitle: String = "Adventurer",
@@ -223,7 +228,9 @@ data class SpellDto(
     val manaRestorePct: Float = 0f,
     val aliases: List<String>? = null,
     val graphics: SpellGraphicsDto? = null,
-    val cleansesDebuffs: Boolean = false
+    val cleansesDebuffs: Boolean = false,
+    /** Optional chants per resonance tier ("BASIC".."TRANSCENDENTAL") used by hands-free presets. */
+    val presetChants: Map<String, String>? = null
 )
 
 data class SpellFileDto(val spells: List<SpellDto>? = null)
@@ -296,7 +303,9 @@ data class EnemyDto(
     val movesetId: String = "",
     val isBoss: Boolean = false,
     val spriteId: String = "",
-    val spriteTint: String = "#E57373"
+    val spriteTint: String = "#E57373",
+    /** Extra words that target this enemy by voice ("warrior" for an orc), besides its name and subtitle. */
+    val voiceAliases: List<String>? = null
 )
 
 data class EnemyFileDto(val enemies: List<EnemyDto>? = null)
@@ -622,6 +631,10 @@ data class GameManifest(
     val startingAchievementId: String,
     val victoryLine: String,
     val defeatLine: String,
+    val victoryTitle: String = "⚔️ VICTORY ⚔️",
+    val defeatTitle: String = "💀 DEFEAT 💀",
+    val victoryContinueLabel: String = "CONTINUE STORY ➔",
+    val defeatContinueLabel: String = "PRESS ON ➔",
     val titleBackgroundAsset: String? = null,
     val defaultHeroName: String = "Hero",
     val defaultHeroTitle: String = "Adventurer",
@@ -837,7 +850,8 @@ data class EnemyTemplate(
     val movesetId: String,
     val isBoss: Boolean,
     val spriteId: String,
-    val spriteTint: Color
+    val spriteTint: Color,
+    val voiceAliases: List<String> = emptyList()
 ) {
     fun toEnemy(
         instanceId: String? = null,
@@ -868,7 +882,8 @@ data class EnemyTemplate(
             selfElement = selfElement,
             xpReward = xpReward,
             movesetId = movesetId,
-            atbGauge = atbGauge
+            atbGauge = atbGauge,
+            voiceAliases = voiceAliases
         )
     }
 }
@@ -1189,6 +1204,10 @@ class GameContentLoader(private val source: ContentSource) {
                 startingAchievementId = manifestDto.startingAchievementId,
                 victoryLine = manifestDto.victoryLine,
                 defeatLine = manifestDto.defeatLine,
+                victoryTitle = manifestDto.victoryTitle,
+                defeatTitle = manifestDto.defeatTitle,
+                victoryContinueLabel = manifestDto.victoryContinueLabel,
+                defeatContinueLabel = manifestDto.defeatContinueLabel,
                 titleBackgroundAsset = manifestDto.titleBackgroundAsset,
                 defaultHeroName = manifestDto.defaultHeroName,
                 defaultHeroTitle = manifestDto.defaultHeroTitle,
@@ -1256,7 +1275,8 @@ class GameContentLoader(private val source: ContentSource) {
         manaRestorePct = manaRestorePct,
         aliases = aliases ?: emptyList(),
         graphics = graphics?.toSpellGraphics(),
-        cleansesDebuffs = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true)
+        cleansesDebuffs = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true),
+        presetChants = presetChants?.mapKeys { it.key.uppercase() } ?: emptyMap()
     )
 
     private fun ClassDto.toDef(spells: Map<String, Spell>): HeroClassDef = HeroClassDef(
@@ -1367,7 +1387,8 @@ class GameContentLoader(private val source: ContentSource) {
         movesetId = movesetId,
         isBoss = isBoss,
         spriteId = spriteId,
-        spriteTint = parseHexColor(spriteTint, Color(0xFFE57373))
+        spriteTint = parseHexColor(spriteTint, Color(0xFFE57373)),
+        voiceAliases = voiceAliases?.filter { it.isNotBlank() } ?: emptyList()
     )
 
     private fun EncounterDto.toDefinition(
@@ -1559,7 +1580,9 @@ object GameContent {
     @Volatile
     private var current: GameContentPack? = null
 
-    fun initialize(context: Context) {
+    // initialize/initializeFromDirectory/reset take the same lock as the lazy loader in [pack], so a
+    // load already in progress on another thread can't finish afterwards and overwrite what they set.
+    fun initialize(context: Context) = synchronized(this) {
         current = try {
             GameContentLoader(AssetContentSource(context.assets, CONTENT_ROOT)).load()
         } catch (t: Throwable) {
@@ -1568,16 +1591,17 @@ object GameContent {
         }
     }
 
-    fun initializeFromDirectory(dir: File) {
+    /** Loads a content pack from a folder (tests, tools). A pack that fails to load is an error, never a silent fallback. */
+    fun initializeFromDirectory(dir: File) = synchronized(this) {
         current = try {
             GameContentLoader(FileContentSource(dir)).load()
         } catch (t: Throwable) {
-            EmergencyFallback.build()
+            throw IllegalStateException("Game content in ${dir.absolutePath} failed to load: ${t.message}", t)
         }
     }
 
     /** Clears the cached pack (used by tests to reload modified content). */
-    fun reset() {
+    fun reset() = synchronized(this) {
         current = null
     }
 
@@ -1601,10 +1625,12 @@ object GameContent {
         )
         for (dir in candidates) {
             if (dir.isDirectory) {
+                // A content folder that exists but doesn't load is broken content: say so instead of
+                // quietly running on the emergency pack (which would let tests pass on the wrong content).
                 return try {
                     GameContentLoader(FileContentSource(dir)).load()
-                } catch (_: Throwable) {
-                    null
+                } catch (t: Throwable) {
+                    throw IllegalStateException("Game content in ${dir.absolutePath} failed to load: ${t.message}", t)
                 }
             }
         }

@@ -1,0 +1,199 @@
+{
+  "_doc": "TEMPLATE SPELL LIBRARY. Every voice-chantable ability in the game. Classes and characters reference spells by id. school must be one of PYROMANCY/CRYOMANCY/ELECTROMANCY/NATURE/HOLY/SHADOW/PHYSICAL. aliases are fuzzy voice-match keywords. manaRestorePct > 0 marks the free breath/attune discipline.",
+  "spells": [
+    {
+      "id": "power_strike",
+      "name": "Power Strike",
+      "school": "PHYSICAL",
+      "basePower": 40,
+      "mpCost": 0,
+      "description": "A swift, heavy blade strike.",
+      "exampleChant": "Power strike the foe!",
+      "aliases": ["strike", "slash", "attack", "blade", "cleave"]
+    },
+    {
+      "id": "flame_spark",
+      "name": "Flame Spark",
+      "school": "PYROMANCY",
+      "basePower": 55,
+      "mpCost": 15,
+      "description": "Hurls a searing burst of fire.",
+      "exampleChant": "Flame spark the drone!",
+      "aliases": ["spark", "flame", "burn", "fire", "ignite"]
+    },
+    {
+      "id": "mending_touch",
+      "name": "Mending Touch",
+      "school": "HOLY",
+      "basePower": 50,
+      "mpCost": 20,
+      "isHeal": true,
+      "description": "Restores hit points to an ally.",
+      "exampleChant": "Mending touch!",
+      "aliases": ["heal", "mend", "restore", "cure", "soothe"]
+    },
+    {
+      "id": "aegis_guard",
+      "name": "Aegis Guard",
+      "school": "PHYSICAL",
+      "basePower": 0,
+      "mpCost": 10,
+      "isGuard": true,
+      "description": "Raises a defensive stance, reducing incoming damage.",
+      "exampleChant": "Aegis guard!",
+      "aliases": ["guard", "defend", "shield", "protect", "aegis"]
+    },
+    {
+      "id": "attune",
+      "name": "Attune",
+      "school": "PHYSICAL",
+      "basePower": 0,
+      "mpCost": 0,
+      "manaRestorePct": 0.35,
+      "description": "Steady the breath; a third of your mana returns.",
+      "exampleChant": "Attune",
+      "aliases": ["attune", "tune", "breathe", "breath", "concentrate", "center", "centre", "steady", "focus", "gather", "recover mana", "restore mana"]
+    },
+    {
+      "id": "fireball",
+      "name": "Fireball",
+      "school": "PYROMANCY",
+      "basePower": 65,
+      "mpCost": 15,
+      "status": "BURN",
+      "description": "Roaring sphere of flame.",
+      "exampleChant": "Fireball the brute!",
+      "aliases": ["fire", "flame", "burn", "blaze", "inferno"]
+    },
+    {
+      "id": "frost_spike",
+      "name": "Frost Spike",
+      "school": "CRYOMANCY",
+      "basePower": 58,
+      "mpCost": 12,
+      "status": "CHILL",
+      "description": "Piercing icicle.",
+      "exampleChant": "Glacial frost spike the drone!",
+      "aliases": ["frost", "ice", "freeze", "cold", "chill", "icicle"]
+    },
+    {
+      "id": "chain_lightning",
+      "name": "Chain Lightning",
+      "school": "ELECTROMANCY",
+      "basePower": 55,
+      "mpCost": 20,
+      "hitsAll": true,
+      "status": "OVERLOAD",
+      "description": "Arcing lightning storm.",
+      "exampleChant": "Tempest lightning strike all enemies!",
+      "aliases": ["lightning", "thunder", "storm", "shock", "spark", "tempest"]
+    },
+    {
+      "id": "flame_strike",
+      "name": "Flame Strike",
+      "school": "PYROMANCY",
+      "basePower": 72,
+      "mpCost": 14,
+      "status": "BURN",
+      "description": "Searing close-range flame slash.",
+      "exampleChant": "Searing flame strike the brute!",
+      "aliases": ["flame strike", "fire strike", "burning slash"]
+    },
+    {
+      "id": "arcane_barrier",
+      "name": "Arcane Barrier",
+      "school": "PHYSICAL",
+      "basePower": 45,
+      "mpCost": 10,
+      "hitsAll": true,
+      "isGuard": true,
+      "status": "GUARD",
+      "description": "Absorbing vanguard protection.",
+      "exampleChant": "Arcane barrier protect the party!",
+      "aliases": ["barrier", "ward", "bulwark", "protect"]
+    },
+    {
+      "id": "thunder_cleave",
+      "name": "Thunder Cleave",
+      "school": "ELECTROMANCY",
+      "basePower": 60,
+      "mpCost": 16,
+      "hitsAll": true,
+      "status": "OVERLOAD",
+      "description": "Sweeping lightning sword cleave.",
+      "exampleChant": "Thunder cleave shatter the horde!",
+      "aliases": ["thunder cleave", "lightning cleave", "storm cleave"]
+    },
+    {
+      "id": "temporal_stasis",
+      "name": "Temporal Stasis",
+      "school": "ELECTROMANCY",
+      "basePower": 55,
+      "mpCost": 12,
+      "status": "OVERLOAD",
+      "description": "Acoustic distortion freezing a foe in time.",
+      "exampleChant": "Temporal stasis freeze the sniper!",
+      "aliases": ["stasis", "freeze time", "temporal", "halt"]
+    },
+    {
+      "id": "haste_cadence",
+      "name": "Haste Cadence",
+      "school": "HOLY",
+      "basePower": 65,
+      "mpCost": 15,
+      "isHeal": true,
+      "hitsAll": true,
+      "status": "BLESS",
+      "description": "Rhythmic breath healing and quickening the party.",
+      "exampleChant": "Swift rhythm hasten the party!",
+      "aliases": ["haste", "cadence", "rhythm", "quickening"]
+    },
+    {
+      "id": "resonant_surge",
+      "name": "Resonant Surge",
+      "school": "PYROMANCY",
+      "basePower": 70,
+      "mpCost": 18,
+      "hitsAll": true,
+      "status": "BURN",
+      "description": "Multi-tonal acoustic shockwave.",
+      "exampleChant": "Harmonic surge ignite all enemies!",
+      "aliases": ["surge", "resonant", "harmonic", "shockwave"]
+    },
+    {
+      "id": "shadow_spike",
+      "name": "Shadow Spike",
+      "school": "SHADOW",
+      "basePower": 78,
+      "mpCost": 12,
+      "status": "CORRODE",
+      "description": "Piercing needle from darkness.",
+      "exampleChant": "Abyssal shadow spike the caster!",
+      "aliases": ["shadow spike", "dark spike", "umbral spike"]
+    },
+    {
+      "id": "void_drain",
+      "name": "Void Drain",
+      "school": "SHADOW",
+      "basePower": 55,
+      "mpCost": 14,
+      "lifesteal": true,
+      "status": "CORRODE",
+      "description": "Siphons life essence from enemy to caster.",
+      "exampleChant": "Void siphon drain their life essence!",
+      "aliases": ["siphon", "drain", "leech", "void"]
+    },
+    {
+      "id": "umbral_veil",
+      "name": "Umbral Veil",
+      "school": "SHADOW",
+      "basePower": 52,
+      "mpCost": 16,
+      "hitsAll": true,
+      "status": "CORRODE",
+      "description": "Blinding smoke of dark matter.",
+      "exampleChant": "Veil of night consume the battlefield!",
+      "aliases": ["veil", "umbral", "darkness", "shroud"]
+    }
+  ]
+}

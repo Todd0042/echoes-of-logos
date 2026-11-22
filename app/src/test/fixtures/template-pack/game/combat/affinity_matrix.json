@@ -1,0 +1,20 @@
+{
+  "_doc": "Affinity matrix and effectiveness multipliers between magic schools and enemy families, with spoken TTS narration templates.",
+  "floor": 0.8,
+  "ceiling": 2.0,
+  "sameElementImpairment": 0.8,
+  "matrix": {
+    "PYROMANCY": { "FLESH": 1.2, "UNDEAD": 1.3, "CONSTRUCT": 1.0, "VERDANT": 2.0, "VOID": 1.0, "RADIANT": 0.8, "SILENCE": 1.0 },
+    "CRYOMANCY": { "FLESH": 1.0, "UNDEAD": 1.0, "CONSTRUCT": 1.2, "VERDANT": 1.1, "VOID": 1.0, "RADIANT": 0.8, "SILENCE": 1.2 },
+    "ELECTROMANCY": { "FLESH": 1.2, "UNDEAD": 1.1, "CONSTRUCT": 2.0, "VERDANT": 0.8, "VOID": 1.0, "RADIANT": 1.0, "SILENCE": 1.0 },
+    "NATURE": { "FLESH": 1.2, "UNDEAD": 1.5, "CONSTRUCT": 0.8, "VERDANT": 0.8, "VOID": 1.0, "RADIANT": 0.8, "SILENCE": 1.0 },
+    "HOLY": { "FLESH": 1.0, "UNDEAD": 2.0, "CONSTRUCT": 1.0, "VERDANT": 0.8, "VOID": 1.5, "RADIANT": 0.8, "SILENCE": 1.1 },
+    "SHADOW": { "FLESH": 1.0, "UNDEAD": 0.8, "CONSTRUCT": 1.2, "VERDANT": 1.0, "VOID": 0.8, "RADIANT": 1.5, "SILENCE": 1.0 },
+    "PHYSICAL": { "FLESH": 1.2, "UNDEAD": 1.0, "CONSTRUCT": 1.3, "VERDANT": 1.1, "VOID": 0.8, "RADIANT": 1.0, "SILENCE": 1.0 }
+  },
+  "narrations": {
+    "SUPER_EFFECTIVE": "{enemyName} screams - {school} devastates it!",
+    "EFFECTIVE": "{enemyName} reels - {school} bites deep!",
+    "IMPAIRED": "{enemyName} shrugs off most of the {school}..."
+  }
+}

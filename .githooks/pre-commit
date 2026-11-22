@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Installed by voice-rpg-engine's sync script: blocks commits that change engine files in a game repo.
+exec bash "$(git rev-parse --show-toplevel)/.engine-sync/guard.sh" --staged

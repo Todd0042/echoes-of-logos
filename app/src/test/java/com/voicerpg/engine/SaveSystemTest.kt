@@ -1,10 +1,13 @@
 package com.voicerpg.engine
 
+import org.junit.Rule
+import com.voicerpg.engine.testing.TemplateFixture
 import com.voicerpg.engine.audio.CombatNarrator
 import com.voicerpg.engine.audio.SpeechManager
 import com.voicerpg.engine.content.GameContent
 import com.voicerpg.engine.engine.IntentParser
 import com.voicerpg.engine.engine.SaveManager
+import com.voicerpg.engine.engine.StoryScript
 import com.voicerpg.engine.model.AuraColor
 import com.voicerpg.engine.model.Enemy
 import com.voicerpg.engine.model.GameSaveData
@@ -24,6 +27,9 @@ import org.junit.Before
 import org.junit.Test
 
 class SaveSystemTest {
+
+    /** Mechanics test: runs on the engine's frozen template content, whatever game it's in. */
+    @get:Rule val templateFixture = TemplateFixture()
 
     private lateinit var saveManager: SaveManager
     private lateinit var speechManager: SpeechManager
@@ -49,7 +55,7 @@ class SaveSystemTest {
         assertEquals("Lyra", elemSave.player.name)
         assertEquals("elementalist", elemSave.player.heroClassId)
         assertEquals(240, elemSave.partyStats.first().maxHp)
-        assertEquals(140, elemSave.partyStats.first().maxMp)
+        assertEquals(160, elemSave.partyStats.first().maxMp)
         assertTrue(elemSave.partyStats.first().spellIds.contains("fireball"))
 
         // Battlemage
@@ -60,8 +66,8 @@ class SaveSystemTest {
             auraColor = AuraColor.SOLAR_GOLD
         )
         val battleSave = saveManager.createInitialSave(battleCustom)
-        assertEquals(300, battleSave.partyStats.first().maxHp)
-        assertEquals(100, battleSave.partyStats.first().maxMp)
+        assertEquals(320, battleSave.partyStats.first().maxHp)
+        assertEquals(110, battleSave.partyStats.first().maxMp)
         assertTrue(battleSave.partyStats.first().spellIds.contains("flame_strike"))
 
         // Chanter
@@ -73,7 +79,7 @@ class SaveSystemTest {
         )
         val chanterSave = saveManager.createInitialSave(chanterCustom)
         assertEquals(220, chanterSave.partyStats.first().maxHp)
-        assertEquals(160, chanterSave.partyStats.first().maxMp)
+        assertEquals(180, chanterSave.partyStats.first().maxMp)
         assertTrue(chanterSave.partyStats.first().spellIds.contains("temporal_stasis"))
 
         // Shadowweaver
@@ -85,7 +91,7 @@ class SaveSystemTest {
         )
         val shadowSave = saveManager.createInitialSave(shadowCustom)
         assertEquals(230, shadowSave.partyStats.first().maxHp)
-        assertEquals(130, shadowSave.partyStats.first().maxMp)
+        assertEquals(140, shadowSave.partyStats.first().maxMp)
         assertTrue(shadowSave.partyStats.first().spellIds.contains("shadow_spike"))
     }
 
@@ -209,22 +215,24 @@ class SaveSystemTest {
         storyVm.startNewGame(custom)
 
         assertEquals(GameScreen.STORY_EXPLORATION, storyVm.state.value.gameScreen)
-        assertEquals("scene_cottage", storyVm.state.value.currentScene.id)
-        assertEquals("cottage_intro", storyVm.state.value.currentNode.id)
+        assertEquals("scene_proving_grounds", storyVm.state.value.currentScene.id)
+        assertEquals("template_intro", storyVm.state.value.currentNode.id)
         assertEquals("Rowan", storyVm.state.value.player.name)
 
-        // Make decision 1 at the cottage hub: speak to the radiant voice
-        val speakChoice = storyVm.state.value.currentNode.choices.first { it.id == "c1_speak" }
+        // Advance to the choice hub, then make decision 1: "Ask about the history"
+        storyVm.advanceDialogue()
+        storyVm.advanceDialogue()
+        val speakChoice = storyVm.state.value.currentNode.choices.first { it.id == "choice_history" }
         storyVm.selectChoice(speakChoice)
 
-        assertEquals("cottage_voice", storyVm.state.value.currentNode.id)
-        assertEquals(listOf("c1_speak"), storyVm.state.value.decisionsMade)
+        assertEquals("template_branch_history", storyVm.state.value.currentNode.id)
+        assertEquals(listOf("choice_history"), storyVm.state.value.decisionsMade)
 
         // Verify save was written to disk/memory
         val autoSavedData = saveManager.load()
         assertNotNull(autoSavedData)
-        assertEquals("cottage_voice", autoSavedData!!.currentNodeId)
-        assertEquals(listOf("c1_speak"), autoSavedData.decisionsMade)
+        assertEquals("template_branch_history", autoSavedData!!.currentNodeId)
+        assertEquals(listOf("choice_history"), autoSavedData.decisionsMade)
         assertEquals("Rowan", autoSavedData.player.name)
     }
 
@@ -248,15 +256,21 @@ class SaveSystemTest {
         )
         storyVm1.startNewGame(custom)
 
-        // Speak to the radiant voice, then continue to the sparks hub and leave the cottage
-        storyVm1.selectChoice(storyVm1.state.value.currentNode.choices.first { it.id == "c1_speak" })
+        // Advance to the choice hub, then make a choice
         storyVm1.advanceDialogue()
-        storyVm1.selectChoice(storyVm1.state.value.currentNode.choices.first { it.id == "c2_outside" })
+        storyVm1.advanceDialogue()
+        val choice = storyVm1.state.value.currentNode.choices.first { it.id == "choice_history" }
+        storyVm1.selectChoice(choice)
+
+        // Advance to the Echo Hall scene via its transition node
+        val hallTransNode = StoryScript.ALL_NODES["template_to_echo_hall"]!!
+        val jumpChoice = com.voicerpg.engine.model.DialogueChoice("jump", "Proceed to the Echo Hall", emptyList(), hallTransNode.id)
+        storyVm1.selectChoice(jumpChoice)
         storyVm1.advanceDialogue()
 
-        assertEquals("scene_village", storyVm1.state.value.currentScene.id)
-        assertEquals("village_intro", storyVm1.state.value.currentNode.id)
-        assertEquals(listOf("c1_speak", "c2_outside"), storyVm1.state.value.decisionsMade)
+        assertEquals("scene_echo_hall", storyVm1.state.value.currentScene.id)
+        assertEquals("hall_intro", storyVm1.state.value.currentNode.id)
+        assertEquals(listOf("choice_history", "jump"), storyVm1.state.value.decisionsMade)
 
         // Session 2: Fresh launch of the app with existing save
         val storyVm2 = StoryViewModel(
@@ -276,11 +290,11 @@ class SaveSystemTest {
         // Continue chronicle resumes directly into story
         storyVm2.continueGame()
         assertEquals(GameScreen.STORY_EXPLORATION, storyVm2.state.value.gameScreen)
-        assertEquals("scene_village", storyVm2.state.value.currentScene.id)
-        assertEquals("village_intro", storyVm2.state.value.currentNode.id)
+        assertEquals("scene_echo_hall", storyVm2.state.value.currentScene.id)
+        assertEquals("hall_intro", storyVm2.state.value.currentNode.id)
         assertEquals("Elora", storyVm2.state.value.player.name)
         assertEquals("chanter", storyVm2.state.value.player.heroClassId)
-        assertEquals(listOf("c1_speak", "c2_outside"), storyVm2.state.value.decisionsMade)
+        assertEquals(listOf("choice_history", "jump"), storyVm2.state.value.decisionsMade)
 
         // Return to title persists and transitions back to Title Screen
         storyVm2.returnToTitle()
@@ -333,14 +347,14 @@ class SaveSystemTest {
         val hero = combatVm.state.value.party.first()
         assertEquals("Kaelen", hero.name)
         assertEquals(230, hero.maxHp)
-        assertEquals(130, hero.maxMp)
+        assertEquals(140, hero.maxMp)
         assertTrue(hero.spells.any { it.id == "shadow_spike" })
 
         // Verify stats serialization from party member
         val savedHero = SavedCharacterStats.fromPartyMember(hero)
         assertEquals("Kaelen", savedHero.name)
         assertEquals(230, savedHero.maxHp)
-        assertEquals(130, savedHero.maxMp)
+        assertEquals(140, savedHero.maxMp)
         assertEquals(hero.spells.size, savedHero.spellIds.size)
     }
 

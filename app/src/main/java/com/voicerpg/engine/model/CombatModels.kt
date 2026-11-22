@@ -51,7 +51,9 @@ data class Spell(
     val manaRestorePct: Float = 0f,
     val aliases: List<String> = emptyList(),
     val graphics: SpellGraphics? = null,
-    val cleansesDebuffs: Boolean = false
+    val cleansesDebuffs: Boolean = false,
+    /** Game-written chants per tier name (BASIC..TRANSCENDENTAL) for hands-free presets; English only. */
+    val presetChants: Map<String, String> = emptyMap()
 ) {
     val isCleanse: Boolean get() = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true)
 
@@ -123,7 +125,9 @@ data class Enemy(
     val xpReward: Int = 60,
     val movesetId: String = "",
     val statuses: List<StatusInstance> = emptyList(),
-    val moveCooldowns: Map<String, Int> = emptyMap()
+    val moveCooldowns: Map<String, Int> = emptyMap(),
+    /** Extra voice words for targeting (from enemies.json), besides name and subtitle. */
+    val voiceAliases: List<String> = emptyList()
 ) {
     val isAlive: Boolean get() = currentHp > 0
     val isTurnReady: Boolean get() = isAlive && atbGauge >= 1.0f
@@ -134,21 +138,10 @@ data class Enemy(
 enum class TargetSelection {
     FIRST_ALIVE_ENEMY,
     SPECIFIC_ENEMY,
-    ORC,
-    ARCHER,
-    SHAMAN,
     ALL_ENEMIES,
     PARTY_LOWEST,
     SELF,
-    SPECIFIC_HERO,
-    HERO,
-    CEDRIC,
-    LYRA,
-    ZEPHYR,
-    MARCO,
-    VANCE,
-    KASH,
-    KENNEDY
+    SPECIFIC_HERO
 }
 
 enum class MetaCommand {

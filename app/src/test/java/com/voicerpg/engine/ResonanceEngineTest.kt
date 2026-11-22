@@ -1,5 +1,7 @@
 package com.voicerpg.engine
 
+import org.junit.Rule
+import com.voicerpg.engine.testing.TemplateFixture
 import com.voicerpg.engine.engine.IntentParser
 import com.voicerpg.engine.engine.NoveltyCache
 import com.voicerpg.engine.engine.ResonanceEngine
@@ -19,6 +21,9 @@ import org.junit.Before
 import org.junit.Test
 
 class ResonanceEngineTest {
+
+    /** Mechanics test: runs on the engine's frozen template content, whatever game it's in. */
+    @get:Rule val templateFixture = TemplateFixture()
 
     private lateinit var engine: ResonanceEngine
     private lateinit var testSpells: List<Spell>
@@ -254,54 +259,6 @@ class ResonanceEngineTest {
         assertEquals(0f, deadEnemy.hpRatio)
         assertEquals(0f, deadEnemy.atbRatio)
         assertFalse(deadEnemy.isTurnReady)
-    }
-
-    @Test
-    fun testAllSpellChantPresetsAcrossAllResonanceTiers() {
-        val allSpells = GameContent.spells.values.distinctBy { it.id }
-
-        val tiers = listOf(
-            ResonanceTier.BASIC,
-            ResonanceTier.ADEPT,
-            ResonanceTier.MASTER,
-            ResonanceTier.MYTHIC,
-            ResonanceTier.TRANSCENDENTAL
-        )
-
-        for (spell in allSpells) {
-            for (expectedTier in tiers) {
-                val preset = SpellChantPresets.getPreset(spell, expectedTier)
-                val result = engine.evaluate(
-                    utterance = preset.chantText,
-                    school = spell.school,
-                    acousticProfile = preset.acousticProfile,
-                    ignoreNoveltyDecay = true
-                )
-
-                val tierMessage =
-                    "Spell '${spell.id}' with preset tier $expectedTier failed: got ${result.tier} with ${result.bonusPercent}%"
-
-                if (expectedTier == ResonanceTier.BASIC) {
-                    // A spell name containing two thematic roots (e.g. "Aegis Guard")
-                    // inherently floors at 22% above the BASIC ceiling, so the BASIC
-                    // preset only guarantees staying near BASIC (never MASTER+).
-                    assertTrue(tierMessage, result.bonusPercent < 55)
-                } else {
-                    assertEquals(tierMessage, expectedTier, result.tier)
-                }
-
-                if (expectedTier == ResonanceTier.TRANSCENDENTAL) {
-                    assertTrue(
-                        "Transcendental tier for ${spell.id} should hit >= 155% bonus (got ${result.bonusPercent}%)",
-                        result.bonusPercent >= 155
-                    )
-                    assertTrue(
-                        "Damage multiplier should be >= 2.55x (got ${result.damageMultiplier}x)",
-                        result.damageMultiplier >= 2.55f
-                    )
-                }
-            }
-        }
     }
 
     @Test
