@@ -1,0 +1,104 @@
+{
+  "_doc": "Echoes of the Logos selfie portrait generator and fantasy JRPG filter settings.",
+  "isEnabled": true,
+  "disclaimerTitle": "🔮 AWAKENED HERO'S VISAGE",
+  "disclaimerText": "Channeling your physical likeness into the Chronicles of Solaria will project your portrait into the fellowship dialogue, battle HUD, and status codex. Step forward to capture your visage, or keep the traditional hero illustration.",
+  "disclaimerConfirmButton": "CHANNEL VISAGE ➔",
+  "disclaimerCancelButton": "KEEP ANCIENT ILLUSTRATION",
+  "sourceDialogTitle": "📸 CAPTURE HERO'S LIKENESS",
+  "sourceDialogSubtitle": "Snap a real selfie or select an existing portrait to immortalize your hero in Solaria.",
+  "filterDialogTitle": "✨ FANTASY JRPG CALIBRATION",
+  "filterDialogSubtitle": "Arcane Color Grade & Realm Attunement",
+  "filterConfirmButton": "IMBUE PORTRAIT ✔",
+  "backgroundToggleLabel": "🏰 Solaria Background",
+  "backgroundToggleDescription": "AI hero cutout transported into the realm",
+  "availableBackgrounds": [
+    { "id": "fellowship_camp", "label": "Fellowship Camp", "assetPath": "story/fellowship_camp.jpg" },
+    { "id": "cottage_bedroom", "label": "Cottage Sanctuary", "assetPath": "story/cottage_bedroom.jpg" },
+    { "id": "forest_crossroads", "label": "Enchanted Forest", "assetPath": "story/forest_crossroads.jpg" },
+    { "id": "celestial_stair", "label": "Celestial Stair", "assetPath": "story/celestial_stair.jpg" },
+    { "id": "castle", "label": "High Citadel", "assetPath": "environments/castle.jpg" },
+    { "id": "cave", "label": "Crystal Cavern", "assetPath": "environments/cave.jpg" }
+  ],
+  "frameBorderAsset": "game/creation/borders/gold_fantasy_frame.png",
+  "avatarSynthesis": {
+    "enabledByDefault": true,
+    "label": "⚔️ JRPG Hero Visage Synthesis",
+    "description": "Synthesizes an authentic 16-bit Solaria hero portrait matching Aethel from your facial features",
+    "defaultAttireIndex": 0,
+    "skinToneLabels": ["Fair Alabaster", "Warm Peach", "Olive Neutral", "Golden Tan", "Deep Espresso"],
+    "eyeColorLabels": ["Logos Sky Blue", "Chestnut Brown", "Forest Emerald", "Golden Hazel", "Slate Grey"],
+    "faceShapeLabels": ["Slender V-Chin", "Square Heroic", "Soft Rounded"],
+    "hairStyleLabels": ["Short Spiky", "Medium Parted", "Long Braids"],
+    "hairColorLabels": ["Silver / Grey", "Golden Blonde", "Chestnut Brown", "Raven Black", "Fiery Auburn"],
+    "facialHairLabels": ["Clean Shaven", "5 O'Clock Stubble", "Goatee & Mustache", "Full Beard"],
+    "attireLabels": ["Solaria Mage Robe", "Paladin Gold Plate", "Forest Scout Mantle"]
+  },
+  "pixelArt": {
+    "enabledByDefault": true,
+    "label": "🎮 Retro JRPG Pixel Art",
+    "description": "16-bit Chronicle pixel grid with discrete color shading matching Aethel and companion portraits",
+    "gridResolution": 144,
+    "kuwaharaRadius": 2,
+    "paletteBands": 4,
+    "ditherStrength": 0.08,
+    "shadowCoolingFactor": 0.14,
+    "outlineSensitivity": 1.05,
+    "outlineColorHex": "#18142A"
+  },
+  "tfliteStylization": {
+    "enabledByDefault": false,
+    "modelAssetPath": "game/creation/models/anime_style.tflite",
+    "label": "🎨 JRPG Anime Neural Style",
+    "description": "On-device deep neural network transforming your portrait into anime line-and-wash art",
+    "inputSize": 256
+  },
+  "celShading": {
+    "enabledByDefault": false,
+    "label": "✨ Cel-Shaded Anime Style",
+    "description": "Luminance-quantized anime shading with warm highlights and Solaria indigo shadows",
+    "bands": 4,
+    "smoothRadius": 2,
+    "shadowCoolingFactor": 0.14
+  },
+  "inkOutlines": {
+    "enabledByDefault": false,
+    "label": "🖋️ Chronicle Ink Outlines",
+    "description": "Hand-drawn line-art contours and realm silhouette definition",
+    "inkColorHex": "#18142A",
+    "sensitivity": 1.05,
+    "outlineSilhouette": true
+  },
+  "eyeEffect": {
+    "enabledByDefault": true,
+    "label": "✨ Logos Eye Resonance",
+    "description": "Subtle ethereal iris luminescence from ancient logos attunement",
+    "darkCenterColorHex": "#7040C8FF",
+    "radiusFactor": 0.22,
+    "yOffsetFactor": 0.08
+  },
+  "colorGrade": {
+    "enabledByDefault": true,
+    "label": "🎨 JRPG Painterly Grade",
+    "description": "Vibrant fantasy saturation with warm golden highlights and deep mystical indigo shadows",
+    "colorMatrix": [
+      1.12, -0.04, -0.03, 0.0, 4.0,
+      -0.03, 1.08, -0.03, 0.0, 2.0,
+      -0.03, -0.05, 1.18, 0.0, 8.0,
+      0.0,   0.0,   0.0,  1.0, 0.0
+    ]
+  },
+  "scanlines": {
+    "enabledByDefault": true,
+    "label": "📜 Chronicle Texture",
+    "description": "Subtle archaic chronicle texture overlay",
+    "lineAlpha": 20,
+    "lineSpacing": 4.0,
+    "strokeWidth": 1.5
+  },
+  "vignette": {
+    "enabled": true,
+    "radiusFactor": 0.72,
+    "colorHex": "#55100826"
+  }
+}

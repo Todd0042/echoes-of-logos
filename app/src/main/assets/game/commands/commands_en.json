@@ -1,0 +1,309 @@
+{
+  "locale": "en",
+  "metaCommands": {
+    "STATUS_REPORT": [
+      "status",
+      "report",
+      "status report",
+      "situation report",
+      "check status",
+      "battle status",
+      "health",
+      "hp"
+    ],
+    "CHECK_ENEMIES": [
+      "enemies",
+      "check enemies",
+      "monsters",
+      "targets",
+      "who is alive",
+      "who is left",
+      "target scan"
+    ],
+    "CHECK_PARTY": [
+      "party",
+      "allies",
+      "party status",
+      "check party",
+      "fellowship",
+      "team status",
+      "team health"
+    ],
+    "UNLOCK_SCREEN": [
+      "unlock",
+      "unlock screen",
+      "show screen",
+      "turn on screen",
+      "open screen",
+      "wake up",
+      "wake screen",
+      "dismiss lock",
+      "resume screen"
+    ],
+    "LOCK_SCREEN": [
+      "lock",
+      "lock screen",
+      "lock display",
+      "pocket lock",
+      "blank screen",
+      "hide screen",
+      "dim screen"
+    ],
+    "DISABLE_EYES_FREE": [
+      "exit pocket mode",
+      "disable pocket mode",
+      "turn off pocket mode",
+      "stop pocket mode",
+      "leave pocket mode",
+      "exit eyes free",
+      "disable eyes free",
+      "turn off eyes free"
+    ],
+    "ENABLE_EYES_FREE": [
+      "enable pocket mode",
+      "turn on pocket mode",
+      "start pocket mode",
+      "enable eyes free",
+      "turn on eyes free"
+    ],
+    "TOGGLE_EYES_FREE": [
+      "eyes free",
+      "pocket mode",
+      "blind mode",
+      "screenless",
+      "audio mode",
+      "toggle narrator",
+      "toggle audio",
+      "narrator"
+    ],
+    "TOGGLE_AUTO_LISTEN": [
+      "auto listen",
+      "hands free",
+      "auto mic",
+      "automatic listening"
+    ],
+    "TOGGLE_NARRATION": [
+      "toggle narration",
+      "narration",
+      "narration on",
+      "narration off",
+      "read dialogue",
+      "toggle speech"
+    ],
+    "TOGGLE_READ_CHOICES": [
+      "read choices",
+      "toggle choices",
+      "read options",
+      "toggle options reading",
+      "stop reading choices"
+    ],
+    "TOGGLE_SPEAKER_ATTRIBUTION": [
+      "speaker name",
+      "toggle speaker",
+      "who is speaking",
+      "toggle attribution",
+      "attribution",
+      "announcer says"
+    ],
+    "TOGGLE_MUSIC": [
+      "toggle music",
+      "music",
+      "music on",
+      "music off",
+      "mute music",
+      "unmute music",
+      "background music",
+      "bgm"
+    ],
+    "OPEN_OPTIONS": [
+      "options",
+      "settings",
+      "menu",
+      "open options",
+      "open settings",
+      "show options"
+    ],
+    "CLOSE_OPTIONS": [
+      "close options",
+      "close settings",
+      "resume",
+      "back",
+      "close menu"
+    ],
+    "OPEN_BACKLOG": [
+      "log",
+      "history",
+      "backlog",
+      "open log",
+      "show log",
+      "open history",
+      "dialogue history",
+      "review dialogue"
+    ],
+    "CLOSE_BACKLOG": [
+      "close log",
+      "close history",
+      "close backlog",
+      "dismiss log"
+    ],
+    "FAST_FORWARD": [
+      "skip",
+      "fast forward",
+      "skip dialogue",
+      "rush"
+    ],
+    "STOP_FAST_FORWARD": [
+      "stop",
+      "halt",
+      "pause",
+      "stop skip"
+    ],
+    "STORY_RECAP": [
+      "recap",
+      "story so far",
+      "quest recap",
+      "story recap",
+      "where was i",
+      "catch me up",
+      "quest log",
+      "what happened"
+    ],
+    "HELP": [
+      "help",
+      "what can i say",
+      "commands",
+      "voice commands",
+      "help commands"
+    ],
+    "SPEED_UP_NARRATION": [
+      "faster narration",
+      "speed up narration",
+      "faster speech",
+      "faster voice",
+      "faster",
+      "speak faster"
+    ],
+    "SLOW_DOWN_NARRATION": [
+      "slower narration",
+      "slow down narration",
+      "slower speech",
+      "slower voice",
+      "slower",
+      "speak slower"
+    ],
+    "RESET_NARRATION_SPEED": [
+      "normal narration",
+      "reset speech speed",
+      "normal speech speed",
+      "reset narration speed",
+      "normal speed",
+      "normal voice"
+    ]
+  },
+  "targeting": {
+    "ordinals": {
+      "0": [
+        "first",
+        "1st",
+        "enemy 1",
+        "monster 1"
+      ],
+      "1": [
+        "second",
+        "2nd",
+        "enemy 2",
+        "monster 2"
+      ],
+      "2": [
+        "third",
+        "3rd",
+        "enemy 3",
+        "monster 3"
+      ],
+      "3": [
+        "fourth",
+        "4th",
+        "enemy 4",
+        "monster 4"
+      ],
+      "4": [
+        "fifth",
+        "5th",
+        "enemy 5",
+        "monster 5"
+      ],
+      "5": [
+        "sixth",
+        "6th",
+        "enemy 6",
+        "monster 6"
+      ]
+    },
+    "positionals": {
+      "leftmost": [
+        "leftmost",
+        "far left"
+      ],
+      "rightmost": [
+        "rightmost",
+        "far right"
+      ],
+      "left": [
+        "left",
+        "on the left"
+      ],
+      "right": [
+        "right",
+        "on the right"
+      ],
+      "center": [
+        "middle",
+        "center",
+        "in the middle"
+      ]
+    },
+    "groups": {
+      "all": [
+        "all",
+        "everyone",
+        "horde",
+        "all enemies",
+        "all foes"
+      ],
+      "party": [
+        "party",
+        "allies",
+        "team"
+      ],
+      "self": [
+        "self",
+        "me"
+      ]
+    }
+  },
+  "actions": {
+    "heal": [
+      "heal",
+      "mend",
+      "restore",
+      "cure",
+      "cleanse",
+      "dispel",
+      "purify"
+    ],
+    "defend": [
+      "defend",
+      "guard",
+      "block",
+      "shield",
+      "brace"
+    ],
+    "attack": [
+      "attack",
+      "strike",
+      "hit",
+      "slash",
+      "assault"
+    ]
+  }
+}

@@ -1,0 +1,1767 @@
+{
+  "movesets": {
+    "flesh_bruiser": {
+      "moves": [
+        {
+          "name": "Cleave",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Savage Rip",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.6,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BLEED",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "War Cry",
+          "school": "PHYSICAL",
+          "kind": "BUFF",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 1,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "BLESS",
+          "cooldownTurns": 5
+        }
+      ]
+    },
+    "flesh_sniper": {
+      "moves": [
+        {
+          "name": "Volley Shot",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 7,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Aimed Shot",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.5,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 3
+        }
+      ]
+    },
+    "flesh_caster": {
+      "moves": [
+        {
+          "name": "Hex Bolt",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "CORRODE"
+        },
+        {
+          "name": "Mind Rake",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "weight": 2,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4
+        },
+        {
+          "name": "Siphon Life",
+          "school": "SHADOW",
+          "kind": "DRAIN",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_MARKED",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "beast_sniper": {
+      "moves": [
+        {
+          "name": "Skitter Bite",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "BLEED"
+        },
+        {
+          "name": "Swarm Flurry",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.4,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 3,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 3
+        }
+      ]
+    },
+    "assassin_sniper": {
+      "moves": [
+        {
+          "name": "Shiv",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Backstab",
+          "school": "SHADOW",
+          "kind": "HEAVY",
+          "powerMult": 1.8,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BLEED",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Venom Blade",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "POISON",
+          "cooldownTurns": 2
+        }
+      ]
+    },
+    "undead_bruiser": {
+      "moves": [
+        {
+          "name": "Rot Claw",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "POISON"
+        },
+        {
+          "name": "Grave Chill",
+          "school": "CRYOMANCY",
+          "kind": "HEAVY",
+          "powerMult": 1.4,
+          "targetRule": "SINGLE_MARKED",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#4FC3F7",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "CHILL",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Bone Shield",
+          "school": "PHYSICAL",
+          "kind": "BUFF",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 1,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "GUARD",
+          "cooldownTurns": 5
+        }
+      ]
+    },
+    "undead_sniper": {
+      "moves": [
+        {
+          "name": "Bone Shot",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 7,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Gravewail",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.6,
+          "targetRule": "PARTY_AOE",
+          "weight": 2,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "CHILL",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "undead_summoner": {
+      "moves": [
+        {
+          "name": "Necrotic Bolt",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 4,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "POISON"
+        },
+        {
+          "name": "Raise Restless",
+          "school": "SHADOW",
+          "kind": "SUMMON",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 4,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "undead_caster": {
+      "moves": [
+        {
+          "name": "Wither Touch",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "POISON"
+        },
+        {
+          "name": "Dread Wail",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.6,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "construct_bruiser": {
+      "moves": [
+        {
+          "name": "Iron Slam",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Crush",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.6,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Steam Vent",
+          "school": "PYROMANCY",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "weight": 2,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FF7043",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BURN",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "construct_sniper": {
+      "moves": [
+        {
+          "name": "Bolt Volley",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Suppressive Fire",
+          "school": "PHYSICAL",
+          "kind": "AOE",
+          "powerMult": 0.6,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "construct_caster": {
+      "moves": [
+        {
+          "name": "Grinding Slab",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Sigil Pulse",
+          "school": "ELECTROMANCY",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "weight": 2,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FFF176",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "OVERLOAD",
+          "cooldownTurns": 5
+        }
+      ]
+    },
+    "verdant_bruiser": {
+      "moves": [
+        {
+          "name": "Vine Lash",
+          "school": "NATURE",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Root Grasp",
+          "school": "NATURE",
+          "kind": "HEAVY",
+          "powerMult": 1.3,
+          "targetRule": "SINGLE_MARKED",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "ROOT",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Thorn Burst",
+          "school": "NATURE",
+          "kind": "AOE",
+          "powerMult": 0.6,
+          "targetRule": "PARTY_AOE",
+          "weight": 2,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#81C784",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BLEED",
+          "cooldownTurns": 5
+        }
+      ]
+    },
+    "verdant_sniper": {
+      "moves": [
+        {
+          "name": "Spore Shot",
+          "school": "NATURE",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "POISON"
+        },
+        {
+          "name": "Snare Seed",
+          "school": "NATURE",
+          "kind": "HEAVY",
+          "powerMult": 1.2,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "ROOT",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "verdant_caster": {
+      "moves": [
+        {
+          "name": "Thorn Lash",
+          "school": "NATURE",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Bramble Whip",
+          "school": "NATURE",
+          "kind": "HEAVY",
+          "powerMult": 1.2,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "ROOT",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Choking Pollen",
+          "school": "NATURE",
+          "kind": "AOE",
+          "powerMult": 0.6,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#81C784",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "POISON",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "void_wisp": {
+      "moves": [
+        {
+          "name": "Drain Whisper",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "CORRODE"
+        },
+        {
+          "name": "Huddle",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.5,
+          "targetRule": "PARTY_AOE",
+          "weight": 2,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "void_bruiser": {
+      "moves": [
+        {
+          "name": "Tendril Rake",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Devour Shadow",
+          "school": "SHADOW",
+          "kind": "DRAIN",
+          "powerMult": 1.2,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "cooldownTurns": 3
+        }
+      ]
+    },
+    "void_sniper": {
+      "moves": [
+        {
+          "name": "Umbral Lance",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Silence Grip",
+          "school": "SHADOW",
+          "kind": "HEAVY",
+          "powerMult": 1.3,
+          "targetRule": "SINGLE_MARKED",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "void_caster": {
+      "moves": [
+        {
+          "name": "Void Bolt",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "CORRODE"
+        },
+        {
+          "name": "Enveloping Dark",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 5
+        },
+        {
+          "name": "Siphon Essence",
+          "school": "SHADOW",
+          "kind": "DRAIN",
+          "powerMult": 1.1,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "radiant_bruiser": {
+      "moves": [
+        {
+          "name": "Gleaming Blow",
+          "school": "HOLY",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Judgement",
+          "school": "HOLY",
+          "kind": "HEAVY",
+          "powerMult": 1.6,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Consecrate",
+          "school": "HOLY",
+          "kind": "AOE",
+          "powerMult": 0.6,
+          "targetRule": "PARTY_AOE",
+          "weight": 2,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BURN",
+          "cooldownTurns": 5
+        }
+      ]
+    },
+    "radiant_caster": {
+      "moves": [
+        {
+          "name": "Searing Ray",
+          "school": "HOLY",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Radiant Nova",
+          "school": "HOLY",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "radiant_healer": {
+      "moves": [
+        {
+          "name": "Smite",
+          "school": "HOLY",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Mend Ally",
+          "school": "HOLY",
+          "kind": "BUFF",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 4,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "BLESS",
+          "cooldownTurns": 3
+        }
+      ]
+    },
+    "silence_bruiser": {
+      "moves": [
+        {
+          "name": "Hush",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "WEAKEN"
+        },
+        {
+          "name": "Null Crush",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.5,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 3
+        }
+      ]
+    },
+    "silence_sniper": {
+      "moves": [
+        {
+          "name": "Silencing Shot",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "WEAKEN"
+        },
+        {
+          "name": "Dampening Field",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.5,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "silence_caster": {
+      "moves": [
+        {
+          "name": "Void Dirge",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.6,
+          "targetRule": "PARTY_AOE",
+          "weight": 4,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4
+        },
+        {
+          "name": "Hollow Word",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_MARKED",
+          "weight": 4,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "CORRODE"
+        }
+      ]
+    },
+    "mirror_doppel": {
+      "moves": [
+        {
+          "name": "Mimic Strike",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Echo Incantation",
+          "school": "ELECTROMANCY",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FFF176",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "shadow_knight": {
+      "moves": [
+        {
+          "name": "Holy Cleave",
+          "school": "HOLY",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Radiant Smite",
+          "school": "HOLY",
+          "kind": "HEAVY",
+          "powerMult": 1.4,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Petrified Aegis",
+          "school": "HOLY",
+          "kind": "BUFF",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "GUARD",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "shadow_warden": {
+      "moves": [
+        {
+          "name": "Briar Shot",
+          "school": "NATURE",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Snare of Doubt",
+          "school": "NATURE",
+          "kind": "HEAVY",
+          "powerMult": 1.2,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "ROOT",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Shadow Bloom",
+          "school": "NATURE",
+          "kind": "BUFF",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "BLESS",
+          "cooldownTurns": 4
+        }
+      ]
+    },
+    "shadow_blade": {
+      "moves": [
+        {
+          "name": "Shadow Slash",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Severing Cut",
+          "school": "SHADOW",
+          "kind": "HEAVY",
+          "powerMult": 1.5,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BLEED",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Shadow Step",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.1,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "cooldownTurns": 2
+        }
+      ]
+    },
+    "shadow_invocator": {
+      "moves": [
+        {
+          "name": "Arcane Bolt",
+          "school": "ELECTROMANCY",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF176",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Forked Lightning",
+          "school": "ELECTROMANCY",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FFF176",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 4
+        },
+        {
+          "name": "Disrupt Pulse",
+          "school": "ELECTROMANCY",
+          "kind": "HEAVY",
+          "powerMult": 1.3,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF176",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 3
+        }
+      ]
+    },
+    "boss_broodmother": {
+      "moves": [
+        {
+          "name": "Bite",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 5,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "POISON"
+        },
+        {
+          "name": "Spawn Hatchlings",
+          "school": "SHADOW",
+          "kind": "SUMMON",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "cooldownTurns": 3
+        }
+      ],
+      "phases": [
+        {
+          "hpBelow": 0.5,
+          "bannerText": "",
+          "narrationText": "",
+          "addMoves": null,
+          "replaceWith": null
+        }
+      ]
+    },
+    "boss_behemoth": {
+      "moves": [
+        {
+          "name": "Trample",
+          "school": "NATURE",
+          "kind": "HEAVY",
+          "powerMult": 1.6,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 4,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 6.0
+          }
+        },
+        {
+          "name": "Bog Quake",
+          "school": "PHYSICAL",
+          "kind": "AOE",
+          "powerMult": 0.8,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "OVERLOAD",
+          "cooldownTurns": 4
+        },
+        {
+          "name": "Bog Breath",
+          "school": "NATURE",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "POISON"
+        }
+      ],
+      "phases": [
+        {
+          "hpBelow": 0.35,
+          "bannerText": "",
+          "narrationText": "",
+          "addMoves": null,
+          "replaceWith": null
+        }
+      ]
+    },
+    "boss_wyrm": {
+      "moves": [
+        {
+          "name": "Tail Lash",
+          "school": "NATURE",
+          "kind": "AOE",
+          "powerMult": 0.8,
+          "targetRule": "PARTY_AOE",
+          "weight": 4,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#81C784",
+            "particleCount": 20,
+            "screenShake": 6.0
+          }
+        },
+        {
+          "name": "Silt Breath",
+          "school": "NATURE",
+          "kind": "HEAVY",
+          "powerMult": 1.5,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#81C784",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "POISON",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Burrow",
+          "school": "PHYSICAL",
+          "kind": "BUFF",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 1,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "GUARD",
+          "cooldownTurns": 6
+        }
+      ]
+    },
+    "boss_kaelen": {
+      "moves": [
+        {
+          "name": "Executioner Cut",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.7,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 5,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BLEED",
+          "cooldownTurns": 2
+        },
+        {
+          "name": "Shadow Fan",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BLEED",
+          "cooldownTurns": 4
+        },
+        {
+          "name": "Blink Strike",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.1,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        }
+      ],
+      "phases": [
+        {
+          "hpBelow": 0.4,
+          "bannerText": "",
+          "narrationText": "",
+          "addMoves": null,
+          "replaceWith": null
+        }
+      ]
+    },
+    "boss_galahault": {
+      "moves": [
+        {
+          "name": "Oathbreaker Smite",
+          "school": "HOLY",
+          "kind": "HEAVY",
+          "powerMult": 1.6,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 4,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 6.0
+          }
+        },
+        {
+          "name": "Dawn Judgment",
+          "school": "HOLY",
+          "kind": "AOE",
+          "powerMult": 0.8,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BURN",
+          "cooldownTurns": 4
+        },
+        {
+          "name": "Petrified Aegis",
+          "school": "HOLY",
+          "kind": "BUFF",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#FFF9C4",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "GUARD",
+          "cooldownTurns": 5
+        }
+      ],
+      "phases": [
+        {
+          "hpBelow": 0.5,
+          "bannerText": "",
+          "narrationText": "",
+          "addMoves": null,
+          "replaceWith": null
+        }
+      ]
+    },
+    "boss_nocturne": {
+      "moves": [
+        {
+          "name": "Silent Kill",
+          "school": "SHADOW",
+          "kind": "HEAVY",
+          "powerMult": 1.9,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BLEED",
+          "cooldownTurns": 2
+        },
+        {
+          "name": "Murder of Blades",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.8,
+          "targetRule": "PARTY_AOE",
+          "weight": 4,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "BLEED",
+          "cooldownTurns": 4
+        }
+      ],
+      "phases": [
+        {
+          "hpBelow": 0.6,
+          "bannerText": "",
+          "narrationText": "",
+          "addMoves": null,
+          "replaceWith": null
+        }
+      ]
+    },
+    "boss_ouros": {
+      "moves": [
+        {
+          "name": "Gear Cleave",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.2,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 4,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Overdrive",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.7,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 3,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Bellow of Iron",
+          "school": "ELECTROMANCY",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FFF176",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "OVERLOAD",
+          "cooldownTurns": 5
+        }
+      ],
+      "phases": [
+        {
+          "hpBelow": 0.5,
+          "bannerText": "",
+          "narrationText": "",
+          "addMoves": null,
+          "replaceWith": null
+        }
+      ]
+    },
+    "boss_vaelor": {
+      "moves": [
+        {
+          "name": "Void Horn Blast",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.8,
+          "targetRule": "PARTY_AOE",
+          "weight": 4,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4
+        },
+        {
+          "name": "Standard Charge",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.6,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 4,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          }
+        },
+        {
+          "name": "Summon Spectral Legion",
+          "school": "SHADOW",
+          "kind": "SUMMON",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "cooldownTurns": 6
+        }
+      ]
+    },
+    "boss_leviathan": {
+      "moves": [
+        {
+          "name": "Tidal Maw",
+          "school": "SHADOW",
+          "kind": "HEAVY",
+          "powerMult": 1.7,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 4,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Drowning Silence",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.8,
+          "targetRule": "PARTY_AOE",
+          "weight": 4,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4
+        },
+        {
+          "name": "Void Spawn",
+          "school": "SHADOW",
+          "kind": "SUMMON",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "cooldownTurns": 5
+        }
+      ]
+    },
+    "boss_malakor": {
+      "moves": [
+        {
+          "name": "Nullifying Word",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.2,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 4,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 3.0
+          },
+          "applyStatus": "WEAKEN"
+        },
+        {
+          "name": "Choir of Silence",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.8,
+          "targetRule": "PARTY_AOE",
+          "weight": 4,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#BA68C8",
+            "particleCount": 20,
+            "screenShake": 6.0
+          },
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 3
+        },
+        {
+          "name": "Sever Echo",
+          "school": "SHADOW",
+          "kind": "HEAVY",
+          "powerMult": 1.8,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "weight": 2,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#BA68C8",
+            "particleCount": 14,
+            "screenShake": 6.0
+          },
+          "applyStatus": "CORRODE",
+          "cooldownTurns": 4
+        }
+      ],
+      "phases": [
+        {
+          "hpBelow": 0.34,
+          "bannerText": "",
+          "narrationText": "",
+          "addMoves": null,
+          "replaceWith": null
+        },
+        {
+          "hpBelow": 0.66,
+          "bannerText": "",
+          "narrationText": "",
+          "addMoves": null,
+          "replaceWith": null
+        }
+      ]
+    }
+  }
+}

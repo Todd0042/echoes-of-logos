@@ -1,0 +1,9 @@
+{
+  "id": "ouros",
+  "role": "npc",
+  "name": "Clockwork Warmaster Ouros",
+  "title": "Iron Bastion Sovereign",
+  "portraitAsset": "portraits/ouros.jpg",
+  "themeColor": "#FFB74D",
+  "ttsPitch": 0.65
+}

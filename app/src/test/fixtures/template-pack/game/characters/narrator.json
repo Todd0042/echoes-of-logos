@@ -1,0 +1,17 @@
+{
+  "_doc": "TEMPLATE NARRATOR FILE. The narrator is the engine's system voice: it reads scene text, combat flow, menus, and recaps. It never appears as a party member. Replace the portrait/voice to re-skin narration for your game.",
+  "id": "narrator",
+  "role": "narrator",
+  "name": "Narrator",
+  "title": "Chronicle",
+  "portraitAsset": "portraits/template_narrator.jpg",
+  "themeColor": "#FFD700",
+  "ttsPitch": 1.0,
+  "samplePhrase": "The chronicle unfolds with every step.",
+  "preferredVoiceId": "en-gb-x-rjs-local",
+  "voiceAliases": [],
+  "gender": "agender",
+  "allowedVoiceRegions": [
+    "GB"
+  ]
+}

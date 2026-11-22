@@ -1,0 +1,9 @@
+{
+  "id": "voice_mote",
+  "role": "npc",
+  "name": "A Freed Voice Mote",
+  "title": "Echo of the Reservoir",
+  "portraitAsset": "portraits/voice_mote.jpg",
+  "themeColor": "#80DEEA",
+  "ttsPitch": 1.3
+}

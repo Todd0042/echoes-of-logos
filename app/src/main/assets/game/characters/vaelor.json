@@ -1,0 +1,9 @@
+{
+  "id": "vaelor",
+  "role": "npc",
+  "name": "Commander Vaelor",
+  "title": "The Voice-Thief",
+  "portraitAsset": "portraits/vaelor.jpg",
+  "themeColor": "#B0BEC5",
+  "ttsPitch": 0.75
+}

@@ -1,0 +1,9 @@
+{
+  "id": "shadow_wisp",
+  "role": "npc",
+  "name": "Corrupted Wisp",
+  "title": "Blighted Husk",
+  "portraitAsset": "portraits/shadow_wisp.jpg",
+  "themeColor": "#B39DDB",
+  "ttsPitch": 0.7
+}

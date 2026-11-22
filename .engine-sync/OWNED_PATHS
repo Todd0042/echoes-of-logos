@@ -1,0 +1,5 @@
+app/src/main/java/com/voicerpg/engine/
+app/src/main/assets/game/commands/
+app/src/main/assets/game/localization/
+app/src/test/java/com/voicerpg/engine/
+app/src/test/fixtures/template-pack/

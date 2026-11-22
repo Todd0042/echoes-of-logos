@@ -1,0 +1,57 @@
+{
+  "_doc": "TEMPLATE ENCOUNTERS. 'party' lists character ids from characters/ (empty = use the active campaign party). 'enemies' instantiate templates from enemies/enemies.json with per-instance overrides. bossPhases fire once when the referenced enemy drops below hpBelow: they can announce (bannerText/narrationText), crush the party toward reducePartyToHpPct (executing anyone under executeBelowHpPct), and/or summon reinforcements. midBattleJoin adds a character to the party after N enemy actions.",
+  "encounters": [
+    {
+      "id": "template_solo_battle",
+      "name": "Initiate Proving Trial",
+      "description": "A single combat drone awakens to test vocal incantations and basic resonance.",
+      "environment": "CAVE",
+      "party": ["hero"],
+      "enemies": [
+        { "templateId": "training_drone", "id": "drone_solo", "name": "Training Drone Alpha", "isTargeted": true, "atbGauge": 0.35 }
+      ]
+    },
+    {
+      "id": "template_trio_battle",
+      "name": "Squad Defense Exercise",
+      "description": "Three combat automatons deploy in staggered formation to test crowd control and targeting.",
+      "environment": "DUNGEON",
+      "party": ["hero"],
+      "enemies": [
+        { "templateId": "training_drone", "id": "drone_vanguard", "name": "Drone Vanguard", "subtitle": "Frontline Brawler", "hp": 110, "attack": 18, "speed": 42, "isTargeted": true, "atbGauge": 0.3 },
+        { "templateId": "template_sniper", "id": "drone_artillery", "name": "Drone Artillery", "subtitle": "Heavy Blaster", "hp": 70, "attack": 24, "speed": 36, "atbGauge": 0.2 },
+        { "templateId": "training_drone", "id": "drone_scout", "name": "Drone Scout", "subtitle": "Swift Harasser", "hp": 65, "attack": 12, "speed": 62, "atbGauge": 0.15 }
+      ]
+    },
+    {
+      "id": "template_boss_battle",
+      "name": "The Guardian Trial",
+      "description": "A heavyweight template guardian demonstrates boss phases, enrage announcements, party-wide pressure, and summons.",
+      "environment": "CASTLE",
+      "party": ["hero"],
+      "enemies": [
+        { "templateId": "template_boss", "id": "boss_core", "name": "Proving Guardian", "isTargeted": true, "atbGauge": 0.4 },
+        { "templateId": "template_minion", "id": "boss_warden_a", "name": "Guardian Warden A", "atbGauge": 0.25 },
+        { "templateId": "template_minion", "id": "boss_warden_b", "name": "Guardian Warden B", "atbGauge": 0.2 }
+      ],
+      "bossPhases": [
+        {
+          "enemyId": "boss_core",
+          "hpBelow": 0.66,
+          "bannerText": "GUARDIAN SUMMONS REINFORCEMENTS",
+          "narrationText": "The Proving Guardian calls a fresh warden into the arena!",
+          "summonEnemyId": "template_minion",
+          "summonCount": 1
+        },
+        {
+          "enemyId": "boss_core",
+          "hpBelow": 0.33,
+          "bannerText": "GUARDIAN OVERLOAD — CATACLYSM",
+          "narrationText": "The Proving Guardian unleashes a devastating overload, tearing through the party!",
+          "reducePartyToHpPct": 0.1,
+          "executeBelowHpPct": 0.3
+        }
+      ]
+    }
+  ]
+}

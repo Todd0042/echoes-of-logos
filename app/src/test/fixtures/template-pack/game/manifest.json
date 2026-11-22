@@ -1,0 +1,33 @@
+{
+  "_doc": "Game manifest: top-level metadata the engine pulls at boot. Replace every field when building your own game.",
+  "gameTitle": "Template Adventure",
+  "gameSubtitle": "A VoiceRPG Engine Starter Game",
+  "worldName": "Aethelgard",
+  "initialSceneId": "scene_proving_grounds",
+  "initialNodeId": "template_intro",
+  "defaultEncounterId": "template_solo_battle",
+  "startingAchievementId": "QUEST_BEGUN",
+  "victoryLine": "Victory! Your voice rings triumphant across the battlefield.",
+  "defeatLine": "Defeat. Your voice fades into silence.",
+  "titleBackgroundAsset": "story/template_scene.jpg",
+  "defaultHeroName": "Hero",
+  "defaultHeroTitle": "The Initiate",
+  "quickNames": ["Aethel", "Rowan", "Kaelen", "Elira", "Vaelen"],
+  "characterTitles": [
+    "The Awakened Invocator",
+    "The Flame-Woven",
+    "The Silent Breaker",
+    "The Star-Caller",
+    "The Oath-Bound"
+  ],
+  "creationEmbarkPrompt": "BEGIN JOURNEY ➔",
+  "creationVoiceKeywords": [
+    "awaken", "embark", "begin", "start", "enter", "let us begin", "ready",
+    "venture", "let's go", "begin journey", "start game", "play", "confirm", "forward", "onward"
+  ],
+  "defaultHeroPortrait": "portraits/template_hero.jpg",
+  "tutorialCompletionText": "All companions assembled. Resonance mechanics understood. You are prepared to enter the world of Logos.",
+  "voicePermissionTitle": "HANDS-FREE VOICE CONTROL",
+  "voicePermissionSubtitle": "Template Hands-Free Voice RPG",
+  "voicePermissionPrompt": "Hands-free voice commands, screenless pocket mode, and tactile controls."
+}

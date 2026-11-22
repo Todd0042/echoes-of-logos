@@ -1,0 +1,54 @@
+{
+  "_doc": "Template selfie portrait generator and filter settings. Drop-in JSON for per-game customization.",
+  "isEnabled": true,
+  "disclaimerTitle": "⚠️ INITIATION ADVISORY",
+  "disclaimerText": "You are preparing to project your physical likeness into the realm of Aethelgard.\n\nYour portrait will be etched into the archives of the Invocators. Step forward if you are ready to bind your voice to the arcane.",
+  "disclaimerConfirmButton": "PROCEED TO INITIATION ➔",
+  "disclaimerCancelButton": "CANCEL / KEEP DEFAULT",
+  "sourceDialogTitle": "📸 PORTRAIT CAPTURE",
+  "sourceDialogSubtitle": "Snap a real selfie or select an existing photo to project your likeness into the game.",
+  "filterDialogTitle": "📸 PORTRAIT CALIBRATION",
+  "filterDialogSubtitle": "Acoustic Resonance & Realm Attunement",
+  "filterConfirmButton": "ACCEPT PORTRAIT ✔",
+  "backgroundToggleLabel": "🌲 Realm Environment",
+  "backgroundToggleDescription": "AI person cutout over realm landscape",
+  "availableBackgrounds": [
+    { "id": "forest", "label": "Ancient Forest", "assetPath": "environments/forest.jpg" },
+    { "id": "castle", "label": "High Keep", "assetPath": "environments/castle.jpg" },
+    { "id": "cave", "label": "Crystal Cavern", "assetPath": "environments/cave.jpg" },
+    { "id": "dungeon", "label": "Obsidian Vault", "assetPath": "environments/dungeon.jpg" },
+    { "id": "swamp", "label": "Rotting Fens", "assetPath": "environments/swamp.jpg" }
+  ],
+  "eyeEffect": {
+    "enabledByDefault": true,
+    "label": "👁️ Astral Fatigue",
+    "description": "Sub-orbital dark shading from arcane exhaustion",
+    "darkCenterColorHex": "#872D192A",
+    "radiusFactor": 0.28,
+    "yOffsetFactor": 0.55
+  },
+  "colorGrade": {
+    "enabledByDefault": true,
+    "label": "🌙 Ethereal Tint",
+    "description": "Atmospheric cyan-indigo realm grading",
+    "colorMatrix": [
+      0.92, 0.00, 0.00, 0.0, -5.0,
+      0.00, 1.05, 0.00, 0.0, 8.0,
+      0.00, 0.00, 1.08, 0.0, 12.0,
+      0.00, 0.00, 0.00, 1.0, 0.0
+    ]
+  },
+  "scanlines": {
+    "enabledByDefault": true,
+    "label": "📜 Archive Grain",
+    "description": "Subtle archaic scanlines",
+    "lineAlpha": 32,
+    "lineSpacing": 3.8,
+    "strokeWidth": 1.8
+  },
+  "vignette": {
+    "enabled": true,
+    "radiusFactor": 0.7,
+    "colorHex": "#550A0C12"
+  }
+}

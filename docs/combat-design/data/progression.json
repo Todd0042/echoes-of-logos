@@ -1,0 +1,32 @@
+{
+  "_note": "Progression model. Enforces §7/§8: level is a SHALLOW foundation so it never drowns the resonance skill axis. Damage uses only levelPower (potency), NOT a big ATK stat. Support potency (heal amount, guard duration) scales a little. XP is distributed to the STORY-LEGAL roster only (AGENTS 1). Stored in SavedCharacterStats which already has level/xp fields -> no save migration.",
+  "maxLevel": 30,
+  "xpCurve": {
+    "formula": "xpToNext(level) = 80 + 60*level",
+    "table": { "1": 140, "2": 200, "3": 260, "5": 380, "10": 680, "15": 980, "20": 1280, "25": 1580, "29": 1820 },
+    "overflow": "carry leftover xp into next level; multiple level-ups per battle allowed"
+  },
+  "xpDistribution": {
+    "share": "even split among all ALIVE story-legal members; fallen members receive 50% share (still gain)",
+    "bossLumpBonus": { "enabled": true, "flatBonusPerBoss": [250, 500], "note": "bosses grant their own baseXp (see enemies.json, 500-2000), plus a small clear bonus scaled to chapter" },
+    "noOverLevel": "cap effective level to chapterSoftCap so late-chapter mobs feel meaningful (optional; default off)"
+  },
+  "statGrowthPerLevel": {
+    "_": "additive per level-up; potencyMultiplier feeds (spell.basePower + levelPower) and support scaling",
+    "default": { "maxHp": 18, "maxMp": 8,  "speed": 1, "defense": 1, "potencyPct": 0.03 },
+    "hero/elementalist": { "maxHp": 12, "maxMp": 14, "speed": 1, "defense": 1, "potencyPct": 0.04 },
+    "hero/battlemage":   { "maxHp": 16, "maxMp": 10, "speed": 1, "defense": 2, "potencyPct": 0.035 },
+    "hero/chanter":      { "maxHp": 14, "maxMp": 12, "speed": 1, "defense": 1, "potencyPct": 0.03 },
+    "hero/shadowweaver": { "maxHp": 11, "maxMp": 11, "speed": 2, "defense": 1, "potencyPct": 0.04 },
+    "cedric/templar":    { "maxHp": 24, "maxMp": 6,  "speed": 1, "defense": 3, "potencyPct": 0.03 },
+    "lyra/warden":       { "maxHp": 15, "maxMp": 12, "speed": 1, "defense": 1, "potencyPct": 0.035, "supportPotencyPct": 0.05 },
+    "zephyr/shadowblade":{ "maxHp": 12, "maxMp": 9,  "speed": 2, "defense": 1, "potencyPct": 0.045 }
+  },
+  "levelPowerFormula": "levelPower = round(basePower * potencyPct * (level-1))  -- capped at +90% at level 30",
+  "spellUnlocks": {
+    "cedric/templar":    { "aegis_dawn": 6 },
+    "lyra/warden":       { "verdant_cataclysm": 6 },
+    "_default": "all base kit spells unlocked at level 1; tier-6 ultimates unlock at level 6; a class tier-11 spell slot may be added in Phase 5"
+  },
+  "restNodeBehavior": "camp/rest still restores HP/MP to max (StoryViewModel.kt:351); level-ups persist through it. Attrition of HP/MP between rests remains the pacing lever."
+}

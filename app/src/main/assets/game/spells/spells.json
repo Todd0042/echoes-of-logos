@@ -1,0 +1,671 @@
+{
+  "spells": [
+    {
+      "id": "fireball",
+      "presetChants": {
+        "BASIC": "Fireball archer",
+        "ADEPT": "Cast fireball at archer",
+        "MASTER": "Spirits of cinder burn archer",
+        "MYTHIC": "Arise blazing inferno consume the archer now!",
+        "TRANSCENDENTAL": "O primordial flame of the solar core descend from the heavens and reduce that wretched archer to eternal ash and inferno!"
+      },
+      "name": "Fireball",
+      "school": "PYROMANCY",
+      "basePower": 65,
+      "mpCost": 15,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Roaring sphere of flame",
+      "exampleChant": "Fireball archer",
+      "graphics": {
+        "effectType": "PROJECTILE",
+        "primaryColor": "#FF5722",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 4.0
+      },
+      "status": "BURN"
+    },
+    {
+      "id": "frost_spike",
+      "presetChants": {
+        "BASIC": "Frost orc",
+        "ADEPT": "Cast frost spike orc",
+        "MASTER": "Spirits of ice freeze orc",
+        "MYTHIC": "Arise glacial blizzard freeze the orc now!",
+        "TRANSCENDENTAL": "O celestial winter of absolute zero arise from the void and encase that monstrous orc in eternal glacial frostbite and crystal shards!"
+      },
+      "name": "Frost Spike",
+      "school": "CRYOMANCY",
+      "basePower": 58,
+      "mpCost": 12,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Piercing icicle",
+      "exampleChant": "Glacial frost spike the orc!",
+      "graphics": {
+        "effectType": "PROJECTILE",
+        "primaryColor": "#00BCD4",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 0.0
+      },
+      "status": "CHILL"
+    },
+    {
+      "id": "chain_lightning",
+      "presetChants": {
+        "BASIC": "Lightning all",
+        "ADEPT": "Cast chain lightning all",
+        "MASTER": "Spirits of tempest shock all",
+        "MYTHIC": "Arise tempest lightning shock all enemies now!",
+        "TRANSCENDENTAL": "O primordial tempest of celestial wrath awaken and discharge roaring thunderclaps to strike all enemies with galvanic lightning and plasma!"
+      },
+      "name": "Chain Lightning",
+      "school": "ELECTROMANCY",
+      "basePower": 55,
+      "mpCost": 20,
+      "isHeal": false,
+      "hitsAll": true,
+      "isGuard": false,
+      "description": "Arcing lightning storm",
+      "exampleChant": "Tempest lightning strike all enemies!",
+      "graphics": {
+        "effectType": "PROJECTILE",
+        "primaryColor": "#FFEB3B",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "OVERLOAD"
+    },
+    {
+      "id": "flame_strike",
+      "name": "Flame Strike",
+      "school": "PYROMANCY",
+      "basePower": 72,
+      "mpCost": 14,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Searing close-range flame slash",
+      "exampleChant": "Searing flame strike the orc!",
+      "graphics": {
+        "effectType": "PROJECTILE",
+        "primaryColor": "#FF5722",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 4.0
+      },
+      "status": "BURN"
+    },
+    {
+      "id": "arcane_barrier",
+      "name": "Arcane Barrier",
+      "school": "PHYSICAL",
+      "basePower": 45,
+      "mpCost": 10,
+      "isHeal": false,
+      "hitsAll": true,
+      "isGuard": true,
+      "description": "Absorbing vanguard protection",
+      "exampleChant": "Arcane barrier protect our line!",
+      "graphics": {
+        "effectType": "SHIELD",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "GUARD"
+    },
+    {
+      "id": "thunder_cleave",
+      "name": "Thunder Cleave",
+      "school": "ELECTROMANCY",
+      "basePower": 60,
+      "mpCost": 16,
+      "isHeal": false,
+      "hitsAll": true,
+      "isGuard": false,
+      "description": "Sweeping lightning sword cleave",
+      "exampleChant": "Thunder cleave shatter the horde!",
+      "graphics": {
+        "effectType": "PROJECTILE",
+        "primaryColor": "#FFEB3B",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "OVERLOAD"
+    },
+    {
+      "id": "temporal_stasis",
+      "name": "Temporal Stasis",
+      "school": "ELECTROMANCY",
+      "basePower": 55,
+      "mpCost": 12,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Acoustic distortion freezing foe in time",
+      "exampleChant": "Temporal stasis freeze the archer!",
+      "graphics": {
+        "effectType": "PROJECTILE",
+        "primaryColor": "#FFEB3B",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 0.0
+      },
+      "status": "OVERLOAD"
+    },
+    {
+      "id": "haste_cadence",
+      "name": "Haste Cadence",
+      "school": "HOLY",
+      "basePower": 65,
+      "mpCost": 15,
+      "isHeal": true,
+      "hitsAll": true,
+      "isGuard": false,
+      "description": "Rhythmic breath healing and quickening hero ATB",
+      "exampleChant": "Swift rhythm hasten our fellowship!",
+      "graphics": {
+        "effectType": "WAVE",
+        "primaryColor": "#FFD700",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "BLESS"
+    },
+    {
+      "id": "resonant_surge",
+      "name": "Resonant Surge",
+      "school": "PYROMANCY",
+      "basePower": 70,
+      "mpCost": 18,
+      "isHeal": false,
+      "hitsAll": true,
+      "isGuard": false,
+      "description": "Multi-tonal acoustic shockwave",
+      "exampleChant": "Harmonic surge ignite all enemies!",
+      "graphics": {
+        "effectType": "PROJECTILE",
+        "primaryColor": "#FF5722",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "BURN"
+    },
+    {
+      "id": "shadow_spike",
+      "name": "Shadow Spike",
+      "school": "SHADOW",
+      "basePower": 78,
+      "mpCost": 12,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Piercing needle from darkness",
+      "exampleChant": "Abyssal shadow spike the shaman!",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 4.0
+      },
+      "status": "CORRODE"
+    },
+    {
+      "id": "void_drain",
+      "name": "Void Drain",
+      "school": "SHADOW",
+      "basePower": 55,
+      "mpCost": 14,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Siphons life essence from enemy to caster",
+      "exampleChant": "Void siphon drain their life essence!",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 0.0
+      },
+      "status": "CORRODE",
+      "lifesteal": true,
+      "aliases": [
+        "siphon",
+        "drain"
+      ]
+    },
+    {
+      "id": "umbral_veil",
+      "name": "Umbral Veil",
+      "school": "SHADOW",
+      "basePower": 52,
+      "mpCost": 16,
+      "isHeal": false,
+      "hitsAll": true,
+      "isGuard": false,
+      "description": "Blinding smoke of dark matter",
+      "exampleChant": "Veil of night consume the battlefield!",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "CORRODE"
+    },
+    {
+      "id": "holy_smite",
+      "presetChants": {
+        "BASIC": "Smite heretic",
+        "ADEPT": "Cast holy smite heretic",
+        "MASTER": "Spirits of dawn smite enemy",
+        "MYTHIC": "Arise celestial dawn smite the wicked enemy!",
+        "TRANSCENDENTAL": "O celestial seraph of the sacred dawn descend from the heavens and unleash divine radiance to smite the abominable darkness unto purity!"
+      },
+      "name": "Holy Smite",
+      "school": "HOLY",
+      "basePower": 70,
+      "mpCost": 14,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Righteous celestial blow",
+      "exampleChant": "By celestial dawn, smite the heretic!",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#FFD700",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 4.0
+      }
+    },
+    {
+      "id": "lay_on_hands",
+      "presetChants": {
+        "BASIC": "Mend Cedric",
+        "ADEPT": "Mend wounds of Cedric",
+        "MASTER": "Spirits of grace mend Cedric",
+        "MYTHIC": "Arise celestial grace mend Cedric with healing!",
+        "TRANSCENDENTAL": "O primordial celestial light of pure dawn descend from the heavens to bless mend and cure our valiant guardian Cedric with restorative aegis!"
+      },
+      "name": "Lay on Hands",
+      "school": "HOLY",
+      "basePower": 110,
+      "mpCost": 16,
+      "isHeal": true,
+      "hitsAll": true,
+      "isGuard": false,
+      "description": "Restorative blessing",
+      "exampleChant": "Sacred radiance mend Cedric's wounds!",
+      "graphics": {
+        "effectType": "WAVE",
+        "primaryColor": "#FFD700",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      }
+    },
+    {
+      "id": "shield_wall",
+      "presetChants": {
+        "BASIC": "Raise shield",
+        "ADEPT": "Raise shield against foes",
+        "MASTER": "Spirits shield our line",
+        "MYTHIC": "Arise steel vanguard shield our line now!",
+        "TRANSCENDENTAL": "By the power of celestial steel and unyielding vanguard valor arise and smash the foe to shield all allies with an impenetrable aegis!"
+      },
+      "name": "Shield Wall",
+      "school": "PHYSICAL",
+      "basePower": 50,
+      "mpCost": 10,
+      "isHeal": false,
+      "hitsAll": true,
+      "isGuard": true,
+      "description": "Vanguard protection",
+      "exampleChant": "Raise the golden aegis against the horde!",
+      "graphics": {
+        "effectType": "SHIELD",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "GUARD"
+    },
+    {
+      "id": "aegis_dawn",
+      "presetChants": {
+        "BASIC": "Aegis",
+        "ADEPT": "Aegis",
+        "MASTER": "Spirits of dawn, aegis shield",
+        "MYTHIC": "Arise celestial dawn, aegis shield our line!",
+        "TRANSCENDENTAL": "O celestial seraph of the sacred dawn descend from the heavens and grant impenetrable aegis to protect all allies in eternal glory!"
+      },
+      "name": "Aegis of the Dawn",
+      "school": "HOLY",
+      "basePower": 150,
+      "mpCost": 25,
+      "isHeal": true,
+      "hitsAll": true,
+      "isGuard": true,
+      "description": "Radiant invulnerability barrier",
+      "exampleChant": "By celestial dawn, raise the morning star!",
+      "graphics": {
+        "effectType": "WAVE",
+        "primaryColor": "#FFD700",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "GUARD"
+    },
+    {
+      "id": "steady_breath",
+      "name": "Steady Breath",
+      "school": "PHYSICAL",
+      "basePower": 0,
+      "mpCost": 0,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Templar lung-drill; a third of your mana returns",
+      "exampleChant": "Steady breath",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 0.0
+      },
+      "manaRestorePct": 0.35,
+      "aliases": [
+        "attune",
+        "breathe",
+        "breath",
+        "steady",
+        "concentrate",
+        "center",
+        "centre",
+        "recover",
+        "restore mana"
+      ]
+    },
+    {
+      "id": "soothing_rain",
+      "presetChants": {
+        "BASIC": "Rain party",
+        "ADEPT": "Send gentle rain party",
+        "MASTER": "Spirits of grove rain party",
+        "MYTHIC": "Arise restorative grove rain upon the party!",
+        "TRANSCENDENTAL": "O celestial grove of sacred dawn hearken unto our prayer and unleash soothing rain to mend and rejuvenate the entire party with divine grace!"
+      },
+      "name": "Soothing Rain",
+      "school": "NATURE",
+      "basePower": 65,
+      "mpCost": 18,
+      "isHeal": true,
+      "hitsAll": true,
+      "isGuard": false,
+      "description": "Grove restorative mist",
+      "exampleChant": "Spirits of the grove, grant soothing rain upon our party!",
+      "graphics": {
+        "effectType": "WAVE",
+        "primaryColor": "#4CAF50",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      }
+    },
+    {
+      "id": "briar_entangle",
+      "presetChants": {
+        "BASIC": "Briar archer",
+        "ADEPT": "Cast great briar archer",
+        "MASTER": "Spirits of briar thorns archer",
+        "MYTHIC": "Arise thorny briar vines ensnare that archer!",
+        "TRANSCENDENTAL": "O ancient spirits of the primordial grove awaken from the earth and ensnare that vile archer within crushing briar vines and thorns!"
+      },
+      "name": "Briar Entangle",
+      "school": "NATURE",
+      "basePower": 60,
+      "mpCost": 12,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Thorny vines snare the foe",
+      "exampleChant": "Thorny vines and briars ensnare that archer!",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#4CAF50",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 0.0
+      },
+      "status": "ROOT"
+    },
+    {
+      "id": "verdant_cataclysm",
+      "presetChants": {
+        "BASIC": "Grove erupt all",
+        "ADEPT": "Cast grove-warcry all",
+        "MASTER": "Spirits of the grove surge and awaken!",
+        "MYTHIC": "Arise ancient grove cataclysm crush all enemies!",
+        "TRANSCENDENTAL": "O ancient spirits of the deep earth awaken and unleash the full fury of the grove-warcry to crush all foes within an erupting cataclysm of vines and stone!"
+      },
+      "name": "Verdant Cataclysm",
+      "school": "NATURE",
+      "basePower": 50,
+      "mpCost": 25,
+      "isHeal": false,
+      "hitsAll": true,
+      "isGuard": false,
+      "description": "Cataclysmic grove-cry shook the whole field",
+      "exampleChant": "Ancient roots of the deep earth awaken!",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#4CAF50",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "POISON"
+    },
+    {
+      "id": "deep_root",
+      "name": "Deep Root",
+      "school": "NATURE",
+      "basePower": 0,
+      "mpCost": 0,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Draw the grove's slow cadence up through your roots",
+      "exampleChant": "Deep root, warden",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#4CAF50",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 0.0
+      },
+      "manaRestorePct": 0.35,
+      "aliases": [
+        "attune",
+        "breathe",
+        "breath",
+        "deep root",
+        "route",
+        "still",
+        "concentrate",
+        "center",
+        "centre",
+        "recover",
+        "restore mana"
+      ]
+    },
+    {
+      "id": "shadow_strike",
+      "presetChants": {
+        "BASIC": "Shadow shaman",
+        "ADEPT": "Cast swift shadow shaman",
+        "MASTER": "Spirits of umbra strike shaman",
+        "MYTHIC": "Arise abyssal umbra strike the shaman now!",
+        "TRANSCENDENTAL": "O primordial abyss of the endless umbra awaken from the void and cloak my blade to strike the treacherous shaman into eternal silence!"
+      },
+      "name": "Shadow Strike",
+      "school": "SHADOW",
+      "basePower": 75,
+      "mpCost": 12,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Lethal strike from behind",
+      "exampleChant": "From the silent umbra, strike the shaman's throat!",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 4.0
+      }
+    },
+    {
+      "id": "venom_flurry",
+      "presetChants": {
+        "BASIC": "Venom all",
+        "ADEPT": "Cast swift venom all",
+        "MASTER": "Spirits of venom drench all",
+        "MYTHIC": "Arise abyssal venom surge drench all foes now!",
+        "TRANSCENDENTAL": "O dark spirits of the void awaken and unleash a drenching flurry of venomous serpents to engulf all enemies in lethal poison!"
+      },
+      "name": "Venom Flurry",
+      "school": "SHADOW",
+      "basePower": 52,
+      "mpCost": 15,
+      "isHeal": false,
+      "hitsAll": true,
+      "isGuard": false,
+      "description": "Poisoned twin daggers",
+      "exampleChant": "Abyssal venom coat my blades!",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 24,
+        "screenShake": 6.0
+      },
+      "status": "POISON"
+    },
+    {
+      "id": "umbral_siphon",
+      "presetChants": {
+        "BASIC": "Mend Zephyr",
+        "ADEPT": "Siphon Zephyr",
+        "MASTER": "Spirits of umbra siphon Zephyr",
+        "MYTHIC": "Arise abyssal siphon restore Zephyr now!",
+        "TRANSCENDENTAL": "O primordial abyss of the endless umbra awaken and siphon a torrent of restorative essence to mend and rejuvenate Zephyr with eldritch healing!"
+      },
+      "name": "Umbral Siphon",
+      "school": "SHADOW",
+      "basePower": 60,
+      "mpCost": 14,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Siphons shadow essence to mend wounds",
+      "exampleChant": "Abyssal shadow siphon drain the shaman!",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 0.0
+      },
+      "status": "CORRODE",
+      "lifesteal": true,
+      "aliases": [
+        "siphon",
+        "drain"
+      ]
+    },
+    {
+      "id": "quiet_lungs",
+      "name": "Quiet Lungs",
+      "school": "SHADOW",
+      "basePower": 0,
+      "mpCost": 0,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Silence itself becomes a reservoir",
+      "exampleChant": "Quiet lungs",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 0.0
+      },
+      "manaRestorePct": 0.35,
+      "aliases": [
+        "attune",
+        "breathe",
+        "breath",
+        "hush",
+        "lunge",
+        "steady",
+        "concentrate",
+        "center",
+        "centre",
+        "recover",
+        "restore mana"
+      ]
+    },
+    {
+      "id": "attune",
+      "name": "Attune",
+      "school": "PHYSICAL",
+      "basePower": 0,
+      "mpCost": 0,
+      "isHeal": false,
+      "hitsAll": false,
+      "isGuard": false,
+      "description": "Steady the inner ear; a third of your mana returns",
+      "exampleChant": "Attune",
+      "graphics": {
+        "effectType": "SLASH",
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#FFE082",
+        "particleCount": 16,
+        "screenShake": 0.0
+      },
+      "manaRestorePct": 0.35,
+      "aliases": [
+        "attune",
+        "tune",
+        "breathe",
+        "breath",
+        "concentrate",
+        "center",
+        "centre",
+        "steady",
+        "gather",
+        "recover mana",
+        "restore mana"
+      ]
+    }
+  ]
+}

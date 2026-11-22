@@ -1,0 +1,115 @@
+{
+  "_doc": "Status effects catalog: defines status effects, duration/potency tiers per resonance level, and enemy family resistances.",
+  "statuses": {
+    "BURN": {
+      "kind": "DOT",
+      "tiers": {
+        "BASIC": { "turns": 1, "potPct": 0.1, "maxStacks": 1 },
+        "ADEPT": { "turns": 2, "potPct": 0.12, "maxStacks": 2 },
+        "MASTER": { "turns": 3, "potPct": 0.15, "maxStacks": 3 },
+        "MYTHIC": { "turns": 4, "potPct": 0.18, "maxStacks": 4 },
+        "TRANSCENDENTAL": { "turns": 5, "potPct": 0.22, "maxStacks": 5 }
+      },
+      "resist": { "UNDEAD": "strong", "CONSTRUCT": "strong", "VERDANT": "normal", "FLESH": "normal", "VOID": "mild", "RADIANT": "mild", "SILENCE": "normal" }
+    },
+    "CHILL": {
+      "kind": "ATB_SLOW",
+      "tiers": {
+        "BASIC": { "turns": 1, "potPct": 0.25, "maxStacks": 1 },
+        "ADEPT": { "turns": 2, "potPct": 0.3, "maxStacks": 1 },
+        "MASTER": { "turns": 2, "potPct": 0.4, "maxStacks": 1 },
+        "MYTHIC": { "turns": 3, "potPct": 0.45, "maxStacks": 1 },
+        "TRANSCENDENTAL": { "turns": 3, "potPct": 0.5, "maxStacks": 1 }
+      },
+      "resist": { "UNDEAD": "strong", "CONSTRUCT": "mild", "VERDANT": "normal", "FLESH": "normal", "VOID": "normal", "RADIANT": "normal", "SILENCE": "normal" }
+    },
+    "OVERLOAD": {
+      "kind": "STUN",
+      "tiers": {
+        "BASIC": { "turns": 0, "potPct": 0.2, "maxStacks": 1 },
+        "ADEPT": { "turns": 0, "potPct": 0.2, "maxStacks": 1 },
+        "MASTER": { "turns": 1, "potPct": 0.2, "maxStacks": 1 },
+        "MYTHIC": { "turns": 1, "potPct": 0.2, "maxStacks": 1 },
+        "TRANSCENDENTAL": { "turns": 2, "potPct": 0.2, "maxStacks": 1 }
+      },
+      "resist": { "VERDANT": "strong", "UNDEAD": "strong", "CONSTRUCT": "normal", "FLESH": "normal", "VOID": "mild", "RADIANT": "mild", "SILENCE": "mild" }
+    },
+    "ROOT": {
+      "kind": "ATB_SLOW",
+      "tiers": {
+        "BASIC": { "turns": 1, "potPct": 0.35, "maxStacks": 1 },
+        "ADEPT": { "turns": 2, "potPct": 0.45, "maxStacks": 1 },
+        "MASTER": { "turns": 2, "potPct": 0.6, "maxStacks": 1 },
+        "MYTHIC": { "turns": 3, "potPct": 0.7, "maxStacks": 1 },
+        "TRANSCENDENTAL": { "turns": 3, "potPct": 0.8, "maxStacks": 1 }
+      },
+      "resist": { "CONSTRUCT": "strong", "UNDEAD": "strong", "VOID": "strong", "VERDANT": "mild", "FLESH": "normal", "RADIANT": "normal", "SILENCE": "mild" }
+    },
+    "POISON": {
+      "kind": "DOT",
+      "tiers": {
+        "BASIC": { "turns": 2, "potPct": 0.08, "maxStacks": 1 },
+        "ADEPT": { "turns": 2, "potPct": 0.1, "maxStacks": 2 },
+        "MASTER": { "turns": 3, "potPct": 0.12, "maxStacks": 3 },
+        "MYTHIC": { "turns": 3, "potPct": 0.14, "maxStacks": 4 },
+        "TRANSCENDENTAL": { "turns": 4, "potPct": 0.16, "maxStacks": 5 }
+      },
+      "resist": { "UNDEAD": "strong", "CONSTRUCT": "strong", "VERDANT": "mild", "FLESH": "normal", "VOID": "mild", "RADIANT": "normal", "SILENCE": "strong" }
+    },
+    "CORRODE": {
+      "kind": "DEBUFF_DEF",
+      "tiers": {
+        "BASIC": { "turns": 1, "potPct": 0.2, "maxStacks": 1 },
+        "ADEPT": { "turns": 2, "potPct": 0.2, "maxStacks": 1 },
+        "MASTER": { "turns": 2, "potPct": 0.2, "maxStacks": 1 },
+        "MYTHIC": { "turns": 3, "potPct": 0.2, "maxStacks": 1 },
+        "TRANSCENDENTAL": { "turns": 3, "potPct": 0.2, "maxStacks": 1 }
+      },
+      "resist": { "CONSTRUCT": "normal", "RADIANT": "strong", "UNDEAD": "mild", "VERDANT": "normal", "FLESH": "normal", "VOID": "mild", "SILENCE": "normal" }
+    },
+    "WEAKEN": {
+      "kind": "DEBUFF_ATK",
+      "tiers": {
+        "BASIC": { "turns": 1, "potPct": 0.2, "maxStacks": 1 },
+        "ADEPT": { "turns": 2, "potPct": 0.2, "maxStacks": 1 },
+        "MASTER": { "turns": 2, "potPct": 0.2, "maxStacks": 1 },
+        "MYTHIC": { "turns": 3, "potPct": 0.2, "maxStacks": 1 },
+        "TRANSCENDENTAL": { "turns": 3, "potPct": 0.2, "maxStacks": 1 }
+      },
+      "resist": { "all": "normal" }
+    },
+    "BLEED": {
+      "kind": "DOT",
+      "tiers": {
+        "BASIC": { "turns": 1, "potPct": 0.08, "maxStacks": 1 },
+        "ADEPT": { "turns": 2, "potPct": 0.1, "maxStacks": 1 },
+        "MASTER": { "turns": 2, "potPct": 0.12, "maxStacks": 1 },
+        "MYTHIC": { "turns": 3, "potPct": 0.14, "maxStacks": 1 },
+        "TRANSCENDENTAL": { "turns": 3, "potPct": 0.16, "maxStacks": 1 }
+      },
+      "resist": { "UNDEAD": "strong", "CONSTRUCT": "strong", "VOID": "strong", "VERDANT": "mild", "FLESH": "normal", "RADIANT": "normal", "SILENCE": "mild" }
+    },
+    "BLESS": {
+      "kind": "BUFF",
+      "tiers": {
+        "BASIC": { "turns": 2, "potPct": 0.2, "maxStacks": 1 },
+        "ADEPT": { "turns": 2, "potPct": 0.2, "maxStacks": 1 },
+        "MASTER": { "turns": 3, "potPct": 0.2, "maxStacks": 1 },
+        "MYTHIC": { "turns": 3, "potPct": 0.2, "maxStacks": 1 },
+        "TRANSCENDENTAL": { "turns": 4, "potPct": 0.2, "maxStacks": 1 }
+      },
+      "resist": { "none": "normal" }
+    },
+    "GUARD": {
+      "kind": "BUFF_DEF",
+      "tiers": {
+        "BASIC": { "turns": 1, "potPct": 0.2, "maxStacks": 1 },
+        "ADEPT": { "turns": 1, "potPct": 0.2, "maxStacks": 1 },
+        "MASTER": { "turns": 2, "potPct": 0.2, "maxStacks": 1 },
+        "MYTHIC": { "turns": 2, "potPct": 0.2, "maxStacks": 1 },
+        "TRANSCENDENTAL": { "turns": 2, "potPct": 0.2, "maxStacks": 1 }
+      },
+      "resist": { "none": "normal" }
+    }
+  }
+}

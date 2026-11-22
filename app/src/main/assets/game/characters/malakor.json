@@ -1,0 +1,9 @@
+{
+  "id": "malakor",
+  "role": "npc",
+  "name": "Grand Inquisitor Malakor",
+  "title": "The Mute Sovereign",
+  "portraitAsset": "portraits/malakor.jpg",
+  "themeColor": "#EF5350",
+  "ttsPitch": 0.6
+}

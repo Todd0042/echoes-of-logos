@@ -1,0 +1,25 @@
+{
+  "_note": "Effectiveness multiplier applied to a spell of the given school vs an enemy of the given family. INVARIANT I-2: hard floor 0.8 (impaired, never blocked). 1.0 neutral, 1.2 advantage, 1.5 major weakness, 2.0 signature weakness. selfElementRule: if spell.school == enemy.selfElement, override to 0.8.",
+  "floor": 0.8,
+  "ceiling": 2.0,
+  "schools": ["PYROMANCY", "CRYOMANCY", "ELECTROMANCY", "NATURE", "HOLY", "SHADOW", "PHYSICAL"],
+  "families": ["FLESH", "UNDEAD", "CONSTRUCT", "VERDANT", "VOID", "RADIANT", "SILENCE"],
+  "matrix": {
+    "PYROMANCY":   { "FLESH": 1.2, "UNDEAD": 1.3, "CONSTRUCT": 1.0, "VERDANT": 2.0, "VOID": 1.0, "RADIANT": 0.8, "SILENCE": 1.0 },
+    "CRYOMANCY":   { "FLESH": 1.0, "UNDEAD": 1.0, "CONSTRUCT": 1.2, "VERDANT": 1.1, "VOID": 1.0, "RADIANT": 0.8, "SILENCE": 1.2 },
+    "ELECTROMANCY":{ "FLESH": 1.2, "UNDEAD": 1.1, "CONSTRUCT": 2.0, "VERDANT": 0.8, "VOID": 1.0, "RADIANT": 1.0, "SILENCE": 1.0 },
+    "NATURE":      { "FLESH": 1.2, "UNDEAD": 1.5, "CONSTRUCT": 0.8, "VERDANT": 0.8, "VOID": 1.0, "RADIANT": 0.8, "SILENCE": 1.0 },
+    "HOLY":        { "FLESH": 1.0, "UNDEAD": 2.0, "CONSTRUCT": 1.0, "VERDANT": 0.8, "VOID":  1.5, "RADIANT": 0.8, "SILENCE": 1.1 },
+    "SHADOW":      { "FLESH": 1.0, "UNDEAD": 0.8, "CONSTRUCT": 1.2, "VERDANT": 1.0, "VOID":  0.8, "RADIANT": 1.5, "SILENCE": 1.0 },
+    "PHYSICAL":    { "FLESH": 1.2, "UNDEAD": 1.0, "CONSTRUCT": 1.3, "VERDANT": 1.1, "VOID":  0.8, "RADIANT": 1.0, "SILENCE": 1.0 }
+  },
+  "lore": {
+    "PYROMANCY": "Fire sears plant (Verdant x2) and scorches flesh/undead; damp holy flame is resisted by Radiant; constructs shrug it off.",
+    "CRYOMANCY": "Ice slows living things and jams mechanisms; brittle to the already-dead and the radiant.",
+    "ELECTROMANCY": "Shock disrupts clockwork (x2) and nerve (flesh/beast); ground out by plant/earth (0.8).",
+    "NATURE": "Roots/decay strangle the living and undead but cannot grip inert stone/metal or holy light.",
+    "HOLY": "Radiance devastates undead (x2) and severs void (x1.5); resisted by its own kind (Radiant) and the corruption-touched.",
+    "SHADOW": "Darkness corrodes oaths and radiant constructs (x1.5); passes harmlessly through the already-shadow (Void) and the dead (Undead, 0.8).",
+    "PHYSICAL": "Steel cuts flesh and dents metal; passes through amorphous Void (0.8); blunts on Verdant bark."
+  }
+}

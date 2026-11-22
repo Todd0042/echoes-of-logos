@@ -1,0 +1,32 @@
+{
+  "id": "elementalist",
+  "title": "Elementalist",
+  "subtitle": "Master of Primordial Elements",
+  "description": "Wields blistering fire, piercing frost, and crackling storm incantations. High magical burst damage.",
+  "startingHp": 240,
+  "startingMp": 140,
+  "startingSpeed": 70,
+  "startingBaseAttack": 22,
+  "preferredSchool": "PYROMANCY",
+  "starterSpellIds": [
+    "fireball",
+    "frost_spike",
+    "chain_lightning",
+    "attune"
+  ],
+  "voiceKeywords": [
+    "elementalist",
+    "elemental",
+    "mage",
+    "wizard",
+    "sorcerer",
+    "magus"
+  ],
+  "growth": {
+    "maxHp": 12,
+    "maxMp": 14,
+    "speed": 1,
+    "defense": 1,
+    "potencyPct": 0.04
+  }
+}

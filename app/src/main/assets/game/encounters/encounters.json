@@ -1,0 +1,1670 @@
+{
+  "encounters": [
+    {
+      "id": "prologue_solo",
+      "name": "Prologue: Whispers in the Fog",
+      "description": "Aethel awakens alone in the mist-veiled forest as shadowy wisps converge.",
+      "environment": "FOREST",
+      "party": [
+        "hero"
+      ],
+      "enemies": [
+        {
+          "templateId": "shadow_wisp",
+          "id": "wisp_1",
+          "name": "Shadow Wisp Alpha",
+          "subtitle": "Phantom",
+          "hp": 160,
+          "attack": 14,
+          "speed": 60,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "shadow_wisp",
+          "id": "wisp_2",
+          "name": "Shadow Wisp Beta",
+          "subtitle": "Phantom",
+          "hp": 140,
+          "attack": 12,
+          "speed": 50,
+          "isTargeted": false,
+          "atbGauge": 0.15
+        }
+      ]
+    },
+    {
+      "id": "forest_ambush",
+      "name": "Chapter 1: The Old Way Shrine",
+      "description": "Sir Cedric joins Aethel to repel a blighted hunting party at the ancient shrine.",
+      "environment": "FOREST",
+      "party": [
+        "hero",
+        "cedric"
+      ],
+      "enemies": [
+        {
+          "templateId": "blighted_orc",
+          "id": "orc",
+          "name": "Blighted Orc",
+          "subtitle": "Vanguard",
+          "hp": 340,
+          "attack": 22,
+          "speed": 50,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "corrupted_archer",
+          "id": "archer",
+          "name": "Corrupted Archer",
+          "subtitle": "Sniper",
+          "hp": 240,
+          "attack": 25,
+          "speed": 65,
+          "isTargeted": true,
+          "atbGauge": 0.45
+        },
+        {
+          "templateId": "void_shaman",
+          "id": "shaman",
+          "name": "Void Shaman",
+          "subtitle": "Occultist",
+          "hp": 280,
+          "attack": 20,
+          "speed": 55,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "dungeon_descent",
+      "name": "Chapter 4: Crypt of the Restless",
+      "description": "Deep in the forgotten catacombs, a Bone Acolyte commands skeletal legionnaires.",
+      "environment": "DUNGEON",
+      "party": [
+        "hero",
+        "cedric"
+      ],
+      "enemies": [
+        {
+          "templateId": "crypt_guard",
+          "id": "bone_knight",
+          "name": "Crypt Guard",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        },
+        {
+          "templateId": "skeletal_sniper",
+          "id": "bone_archer",
+          "name": "Skeletal Sniper",
+          "subtitle": "Sniper",
+          "hp": 220,
+          "attack": 26,
+          "speed": 68,
+          "isTargeted": true,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "bone_acolyte",
+          "id": "bone_acolyte",
+          "name": "Bone Acolyte",
+          "subtitle": "Summoner",
+          "hp": 320,
+          "attack": 22,
+          "speed": 52,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        }
+      ]
+    },
+    {
+      "id": "castle_horde",
+      "name": "Chapter 4: The Solaria Bell Chamber",
+      "description": "The fellowship clashes against the royal vanguard garrison on the belfry parapets.",
+      "environment": "CASTLE",
+      "party": [
+        "hero",
+        "cedric"
+      ],
+      "enemies": [
+        {
+          "templateId": "iron_vanguard",
+          "id": "ironclad_1",
+          "name": "Iron Vanguard Alpha",
+          "subtitle": "Vanguard",
+          "hp": 320,
+          "attack": 20,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "iron_vanguard",
+          "id": "ironclad_2",
+          "name": "Iron Vanguard Beta",
+          "subtitle": "Vanguard",
+          "hp": 320,
+          "attack": 20,
+          "speed": 52,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "gate_captain",
+          "id": "gate_captain",
+          "name": "Gate Captain",
+          "subtitle": "Vanguard",
+          "hp": 380,
+          "attack": 25,
+          "speed": 55,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "castle_arbalest",
+          "id": "sniper_1",
+          "name": "Castle Arbalest A",
+          "subtitle": "Sniper",
+          "hp": 210,
+          "attack": 24,
+          "speed": 66,
+          "isTargeted": false,
+          "atbGauge": 0.45
+        },
+        {
+          "templateId": "castle_arbalest",
+          "id": "sniper_2",
+          "name": "Castle Arbalest B",
+          "subtitle": "Sniper",
+          "hp": 210,
+          "attack": 24,
+          "speed": 64,
+          "isTargeted": false,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "court_warlock",
+          "id": "court_mage",
+          "name": "Court Warlock",
+          "subtitle": "Occultist",
+          "hp": 260,
+          "attack": 28,
+          "speed": 58,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "cave_broodmother",
+      "name": "Boss Trial: The Chittering Queen",
+      "description": "In the subterranean abyss, the Broodmother summons toxic hatchlings whenever threatened.",
+      "environment": "CAVE",
+      "party": [
+        "hero",
+        "cedric"
+      ],
+      "enemies": [
+        {
+          "templateId": "grave_broodmother",
+          "id": "broodmother",
+          "name": "Grave Broodmother",
+          "subtitle": "Boss Summoner",
+          "hp": 780,
+          "attack": 32,
+          "speed": 52,
+          "isTargeted": true,
+          "atbGauge": 0.4
+        }
+      ]
+    },
+    {
+      "id": "marsh_rescue",
+      "name": "Chapter 5: The Drowned Fane Rescue",
+      "description": "Aethel and Sir Cedric assault the corrupted wardens guarding Lyra's void-briar containment cage.",
+      "environment": "SWAMP",
+      "party": [
+        "hero",
+        "cedric"
+      ],
+      "enemies": [
+        {
+          "templateId": "bog_ironclad",
+          "id": "mire_ironclad",
+          "name": "Bog Ironclad",
+          "subtitle": "Vanguard",
+          "hp": 380,
+          "attack": 24,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "mire_stalker",
+          "id": "mire_stalker",
+          "name": "Mire Stalker",
+          "subtitle": "Sniper",
+          "hp": 220,
+          "attack": 26,
+          "speed": 66,
+          "isTargeted": true,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "void_briar_binder",
+          "id": "void_binder",
+          "name": "Void Briar Binder",
+          "subtitle": "Occultist",
+          "hp": 340,
+          "attack": 22,
+          "speed": 52,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        }
+      ]
+    },
+    {
+      "id": "swamp_behemoth",
+      "name": "Chapter 6: The Weeping Willow Sanctuary",
+      "description": "Lyra joins the fellowship to cleanse the colossal Weeping Willow of the corrupting Bog Behemoth.",
+      "environment": "SWAMP",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra"
+      ],
+      "enemies": [
+        {
+          "templateId": "bog_behemoth",
+          "id": "behemoth",
+          "name": "Bog Behemoth",
+          "subtitle": "Vanguard",
+          "hp": 540,
+          "attack": 28,
+          "speed": 40,
+          "isTargeted": true,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "marsh_leech",
+          "id": "leech_1",
+          "name": "Marsh Leech Alpha",
+          "subtitle": "Sniper",
+          "hp": 170,
+          "attack": 18,
+          "speed": 68,
+          "isTargeted": false,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "marsh_leech",
+          "id": "leech_2",
+          "name": "Marsh Leech Beta",
+          "subtitle": "Sniper",
+          "hp": 170,
+          "attack": 18,
+          "speed": 64,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        }
+      ]
+    },
+    {
+      "id": "blight_trackers",
+      "name": "Camp Reconnaissance: The Blighted Prowlers",
+      "description": "Cedric and Aethel ambush two corrupted trackers stalking the camp perimeter.",
+      "environment": "FOREST",
+      "party": [
+        "hero",
+        "cedric"
+      ],
+      "enemies": [
+        {
+          "templateId": "obsidian_tracker",
+          "id": "tracker_1",
+          "name": "Obsidian Tracker",
+          "subtitle": "Sniper",
+          "hp": 220,
+          "attack": 18,
+          "speed": 62,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "blighted_stalker",
+          "id": "tracker_2",
+          "name": "Blighted Stalker",
+          "subtitle": "Vanguard",
+          "hp": 280,
+          "attack": 20,
+          "speed": 54,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "ch3_sentinels",
+      "name": "Chapter 3: The Corrupted Sentinels",
+      "description": "Cedric and Aethel engage the razor-clawed sentinels guarding the aqueduct perimeter.",
+      "environment": "CAVE",
+      "party": [
+        "hero",
+        "cedric"
+      ],
+      "enemies": [
+        {
+          "templateId": "aqueduct_sentinel",
+          "id": "sentinel_1",
+          "name": "Aqueduct Sentinel",
+          "subtitle": "Vanguard",
+          "hp": 260,
+          "attack": 22,
+          "speed": 58,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "brood_stalker",
+          "id": "sentinel_2",
+          "name": "Brood Stalker",
+          "subtitle": "Sniper",
+          "hp": 210,
+          "attack": 24,
+          "speed": 66,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        }
+      ]
+    },
+    {
+      "id": "ch7_mire_wyrm",
+      "name": "Chapter 7: Guardian of the Silt Core",
+      "description": "Lyra strikes her botanical tuning fork, provoking the ancient silt wyrm guarding the submerged catacomb entrance.",
+      "environment": "SWAMP",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra"
+      ],
+      "enemies": [
+        {
+          "templateId": "ancient_mire_wyrm",
+          "id": "mire_wyrm",
+          "name": "Ancient Mire Wyrm",
+          "subtitle": "Boss Behemoth",
+          "hp": 580,
+          "attack": 26,
+          "speed": 44,
+          "isTargeted": true,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "silt_ghoul",
+          "id": "ghoul_1",
+          "name": "Silt Ghoul Alpha",
+          "subtitle": "Vanguard",
+          "hp": 160,
+          "attack": 18,
+          "speed": 58,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "silt_ghoul",
+          "id": "ghoul_2",
+          "name": "Silt Ghoul Beta",
+          "subtitle": "Sniper",
+          "hp": 160,
+          "attack": 18,
+          "speed": 56,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        },
+        {
+          "templateId": "silt_ghoul",
+          "id": "ghoul_3",
+          "name": "Silt Ghoul Gamma",
+          "subtitle": "Vanguard",
+          "hp": 160,
+          "attack": 18,
+          "speed": 54,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        }
+      ]
+    },
+    {
+      "id": "ch8_executioner_ambush",
+      "name": "Chapter 8: The Shadowed Crags Ambush",
+      "description": "Grand Executioner Kaelen and the Inquisition shadowblades spring a lethal trap in the rocky pass.",
+      "environment": "CAVE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra"
+      ],
+      "enemies": [
+        {
+          "templateId": "executioner_kaelen",
+          "id": "kaelen",
+          "name": "Executioner Kaelen",
+          "subtitle": "Boss Assassin",
+          "hp": 640,
+          "attack": 28,
+          "speed": 66,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "shadowblade",
+          "id": "blade_1",
+          "name": "Shadowblade Alpha",
+          "subtitle": "Sniper",
+          "hp": 200,
+          "attack": 22,
+          "speed": 76,
+          "isTargeted": false,
+          "atbGauge": 0.45
+        },
+        {
+          "templateId": "shadowblade",
+          "id": "blade_2",
+          "name": "Shadowblade Beta",
+          "subtitle": "Sniper",
+          "hp": 200,
+          "attack": 22,
+          "speed": 72,
+          "isTargeted": false,
+          "atbGauge": 0.4
+        }
+      ],
+      "midBattleJoin": {
+        "characterId": "zephyr",
+        "bannerText": "Zephyr Defects to the Fellowship!",
+        "announcementText": "Zephyr turns his twin daggers against the Inquisition!",
+        "afterEnemyActions": 1
+      }
+    },
+    {
+      "id": "ch9_galahault_trial",
+      "name": "Chapter 9: The Broken Vow of Dawn",
+      "description": "Cedric faces the petrified spirit of Grandmaster Galahault in the Mausoleum of the Sun.",
+      "environment": "DUNGEON",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "sir_galahault",
+          "id": "galahault",
+          "name": "Sir Galahault",
+          "subtitle": "Boss Paladin",
+          "hp": 750,
+          "attack": 30,
+          "speed": 52,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "penitent_templar",
+          "id": "penitent_1",
+          "name": "Penitent Templar",
+          "subtitle": "Vanguard",
+          "hp": 280,
+          "attack": 22,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "chantry_cleric",
+          "id": "penitent_2",
+          "name": "Chantry Cleric",
+          "subtitle": "Occultist",
+          "hp": 240,
+          "attack": 16,
+          "speed": 60,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "ch10_broodmother_trial",
+      "name": "Chapter 10: The Song of the Mute Grove",
+      "description": "Lyra and the fellowship cleanse the corrupted obsidian silt choking the Emerald Choir spring.",
+      "environment": "SWAMP",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "blighted_broodmother",
+          "id": "broodmother",
+          "name": "Blighted Broodmother",
+          "subtitle": "Boss Summoner",
+          "hp": 760,
+          "attack": 30,
+          "speed": 54,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "corrupted_webweaver",
+          "id": "spider_1",
+          "name": "Corrupted Webweaver",
+          "subtitle": "Sniper",
+          "hp": 180,
+          "attack": 20,
+          "speed": 68,
+          "isTargeted": false,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "toxic_hatchling",
+          "id": "spider_2",
+          "name": "Toxic Hatchling",
+          "subtitle": "Sniper",
+          "hp": 180,
+          "attack": 20,
+          "speed": 65,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        }
+      ]
+    },
+    {
+      "id": "ch11_nocturne_trial",
+      "name": "Chapter 11: The Silent Blade's Reckoning",
+      "description": "Zephyr faces his former master, Nocturne, in the misty depths of the Blind Gorge.",
+      "environment": "CAVE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "master_nocturne",
+          "id": "nocturne",
+          "name": "Master Nocturne",
+          "subtitle": "Boss Assassin",
+          "hp": 780,
+          "attack": 34,
+          "speed": 88,
+          "isTargeted": true,
+          "atbGauge": 0.45
+        },
+        {
+          "templateId": "black_guild_stalker",
+          "id": "assassin_1",
+          "name": "Black Guild Stalker",
+          "subtitle": "Sniper",
+          "hp": 220,
+          "attack": 24,
+          "speed": 78,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "umbral_cutthroat",
+          "id": "assassin_2",
+          "name": "Umbral Cutthroat",
+          "subtitle": "Sniper",
+          "hp": 220,
+          "attack": 24,
+          "speed": 74,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "ch12_warmaster_ouros",
+      "name": "Chapter 12: The Iron Belfry of Ouros",
+      "description": "The 4-hero fellowship storms the clockwork belfry to defeat Warmaster Ouros and chime Bell 3.",
+      "environment": "CASTLE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "clockwork_phalanx",
+          "id": "phalanx_1",
+          "name": "Clockwork Phalanx A",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 45,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "clockwork_phalanx",
+          "id": "phalanx_2",
+          "name": "Clockwork Phalanx B",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "warmaster_ouros",
+          "id": "warmaster",
+          "name": "Warmaster Ouros",
+          "subtitle": "Boss Automaton",
+          "hp": 880,
+          "attack": 32,
+          "speed": 50,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "steam_arbalest",
+          "id": "arbalest_1",
+          "name": "Steam Arbalest A",
+          "subtitle": "Sniper",
+          "hp": 230,
+          "attack": 26,
+          "speed": 65,
+          "isTargeted": false,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "steam_arbalest",
+          "id": "arbalest_2",
+          "name": "Steam Arbalest B",
+          "subtitle": "Sniper",
+          "hp": 230,
+          "attack": 26,
+          "speed": 63,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        }
+      ]
+    },
+    {
+      "id": "ch13_commander_vaelor",
+      "name": "Chapter 13: Breach of the Silent Citadel",
+      "description": "Commander Vaelor sounds the Void Horn to summon spectral legions before the capital gates.",
+      "environment": "CASTLE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "citadel_ironclad",
+          "id": "sentinel_1",
+          "name": "Citadel Ironclad",
+          "subtitle": "Vanguard",
+          "hp": 380,
+          "attack": 24,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "obsidian_warden",
+          "id": "sentinel_2",
+          "name": "Obsidian Warden",
+          "subtitle": "Vanguard",
+          "hp": 380,
+          "attack": 24,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "commander_vaelor",
+          "id": "vaelor",
+          "name": "Commander Vaelor",
+          "subtitle": "Boss Vanguard",
+          "hp": 980,
+          "attack": 35,
+          "speed": 64,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "spectral_reaper",
+          "id": "reaper_1",
+          "name": "Spectral Reaper A",
+          "subtitle": "Sniper",
+          "hp": 240,
+          "attack": 28,
+          "speed": 72,
+          "isTargeted": false,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "spectral_reaper",
+          "id": "reaper_2",
+          "name": "Spectral Reaper B",
+          "subtitle": "Sniper",
+          "hp": 240,
+          "attack": 28,
+          "speed": 70,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        }
+      ]
+    },
+    {
+      "id": "ch14_abyssal_leviathan",
+      "name": "Chapter 14: The Void Reservoir",
+      "description": "The Abyssal Leviathan rises from the lake of liquid silence, enveloping the arena in a sound-draining aura.",
+      "environment": "SWAMP",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "abyssal_leviathan",
+          "id": "leviathan",
+          "name": "Abyssal Leviathan",
+          "subtitle": "Boss Leviathan",
+          "hp": 1050,
+          "attack": 36,
+          "speed": 42,
+          "isTargeted": true,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "void_tendril",
+          "id": "tendril_1",
+          "name": "Void Tendril Alpha",
+          "subtitle": "Sniper",
+          "hp": 220,
+          "attack": 22,
+          "speed": 62,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "void_tendril",
+          "id": "tendril_2",
+          "name": "Void Tendril Beta",
+          "subtitle": "Sniper",
+          "hp": 220,
+          "attack": 22,
+          "speed": 60,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        },
+        {
+          "templateId": "void_tendril",
+          "id": "tendril_3",
+          "name": "Void Tendril Gamma",
+          "subtitle": "Sniper",
+          "hp": 220,
+          "attack": 22,
+          "speed": 58,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        }
+      ]
+    },
+    {
+      "id": "ch15_archon_custodians",
+      "name": "Chapter 15: Ascent of the Celestial Spire",
+      "description": "Golden archon custodians bar the stairway of solidified harmonic light.",
+      "environment": "CASTLE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "archon_custodian",
+          "id": "custodian_1",
+          "name": "Archon Custodian A",
+          "subtitle": "Vanguard",
+          "hp": 440,
+          "attack": 30,
+          "speed": 66,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "archon_custodian",
+          "id": "custodian_2",
+          "name": "Archon Custodian B",
+          "subtitle": "Vanguard",
+          "hp": 440,
+          "attack": 30,
+          "speed": 64,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        },
+        {
+          "templateId": "celestial_spire",
+          "id": "spire_1",
+          "name": "Celestial Spire Alpha",
+          "subtitle": "Occultist",
+          "hp": 320,
+          "attack": 20,
+          "speed": 55,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "celestial_spire",
+          "id": "spire_2",
+          "name": "Celestial Spire Beta",
+          "subtitle": "Occultist",
+          "hp": 320,
+          "attack": 20,
+          "speed": 52,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        }
+      ]
+    },
+    {
+      "id": "ch16_malakor_finale",
+      "name": "Chapter 16: The Primordial Syllable",
+      "description": "The final confrontation against Grand Inquisitor Malakor, The Mute Sovereign, high above the cosmos.",
+      "environment": "CASTLE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "grand_inquisitor_malakor",
+          "id": "malakor",
+          "name": "Grand Inquisitor Malakor",
+          "subtitle": "The Mute Sovereign",
+          "hp": 1350,
+          "attack": 42,
+          "speed": 68,
+          "isTargeted": true,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "echo_nullifier",
+          "id": "nullifier_1",
+          "name": "Echo Nullifier I",
+          "subtitle": "Sniper",
+          "hp": 200,
+          "attack": 18,
+          "speed": 56,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        },
+        {
+          "templateId": "echo_nullifier",
+          "id": "nullifier_2",
+          "name": "Echo Nullifier II",
+          "subtitle": "Sniper",
+          "hp": 200,
+          "attack": 18,
+          "speed": 54,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "echo_nullifier",
+          "id": "nullifier_3",
+          "name": "Echo Nullifier III",
+          "subtitle": "Sniper",
+          "hp": 200,
+          "attack": 18,
+          "speed": 52,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "echo_nullifier",
+          "id": "nullifier_4",
+          "name": "Echo Nullifier IV",
+          "subtitle": "Sniper",
+          "hp": 200,
+          "attack": 18,
+          "speed": 50,
+          "isTargeted": false,
+          "atbGauge": 0.15
+        }
+      ]
+    },
+    {
+      "id": "ch9_penitent_gate",
+      "name": "Chapter 9: Gate of the Sun's Penitence",
+      "description": "Vowbreakers entombed alive at the mausoleum gate rise to bar the way to Galahault's crypt.",
+      "environment": "DUNGEON",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "penitent_vowbreaker",
+          "id": "vowbreaker_1",
+          "name": "Penitent Vowbreaker A",
+          "subtitle": "Vanguard",
+          "hp": 320,
+          "attack": 22,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "penitent_vowbreaker",
+          "id": "vowbreaker_2",
+          "name": "Penitent Vowbreaker B",
+          "subtitle": "Vanguard",
+          "hp": 320,
+          "attack": 22,
+          "speed": 44,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "grave_archon",
+          "id": "gate_archon",
+          "name": "Grave Archon",
+          "subtitle": "Occultist",
+          "hp": 300,
+          "attack": 20,
+          "speed": 58,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "ch10_thicket_guardians",
+      "name": "Chapter 10: Guardians of the Poisoned Thicket",
+      "description": "Glass-vined colossi infected by the same obsidian venom that froze the Emerald Choir.",
+      "environment": "SWAMP",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "glassvine_colossus",
+          "id": "thicket_1",
+          "name": "Glassvine Colossus A",
+          "subtitle": "Vanguard",
+          "hp": 340,
+          "attack": 24,
+          "speed": 44,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "glassvine_colossus",
+          "id": "thicket_2",
+          "name": "Glassvine Colossus B",
+          "subtitle": "Vanguard",
+          "hp": 340,
+          "attack": 24,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "thorn_choir_singer",
+          "id": "thorn_singer",
+          "name": "Thorn Choir Singer",
+          "subtitle": "Occultist",
+          "hp": 280,
+          "attack": 18,
+          "speed": 56,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "ch11_gorge_stalkers",
+      "name": "Chapter 11: The Gorge Stalker Skirmish",
+      "description": "Nocturne's masked assassins spring from the culverts of the Blind Gorge.",
+      "environment": "CAVE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "black_guild_stalker",
+          "id": "stalker_1",
+          "name": "Black Guild Stalker A",
+          "subtitle": "Sniper",
+          "hp": 260,
+          "attack": 24,
+          "speed": 76,
+          "isTargeted": true,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "black_guild_stalker",
+          "id": "stalker_2",
+          "name": "Black Guild Stalker B",
+          "subtitle": "Sniper",
+          "hp": 260,
+          "attack": 24,
+          "speed": 72,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "guild_garrote",
+          "id": "garrote",
+          "name": "Guild Garrote",
+          "subtitle": "Vanguard",
+          "hp": 320,
+          "attack": 26,
+          "speed": 58,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        }
+      ]
+    },
+    {
+      "id": "ch11_archive_enforcers",
+      "name": "Chapter 11: The Obsidian Archive",
+      "description": "The guild's voiceless wardens defend the vault of stolen voices beneath the gorge.",
+      "environment": "DUNGEON",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "archive_enforcer",
+          "id": "enforcer_1",
+          "name": "Archive Enforcer I",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "archive_enforcer",
+          "id": "enforcer_2",
+          "name": "Archive Enforcer II",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 44,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "archive_enforcer",
+          "id": "enforcer_3",
+          "name": "Archive Enforcer III",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        },
+        {
+          "templateId": "vault_watcher",
+          "id": "vault_watcher",
+          "name": "Vault Watcher",
+          "subtitle": "Occultist",
+          "hp": 300,
+          "attack": 20,
+          "speed": 62,
+          "isTargeted": true,
+          "atbGauge": 0.45
+        }
+      ]
+    },
+    {
+      "id": "ch12_automaton_patrol",
+      "name": "Chapter 12: The Automatic Watch",
+      "description": "Ouros's iron warden-automata converge across the catwalks of the Clockwork Bastion.",
+      "environment": "CASTLE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "iron_warden",
+          "id": "warden_1",
+          "name": "Iron Warden Alpha",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 44,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "iron_warden",
+          "id": "warden_2",
+          "name": "Iron Warden Beta",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "tripod_scorcher",
+          "id": "tripod",
+          "name": "Tripod Scorcher",
+          "subtitle": "Sniper",
+          "hp": 280,
+          "attack": 26,
+          "speed": 64,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        }
+      ]
+    },
+    {
+      "id": "ch13_plaza_legion",
+      "name": "Chapter 13: The Pilgrim's Plaza Legion",
+      "description": "Vaelor's obsidian garrison stands ordered and waiting in the lamp-lit plaza of Sol-Aethel.",
+      "environment": "CASTLE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "plaza_legionnaire",
+          "id": "legionnaire_1",
+          "name": "Plaza Legionnaire A",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "plaza_legionnaire",
+          "id": "legionnaire_2",
+          "name": "Plaza Legionnaire B",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "plaza_legionnaire",
+          "id": "legionnaire_3",
+          "name": "Plaza Legionnaire C",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 44,
+          "isTargeted": false,
+          "atbGauge": 0.15
+        },
+        {
+          "templateId": "walking_obelisk",
+          "id": "obelisks",
+          "name": "Walking Obelisk",
+          "subtitle": "Occultist",
+          "hp": 320,
+          "attack": 22,
+          "speed": 56,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "ch14_shallows_husks",
+      "name": "Chapter 14: Husks of the Silent Shallows",
+      "description": "Drowned pilgrims, their voices swallowed by the reservoir, drag themselves ashore to guard the lake.",
+      "environment": "SWAMP",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "drowned_husk",
+          "id": "husk_1",
+          "name": "Drowned Husk I",
+          "subtitle": "Vanguard",
+          "hp": 330,
+          "attack": 22,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "drowned_husk",
+          "id": "husk_2",
+          "name": "Drowned Husk II",
+          "subtitle": "Vanguard",
+          "hp": 330,
+          "attack": 22,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "shrine_grasper",
+          "id": "husk_3",
+          "name": "Shrine Grasper",
+          "subtitle": "Sniper",
+          "hp": 260,
+          "attack": 20,
+          "speed": 62,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        }
+      ]
+    },
+    {
+      "id": "ch14_trench_leeches",
+      "name": "Chapter 14: The Umbral Trench",
+      "description": "Blind trench leeches, each knotted with stolen voices, feed the Abyssal Leviathan's silence.",
+      "environment": "CAVE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "umbral_leech",
+          "id": "leech_1",
+          "name": "Umbral Leech I",
+          "subtitle": "Vanguard",
+          "hp": 340,
+          "attack": 24,
+          "speed": 40,
+          "isTargeted": false,
+          "atbGauge": 0.15
+        },
+        {
+          "templateId": "umbral_leech",
+          "id": "leech_2",
+          "name": "Umbral Leech II",
+          "subtitle": "Vanguard",
+          "hp": 340,
+          "attack": 24,
+          "speed": 42,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "chorus_leech",
+          "id": "leech_3",
+          "name": "Chorus Leech",
+          "subtitle": "Sniper",
+          "hp": 280,
+          "attack": 26,
+          "speed": 60,
+          "isTargeted": true,
+          "atbGauge": 0.3
+        },
+        {
+          "templateId": "mote_drinker",
+          "id": "leech_4",
+          "name": "Mote Drinker",
+          "subtitle": "Occultist",
+          "hp": 300,
+          "attack": 22,
+          "speed": 54,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        }
+      ]
+    },
+    {
+      "id": "ch15_trial_gold",
+      "name": "Chapter 15: Trial of the Gate of Gold",
+      "description": "Gilded reflections of every oath bought and bent tried to buy Sir Cedric's vow back.",
+      "environment": "CASTLE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "gilded_creditor",
+          "id": "merchant_wraith",
+          "name": "Gilded Creditor",
+          "subtitle": "Occultist",
+          "hp": 320,
+          "attack": 22,
+          "speed": 58,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        },
+        {
+          "templateId": "glinted_vow_clade",
+          "id": "clad_1",
+          "name": "Glinted Vow Clade A",
+          "subtitle": "Vanguard",
+          "hp": 340,
+          "attack": 24,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "glinted_vow_clade",
+          "id": "clad_2",
+          "name": "Glinted Vow Clade B",
+          "subtitle": "Vanguard",
+          "hp": 340,
+          "attack": 24,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "glinted_vow_clade",
+          "id": "clad_3",
+          "name": "Glinted Vow Clade C",
+          "subtitle": "Sniper",
+          "hp": 300,
+          "attack": 22,
+          "speed": 62,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        }
+      ]
+    },
+    {
+      "id": "ch15_trial_grove",
+      "name": "Chapter 15: Trial of the Gate of the Grove",
+      "description": "Thorn-vined guardians woven from Lyra's day of flight bar the stair of the grove.",
+      "environment": "FOREST",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "thornvined_guardian",
+          "id": "thorn_1",
+          "name": "Thornvined Guardian A",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "thornvined_guardian",
+          "id": "thorn_2",
+          "name": "Thornvined Guardian B",
+          "subtitle": "Vanguard",
+          "hp": 360,
+          "attack": 24,
+          "speed": 44,
+          "isTargeted": false,
+          "atbGauge": 0.15
+        },
+        {
+          "templateId": "root_lash",
+          "id": "thorn_3",
+          "name": "Root Lash",
+          "subtitle": "Sniper",
+          "hp": 300,
+          "attack": 22,
+          "speed": 60,
+          "isTargeted": true,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "canopy_warden",
+          "id": "thorn_4",
+          "name": "Canopy Warden",
+          "subtitle": "Occultist",
+          "hp": 320,
+          "attack": 20,
+          "speed": 54,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "ch15_trial_shadow",
+      "name": "Chapter 15: Trial of the Gate of Shadow",
+      "description": "Every lesson of Nocturne made assassin has risen to claim Zephyr's place in the dark.",
+      "environment": "CAVE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "nocturne_lesson",
+          "id": "shade_1",
+          "name": "Nocturne Lesson I",
+          "subtitle": "Sniper",
+          "hp": 300,
+          "attack": 24,
+          "speed": 74,
+          "isTargeted": true,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "nocturne_lesson",
+          "id": "shade_2",
+          "name": "Nocturne Lesson II",
+          "subtitle": "Sniper",
+          "hp": 300,
+          "attack": 24,
+          "speed": 70,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "umbral_ghost",
+          "id": "shade_3",
+          "name": "Umbral Ghost",
+          "subtitle": "Vanguard",
+          "hp": 340,
+          "attack": 26,
+          "speed": 52,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "echo_of_the_guild",
+          "id": "shade_4",
+          "name": "Echo of the Guild",
+          "subtitle": "Occultist",
+          "hp": 300,
+          "attack": 22,
+          "speed": 58,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "ch16_nullifier_gate",
+      "name": "Chapter 16: The Echo Nullifier Gate",
+      "description": "Malakor's last gatekeepers step from the four shattered pillars of the Vestibule of Echoes.",
+      "environment": "DUNGEON",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "nullifier_warden",
+          "id": "null_gate_1",
+          "name": "Nullifier Warden I",
+          "subtitle": "Vanguard",
+          "hp": 380,
+          "attack": 26,
+          "speed": 48,
+          "isTargeted": false,
+          "atbGauge": 0.2
+        },
+        {
+          "templateId": "nullifier_warden",
+          "id": "null_gate_2",
+          "name": "Nullifier Warden II",
+          "subtitle": "Vanguard",
+          "hp": 380,
+          "attack": 26,
+          "speed": 46,
+          "isTargeted": false,
+          "atbGauge": 0.25
+        },
+        {
+          "templateId": "nullifier_sibilant",
+          "id": "null_gate_3",
+          "name": "Nullifier Sibilant",
+          "subtitle": "Sniper",
+          "hp": 300,
+          "attack": 24,
+          "speed": 64,
+          "isTargeted": true,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "vestibule_archivist",
+          "id": "null_gate_4",
+          "name": "Vestibule Archivist",
+          "subtitle": "Occultist",
+          "hp": 340,
+          "attack": 22,
+          "speed": 56,
+          "isTargeted": false,
+          "atbGauge": 0.3
+        }
+      ]
+    },
+    {
+      "id": "ch16_mirror_gauntlet",
+      "name": "Chapter 16: The Mirror Gauntlet",
+      "description": "The doubt-shadows of the entire fellowship rise against their originals in the Mirror Gallery.",
+      "environment": "CASTLE",
+      "party": [
+        "hero",
+        "cedric",
+        "lyra",
+        "zephyr"
+      ],
+      "enemies": [
+        {
+          "templateId": "shadow_of_the_knight",
+          "id": "shadow_cedric",
+          "name": "Shadow of the Knight",
+          "subtitle": "Vanguard",
+          "hp": 380,
+          "attack": 26,
+          "speed": 52,
+          "isTargeted": true,
+          "atbGauge": 0.3
+        },
+        {
+          "templateId": "shadow_of_the_warden",
+          "id": "shadow_lyra",
+          "name": "Shadow of the Warden",
+          "subtitle": "Sniper",
+          "hp": 330,
+          "attack": 24,
+          "speed": 62,
+          "isTargeted": false,
+          "atbGauge": 0.4
+        },
+        {
+          "templateId": "shadow_of_the_blade",
+          "id": "shadow_zephyr",
+          "name": "Shadow of the Blade",
+          "subtitle": "Sniper",
+          "hp": 330,
+          "attack": 24,
+          "speed": 74,
+          "isTargeted": false,
+          "atbGauge": 0.45
+        },
+        {
+          "templateId": "shadow_of_the_invocator",
+          "id": "shadow_aethel",
+          "name": "Shadow of the Invocator",
+          "subtitle": "Occultist",
+          "hp": 360,
+          "attack": 26,
+          "speed": 58,
+          "isTargeted": false,
+          "atbGauge": 0.35
+        },
+        {
+          "templateId": "gallery_of_doubts",
+          "id": "shadow_wall",
+          "name": "Gallery of Doubts",
+          "subtitle": "Vanguard",
+          "hp": 420,
+          "attack": 22,
+          "speed": 40,
+          "isTargeted": false,
+          "atbGauge": 0.15
+        }
+      ]
+    }
+  ]
+}

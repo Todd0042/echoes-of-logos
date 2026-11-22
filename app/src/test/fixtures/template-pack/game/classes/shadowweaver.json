@@ -1,0 +1,15 @@
+{
+  "_doc": "TEMPLATE HERO CLASS. See elementalist.json for the schema.",
+  "id": "shadowweaver",
+  "title": "Shadowweaver",
+  "subtitle": "Umbral Occultist",
+  "description": "Strikes from blind spots with precision critical strikes and dark life-draining sibilants. High speed and sustain.",
+  "startingHp": 230,
+  "startingMp": 140,
+  "startingSpeed": 85,
+  "startingBaseAttack": 26,
+  "preferredSchool": "SHADOW",
+  "starterSpellIds": ["shadow_spike", "void_drain", "umbral_veil", "attune"],
+  "voiceKeywords": ["shadowweaver", "shadow", "rogue", "assassin", "thief", "occultist", "warlock", "ninja"],
+  "growth": { "maxHp": 11, "maxMp": 11, "speed": 2, "defense": 1, "potencyPct": 0.04 }
+}

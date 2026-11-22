@@ -1,0 +1,286 @@
+{
+  "locale": "es",
+  "metaCommands": {
+    "STATUS_REPORT": [
+      "estado",
+      "informe",
+      "informe de estado",
+      "salud",
+      "hp",
+      "vida",
+      "ver estado"
+    ],
+    "CHECK_ENEMIES": [
+      "enemigos",
+      "monstruos",
+      "objetivos",
+      "quien esta vivo",
+      "quienes quedan",
+      "escanear objetivos"
+    ],
+    "CHECK_PARTY": [
+      "equipo",
+      "grupo",
+      "aliados",
+      "estado del grupo",
+      "salud del equipo"
+    ],
+    "UNLOCK_SCREEN": [
+      "desbloquear",
+      "desbloquear pantalla",
+      "mostrar pantalla",
+      "activar pantalla",
+      "encender pantalla"
+    ],
+    "LOCK_SCREEN": [
+      "bloquear pantalla",
+      "bloquear visualizacion",
+      "pantalla negra",
+      "oscurecer pantalla",
+      "modo pantalla apagada"
+    ],
+    "DISABLE_EYES_FREE": [
+      "desactivar modo bolsillo",
+      "salir de modo bolsillo",
+      "apagar modo bolsillo",
+      "quitar modo bolsillo"
+    ],
+    "ENABLE_EYES_FREE": [
+      "activar modo bolsillo",
+      "iniciar modo bolsillo",
+      "encender modo bolsillo"
+    ],
+    "TOGGLE_EYES_FREE": [
+      "modo bolsillo",
+      "sin pantalla",
+      "modo audio",
+      "alternar narrador",
+      "narrador"
+    ],
+    "TOGGLE_AUTO_LISTEN": [
+      "auto escuchar",
+      "manos libres",
+      "microfono automatico",
+      "escucha automatica"
+    ],
+    "TOGGLE_NARRATION": [
+      "alternar narracion",
+      "narracion",
+      "narracion si",
+      "narracion no",
+      "leer dialogo"
+    ],
+    "TOGGLE_READ_CHOICES": [
+      "leer opciones",
+      "leer elecciones",
+      "alternar opciones",
+      "opciones en voz alta"
+    ],
+    "TOGGLE_SPEAKER_ATTRIBUTION": [
+      "nombre del hablante",
+      "quien habla",
+      "atribucion",
+      "quien lo dice"
+    ],
+    "TOGGLE_MUSIC": [
+      "musica",
+      "alternar musica",
+      "musica si",
+      "musica no",
+      "silenciar musica",
+      "activar musica",
+      "bgm"
+    ],
+    "OPEN_OPTIONS": [
+      "opciones",
+      "menu",
+      "ajustes",
+      "configuracion",
+      "abrir opciones",
+      "mostrar opciones"
+    ],
+    "CLOSE_OPTIONS": [
+      "cerrar opciones",
+      "cerrar ajustes",
+      "continuar",
+      "volver",
+      "cerrar menu",
+      "atras"
+    ],
+    "OPEN_BACKLOG": [
+      "registro",
+      "historial",
+      "abrir registro",
+      "mostrar historial",
+      "historial de dialogo"
+    ],
+    "CLOSE_BACKLOG": [
+      "cerrar registro",
+      "cerrar historial",
+      "ocultar registro"
+    ],
+    "FAST_FORWARD": [
+      "saltar",
+      "avanzar rapido",
+      "omitir dialogo",
+      "rapido",
+      "avanzar"
+    ],
+    "STOP_FAST_FORWARD": [
+      "alto",
+      "parar",
+      "pausa",
+      "detener"
+    ],
+    "STORY_RECAP": [
+      "recapitulacion",
+      "resumen",
+      "historia hasta ahora",
+      "donde estaba",
+      "que paso"
+    ],
+    "HELP": [
+      "ayuda",
+      "comandos",
+      "que puedo decir",
+      "comandos de voz"
+    ],
+    "SPEED_UP_NARRATION": [
+      "narracion mas rapida",
+      "hablar mas rapido",
+      "mas rapido",
+      "voz mas rapida"
+    ],
+    "SLOW_DOWN_NARRATION": [
+      "narracion mas lenta",
+      "hablar mas lento",
+      "mas lento",
+      "voz mas lenta"
+    ],
+    "RESET_NARRATION_SPEED": [
+      "narracion normal",
+      "velocidad normal",
+      "restablecer velocidad"
+    ]
+  },
+  "targeting": {
+    "ordinals": {
+      "0": [
+        "primer",
+        "primero",
+        "primera",
+        "enemigo 1",
+        "monstruo 1",
+        "1ero",
+        "1"
+      ],
+      "1": [
+        "segundo",
+        "segunda",
+        "enemigo 2",
+        "monstruo 2",
+        "2do",
+        "2"
+      ],
+      "2": [
+        "tercer",
+        "tercero",
+        "tercera",
+        "enemigo 3",
+        "monstruo 3",
+        "3ero",
+        "3"
+      ],
+      "3": [
+        "cuarto",
+        "cuarta",
+        "enemigo 4",
+        "monstruo 4",
+        "4to",
+        "4"
+      ],
+      "4": [
+        "quinto",
+        "quinta",
+        "enemigo 5",
+        "monstruo 5",
+        "5to",
+        "5"
+      ],
+      "5": [
+        "sexto",
+        "sexta",
+        "enemigo 6",
+        "monstruo 6",
+        "6to",
+        "6"
+      ]
+    },
+    "positionals": {
+      "leftmost": [
+        "mas a la izquierda",
+        "extremo izquierdo"
+      ],
+      "rightmost": [
+        "mas a la derecha",
+        "extremo derecho"
+      ],
+      "left": [
+        "izquierda",
+        "izquierdo"
+      ],
+      "right": [
+        "derecha",
+        "derecho"
+      ],
+      "center": [
+        "centro",
+        "medio",
+        "en el medio"
+      ]
+    },
+    "groups": {
+      "all": [
+        "todos",
+        "todas",
+        "todos los enemigos",
+        "todos los monstruos",
+        "horda"
+      ],
+      "party": [
+        "grupo",
+        "aliados",
+        "equipo",
+        "todos los aliados"
+      ],
+      "self": [
+        "yo",
+        "mi",
+        "mismo",
+        "a mi"
+      ]
+    }
+  },
+  "actions": {
+    "heal": [
+      "curar",
+      "sanar",
+      "restaurar",
+      "aliviar",
+      "purificar"
+    ],
+    "defend": [
+      "bloquear",
+      "defender",
+      "defensa",
+      "proteger",
+      "escudo"
+    ],
+    "attack": [
+      "atacar",
+      "golpear",
+      "ataca",
+      "golpea"
+    ]
+  }
+}

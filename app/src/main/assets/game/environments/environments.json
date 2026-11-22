@@ -1,0 +1,80 @@
+{
+  "_doc": "Battle environments catalog for the template engine. Defines visual assets, lore metadata, ambient lighting colors, and alias fallbacks for drop-in game environments.",
+  "environments": [
+    {
+      "id": "castle",
+      "displayName": "The Training Grounds",
+      "icon": "\ud83c\udff0",
+      "loreLocation": "Grand Courtyard",
+      "subtitle": "Stone battlements, banners in the wind, training targets & banneret shields",
+      "ambientThemeColor": "#2196F3",
+      "backgroundAsset": "environments/castle.jpg",
+      "aliases": [
+        "courtyard",
+        "CASTLE",
+        "training_grounds"
+      ],
+      "overlayType": "CASTLE"
+    },
+    {
+      "id": "cave",
+      "displayName": "The Crystal Cavern",
+      "icon": "\ud83d\udc8e",
+      "loreLocation": "Deep Chasm",
+      "subtitle": "Bioluminescent crystal clusters, echoing stalactites & subterranean mist",
+      "ambientThemeColor": "#78909C",
+      "backgroundAsset": "environments/cave.jpg",
+      "aliases": [
+        "cavern",
+        "CAVE",
+        "crystal_cavern"
+      ],
+      "overlayType": "CAVE"
+    },
+    {
+      "id": "dungeon",
+      "displayName": "The Echo Hall",
+      "icon": "\ud83d\udddd\ufe0f",
+      "loreLocation": "Subterranean Vaults",
+      "subtitle": "Carved stone columns, iron braziers, runic inscriptions & ancient arches",
+      "ambientThemeColor": "#FF9800",
+      "backgroundAsset": "environments/dungeon.jpg",
+      "aliases": [
+        "vaults",
+        "DUNGEON",
+        "echo_hall"
+      ],
+      "overlayType": "DUNGEON"
+    },
+    {
+      "id": "forest",
+      "displayName": "The Whispering Woods",
+      "icon": "\ud83c\udf32",
+      "loreLocation": "Verdant Canopy",
+      "subtitle": "Towering oaks, drifting spores, sunbeams through leaves & mossy roots",
+      "ambientThemeColor": "#4CAF50",
+      "backgroundAsset": "environments/forest.jpg",
+      "aliases": [
+        "woods",
+        "FOREST",
+        "whispering_woods"
+      ],
+      "overlayType": "FOREST"
+    },
+    {
+      "id": "swamp",
+      "displayName": "The Sunken Hollow",
+      "icon": "\ud83c\udf3f",
+      "loreLocation": "Marshlands",
+      "subtitle": "Murky waters, will-o'-the-wisps, weeping cypress & clinging fog",
+      "ambientThemeColor": "#8D6E63",
+      "backgroundAsset": "environments/swamp.jpg",
+      "aliases": [
+        "marsh",
+        "SWAMP",
+        "sunken_hollow"
+      ],
+      "overlayType": "SWAMP"
+    }
+  ]
+}

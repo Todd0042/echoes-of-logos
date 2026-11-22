@@ -1,0 +1,4821 @@
+{
+ "nodes": [
+  {
+   "id": "cottage_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Morning sunlight spills across the wooden planks of your cottage. Yet something is desperately wrong. Dust motes hang frozen in the air. The mantel clock has ceased ticking. An absolute, deafening silence covers the world.",
+   "choices": [
+    {
+     "id": "c1_look",
+     "text": "Examine the cold fireplace",
+     "voiceKeywords": [
+      "fireplace",
+      "hearth",
+      "examine",
+      "cold"
+     ],
+     "nextNodeId": "cottage_fireplace"
+    },
+    {
+     "id": "c1_window",
+     "text": "Look out the window",
+     "voiceKeywords": [
+      "window",
+      "look",
+      "outside",
+      "pines"
+     ],
+     "nextNodeId": "cottage_window"
+    },
+    {
+     "id": "c1_speak",
+     "text": "Try to speak",
+     "voiceKeywords": [
+      "speak",
+      "voice",
+      "talk",
+      "hello"
+     ],
+     "nextNodeId": "cottage_voice"
+    }
+   ]
+  },
+  {
+   "id": "cottage_fireplace",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "The ash is stone cold... as if heat itself was stolen away. Even when I stir the embers with the iron poker, not a single scrape makes a sound.",
+   "nextNodeId": "cottage_voice"
+  },
+  {
+   "id": "cottage_window",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "The tall pines outside stand completely unmoving. No wind rustle. No birdsong. The village of Whispering Pines lies under an eerie gray veil of fog.",
+   "nextNodeId": "cottage_voice"
+  },
+  {
+   "id": "cottage_voice",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Hello...? Is anyone out there?!",
+   "nextNodeId": "cottage_sparks"
+  },
+  {
+   "id": "cottage_sparks",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The moment you whisper, incandescent azure sparks erupt from your lips! A surge of tingling warmth races through your chest. Your voice... it has weight. It has physical power.",
+   "choices": [
+    {
+     "id": "c2_chant",
+     "text": "Chant 'Fireball!' to test your flame",
+     "voiceKeywords": [
+      "fireball",
+      "flame",
+      "fire",
+      "chant",
+      "test"
+     ],
+     "nextNodeId": "cottage_flame_test"
+    },
+    {
+     "id": "c2_outside",
+     "text": "Hurry outside into the village",
+     "voiceKeywords": [
+      "outside",
+      "village",
+      "hurry",
+      "leave",
+      "step"
+     ],
+     "nextNodeId": "cottage_to_village"
+    }
+   ]
+  },
+  {
+   "id": "cottage_flame_test",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "By the ancient spark... Fireball!",
+   "nextNodeId": "cottage_flame_reaction"
+  },
+  {
+   "id": "cottage_flame_reaction",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "A roaring sphere of golden pyromancy bursts into life above your palm, illuminating the cabin with radiant warmth! The Logos lives within you. You must see what has happened to the village.",
+   "nextNodeId": "cottage_to_village"
+  },
+  {
+   "id": "cottage_to_village",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "The whole village is silent. I have to check on the others.",
+   "nextNodeId": "village_intro",
+   "changeSceneId": "scene_village"
+  },
+  {
+   "id": "village_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You push open the door and step onto the cobblestones of Whispering Pines. In the square stands a horrifying monument: a townsman petrified into pitch-black obsidian, frozen mid-step with hollow crying eyes.",
+   "choices": [
+    {
+     "id": "v1_inspect",
+     "text": "Inspect the obsidian statue",
+     "voiceKeywords": [
+      "inspect",
+      "statue",
+      "obsidian",
+      "examine"
+     ],
+     "nextNodeId": "village_statue_inspect"
+    },
+    {
+     "id": "v1_call",
+     "text": "Call out for any survivors",
+     "voiceKeywords": [
+      "call",
+      "survivors",
+      "shout",
+      "anyone"
+     ],
+     "nextNodeId": "village_call"
+    }
+   ]
+  },
+  {
+   "id": "village_statue_inspect",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Their vocal cords have turned into black glass... The Silent Blight has stolen their voices and their souls.",
+   "nextNodeId": "village_ambush"
+  },
+  {
+   "id": "village_call",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Is anybody alive?! Answer me!",
+   "nextNodeId": "village_ambush"
+  },
+  {
+   "id": "village_ambush",
+   "speakerId": "shadow_wisp",
+   "side": "RIGHT",
+   "text": "Sssssshhhhh... Silence the spark... Surrender your tongue to the Great Stillness...",
+   "nextNodeId": "village_battle_trigger"
+  },
+  {
+   "id": "village_battle_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Two Shadow Wisps glide from the mist, their razor talons aimed at your throat! Speak your incantations to defend your life!",
+   "triggerBattleEncounterId": "prologue_solo",
+   "nextNodeId": "village_post_battle"
+  },
+  {
+   "id": "village_post_battle",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "The flame shattered their obsidian bodies! If the entire realm is falling to this Silence, the ancient Bell Towers must be re-chimed. I must follow the old western road.",
+   "nextNodeId": "crossroads_intro",
+   "changeSceneId": "scene_crossroads"
+  },
+  {
+   "id": "crossroads_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You follow the trail through the ancient pine woods. Ahead, resting against a weathered stone sun-shrine, sits a heavily armored knight. Battered golden plate shines beneath his crimson mantle.",
+   "nextNodeId": "crossroads_cedric_first"
+  },
+  {
+   "id": "crossroads_cedric_first",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Halt, traveler! Draw no closer! The woods are overrun with blighted beasts... Wait. You... you can speak?!",
+   "choices": [
+    {
+     "id": "cr_yes",
+     "text": "Yes! My voice commands the flame!",
+     "voiceKeywords": [
+      "flame",
+      "fire",
+      "magic",
+      "commands",
+      "yes"
+     ],
+     "nextNodeId": "crossroads_cedric_reply_mage"
+    },
+    {
+     "id": "cr_who",
+     "text": "Who are you, noble knight?",
+     "voiceKeywords": [
+      "who",
+      "knight",
+      "identity",
+      "name"
+     ],
+     "nextNodeId": "crossroads_cedric_reply_who"
+    }
+   ]
+  },
+  {
+   "id": "crossroads_cedric_reply_mage",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "By the First Dawn... an Awakened Invocator! I thought the sacred fire of the Logos was extinguished when the capital fell. I am Sir Cedric of the Golden Chime!",
+   "nextNodeId": "crossroads_warning"
+  },
+  {
+   "id": "crossroads_cedric_reply_who",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "I am Sir Cedric, Oathkeeper of the Golden Chime. I swore to guard the holy way-shrine against the Mute Sovereign's hordes.",
+   "nextNodeId": "crossroads_warning"
+  },
+  {
+   "id": "crossroads_warning",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Listen! Through the brush... heavy footfalls without a sound. An orc vanguard and their archers approach!",
+   "nextNodeId": "crossroads_unite"
+  },
+  {
+   "id": "crossroads_unite",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Then let us stand together, Sir Cedric! My incantations will burn them, your shield will hold the line!",
+   "nextNodeId": "crossroads_battle_trigger"
+  },
+  {
+   "id": "crossroads_battle_trigger",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "By celestial dawn, smite the heretic! To battle, Invocator!",
+   "triggerBattleEncounterId": "forest_ambush",
+   "nextNodeId": "crossroads_post_battle"
+  },
+  {
+   "id": "crossroads_post_battle",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Glorious! Your voice pierces the darkness like the morning sun! I have not heard an incantation of such pure resonance since the high cathedral of Sol-Aethel was silenced.",
+   "choices": [
+    {
+     "id": "cr_ask_towers",
+     "text": "Ask Cedric about the Four Great Bell Towers",
+     "voiceKeywords": [
+      "towers",
+      "bells",
+      "four",
+      "solaria",
+      "ask"
+     ],
+     "nextNodeId": "crossroads_lore_towers"
+    },
+    {
+     "id": "cr_ask_blight",
+     "text": "Ask how the Silent Blight overthrew the kingdom",
+     "voiceKeywords": [
+      "blight",
+      "silence",
+      "sovereign",
+      "kingdom",
+      "overthrew"
+     ],
+     "nextNodeId": "crossroads_lore_blight"
+    }
+   ]
+  },
+  {
+   "id": "crossroads_lore_towers",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The Four Towers were built by the Primordial Chanters: the Belfry of Solaria in the east, the Veridian Chime of the Emerald Choir in the marsh, the Resonant Bastion of Ouros in the north, and the Bell of Eternity at the capital. When rung in harmony, their sacred chimes generate an acoustic ward that shields every living soul from the Blight.",
+   "nextNodeId": "crossroads_conclusion"
+  },
+  {
+   "id": "crossroads_lore_blight",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "It happened during the Grand Concordance. The Mute Sovereign inverted the holy chimes, turning our words into petrifying obsidian glass. Entire armies were frozen mid-battle cry. Only those with the dormant spark of the Logos can speak and awaken the bells.",
+   "nextNodeId": "crossroads_conclusion"
+  },
+  {
+   "id": "crossroads_conclusion",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Then our purpose is clear. My voice and your shield will reignite the chimes of Aethelgard. The Fellowship of Echoes begins today!",
+   "nextNodeId": "crossroads_camp_trans"
+  },
+  {
+   "id": "crossroads_camp_trans",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "As twilight settles over the whispering woods, you and Sir Cedric strike camp near the weathered sun shrine. A warm campfire crackles between you, keeping the biting chill of the Blight at bay.",
+   "nextNodeId": "camp_intro",
+   "changeSceneId": "scene_camp",
+   "setFlagOnEnter": "cedric_recruited"
+  },
+  {
+   "id": "camp_intro",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Rest your vocal cords, friend. Before we cross into the Sunken Hollows tomorrow, our camp preparations remain. What shall we attend to?",
+   "choices": [
+    {
+     "id": "c_lore",
+     "text": "Scout the woods for Blighted trackers",
+     "voiceKeywords": [
+      "scout",
+      "trackers",
+      "woods",
+      "prowlers",
+      "blight"
+     ],
+     "nextNodeId": "camp_scout_entry",
+     "completionFlag": "substory_blight_complete"
+    },
+    {
+     "id": "c_towers",
+     "text": "Inspect the Sun Shrine ruins for ancient chime lore",
+     "voiceKeywords": [
+      "shrine",
+      "ruins",
+      "chime",
+      "altar",
+      "towers"
+     ],
+     "nextNodeId": "camp_shrine_entry",
+     "completionFlag": "substory_towers_complete"
+    },
+    {
+     "id": "c_rest",
+     "text": "Rest by the campfire and take the midnight vigil",
+     "voiceKeywords": [
+      "rest",
+      "vigil",
+      "sleep",
+      "fire",
+      "restore"
+     ],
+     "nextNodeId": "camp_vigil_entry",
+     "completionFlag": "substory_rest_complete"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "substory_blight_complete",
+     "substory_towers_complete",
+     "substory_rest_complete"
+    ],
+    "redirectToNodeId": "camp_all_completed"
+   }
+  },
+  {
+   "id": "camp_scout_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You and Sir Cedric venture into the dark tree line bordering the camp. Pitch-black obsidian claw marks scar the pine bark. Fresh tracks lead toward a shadowy outcrop.",
+   "choices": [
+    {
+     "id": "c_scout_tracks",
+     "text": "Cast an azure spark to illuminate the tracks",
+     "voiceKeywords": [
+      "spark",
+      "illuminate",
+      "light",
+      "tracks"
+     ],
+     "nextNodeId": "camp_scout_tracks"
+    },
+    {
+     "id": "c_scout_rush",
+     "text": "Draw weapons and rush the sound in the bracken",
+     "voiceKeywords": [
+      "rush",
+      "draw",
+      "weapons",
+      "sound",
+      "attack"
+     ],
+     "nextNodeId": "camp_scout_rush"
+    }
+   ]
+  },
+  {
+   "id": "camp_scout_tracks",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Wise thinking! The luminescence exposes two obsidian stalkers attempting to circle our eastern flank! Stand your ground!",
+   "nextNodeId": "camp_scout_ambush"
+  },
+  {
+   "id": "camp_scout_rush",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "I hear their ragged breathing in the brush! Sir Cedric, with me!",
+   "nextNodeId": "camp_scout_ambush"
+  },
+  {
+   "id": "camp_scout_ambush",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Two Blighted Trackers burst from the darkness, razor obsidian claws poised to strike! Defend the fellowship's camp!",
+   "triggerBattleEncounterId": "blight_trackers",
+   "nextNodeId": "camp_scout_victory"
+  },
+  {
+   "id": "camp_scout_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The prowlers shatter into inert ash! From their belt satchel, I've recovered an obsidian order cipher from the Mute Sovereign — their vanguard is fortifying the Bell Tower. Our perimeter is now secure!",
+   "nextNodeId": "camp_return_hub",
+   "setFlagOnEnter": "substory_blight_complete"
+  },
+  {
+   "id": "camp_shrine_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Behind the campfire stands the weathered sun shrine. Its granite altar is inscribed with ancient musical clefs and celestial dials left by the Primordial Chanters.",
+   "choices": [
+    {
+     "id": "c_shrine_chant",
+     "text": "Chant the three sacred notes inscribed on the altar",
+     "voiceKeywords": [
+      "chant",
+      "notes",
+      "sing",
+      "sacred"
+     ],
+     "nextNodeId": "camp_shrine_chant"
+    },
+    {
+     "id": "c_shrine_dial",
+     "text": "Align the astrological dial with the Dawn constellation",
+     "voiceKeywords": [
+      "dial",
+      "astrological",
+      "align",
+      "constellation"
+     ],
+     "nextNodeId": "camp_shrine_dial"
+    }
+   ]
+  },
+  {
+   "id": "camp_shrine_chant",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Sol... Aeterna... Cantus! Let the ancient harmonic awaken!",
+   "nextNodeId": "camp_shrine_relic"
+  },
+  {
+   "id": "camp_shrine_dial",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The gears click into place! Look — the stone pedestal is sliding open with a golden glow!",
+   "nextNodeId": "camp_shrine_relic"
+  },
+  {
+   "id": "camp_shrine_relic",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "A radiant golden tuning relic ascends from the altar — the Echo Chime of Solaria! It hums in harmony with your voice.",
+   "nextNodeId": "camp_shrine_lore"
+  },
+  {
+   "id": "camp_shrine_lore",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "By the First Dawn... that tuning chime was forged to break the Sovereign's acoustic lock on the First Bell Tower. We now possess the key to the gates!",
+   "nextNodeId": "camp_return_hub",
+   "setFlagOnEnter": "substory_towers_complete"
+  },
+  {
+   "id": "camp_vigil_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Midnight cloaks the forest in silence. Sir Cedric quietly feeds dry pine boughs into the fire as glowing embers rise toward the starry sky.",
+   "choices": [
+    {
+     "id": "c_vigil_bond",
+     "text": "Ask Cedric what binds his oath against the Blight",
+     "voiceKeywords": [
+      "oath",
+      "sister",
+      "binds",
+      "story",
+      "ask"
+     ],
+     "nextNodeId": "camp_vigil_story"
+    },
+    {
+     "id": "c_vigil_meditate",
+     "text": "Focus on harmonic breathwork and restoration",
+     "voiceKeywords": [
+      "meditate",
+      "breathe",
+      "heal",
+      "focus",
+      "restoration"
+     ],
+     "nextNodeId": "camp_vigil_meditate"
+    }
+   ]
+  },
+  {
+   "id": "camp_vigil_story",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "My sister was in the capital when the silence fell. Her voice was stolen... turned to obsidian before my eyes. I swore on my shield that until all four bells chime again, my sword belongs to the Logos.",
+   "nextNodeId": "camp_vigil_restored"
+  },
+  {
+   "id": "camp_vigil_meditate",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Warmth fills my chest. The primordial embers rekindle the harmonic flow within our souls.",
+   "nextNodeId": "camp_vigil_restored"
+  },
+  {
+   "id": "camp_vigil_restored",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "A profound calm settles over the camp. The party's health and mana are completely restored, and fellowship morale reaches its peak!",
+   "nextNodeId": "camp_return_hub",
+   "setFlagOnEnter": "substory_rest_complete",
+   "healPartyOnEnter": "full"
+  },
+  {
+   "id": "camp_return_hub",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You return to the warm circle of the campfire.",
+   "nextNodeId": "camp_intro"
+  },
+  {
+   "id": "camp_all_completed",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Look toward the northern ridge — dawn is breaking! The perimeter is secure, the Echo Chime is in hand, and our spirits are whole. Invocator, our camp preparations are complete. The First Bell Tower awaits!",
+   "nextNodeId": "chapter3_intro"
+  },
+  {
+   "id": "chapter3_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "CHAPTER 3: THE ASCENT OF SOLARIA. Leaving the warmth of the camp behind, you and Sir Cedric climb the craggy mountain ridges toward the colossal stone aqueducts of the First Bell Tower. Looming in the morning mist, monumental arches span the gorge, yet the grand portal is choked in pulsing obsidian vines.",
+   "nextNodeId": "ch3_cedric_assessment",
+   "changeSceneId": "scene_aqueduct",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch3_sentinels_complete",
+     "ch3_chime_complete"
+    ],
+    "redirectToNodeId": "ch3_all_completed"
+   }
+  },
+  {
+   "id": "ch3_cedric_assessment",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Look at the sheer scale of the aqueduct... It brought mountain spring water to the bell disciples centuries ago. Now, the Mute Sovereign has turned it into a fortress. The death wards hum with discordant energy, and corrupted sentinels prowl the upper buttresses.",
+   "nextNodeId": "ch3_hub"
+  },
+  {
+   "id": "ch3_hub",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "We cannot force the main gate while the death wards hum and the sentinels flank our approach. Which objective shall we tackle first, Invocator?",
+   "choices": [
+    {
+     "id": "ch3_scout",
+     "text": "Infiltrate the aqueduct cliffs to scout the corrupted sentinels",
+     "voiceKeywords": [
+      "scout",
+      "sentinels",
+      "cliffs",
+      "infiltrate",
+      "prowl"
+     ],
+     "nextNodeId": "ch3_scout_approach",
+     "completionFlag": "ch3_sentinels_complete"
+    },
+    {
+     "id": "ch3_chime",
+     "text": "Channel the Echo Chime to unseal the resonant barrier",
+     "voiceKeywords": [
+      "chime",
+      "barrier",
+      "unseal",
+      "echo",
+      "channel",
+      "raise"
+     ],
+     "nextNodeId": "ch3_chime_approach",
+     "completionFlag": "ch3_chime_complete"
+    }
+   ],
+   "nextNodeId": "ch3_scout_approach",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch3_sentinels_complete",
+     "ch3_chime_complete"
+    ],
+    "redirectToNodeId": "ch3_all_completed"
+   }
+  },
+  {
+   "id": "ch3_scout_approach",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You and Sir Cedric scale the damp stone buttresses, clinging to ancient handholds above the churning gorge. Ahead, two razor-clawed sentinels crouch over pulsating black cocoons, their jagged carapaces clicking in a discordant rhythm.",
+   "choices": [
+    {
+     "id": "c_scout_listen",
+     "text": "Observe their acoustic resonance patterns from the shadows",
+     "voiceKeywords": [
+      "listen",
+      "observe",
+      "shadows",
+      "resonance",
+      "watch"
+     ],
+     "nextNodeId": "ch3_scout_listen"
+    },
+    {
+     "id": "c_scout_strike",
+     "text": "Chant a piercing harmonic note to test their reaction",
+     "voiceKeywords": [
+      "strike",
+      "chant",
+      "piercing",
+      "test",
+      "sing"
+     ],
+     "nextNodeId": "ch3_scout_strike"
+    }
+   ]
+  },
+  {
+   "id": "ch3_scout_listen",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Listen closely... Their clicking is synchronized to a single subterranean pulse from the chamber above. When they screech, their obsidian shells vibrate out of phase.",
+   "nextNodeId": "ch3_scout_ambush"
+  },
+  {
+   "id": "ch3_scout_strike",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Sol... Cantus! A high resonant pitch bursts from your lips. The sentinels shriek in agony as hairline fractures spider across their crystal shells!",
+   "nextNodeId": "ch3_scout_ambush"
+  },
+  {
+   "id": "ch3_scout_ambush",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The sentinels whirl around with venomous mandibles, leaping from the buttress! Cedric locks his golden shield into place: 'They've caught our scent! Purge the vanguard!'",
+   "triggerBattleEncounterId": "ch3_sentinels",
+   "nextNodeId": "ch3_sentinels_victory"
+  },
+  {
+   "id": "ch3_sentinels_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Magnificent! Notice how their chitin shattered when your chants struck their frequency? Their queen, the Grave Broodmother, shares the exact same vulnerability. High-cadence chants will pierce her carapace and shatter her summonings!",
+   "nextNodeId": "ch3_return_hub",
+   "setFlagOnEnter": "ch3_sentinels_complete"
+  },
+  {
+   "id": "ch3_chime_approach",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You step before the grand ironwood portal. Interlocking obsidian bands seal the doors, oozing a pitch-black liquid silence that smothers all ambient sound. At the base stands an ancient tuning dais engraved with the sacred music staff of Solaria.",
+   "choices": [
+    {
+     "id": "c_chime_align",
+     "text": "Strike the Echo Chime to align with the Dawn harmonic",
+     "voiceKeywords": [
+      "align",
+      "dawn",
+      "strike",
+      "harmonic",
+      "chime"
+     ],
+     "nextNodeId": "ch3_chime_align"
+    },
+    {
+     "id": "c_chime_channel",
+     "text": "Pour incandescent elemental mana through the chime",
+     "voiceKeywords": [
+      "channel",
+      "fire",
+      "elemental",
+      "mana",
+      "pour"
+     ],
+     "nextNodeId": "ch3_chime_channel"
+    }
+   ]
+  },
+  {
+   "id": "ch3_chime_align",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "By the chord of the First Morning... awaken! You strike the Echo Chime against the dais. A pristine, golden chime rings out, vibrating at the frequency of pure sunlight!",
+   "nextNodeId": "ch3_chime_shatter"
+  },
+  {
+   "id": "ch3_chime_channel",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Flames of the Logos, ignite the ancient steel! The Echo Chime blazes with incandescent solar fire, boiling away the dark venom coating the stone!",
+   "nextNodeId": "ch3_chime_shatter"
+  },
+  {
+   "id": "ch3_chime_shatter",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "CRACK! A radiant shockwave of golden sound detonates from the Echo Chime! Like brittle crystal under an opera note, the obsidian death wards fracture into millions of harmless motes of light.",
+   "nextNodeId": "ch3_chime_complete_node"
+  },
+  {
+   "id": "ch3_chime_complete_node",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The death wards have disintegrated! The mechanical counterweights inside the archway are groaning back to life. The acoustic seal of Solaria is broken!",
+   "nextNodeId": "ch3_return_hub",
+   "setFlagOnEnter": "ch3_chime_complete"
+  },
+  {
+   "id": "ch3_return_hub",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You and Sir Cedric regroup at the base of the massive aqueduct threshold.",
+   "nextNodeId": "ch3_hub"
+  },
+  {
+   "id": "ch3_all_completed",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The sentinels' acoustic weakness is known and the death wards are shattered! Look at the gates — the ancient sun-gears are turning! Brace yourself, Invocator, the queen descends!",
+   "nextNodeId": "ch3_aqueduct_boss_trigger"
+  },
+  {
+   "id": "ch3_aqueduct_boss_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The colossal ironwood gates blast open! From the vaulted ceiling crawls the Grave Broodmother, screeching in deafening discord as toxic hatchlings spill from her back! Unleash your voice and cleanse the gate!",
+   "triggerBattleEncounterId": "cave_broodmother",
+   "nextNodeId": "ch3_boss_victory"
+  },
+  {
+   "id": "ch3_boss_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "She falls! Look through the breach, Invocator — the aqueduct tunnels lead directly into the catacombs beneath the First Bell Tower! Solaria is within our reach!",
+   "nextNodeId": "ch3_to_ch4"
+  },
+  {
+   "id": "ch3_to_ch4",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "The air grows cool with the scent of sacred incense and sun-baked granite. The First Bell Tower is within our reach. Let us enter the catacombs!",
+   "nextNodeId": "chapter4_intro",
+   "changeSceneId": "scene_dungeon"
+  },
+  {
+   "id": "chapter4_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "CHAPTER 4: THE BELL TOWER OF SOLARIA. You cross into the subterranean catacombs beneath the First Bell Tower. Vaulted stone pillars carved with sacred musical clefs hold up the monumental foundations. Yet eerie violet embers flicker among the ancient sarcophagi.",
+   "choices": [
+    {
+     "id": "ch4_investigate",
+     "text": "Examine the desecrated burial vaults",
+     "voiceKeywords": [
+      "examine",
+      "vaults",
+      "burial",
+      "sarcophagi",
+      "investigate"
+     ],
+     "nextNodeId": "ch4_crypt_cedric"
+    },
+    {
+     "id": "ch4_call_dawn",
+     "text": "Chant a prayer of warding to the First Dawn",
+     "voiceKeywords": [
+      "prayer",
+      "warding",
+      "dawn",
+      "chant",
+      "protect"
+     ],
+     "nextNodeId": "ch4_crypt_cedric"
+    }
+   ]
+  },
+  {
+   "id": "ch4_crypt_cedric",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "This is the Mausoleum of the Sun-Chanters... Look at the central pedestal! The sacred Sun-Iron Bell Clapper was cast down here by the Mute Sovereign's disciples. A Bone Acolyte is conducting an unholy ritual over the relic!",
+   "choices": [
+    {
+     "id": "ch4_confront_acolyte",
+     "text": "Demand the desecrator surrender the holy clapper",
+     "voiceKeywords": [
+      "demand",
+      "surrender",
+      "confront",
+      "halt"
+     ],
+     "nextNodeId": "ch4_crypt_confront"
+    },
+    {
+     "id": "ch4_charge_acolyte",
+     "text": "Draw blade and ready a searing pyromancy blast",
+     "voiceKeywords": [
+      "charge",
+      "fireball",
+      "attack",
+      "blade",
+      "strike"
+     ],
+     "nextNodeId": "ch4_crypt_confront"
+    }
+   ]
+  },
+  {
+   "id": "ch4_crypt_confront",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Unholy defiler! In the name of the Logos and the Dawn, release the clapper and return to the dust!",
+   "nextNodeId": "ch4_crypt_battle_trigger"
+  },
+  {
+   "id": "ch4_crypt_battle_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Bone Acolyte raises its skeletal staff with a hollow hiss! Crypt legionnaires claw their way from granite tombs to defend the desecrated shrine. Strike with your voice and cleanse the mausoleum!",
+   "triggerBattleEncounterId": "dungeon_descent",
+   "nextNodeId": "ch4_crypt_victory"
+  },
+  {
+   "id": "ch4_crypt_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Their dark ward is broken! Look inside the altar vault — the Sun-Iron Bell Clapper! It radiates with the warmth of an ancient star. With this clapper, the Great Bell of Solaria will ring once more!",
+   "nextNodeId": "ch4_tower_ascent"
+  },
+  {
+   "id": "ch4_tower_ascent",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Bearing the heavy sun-iron clapper, you and Sir Cedric ascend the grand spiral staircase. Thousands of steps coil upward through the core of the tower until you emerge into the open-air summit — the high Bell Chamber.",
+   "nextNodeId": "ch4_chamber_confrontation",
+   "changeSceneId": "scene_tower"
+  },
+  {
+   "id": "ch4_chamber_confrontation",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "There she hangs... The Great Bell of Solaria! But the Sovereign's royal iron vanguard has seized the belfry! An ironclad captain and his archers block the bell ropes!",
+   "choices": [
+    {
+     "id": "ch4_vanguard_challenge",
+     "text": "Proclaim the return of the Logos and charge their phalanx",
+     "voiceKeywords": [
+      "proclaim",
+      "charge",
+      "logos",
+      "challenge",
+      "fight"
+     ],
+     "nextNodeId": "ch4_vanguard_charge"
+    },
+    {
+     "id": "ch4_vanguard_smite",
+     "text": "Call upon Sir Cedric's holy aegis to break the line",
+     "voiceKeywords": [
+      "aegis",
+      "smite",
+      "shield",
+      "cedric",
+      "break"
+     ],
+     "nextNodeId": "ch4_vanguard_charge"
+    }
+   ]
+  },
+  {
+   "id": "ch4_vanguard_charge",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Knights of the Mute Eye, your reign over this sacred belfry ends today! Invocator, let the thunder of our voices break their iron wills!",
+   "nextNodeId": "ch4_tower_battle_trigger"
+  },
+  {
+   "id": "ch4_tower_battle_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Gate Captain and Iron Vanguard lock shields in a formidable fortress phalanx, covered by lethal snipers and a royal court warlock! Speak your ultimate chants and reclaim the First Bell Tower!",
+   "triggerBattleEncounterId": "castle_horde",
+   "nextNodeId": "ch4_tower_victory"
+  },
+  {
+   "id": "ch4_tower_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The garrison has fallen! The belfry is ours! Quick, Invocator — mount the Sun-Iron Clapper into the bronze bell's heart!",
+   "nextNodeId": "ch4_bell_climax"
+  },
+  {
+   "id": "ch4_bell_climax",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You hoist the glowing Sun-Iron Clapper into the colossal bronze bell. Together, you and Sir Cedric take hold of the velvet-wrapped ropes. Closing your eyes, you speak the sacred Invocation of Dawn: 'From flame unyielding, from darkness spoken—let the First Bell ring and silence be broken!'",
+   "nextNodeId": "ch4_bell_ringing"
+  },
+  {
+   "id": "ch4_bell_ringing",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "BONGGGGGG! The Great Bell of Solaria peals across the realm with celestial majesty! Concentric rings of golden sound ripple through the mountain air. Below, the black obsidian vines suffocating Whispering Pines shatter into shimmering dust. Hundreds of petrified villagers awaken, drawing their first breath in tears of wonder!",
+   "nextNodeId": "ch4_epilogue"
+  },
+  {
+   "id": "ch4_epilogue",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "They are saved... The First Bell has chimed, and the eastern province is free! Yet our quest has only begun. Look southwest across the valley: the murky, toxic fog of the Rotting Marsh. The Second Bell Tower sleeps in the swamp, where the Grove Warden Lyra fights to protect the weeping willow. Whenever you are ready, Invocator, our next chapter awaits!",
+   "choices": [
+    {
+     "id": "ch4_reflect",
+     "text": "Gaze upon the liberated valley and rest in the sunrise",
+     "voiceKeywords": [
+      "gaze",
+      "valley",
+      "rest",
+      "sunrise",
+      "peace"
+     ],
+     "nextNodeId": "ch4_reflect_dialogue"
+    },
+    {
+     "id": "ch4_march",
+     "text": "Vow to march southwest to the Rotting Marsh and save Lyra",
+     "voiceKeywords": [
+      "march",
+      "marsh",
+      "lyra",
+      "southwest",
+      "vow"
+     ],
+     "nextNodeId": "ch4_march_dialogue"
+    }
+   ]
+  },
+  {
+   "id": "ch4_reflect_dialogue",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "The golden morning sun reflects off the restored village roofs. The silence of this land is broken, Sir Cedric. We will not stop until every bell in Aethelgard chimes again.",
+   "nextNodeId": "ch4_act1_complete"
+  },
+  {
+   "id": "ch4_march_dialogue",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Then we rest for the noon hour and set our course southwest. To the Rotting Marsh, to Lyra the Grove Warden, and to the Second Bell Tower!",
+   "nextNodeId": "camp_belfry_intro"
+  },
+  {
+   "id": "ch4_act1_complete",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "ACT I CONCLUDED: THE FALLING SILENCE SHATTERED. You have liberated the eastern valleys and restored the First Great Bell of Solaria! The journey southwest toward the Rotting Marsh and the rescue of Grove Warden Lyra begins in Act II.",
+   "choices": [
+    {
+     "id": "ch4_start_act2",
+     "text": "Descend the southwestern cliffs into the Rotting Marsh (Begin Act II)",
+     "voiceKeywords": [
+      "descend",
+      "southwest",
+      "marsh",
+      "act2",
+      "act two",
+      "begin",
+      "start"
+     ],
+     "nextNodeId": "camp_belfry_intro"
+    },
+    {
+     "id": "ch4_replay_bell",
+     "text": "Re-listen to the glorious chime of Solaria",
+     "voiceKeywords": [
+      "relisten",
+      "chime",
+      "bell",
+      "solaria"
+     ],
+     "nextNodeId": "ch4_bell_ringing"
+    },
+    {
+     "id": "ch4_view_epilogue",
+     "text": "Reflect with Sir Cedric upon the belfry",
+     "voiceKeywords": [
+      "reflect",
+      "cedric",
+      "view",
+      "belfry"
+     ],
+     "nextNodeId": "ch4_epilogue"
+    }
+   ]
+  },
+  {
+   "id": "camp_belfry_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Night falls upon the western slope below Solaria Belfry. Above, the great bronze bell glints in the moonlight, its celestial chime still humming faintly through the bedrock. Sir Cedric kindles a fire from fallen pine boughs, the warm golden light pushing back the mountain chill.",
+   "choices": [
+    {
+     "id": "camp_belfry_sit",
+     "text": "Sit by the fire with Sir Cedric",
+     "voiceKeywords": [
+      "sit",
+      "fire",
+      "cedric",
+      "talk",
+      "converse"
+     ],
+     "nextNodeId": "camp_belfry_hub"
+    },
+    {
+     "id": "camp_belfry_skip",
+     "text": "Rest briefly and descend southwest toward the Rotting Marsh",
+     "voiceKeywords": [
+      "rest",
+      "descend",
+      "southwest",
+      "marsh",
+      "rotting",
+      "press",
+      "continue"
+     ],
+     "nextNodeId": "ch5_intro",
+     "completionFlag": "camp_belfry_rest_complete"
+    }
+   ],
+   "changeSceneId": "scene_camp",
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_belfry_bell_complete",
+     "camp_belfry_lyra_complete",
+     "camp_belfry_burden_complete"
+    ],
+    "redirectToNodeId": "camp_belfry_all_completed"
+   }
+  },
+  {
+   "id": "camp_belfry_hub",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Sir Cedric rests his broadsword across his knees, methodically wiping soot from the crossguard. 'The first province is free, Invocator. But our path southwest leads straight into the mire. What weighs on your mind before we sleep?'",
+   "choices": [
+    {
+     "id": "camp_belfry_c_bell",
+     "text": "Ask Cedric how it felt when the First Bell chimed",
+     "voiceKeywords": [
+      "bell",
+      "chimed",
+      "sound",
+      "relief",
+      "felt"
+     ],
+     "nextNodeId": "camp_belfry_talk_bell",
+     "completionFlag": "camp_belfry_bell_complete"
+    },
+    {
+     "id": "camp_belfry_c_lyra",
+     "text": "Ask what kind of person Warden Lyra is",
+     "voiceKeywords": [
+      "lyra",
+      "warden",
+      "person",
+      "grove",
+      "friend"
+     ],
+     "nextNodeId": "camp_belfry_talk_lyra",
+     "completionFlag": "camp_belfry_lyra_complete"
+    },
+    {
+     "id": "camp_belfry_c_burden",
+     "text": "Confess how exhausting channeling the First Voice feels",
+     "voiceKeywords": [
+      "exhausting",
+      "voice",
+      "toll",
+      "burden",
+      "throat"
+     ],
+     "nextNodeId": "camp_belfry_talk_burden",
+     "completionFlag": "camp_belfry_burden_complete"
+    },
+    {
+     "id": "camp_belfry_c_sleep",
+     "text": "Extinguish the embers and set out for the Rotting Marsh",
+     "voiceKeywords": [
+      "sleep",
+      "extinguish",
+      "march",
+      "leave",
+      "marsh",
+      "rotting"
+     ],
+     "nextNodeId": "ch5_intro",
+     "completionFlag": "camp_belfry_rest_complete"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_belfry_bell_complete",
+     "camp_belfry_lyra_complete",
+     "camp_belfry_burden_complete"
+    ],
+    "redirectToNodeId": "camp_belfry_all_completed"
+   }
+  },
+  {
+   "id": "camp_belfry_talk_bell",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Cedric's hardened expression softens, a genuine smile touching his beard. 'For ten years, I believed our gods had abandoned us to the quiet. But when that bronze bell sang... I felt the stone itself remember how to weep. We gave thousands of souls their tomorrow back today. Whatever waits in the swamp, that truth cannot be unmade.'",
+   "nextNodeId": "camp_belfry_hub",
+   "setFlagOnEnter": "camp_belfry_bell_complete"
+  },
+  {
+   "id": "camp_belfry_talk_lyra",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "'Lyra was the youngest warden ever inducted at the Sunken Fane,' Cedric says quietly. 'Gentle as morning dew, yet her roots could split granite if an innocent was threatened. She has been alone in that blighted swamp for two years holding the sacred willow. If she still draws breath, we will pull her out, Invocator. That is my oath.'",
+   "nextNodeId": "camp_belfry_hub",
+   "setFlagOnEnter": "camp_belfry_lyra_complete"
+  },
+  {
+   "id": "camp_belfry_talk_burden",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Cedric reaches into his haversack, producing a small tin of hardened wildflower honey and crushed mint leaves. 'The old choristers of Solaria kept this for vocal strain. Chew slowly. The Logos is an ancient fire, Aethel; it asks for your breath, your blood, and your will. Lean on my steel when your voice falters. You are not carrying this kingdom alone.'",
+   "nextNodeId": "camp_belfry_hub",
+   "setFlagOnEnter": "camp_belfry_burden_complete"
+  },
+  {
+   "id": "camp_belfry_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fire dwindles to a bed of glowing coals as midnight passes. Cedric wraps himself in his heavy cloak to take first watch. Rest comes deep and undisturbed. At first light, you pack your bedrolls and gaze southwest toward the rotting canopy of Chapter 5.",
+   "nextNodeId": "ch5_intro",
+   "setFlagOnEnter": "camp_belfry_rest_complete"
+  },
+  {
+   "id": "ch5_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "ACT II: THE SEVERED RESONANCE. Descending the precipitous switchbacks of Solaria, the golden mountain light chokes out into suffocating viridian fog. The air turns cold and heavy with the sulfurous reek of stagnant bogwater. Before you lies the Rotting Marsh, where ancient sunken arches mark the entrance to the Drowned Fane.",
+   "nextNodeId": "ch5_tracks",
+   "changeSceneId": "scene_marsh_fane",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch5_creek_scouted",
+     "ch5_wards_examined"
+    ],
+    "redirectToNodeId": "ch5_all_completed"
+   }
+  },
+  {
+   "id": "ch5_tracks",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Halt, Invocator! Look upon the mud beside these cypress roots. Shredded green silk bearing the leaf crest of the Grove Wardens. There was a violent skirmish here within the hour. Lyra fought retreating into the sunken fane, but the blight-tracks surround her. We must scout their perimeter before breaching the central altar.",
+   "nextNodeId": "ch5_hub"
+  },
+  {
+   "id": "ch5_hub",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "We are at the threshold of the Drowned Fane. Muffled, discordant incantations echo from the flooded pavilion ahead. How shall we coordinate the rescue assault, Invocator?",
+   "choices": [
+    {
+     "id": "ch5_creek_choice",
+     "text": "Scout the poisoned creek bed for warden tracks",
+     "voiceKeywords": [
+      "scout",
+      "creek",
+      "tracks",
+      "warden"
+     ],
+     "nextNodeId": "ch5_scout_creek",
+     "completionFlag": "ch5_creek_scouted"
+    },
+    {
+     "id": "ch5_wards_choice",
+     "text": "Inspect the pulsing obsidian warding stones",
+     "voiceKeywords": [
+      "inspect",
+      "examine",
+      "stones",
+      "wards",
+      "obsidian"
+     ],
+     "nextNodeId": "ch5_examine_wards",
+     "completionFlag": "ch5_wards_examined"
+    },
+    {
+     "id": "ch5_assault_choice",
+     "text": "Charge the sunken altar and breach Lyra's Briar Cage!",
+     "voiceKeywords": [
+      "charge",
+      "assault",
+      "breach",
+      "cage",
+      "rescue"
+     ],
+     "nextNodeId": "ch5_rescue_assault"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch5_creek_scouted",
+     "ch5_wards_examined"
+    ],
+    "redirectToNodeId": "ch5_all_completed"
+   }
+  },
+  {
+   "id": "ch5_scout_creek",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Wading through the knee-deep black mire, you discover three snap-jaw mire traps hidden beneath floating duckweed. Sir Cedric triggers them harmlessly with his spear shaft. Carved into an ancient cypress trunk, you find a hasty druidic glyph: 'THEY SEEK THE VERIDIAN CHIME. I AM BOUND AT THE ALTAR. —L'. Knowing their ambush positions gives your duo fellowship high tactical advantage!",
+   "nextNodeId": "ch5_hub",
+   "setFlagOnEnter": "ch5_creek_scouted"
+  },
+  {
+   "id": "ch5_examine_wards",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "I place my palm near the pulsing obsidian obelisks. A sickening, discordant hum vibrates through my marrow. 'Void Briar Runes,' I warn Sir Cedric. 'The Blight Binder is siphoning the marsh's life-force to tighten the cage and drain Lyra's communion with the trees.' Discerning their counter-harmonic frequency ensures our incantations will shatter their barrier!",
+   "nextNodeId": "ch5_hub",
+   "setFlagOnEnter": "ch5_wards_examined"
+  },
+  {
+   "id": "ch5_all_completed",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The perimeter is secured, their ambush traps disarmed, and the ward frequencies mapped! Lyra is suspended above the fane pool in a cage of writhing black briars. It is time. Draw your breath, Invocator—we charge to her rescue! Sound the battle cry and breach the Briar Cage!",
+   "nextNodeId": "ch5_rescue_assault"
+  },
+  {
+   "id": "ch5_rescue_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You and Sir Cedric storm the flooded courtyard! Suspended above the sunken fane within a cage of writhing obsidian briars hangs Lyra the Grove Warden! A hulking Bog Ironclad, a venomous Mire Stalker, and the Void Briar Binder spin around, weapons bristling with dark sorcery!",
+   "triggerBattleEncounterId": "marsh_rescue",
+   "nextNodeId": "ch5_rescue_victory"
+  },
+  {
+   "id": "ch5_rescue_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Void Briar Binder crumbles into dissolving ash! With a ferocious roar, Sir Cedric brings his radiant greatsword down upon the anchoring rune-chains. CLANG-CRACK! The black thorns wither and snap like dry twigs. The cage shatters, and Lyra falls from mid-air!",
+   "nextNodeId": "ch5_lyra_unbound"
+  },
+  {
+   "id": "ch5_lyra_unbound",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "I've got you! Steady your footing, Warden. Breathe the fresh air—the corruption is broken, you are safe now.",
+   "nextNodeId": "ch5_lyra_first_words"
+  },
+  {
+   "id": "ch5_lyra_first_words",
+   "speakerId": "lyra",
+   "side": "RIGHT",
+   "text": "You... you wield the living Logos? For weeks I heard only the suffocating whispers of the Silent Blight. I thought Whispering Pines and the Solaria heights had fallen into eternal ruin. Who are you noble champions that dare breach the Sunken Mire?",
+   "nextNodeId": "ch5_cedric_introduces"
+  },
+  {
+   "id": "ch5_cedric_introduces",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "I am Sir Cedric, formerly of the Templar Guard, and this is Aethel, the Awakened Invocator. Together we rang the Great Bell of Solaria at dawn and shattered the silence over the eastern valleys. We marched through the southwestern pass to rescue you, Grove Warden.",
+   "nextNodeId": "ch5_lyra_explains_crisis"
+  },
+  {
+   "id": "ch5_lyra_explains_crisis",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Solaria's Bell rings once more? Then hope still breathes in Aethelgard! But our time is perilously short. The Binder was merely a warden of my cage. One league deeper, the monstrous Bog Behemoth has infested the roots of the primordial Weeping Willow. If the Willow's heart rots, the Second Great Bell—The Veridian Chime—will drown forever beneath the mire!",
+   "nextNodeId": "ch5_rest_sanctuary"
+  },
+  {
+   "id": "ch5_rest_sanctuary",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You carry Lyra to a secluded limestone alcove framed by ancient willow roots. Together, you dress her wounds and drink clean springwater filtered by the grove. As dusk settles over the marsh, Lyra's strength returns, her verdant staff glowing with emerald life.",
+   "nextNodeId": "ch5_complete"
+  },
+  {
+   "id": "ch5_complete",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "CHAPTER 5 COMPLETED: THE DROWNED FANE RESCUE. You have penetrated the Rotting Marsh, defeated the Void Binder garrison, and saved Lyra the Grove Warden from the Briar Cage! Chapter 6: The Warden's Oath awaits. Greet the dawn and receive the Warden's Oath (Begin Chapter 6)",
+   "nextNodeId": "ch6_intro"
+  },
+  {
+   "id": "ch6_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Dawn pierces the swamp canopy in shafts of shimmering emerald radiance. The sacred waters surrounding the colossal Weeping Willow ripple with quiet power. Lyra stands tall, her verdant tunic buckled and her staff crowned with freshly bloomed white jasmine blossoms.",
+   "nextNodeId": "ch6_oath_ceremony",
+   "changeSceneId": "scene_willow_sanctuary",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch6_lore_complete",
+     "ch6_spores_complete"
+    ],
+    "redirectToNodeId": "ch6_all_completed"
+   }
+  },
+  {
+   "id": "ch6_oath_ceremony",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Aethel... Sir Cedric. You entered the jaws of the mire for me when the rest of the kingdom had surrendered these lands to silence. My grove is my life, but its fate is bound to your quest. Before the ancient roots of the Willow, hear my vow.",
+   "nextNodeId": "ch6_oath_words"
+  },
+  {
+   "id": "ch6_oath_words",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "'By root and stone, by rain and thorn—where the Logos calls, the Grove Warden answers! My briars shall shield your flank, and my soothing rains shall mend your wounds. From this breath until the last chime, I stand with the Fellowship!'",
+   "nextNodeId": "ch6_party_joins"
+  },
+  {
+   "id": "ch6_party_joins",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "LYRA THE GROVE WARDEN HAS JOINED YOUR FELLOWSHIP! Your active combat party now numbers three champions: Aethel the Invocator, Sir Cedric the Templar, and Lyra the Grove Warden. In battle, Lyra commands nature spells: Soothing Rain, Briar Entangle, and Grounded Mend!",
+   "nextNodeId": "ch6_hub",
+   "setFlagOnEnter": "lyra_recruited"
+  },
+  {
+   "id": "ch6_hub",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "The colossal Weeping Willow rises just beyond this mossy embankment. We can hear the guttural, subterranean groans of the Bog Behemoth poisoning its taproot. Before we engage the titan, how shall we prepare?",
+   "choices": [
+    {
+     "id": "ch6_lore_choice",
+     "text": "Ask Lyra about the lore of the Veridian Chime (Second Great Bell)",
+     "voiceKeywords": [
+      "ask",
+      "lore",
+      "veridian",
+      "chime",
+      "history"
+     ],
+     "nextNodeId": "ch6_lore_dialogue",
+     "completionFlag": "ch6_lore_complete"
+    },
+    {
+     "id": "ch6_spores_choice",
+     "text": "Harvest cleansing willow spores to resist the toxic bog miasma",
+     "voiceKeywords": [
+      "harvest",
+      "spores",
+      "willow",
+      "cleanse",
+      "miasma"
+     ],
+     "nextNodeId": "ch6_spores_dialogue",
+     "completionFlag": "ch6_spores_complete"
+    },
+    {
+     "id": "ch6_willow_assault_choice",
+     "text": "Advance into the heart of the pool and confront the Bog Behemoth!",
+     "voiceKeywords": [
+      "advance",
+      "heart",
+      "pool",
+      "confront",
+      "behemoth",
+      "battle"
+     ],
+     "nextNodeId": "ch6_willow_assault"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch6_lore_complete",
+     "ch6_spores_complete"
+    ],
+    "redirectToNodeId": "ch6_all_completed"
+   }
+  },
+  {
+   "id": "ch6_lore_dialogue",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "The Veridian Chime was cast in the First Age of Song. Its bronze is fused with jade mined from the earth-veins deep beneath the marsh. When chimed, its resonance does not merely travel through air—it surges through plant roots and groundwater, restoring life to every blighted blossom for fifty leagues.",
+   "nextNodeId": "ch6_hub",
+   "setFlagOnEnter": "ch6_lore_complete"
+  },
+  {
+   "id": "ch6_spores_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Together with Lyra, you harvest luminescent sapphire spores clinging to the water lilies. Crushing them releases an invigorating eucalyptus vapor that clears your lungs. 'These spores neutralize the Behemoth's corrosive acid,' Lyra smiles. Sir Cedric's armor and your robes are coated in protective azure pollen. The party's vitality surges to maximum!",
+   "nextNodeId": "ch6_hub",
+   "setFlagOnEnter": "ch6_spores_complete"
+  },
+  {
+   "id": "ch6_all_completed",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The protective spores coat our armor, and the sacred destiny of the Veridian Chime is etched in our hearts! The three of us fight as one fellowship. Invocator, give the command and let us cleanse the Weeping Willow! March into the willow roots and destroy the Bog Behemoth!",
+   "nextNodeId": "ch6_willow_assault"
+  },
+  {
+   "id": "ch6_willow_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fellowship wades into the churning waters of the sacred pool! The mire boils as a colossal, moss-armored Bog Behemoth bursts from the depths, flanked by razor-fanged marsh leeches! Lyra raises her staff, Sir Cedric readies his shield, and your voice invokes the Logos!",
+   "triggerBattleEncounterId": "swamp_behemoth",
+   "nextNodeId": "ch6_willow_purified"
+  },
+  {
+   "id": "ch6_willow_purified",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "With a deafening bellow that shakes the swamp canopy, the Bog Behemoth collapses into the depths! Its black corruption dissolves into shimmering emerald foam. Across the giant willow, withered branches burst into vibrant verdant leaves, and thousands of luminous blue blossoms open in joyous symphony!",
+   "nextNodeId": "ch6_chime_revealed"
+  },
+  {
+   "id": "ch6_chime_revealed",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Look at the center of the pool! The murky waters have turned crystal clear! The roots are parting... Behold, the Veridian Chime!",
+   "nextNodeId": "ch6_bell_inspection"
+  },
+  {
+   "id": "ch6_bell_inspection",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Rising gracefully from the cleansed pool, cradled by intertwining cypress roots, hangs the colossal Second Great Bell of Aethelgard—The Veridian Chime. Inscribed along its jade-inlaid bronze rim are ancient botanical runes waiting to be awakened by the sacred Logos.",
+   "nextNodeId": "ch6_act2_climax"
+  },
+  {
+   "id": "ch6_act2_climax",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Two Great Bells found... one ringing with dawn, and one awaiting our rite of tuning! Whispering Pines is safe, the Rotting Marsh breathes with life once more, and Grove Warden Lyra fights at our side. Invocator, our fellowship grows mightier each day. Whenever you are ready, we shall tune the Veridian Chime and march toward the Clockwork Bastion!",
+   "choices": [
+    {
+     "id": "ch6_advance_ch7",
+     "text": "March north to tune the Veridian Chime (Advance to Chapter 7)",
+     "voiceKeywords": [
+      "advance",
+      "chapter 7",
+      "tune",
+      "veridian",
+      "chime",
+      "north",
+      "march",
+      "next"
+     ],
+     "nextNodeId": "ch7_intro"
+    },
+    {
+     "id": "ch6_commune_lyra",
+     "text": "Speak with Lyra regarding the fellowship's path ahead",
+     "voiceKeywords": [
+      "speak",
+      "commune",
+      "lyra",
+      "path"
+     ],
+     "nextNodeId": "ch6_lyra_dialogue"
+    },
+    {
+     "id": "ch6_view_willow",
+     "text": "Inspect the ancient jade runes along the chime's rim",
+     "voiceKeywords": [
+      "inspect",
+      "runes",
+      "rim",
+      "bell",
+      "jade",
+      "chime"
+     ],
+     "nextNodeId": "ch6_runes_dialogue"
+    }
+   ]
+  },
+  {
+   "id": "ch6_lyra_dialogue",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Lyra clutches her heartwood staff, eyes shining with quiet wonder. 'For five years I believed our grove was dead. Your voice did not merely break the mire, Invocator—it reminded the earth how to sing. Wherever the Logos leads, my bow and spells are pledged to you.'",
+   "nextNodeId": "ch6_act2_climax",
+   "setFlagOnEnter": "ch6_lyra_dialogue_complete"
+  },
+  {
+   "id": "ch6_runes_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The jade carvings along the Veridian Chime glow softly. Inscribed in the script of the First Age are the words: 'That which was silenced in roots shall awaken in song.' The chime vibrates eagerly, attuned to the botanical frequency awaiting your tuning rite!",
+   "nextNodeId": "ch6_act2_climax",
+   "setFlagOnEnter": "ch6_runes_dialogue_complete"
+  },
+  {
+   "id": "ch7_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Morning light filters through the emerald canopy above the cleansed Weeping Willow pool. The Veridian Chime hangs suspended over the crystal water, its jade surface etched with sleeping botanical runes. Lyra unclasps her botanical tuning fork, its polished heartwood trembling with natural resonance.",
+   "nextNodeId": "ch7_hub",
+   "changeSceneId": "scene_sunken_catacombs",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch7_tuning_complete",
+     "ch7_stele_complete",
+     "ch7_cedric_complete",
+     "ch7_dagger_complete"
+    ],
+    "redirectToNodeId": "ch7_all_completed"
+   }
+  },
+  {
+   "id": "ch7_hub",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Lyra holds the tuning fork steady. 'To awaken the Veridian Chime, we must align our voices with the ancient root-frequency of Aethelgard. Invocator, how shall we prepare the rite?'",
+   "choices": [
+    {
+     "id": "ch7_tuning_choice",
+     "text": "Strike the botanical tuning fork against the jade bell",
+     "voiceKeywords": [
+      "tuning",
+      "fork",
+      "strike",
+      "bell",
+      "chime"
+     ],
+     "nextNodeId": "ch7_tuning_dialogue"
+    },
+    {
+     "id": "ch7_stele_choice",
+     "text": "Inspect the submerged steles of the First Word",
+     "voiceKeywords": [
+      "stele",
+      "tablet",
+      "inscriptions",
+      "inspect",
+      "submerged"
+     ],
+     "nextNodeId": "ch7_stele_dialogue"
+    },
+    {
+     "id": "ch7_dagger_choice",
+     "text": "Examine an obsidian kunai pinned to a cypress trunk",
+     "voiceKeywords": [
+      "dagger",
+      "kunai",
+      "stalker",
+      "examine",
+      "pinned",
+      "trunk",
+      "obsidian"
+     ],
+     "nextNodeId": "ch7_dagger_dialogue"
+    },
+    {
+     "id": "ch7_cedric_choice",
+     "text": "Confer with Cedric regarding the northern crags",
+     "voiceKeywords": [
+      "cedric",
+      "crags",
+      "north",
+      "scout",
+      "confer"
+     ],
+     "nextNodeId": "ch7_cedric_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch7_tuning_complete",
+     "ch7_stele_complete",
+     "ch7_cedric_complete",
+     "ch7_dagger_complete"
+    ],
+    "redirectToNodeId": "ch7_all_completed"
+   }
+  },
+  {
+   "id": "ch7_tuning_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Lyra strikes the fork gently against the rim of the Veridian Chime. A clear, bell-like hum ripples across the water, making the willow blossoms glow in sympathetic blue-green light. Calcified silt begins flaking from the bell's underbelly, revealing pure jade filigree! Lyra smiles: 'The resonance is pure. The bell remembers!'",
+   "nextNodeId": "ch7_hub",
+   "setFlagOnEnter": "ch7_tuning_complete"
+  },
+  {
+   "id": "ch7_stele_dialogue",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Cedric scrapes silt from the submerged limestone steles. 'These carvings tell of the First Age,' he reads in awe. 'When the ancient kings sought to enforce a single language upon all subjects, they distorted the Logos into an iron law. The Blight was not born of darkness, but of forced uniformity—silencing dissent until the silence swallowed the world.' The sobering truth steels your fellowship's purpose!",
+   "nextNodeId": "ch7_hub",
+   "setFlagOnEnter": "ch7_stele_complete"
+  },
+  {
+   "id": "ch7_dagger_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Aethel steps toward an ancient cypress and pulls free an obsidian kunai wrapped in silver thread. Pinned beneath the blade is a parchment strip: 'Turn back, Invocator. Grand Executioner Kaelen holds the crags with sonic tripwires. He was ordered to take your tongue in a lead jar. If you march north, tread only the high ledges. —A brother in silence.' Cedric inspects the blade: 'The sigil of the Black Guild of Assassins... but why would one of Malakor's killers warn us?'",
+   "nextNodeId": "ch7_hub",
+   "setFlagOnEnter": "ch7_dagger_complete"
+  },
+  {
+   "id": "ch7_cedric_dialogue",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Cedric gazes north toward the jagged mountain peaks. 'Between the assassin's warning and the tremors beneath our feet, we cannot hesitate. When the chime rings, the water will drain, but the guardian beneath will strike first. Steel your incantations, Invocator!'",
+   "nextNodeId": "ch7_hub",
+   "setFlagOnEnter": "ch7_cedric_complete"
+  },
+  {
+   "id": "ch7_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The preparatory runes glow with incandescent jade light! The Veridian Chime is primed to awaken. But beneath the pool, the ancient silt core thrashes—a gargantuan Mire Wyrm rises to crush the chime before it can ring! Unleash the Logos and destroy the Mire Wyrm!",
+   "nextNodeId": "ch7_wyrm_assault"
+  },
+  {
+   "id": "ch7_wyrm_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Mire Wyrm erupts from the muddy depths, spraying corrosive silt as swarms of silt ghouls rush the shore! Lyra raises her staff, Sir Cedric locks his golden shield in place, and your voice invokes the Logos!",
+   "triggerBattleEncounterId": "ch7_mire_wyrm",
+   "nextNodeId": "ch7_wyrm_victory"
+  },
+  {
+   "id": "ch7_wyrm_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "With a subterranean groan, the Ancient Mire Wyrm collapses and dissolves into radiant jade moss! Lyra strikes the botanical fork with all her strength against the Veridian Chime. A deafening, glorious jade toll reverberates across fifty leagues of marsh! Massive whirlpools form as the stagnant black bogwater drains through subterranean caverns, exposing the dry stone road leading into the northern crags!",
+   "nextNodeId": "ch7_post_toll",
+   "setFlagOnEnter": "ch7_wyrm_defeated"
+  },
+  {
+   "id": "ch7_post_toll",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The Veridian Chime rings true! Two bells restored, two remain! As dusk falls across the drained marsh, the northern crags loom cold and jagged before us. Let us make camp at the foothills and prepare for the assassin's pass. Make camp at the foot of the Shadowed Crags.",
+   "nextNodeId": "ch7_camp_intro"
+  },
+  {
+   "id": "ch7_camp_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "A crackling campfire illuminates the cold granite base of the northern mountains. Thin mountain air bites through cloaks, but the fire's warmth provides a safe haven. Lyra brews steeping mint leaves while Cedric checks his shield straps.",
+   "nextNodeId": "ch7_camp_hub",
+   "changeSceneId": "scene_camp",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch7_camp_lyra_complete",
+     "ch7_camp_cedric_complete",
+     "ch7_camp_watch_complete"
+    ],
+    "redirectToNodeId": "ch7_camp_all_completed"
+   }
+  },
+  {
+   "id": "ch7_camp_hub",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The campfire crackles softly under the starry mountain sky. What will you do before turning in for the night?",
+   "choices": [
+    {
+     "id": "ch7_camp_lyra_choice",
+     "text": "Speak with Lyra about the song of her elven kin",
+     "voiceKeywords": [
+      "lyra",
+      "song",
+      "kin",
+      "sister",
+      "elves"
+     ],
+     "nextNodeId": "ch7_camp_lyra_dialogue"
+    },
+    {
+     "id": "ch7_camp_cedric_choice",
+     "text": "Ask Cedric about the Brotherhood of the Mute",
+     "voiceKeywords": [
+      "cedric",
+      "brotherhood",
+      "mute",
+      "assassins",
+      "guild"
+     ],
+     "nextNodeId": "ch7_camp_cedric_dialogue"
+    },
+    {
+     "id": "ch7_camp_watch_choice",
+     "text": "Take the midnight watch and scan the rocky ridge",
+     "voiceKeywords": [
+      "watch",
+      "midnight",
+      "scan",
+      "ridge",
+      "guard",
+      "scout"
+     ],
+     "nextNodeId": "ch7_camp_watch_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch7_camp_lyra_complete",
+     "ch7_camp_cedric_complete",
+     "ch7_camp_watch_complete"
+    ],
+    "redirectToNodeId": "ch7_camp_all_completed"
+   }
+  },
+  {
+   "id": "ch7_camp_lyra_dialogue",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "My twin sister, Sylvan, was the chief harmonist of our grove. When the Inquisition marched upon us, she sang the final verse that sealed the Veridian Chime beneath the roots, even as the obsidian draught silenced her. I know her spirit heard that chime toll today. Thank you, Aethel.",
+   "nextNodeId": "ch7_camp_hub",
+   "setFlagOnEnter": "ch7_camp_lyra_complete"
+  },
+  {
+   "id": "ch7_camp_cedric_dialogue",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Cedric's brow furrows as he oils his blade. 'The Brotherhood of the Mute are not mere bandits. Initiates undergo the Severing—drinking boiling obsidian resin to incinerate their vocal cords so they can never betray the Inquisition under interrogation. If someone inside their ranks warned us with that dagger, that soul has risked worse than death to aid our journey.'",
+   "nextNodeId": "ch7_camp_hub",
+   "setFlagOnEnter": "ch7_camp_cedric_complete"
+  },
+  {
+   "id": "ch7_camp_watch_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Aethel climbs onto a flat boulder to take the midnight watch. A tiny pebble clicks on the ledge twenty feet above! A slender, silver-haired rogue crouches in the moonlight, hooded in shadow leather. His violet eyes flash with astonishment. 'You truly speak living words,' the silhouette whispers across the wind. 'Do not take the canyon floor tomorrow. The ledges are your only hope.' The figure drops a pouch of dried mountain wolfsbane tea and vanishes into the dark like mist!",
+   "nextNodeId": "ch7_camp_hub",
+   "setFlagOnEnter": "ch7_camp_watch_complete"
+  },
+  {
+   "id": "ch7_camp_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Dawn breaks in cold violet and gold across the crags. The fellowship gathers their packs, invigorated by rest and prepared for whatever awaits in the canyon. March into the Shadowed Crags (Begin Chapter 8)",
+   "nextNodeId": "ch8_intro"
+  },
+  {
+   "id": "ch8_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Freezing winds whistle through the razor-sharp obsidian pillars of the Shadowed Crags. Purple mountain mist snakes across the trail. Following the midnight stalker's advice, the fellowship ascends along the narrow upper cliff ledge.",
+   "nextNodeId": "ch8_scout_hub",
+   "changeSceneId": "scene_shadowed_crags"
+  },
+  {
+   "id": "ch8_scout_hub",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The canyon path splits before a narrow chasm. Strange metallic glints and caustic smoke catch your attention.",
+   "choices": [
+    {
+     "id": "ch8_wire_choice",
+     "text": "Inspect the hair-thin sonic tripwire spanning the gap",
+     "voiceKeywords": [
+      "tripwire",
+      "wire",
+      "sonic",
+      "trap",
+      "inspect",
+      "disarm"
+     ],
+     "nextNodeId": "ch8_wire_dialogue"
+    },
+    {
+     "id": "ch8_herbs_scout_choice",
+     "text": "Burn the stalker's wolfsbane herbs to clear poison mist",
+     "voiceKeywords": [
+      "herbs",
+      "wolfsbane",
+      "burn",
+      "mist",
+      "poison",
+      "clear"
+     ],
+     "nextNodeId": "ch8_herbs_scout_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch8_wire_complete",
+     "ch8_herbs_scout_complete"
+    ],
+    "redirectToNodeId": "ch8_scout_all_completed"
+   }
+  },
+  {
+   "id": "ch8_wire_dialogue",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Halt! An acoustic percussion mine. If anyone steps on the stones below, the reverberation would detonate the whole gorge. Watch closely—a careful cut to the lead counter-weight neutralizes the trip-wire safely.",
+   "nextNodeId": "ch8_scout_hub",
+   "setFlagOnEnter": "ch8_wire_complete"
+  },
+  {
+   "id": "ch8_herbs_scout_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Aethel kindles a small handful of the dried wolfsbane herbs. A fragrant lavender smoke billows forward, neutralizing the choking purple gloom in the pass. The trail ahead is clear and safe to traverse!",
+   "nextNodeId": "ch8_scout_hub",
+   "setFlagOnEnter": "ch8_herbs_scout_complete"
+  },
+  {
+   "id": "ch8_scout_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "As the mist parts, a silken shadow drops from an overhanging boulder, blocking the pass with twin daggers twirling! The silver-haired rogue stands in broad daylight, his violet eyes locked upon Aethel!",
+   "nextNodeId": "ch8_zephyr_standoff"
+  },
+  {
+   "id": "ch8_zephyr_standoff",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Hold, assassin! You have stalked our tracks from the Weeping Willow. Drop your steel or be struck down!",
+   "nextNodeId": "ch8_zephyr_reply"
+  },
+  {
+   "id": "ch8_zephyr_reply",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr lets out a low, amused breath, twirling his twin daggers before resting them casually against his wrists. 'Put away the heavy iron, Templar. If I wanted your throat opened, that sonic mine would have turned you into red mist twenty paces ago.' He turns to Aethel: 'I am Zephyr of the Black Guild. I left the dagger. I gave you the herbs. But before I commit treason against the Mute Sovereign, I must know the truth from your own mouth.'",
+   "nextNodeId": "ch8_zephyr_demand"
+  },
+  {
+   "id": "ch8_zephyr_demand",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr takes a slow step forward. 'They told us all living voice was an abomination—that silence was peace. But my heart screamed every time they poured boiling lead down an initiate's throat. Prove to me your voice is real, Invocator. Speak a word of living flame or dawn!'",
+   "choices": [
+    {
+     "id": "ch8_chant_fire",
+     "text": "Chant 'Fireball' to kindle living solar flame in the gorge",
+     "voiceKeywords": [
+      "fireball",
+      "fire",
+      "chant",
+      "solar",
+      "flame"
+     ],
+     "nextNodeId": "ch8_proof_fire"
+    },
+    {
+     "id": "ch8_chant_fellowship",
+     "text": "Speak words of fellowship: 'We seek to free all voices in Aethelgard'",
+     "voiceKeywords": [
+      "free",
+      "voices",
+      "fellowship",
+      "speak",
+      "words"
+     ],
+     "nextNodeId": "ch8_proof_words"
+    }
+   ]
+  },
+  {
+   "id": "ch8_proof_fire",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Aethel draws a deep breath and chants the sacred syllable of fire! A swirling corona of radiant golden warmth erupts between her palms, illuminating the frozen obsidian canyon with brilliant, crackling sunlight! The frozen mist dissolves in an instant!",
+   "nextNodeId": "ch8_zephyr_awakened",
+   "setFlagOnEnter": "ch8_proof_given"
+  },
+  {
+   "id": "ch8_proof_words",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "Aethel speaks clearly and without fear: 'We do not wield silence, Zephyr. We bring back the songs, the laughter, and the truth of Aethelgard. No soul was meant to live in a cage of quiet.' The warmth and resonance of your words ring against the cold stone like silver chimes!",
+   "nextNodeId": "ch8_zephyr_awakened",
+   "setFlagOnEnter": "ch8_proof_given"
+  },
+  {
+   "id": "ch8_zephyr_awakened",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr's eyes widen with profound reverence. His daggers drop to his sides, trembling slightly. 'It is true... The First Voice lives. Ten years I hid a razor under my tongue so I could die speaking, but now... now I have something to speak for!'",
+   "nextNodeId": "ch8_ambush_strike"
+  },
+  {
+   "id": "ch8_ambush_strike",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "A harsh horn blasts from the cliff above! Boulders tumble down as Grand Executioner Kaelen drops onto the path with twin heavy execution axes, flanked by lethal shadowblade elites! 'Zephyr! Traitorous cur! You were sent to bring the Sovereign their tongues in lead, and you babble with our prey! You will die beside them!' Defend the pass alongside Zephyr against Executioner Kaelen!",
+   "nextNodeId": "ch8_assassin_assault"
+  },
+  {
+   "id": "ch8_assassin_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Zephyr spins his blades with deadly grace and steps into formation beside Sir Cedric and Lyra! 'My daggers are yours, Invocator! Let us teach the Inquisition that words will never die!' Prepare for battle!",
+   "triggerBattleEncounterId": "ch8_executioner_ambush",
+   "nextNodeId": "ch8_executioner_victory"
+  },
+  {
+   "id": "ch8_executioner_victory",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "I was sent to sever your tongues. Instead, I chose to keep my own. You speak with the First Voice. From this day forward, my daggers fight at your side.",
+   "nextNodeId": "ch8_hub",
+   "setFlagOnEnter": "zephyr_recruited"
+  },
+  {
+   "id": "ch8_hub",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "The four harmonic disciplines are gathered: Flame, Dawn, Grove, and Shadow. But before we assault Ouros, we have preparations to make.",
+   "choices": [
+    {
+     "id": "ch8_motives_choice",
+     "text": "Ask Zephyr why he turned against the Inquisition",
+     "voiceKeywords": [
+      "motives",
+      "why",
+      "turned",
+      "betrayed",
+      "inquisition"
+     ],
+     "nextNodeId": "ch8_motives_dialogue"
+    },
+    {
+     "id": "ch8_map_choice",
+     "text": "Study Zephyr's stolen blueprints of the Clockwork Bastion",
+     "voiceKeywords": [
+      "map",
+      "blueprints",
+      "bastion",
+      "ouros",
+      "study"
+     ],
+     "nextNodeId": "ch8_map_dialogue"
+    },
+    {
+     "id": "ch8_herbs_choice",
+     "text": "Rest around the cragfire and blend mountain herbs",
+     "voiceKeywords": [
+      "rest",
+      "cragfire",
+      "herbs",
+      "tend",
+      "wounds"
+     ],
+     "nextNodeId": "ch8_herbs_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch8_motives_complete",
+     "ch8_map_complete",
+     "ch8_herbs_complete"
+    ],
+    "redirectToNodeId": "ch8_all_completed"
+   }
+  },
+  {
+   "id": "ch8_motives_dialogue",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "In the Black Guild, initiates undergo the Severing—drinking molten obsidian to burn out our vocal cords so we carry no secrets. I feigned silence, concealing a hidden razor under my tongue. Malakor does not desire peace; he desires a graveyard of mute puppets. I would rather die screaming than live in his silence.",
+   "nextNodeId": "ch8_hub",
+   "setFlagOnEnter": "ch8_motives_complete"
+  },
+  {
+   "id": "ch8_map_dialogue",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Ouros is powered by geothermal steam chambers. The Third Bell—the Resonant Bastion—is locked in the apex belfry. If we disable the steam valves, the automated defense grid will collapse, exposing Warmaster Ouros!",
+   "nextNodeId": "ch8_hub",
+   "setFlagOnEnter": "ch8_map_complete"
+  },
+  {
+   "id": "ch8_herbs_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Lyra brews dried winterberry leaves over Cedric's consecrated flint. The invigorating steam soothes the cold chill of the crags, restoring full vitality and morale to all four champions!",
+   "nextNodeId": "ch8_hub",
+   "setFlagOnEnter": "ch8_herbs_complete"
+  },
+  {
+   "id": "ch8_all_completed",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Invocator... before we assault the bastion, my spirit carries a debt. In the catacombs beneath this ridge lies the Mausoleum of the Sun. My former mentor, Sir Galahault, haunts that desecrated hall. If my blade is to remain unbroken, I must face my past.",
+   "nextNodeId": "ch9_intro"
+  },
+  {
+   "id": "ch9_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Cold marble echoes beneath your boots. The Mausoleum of the Sun lies buried beneath the forgotten foundations of Sol-Aethel. Shattered statues of knights kneel before weeping golden sunburst banners.",
+   "nextNodeId": "ch9_peristyle_entry",
+   "changeSceneId": "scene_mausoleum",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch9_knights_complete",
+     "ch9_altar_complete",
+     "ch9_reliquary_complete"
+    ],
+    "redirectToNodeId": "ch9_all_completed"
+   }
+  },
+  {
+   "id": "ch9_peristyle_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "A ring of marble columns circles a sunken peristyle where petrified golden knights still stand in formation, swords drawn against a foe that came upon them from within. Dust motes hang in the slanting shafts of pale light, and beyond the far arch a sprawl of tombs and shrines waits.",
+   "choices": [
+    {
+     "id": "ch9_peristyle_cautious",
+     "text": "Advance cautiously between the petrified sentinels",
+     "voiceKeywords": [
+      "advance",
+      "cautious",
+      "sentinels",
+      "peristyle"
+     ],
+     "nextNodeId": "ch9_peristyle_cautious_scene"
+    },
+    {
+     "id": "ch9_peristyle_ward",
+     "text": "Trace a warding sigil of dawn-light before proceeding",
+     "voiceKeywords": [
+      "ward",
+      "sigil",
+      "dawn",
+      "bless"
+     ],
+     "nextNodeId": "ch9_peristyle_ward_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch9_peristyle_cautious_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Cedric moves as silently as a hunting wolf, his mailed palm hovering over the pommel of his greatsword. 'They fell facing the altar, not the door,' he murmurs. 'Whatever they were ordered to guard, it stood behind them.'",
+   "nextNodeId": "ch9_penitent_trigger"
+  },
+  {
+   "id": "ch9_peristyle_ward_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You trace the old Sunburst sigil in the air; it hangs like a fallen star, and the darkness between the columns recoils. Somewhere in the depths, stone grinds against stone in answer, as if the tomb itself has begun to wake.",
+   "nextNodeId": "ch9_penitent_trigger"
+  },
+  {
+   "id": "ch9_penitent_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The threshold guardians of the Sun's Penitence rise from the flagstones — knights who broke their vows and were buried alive at the gate itself. Wreathed in cold fire, they advance to bar the way to the Grandmaster's crypt hall!",
+   "triggerBattleEncounterId": "ch9_penitent_gate",
+   "nextNodeId": "ch9_penitent_victory"
+  },
+  {
+   "id": "ch9_penitent_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The penitent knights crumble, at last released from their vigil. Cedric bows his head to them. 'They asked for judgment and were given only silence. May the dawn be kinder to them than their order was.'",
+   "nextNodeId": "ch9_descent_hall",
+   "setFlagOnEnter": "ch9_penitent_complete"
+  },
+  {
+   "id": "ch9_descent_hall",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Beyond the gate, the sunken hall descends in tiers lined with the sealed urns of long-dead orders. At its center stands the monument where the Golden Chime kept its truest oaths — and where Grandmaster Galahault now dreams in obsidian.",
+   "nextNodeId": "ch9_hub"
+  },
+  {
+   "id": "ch9_hub",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Here lies the tomb of Sir Galahault, Grandmaster of the Golden Chime. When the Blight struck, he gave his life holding the acoustic seals of the vault so the acolytes could escape. But his spirit... something has bound it in torment.",
+   "choices": [
+    {
+     "id": "ch9_knights_choice",
+     "text": "Examine the petrified statues of the Golden Chime knights",
+     "voiceKeywords": [
+      "knights",
+      "statues",
+      "examine",
+      "petrified"
+     ],
+     "nextNodeId": "ch9_knights_dialogue"
+    },
+    {
+     "id": "ch9_altar_choice",
+     "text": "Offer a prayer of renewal at the Solar Sunburst Altar",
+     "voiceKeywords": [
+      "altar",
+      "prayer",
+      "solar",
+      "sunburst",
+      "offer"
+     ],
+     "nextNodeId": "ch9_altar_dialogue"
+    },
+    {
+     "id": "ch9_reliquary_choice",
+     "text": "Visit the reliquary of broken oaths and unfulfilled vows",
+     "voiceKeywords": [
+      "reliquary",
+      "oaths",
+      "vows",
+      "shrine"
+     ],
+     "nextNodeId": "ch9_reliquary_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch9_knights_complete",
+     "ch9_altar_complete",
+     "ch9_reliquary_complete"
+    ],
+    "redirectToNodeId": "ch9_all_completed"
+   }
+  },
+  {
+   "id": "ch9_knights_dialogue",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "They obeyed orders without question... and in their obedience, they turned to obsidian all the same. Blind vows do not protect righteousness; only living conscience does.",
+   "nextNodeId": "ch9_hub",
+   "setFlagOnEnter": "ch9_knights_complete"
+  },
+  {
+   "id": "ch9_altar_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You kindle sacred embers upon the solar altar. Golden light washes across the crypt, dispelling the suffocating gloom. Cedric's shield begins to glow with blinding morning luminescence!",
+   "nextNodeId": "ch9_hub",
+   "setFlagOnEnter": "ch9_altar_complete"
+  },
+  {
+   "id": "ch9_reliquary_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "In the reliquary, rows of bronze plaques bear the names of ordained knights whose vows were never fulfilled. A single inscription catches the light: 'Here lies Sir Marrok, who chose mercy over command.' Cedric reads it in silence, then touches the plaque. 'Grandmaster Galahault struck his name from our records,' he says quietly, 'but the dawn remembers it.'",
+   "nextNodeId": "ch9_hub",
+   "setFlagOnEnter": "ch9_reliquary_complete"
+  },
+  {
+   "id": "ch9_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The central obsidian sarcophagus bursts open! Grandmaster Galahault steps forth in corrupted plate, crying out against Cedric's broken oath! Sir Cedric draws his greatsword: 'My oath was to the people, master!' Stand beside Cedric and shatter Grandmaster Galahault's curse!",
+   "nextNodeId": "ch9_galahault_assault"
+  },
+  {
+   "id": "ch9_galahault_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Sir Galahault charges with spectral paladins! Cedric steps into the vanguard with radiant shield held high!",
+   "triggerBattleEncounterId": "ch9_galahault_trial",
+   "nextNodeId": "ch9_galahault_victory"
+  },
+  {
+   "id": "ch9_galahault_victory",
+   "speakerId": "galahault",
+   "side": "RIGHT",
+   "text": "Cedric... my boy. You did not break your vow. You fulfilled its truest meaning. Protect them... protect the voice.",
+   "nextNodeId": "ch9_dawn_benediction",
+   "setFlagOnEnter": "cedric_trial_complete"
+  },
+  {
+   "id": "ch9_dawn_benediction",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Through the shattered roof of the mausoleum, the first true dawn of the old realm pours down in a column of honeyed light. The obsidian encasing the fallen knights begins to fall away like shed scales, and beneath it, still and serene, lie the unblemished bodies of the Golden Chime.",
+   "nextNodeId": "ch9_cedric_kneel"
+  },
+  {
+   "id": "ch9_cedric_kneel",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "I carried his shame for twenty years. A vow broken is either a wound that never heals... or the hinge a door was always meant to swing on. I ask you to witness which it was.",
+   "choices": [
+    {
+     "id": "ch9_kneel_sister",
+     "text": "Kneel beside him and name his mercy his truest vow",
+     "voiceKeywords": [
+      "kneel",
+      "witness",
+      "mercy",
+      "vow",
+      "sister"
+     ],
+     "nextNodeId": "ch9_cedric_sister"
+    },
+    {
+     "id": "ch9_kneel_pray",
+     "text": "Offer a prayer over the tomb for the thirty thousand lost",
+     "voiceKeywords": [
+      "pray",
+      "tomb",
+      "thirty",
+      "thousand",
+      "lost"
+     ],
+     "nextNodeId": "ch9_cedric_prayer"
+    }
+   ]
+  },
+  {
+   "id": "ch9_cedric_sister",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You kneel at his side, the flagstones cold beneath you both. 'Mercy is not weakness, Sir Cedric,' you say. 'It is the one command the order never taught you to obey — and the only one that ever made you a knight worth naming.'",
+   "nextNodeId": "ch9_cedric_absolution"
+  },
+  {
+   "id": "ch9_cedric_prayer",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You raise your voice in the old prayer of the Sunburst, and the motes of golden light respond, drifting like a congregation of candles to gather above the tomb of the thirty thousand. For a moment the mausoleum is not a tomb at all, but a cathedral full of answered grief.",
+   "nextNodeId": "ch9_cedric_absolution"
+  },
+  {
+   "id": "ch9_cedric_absolution",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Sir Cedric rises, and the weight that has stooped his shoulders for two decades lifts like a winter fog burned off by morning. He sets his gauntlet over his heart and bows. 'The dawn will find me in the sally port again, choosing the children every time. Thank you, Invocator. You buried my ghost.'",
+   "nextNodeId": "ch9_grave_vigil",
+   "setFlagOnEnter": "ch9_vigil_complete"
+  },
+  {
+   "id": "ch9_grave_vigil",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fellowship keeps a long vigil in the new light, breaking bread in the Grandmaster's tomb and tending each other's wounds. When at last you rise, rested and whole, the Mausoleum of the Sun is quiet behind you, its ghosts finally at peace.",
+   "nextNodeId": "ch9_post_victory",
+   "setFlagOnEnter": "ch9_vigil_rest_complete"
+  },
+  {
+   "id": "ch9_post_victory",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "The corruption over the knights is cleansed! Look—Sir Cedric stands unburdened, and the path to the Emerald Grove is open!",
+   "nextNodeId": "camp_pilgrim_intro"
+  },
+  {
+   "id": "camp_pilgrim_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "In the ruined outer colonnade of the Sunburst Mausoleum, the fellowship kindles a quiet hearth beneath statues of kneeling saints. Honeyed morning light filters through cracked marble vaults, and for the first time in weeks, the silence feels peaceful rather than suffocating.",
+   "choices": [
+    {
+     "id": "camp_pilgrim_sit",
+     "text": "Sit by the fire with the fellowship",
+     "voiceKeywords": [
+      "sit",
+      "fire",
+      "fellowship",
+      "talk",
+      "converse"
+     ],
+     "nextNodeId": "camp_pilgrim_hub"
+    },
+    {
+     "id": "camp_pilgrim_skip",
+     "text": "Rest briefly and press on into the Briar Thicket",
+     "voiceKeywords": [
+      "rest",
+      "press",
+      "briar",
+      "thicket",
+      "advance",
+      "continue"
+     ],
+     "nextNodeId": "ch10_intro",
+     "completionFlag": "camp_pilgrim_rest_complete"
+    }
+   ],
+   "changeSceneId": "scene_camp",
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_pilgrim_cedric_complete",
+     "camp_pilgrim_lyra_complete",
+     "camp_pilgrim_zephyr_complete"
+    ],
+    "redirectToNodeId": "camp_pilgrim_all_completed"
+   }
+  },
+  {
+   "id": "camp_pilgrim_hub",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Cedric tends a small fire in a cracked marble basin, his posture upright and eyes serene. Lyra sits cross-legged, weaving wild thyme into garlands, while Zephyr leans against a sunlit pillar, tossing a fresh apple. 'The past is at peace,' Cedric says. 'Speak your heart, friends, before we face what lies in the thorns.'",
+   "choices": [
+    {
+     "id": "camp_pilgrim_c_cedric",
+     "text": "Speak with Sir Cedric about laying his master to rest",
+     "voiceKeywords": [
+      "cedric",
+      "galahault",
+      "master",
+      "rest",
+      "vow"
+     ],
+     "nextNodeId": "camp_pilgrim_talk_cedric",
+     "completionFlag": "camp_pilgrim_cedric_complete"
+    },
+    {
+     "id": "camp_pilgrim_c_lyra",
+     "text": "Speak with Lyra about the encroaching Briar Thicket ahead",
+     "voiceKeywords": [
+      "lyra",
+      "thicket",
+      "briar",
+      "canopy",
+      "grove"
+     ],
+     "nextNodeId": "camp_pilgrim_talk_lyra",
+     "completionFlag": "camp_pilgrim_lyra_complete"
+    },
+    {
+     "id": "camp_pilgrim_c_zephyr",
+     "text": "Speak with Zephyr about fighting alongside paladins",
+     "voiceKeywords": [
+      "zephyr",
+      "paladins",
+      "honor",
+      "knights",
+      "fight"
+     ],
+     "nextNodeId": "camp_pilgrim_talk_zephyr",
+     "completionFlag": "camp_pilgrim_zephyr_complete"
+    },
+    {
+     "id": "camp_pilgrim_c_sleep",
+     "text": "Extinguish the basin fire and enter the Briar Thicket",
+     "voiceKeywords": [
+      "sleep",
+      "extinguish",
+      "thicket",
+      "march",
+      "leave"
+     ],
+     "nextNodeId": "ch10_intro",
+     "completionFlag": "camp_pilgrim_rest_complete"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_pilgrim_cedric_complete",
+     "camp_pilgrim_lyra_complete",
+     "camp_pilgrim_zephyr_complete"
+    ],
+    "redirectToNodeId": "camp_pilgrim_all_completed"
+   }
+  },
+  {
+   "id": "camp_pilgrim_talk_cedric",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "'For twenty years, every swing of my sword was weighed down by Galahault's shadow,' Cedric murmurs, watching the sparks drift toward the vaults. 'I thought honoring his memory meant dying on the same stones he did. But today, standing with you all... I finally understand. Honor isn't dying for the past; it's defending those who will live in the future.'",
+   "nextNodeId": "camp_pilgrim_hub",
+   "setFlagOnEnter": "camp_pilgrim_cedric_complete"
+  },
+  {
+   "id": "camp_pilgrim_talk_lyra",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Lyra looks toward the dense, thorn-choked wall of black briars at the edge of the courtyard. 'The briars ahead are not natural, Aethel. They are dryad thorns, warped by the Blight's mute agony. My sisters are trapped inside their own petrified wood, screaming without a voice. We must be their dawn... but prepare your fire spells. Wood in agony lashes out blindly.'",
+   "nextNodeId": "camp_pilgrim_hub",
+   "setFlagOnEnter": "camp_pilgrim_lyra_complete"
+  },
+  {
+   "id": "camp_pilgrim_talk_zephyr",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr catches the apple with a flick of his wrist and smirks wryly. 'I'll admit, watching Cedric square off with a holy ghost was more theater than I expected. In the Black Guild, if your mentor tries to kill you, you just poison his tea. But seeing you all stand your ground... it's strange. You actually care about each other. It's wildly inefficient, but damn if it isn't impressive.'",
+   "nextNodeId": "camp_pilgrim_hub",
+   "setFlagOnEnter": "camp_pilgrim_zephyr_complete"
+  },
+  {
+   "id": "camp_pilgrim_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The morning sun climbs high above the mausoleum arches. The fellowship shares dried fruit and clear spring water, spirits renewed by Cedric's peace. Stepping past the colonnade, you draw weapons and advance toward Chapter 10's tangled canopy.",
+   "nextNodeId": "ch10_intro",
+   "setFlagOnEnter": "camp_pilgrim_rest_complete"
+  },
+  {
+   "id": "ch10_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fellowship arrives in the secluded sunken glade of the Emerald Choir. Massive ancient redwoods loom overhead, completely motionless. Dozens of singing dryads stand petrified in obsidian around a bubbling black spring.",
+   "nextNodeId": "ch10_thicket_entry",
+   "changeSceneId": "scene_emerald_choir",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch10_dryads_complete",
+     "ch10_seed_complete",
+     "ch10_hymn_complete"
+    ],
+    "redirectToNodeId": "ch10_all_completed"
+   }
+  },
+  {
+   "id": "ch10_thicket_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Between you and the central spring lies a dense tangle of fallen redwoods and black-mossed briars, the last patch of the choir's wildwood. The silence here is wrong — the thorns have begun to whisper, and where the bracken thins, something pale watches from the shadows between the roots.",
+   "choices": [
+    {
+     "id": "ch10_thicket_light",
+     "text": "Raise a soft song of light to thread the tangled thicket",
+     "voiceKeywords": [
+      "sing",
+      "light",
+      "thicket",
+      "song"
+     ],
+     "nextNodeId": "ch10_thicket_light_scene"
+    },
+    {
+     "id": "ch10_thicket_tread",
+     "text": "Slip through the black briars on a silent hunter's path",
+     "voiceKeywords": [
+      "tread",
+      "silent",
+      "path",
+      "briars"
+     ],
+     "nextNodeId": "ch10_thicket_tread_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch10_thicket_light_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Lyra hums the old root-song of the grove, and the briars part like a door held open by shy green hands. Light returns to the leaves inch by inch. 'The wood remembers its own name,' she murmurs, 'if only someone will say it out loud.'",
+   "nextNodeId": "ch10_ambush_trigger"
+  },
+  {
+   "id": "ch10_thicket_tread_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You move as the hunters of Sol-Aethel once moved, quiet as the shadow of a leaf. Behind you, Cedric follows without a single chime of armor. The choking smog grows thicker, and ahead, the first colossal fern stirs of its own accord.",
+   "nextNodeId": "ch10_ambush_trigger"
+  },
+  {
+   "id": "ch10_ambush_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The colossal ferns tear themselves free of the earth! Vines of glass and bark, infected with the same obsidian venom that froze the choir, rise up as the thicket's poisoned guardians to bar every path to the spring!",
+   "triggerBattleEncounterId": "ch10_thicket_guardians",
+   "nextNodeId": "ch10_thicket_victory"
+  },
+  {
+   "id": "ch10_thicket_victory",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "The glass vines splinter and fall still. Lyra touches the broken veins of infected bark, and the sickly black sap bleeds out of the earth, soaking into the deep roots. 'Whatever poisoned them,' she says, 'we have cut it loose from the wood.'",
+   "nextNodeId": "ch10_choir_heart",
+   "setFlagOnEnter": "ch10_thicket_cleared"
+  },
+  {
+   "id": "ch10_choir_heart",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The thicket gives way at last to the marrow of the grove: the silent spring where thirty frozen dryads stand around the blackened waters, waiting for a voice. You step onto the living shore and the wait ends.",
+   "nextNodeId": "ch10_hub"
+  },
+  {
+   "id": "ch10_hub",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "When Malakor's priests came, they dumped obsidian venom into the spring. The dryads sang until their voices turned to glass. I was too afraid to sing loud enough to save them... But now, with your fellowship, I will not be quiet!",
+   "choices": [
+    {
+     "id": "ch10_dryads_choice",
+     "text": "Touch the weeping obsidian statues of Lyra's sisters",
+     "voiceKeywords": [
+      "dryads",
+      "statues",
+      "sisters",
+      "touch",
+      "weeping"
+     ],
+     "nextNodeId": "ch10_dryads_dialogue"
+    },
+    {
+     "id": "ch10_seed_choice",
+     "text": "Prepare the Living Seed of the Sacred Willow",
+     "voiceKeywords": [
+      "seed",
+      "willow",
+      "sacred",
+      "prepare",
+      "spring"
+     ],
+     "nextNodeId": "ch10_seed_dialogue"
+    },
+    {
+     "id": "ch10_hymn_choice",
+     "text": "Sing the lost Breviary Hymn to the choir of frozen dryads",
+     "voiceKeywords": [
+      "hymn",
+      "breviary",
+      "sing",
+      "choir",
+      "frozen"
+     ],
+     "nextNodeId": "ch10_hymn_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch10_dryads_complete",
+     "ch10_seed_complete",
+     "ch10_hymn_complete"
+    ],
+    "redirectToNodeId": "ch10_all_completed"
+   }
+  },
+  {
+   "id": "ch10_hymn_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You lend your voice to a verse of the old Breviary Hymn — the one the choir sang before woven silence took them. Faint emerald shimmer runs along the dryads' glass cheeks, and from one frozen throat, a syllable answers back.",
+   "nextNodeId": "ch10_hub",
+   "setFlagOnEnter": "ch10_hymn_complete"
+  },
+  {
+   "id": "ch10_dryads_dialogue",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "They are still alive! A faint emerald heartbeat resonates through the stone. Their spirits are trapped in petrified amber. If we purify the Elder Spring with the Logos, they will sing again!",
+   "nextNodeId": "ch10_hub",
+   "setFlagOnEnter": "ch10_dryads_complete"
+  },
+  {
+   "id": "ch10_seed_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You channel harmonic energy into the ancient willow seed. It sprouts luminous tendrils of emerald light that snake toward the murky spring, craving pure living water.",
+   "nextNodeId": "ch10_hub",
+   "setFlagOnEnter": "ch10_seed_complete"
+  },
+  {
+   "id": "ch10_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The spring roils violently! The Blighted Broodmother—a colossal arachnid behemoth dripping with obsidian venom—climbs from the pit, hissing with discordant screeching! Cleanse the sacred spring and crush the Blighted Broodmother!",
+   "nextNodeId": "ch10_broodmother_assault"
+  },
+  {
+   "id": "ch10_broodmother_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Broodmother strikes with venomous fangs as toxic spiderlings swarm the grove! Lyra raises her staff to weave the living earth!",
+   "triggerBattleEncounterId": "ch10_broodmother_trial",
+   "nextNodeId": "ch10_broodmother_victory"
+  },
+  {
+   "id": "ch10_broodmother_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Broodmother shatters into harmless green loam! Lyra drops the living seed into the bubbling waters. Crystal pure turquoise water erupts in geysers! Across the grove, the obsidian crusts peel away, and thirty dryads awaken, singing a glorious four-part hymn of thanksgiving! Lyra unlocks the Master Chant: Verdant Cataclysm!",
+   "nextNodeId": "ch10_spring_of_voices",
+   "setFlagOnEnter": "lyra_trial_complete"
+  },
+  {
+   "id": "ch10_spring_of_voices",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The awakened dryads do not scatter like startled deer — they form a great ring around the spring and bow to the four winds, their voices braided into a harmony that has not been sung since before the Blight. At the heart of the ring, the eldest dryad slowly opens her eyes.",
+   "nextNodeId": "ch10_dryad_matron"
+  },
+  {
+   "id": "ch10_dryad_matron",
+   "speakerId": "dryad_matron",
+   "side": "LEFT",
+   "text": "The Elder Dryad rises to her full height, bark and blossom woven through her silver hair. 'Little One of the Grove,' she says to Lyra, her voice deep as summer rain, 'you fled the choir when the priests came. We were proud of you for it. To burn beside us would have served nothing; to return with the dawn serves everything. There is one debt the grove still owes.'",
+   "choices": [
+    {
+     "id": "ch10_offer_seed",
+     "text": "Offer the sprouting Living Seed to the Elder Dryad",
+     "voiceKeywords": [
+      "offer",
+      "seed",
+      "elder",
+      "grove"
+     ],
+     "nextNodeId": "ch10_seed_bloom"
+    },
+    {
+     "id": "ch10_join_hymn",
+     "text": "Ask Lyra to join the dryads in the closing hymn",
+     "voiceKeywords": [
+      "join",
+      "hymn",
+      "lyra",
+      "sing"
+     ],
+     "nextNodeId": "ch10_hymn_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch10_seed_bloom",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Lyra lowers the sprouting seed into the Elder Dryad's cupped hands. The seed bursts into a cascade of blossoms, and the Elder Dryad weaves them into a crown. 'Wear this until the woodlands wake,' she says. 'You are no longer the smallest voice of the Grove. You are its promise.'",
+   "nextNodeId": "ch10_choir_rest"
+  },
+  {
+   "id": "ch10_hymn_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Lyra steps into the ring and the dryads part for her like grass under wind. When she sings, her voice no longer trembles — and for the first time since leaving the Grove, she holds a note so true the frozen pond at the wood's edge begins to thaw.",
+   "nextNodeId": "ch10_choir_rest"
+  },
+  {
+   "id": "ch10_choir_rest",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The choir shelters the fellowship for the night in nests of living boughs, singing softly as the stars come out. By morning you wake healed and restored, the greenwood's blessing settled deep in your bones.",
+   "nextNodeId": "ch10_post_victory",
+   "setFlagOnEnter": "ch10_choir_rest_complete",
+   "healPartyOnEnter": "full"
+  },
+  {
+   "id": "ch10_post_victory",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Lyra is radiant, surrounded by dancing woodland spirits. Zephyr tightens his gloves. 'Two debts cleared. Now comes mine. Master Nocturne has tracked us to the Blind Gorge. If I do not extinguish him today, his blades will seek us at our backs during the assault on Ouros.' Enter the Blind Gorge for Zephyr's Trial",
+   "nextNodeId": "camp_gorge_intro"
+  },
+  {
+   "id": "camp_gorge_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Camp is pitched upon a narrow basalt shelf overlooking the Blind Gorge. Behind you, the emerald blossoms of Lyra's restored grove scent the breeze; ahead, yellow plumes of sulfuric smog swirl across razor-sharp ravines. A crackling fire pushes back the howling canyon draft.",
+   "choices": [
+    {
+     "id": "camp_gorge_sit",
+     "text": "Sit by the fire with the fellowship",
+     "voiceKeywords": [
+      "sit",
+      "fire",
+      "fellowship",
+      "talk",
+      "converse"
+     ],
+     "nextNodeId": "camp_gorge_hub"
+    },
+    {
+     "id": "camp_gorge_skip",
+     "text": "Rest briefly and enter the Blind Gorge for Zephyr's trial",
+     "voiceKeywords": [
+      "rest",
+      "gorge",
+      "zephyr",
+      "advance",
+      "continue",
+      "trial"
+     ],
+     "nextNodeId": "ch11_intro",
+     "completionFlag": "camp_gorge_rest_complete"
+    }
+   ],
+   "changeSceneId": "scene_camp",
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_gorge_lyra_complete",
+     "camp_gorge_cedric_complete",
+     "camp_gorge_zephyr_complete"
+    ],
+    "redirectToNodeId": "camp_gorge_all_completed"
+   }
+  },
+  {
+   "id": "camp_gorge_hub",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr sits closest to the fire's rim, meticulously honing his throwing daggers on slate. Lyra adjusts her crown of blooming dogwood, while Cedric stands watch at the cliff edge, his cape snapping in the sulfur wind. 'We enter the Black Guild's backyard next,' Zephyr says. 'What's on your mind before the fun starts?'",
+   "choices": [
+    {
+     "id": "camp_gorge_c_lyra",
+     "text": "Speak with Lyra about the liberated dryad choir",
+     "voiceKeywords": [
+      "lyra",
+      "seed",
+      "dryad",
+      "sisters",
+      "crown"
+     ],
+     "nextNodeId": "camp_gorge_talk_lyra",
+     "completionFlag": "camp_gorge_lyra_complete"
+    },
+    {
+     "id": "camp_gorge_c_cedric",
+     "text": "Speak with Cedric about fighting in the canyon smog",
+     "voiceKeywords": [
+      "cedric",
+      "smog",
+      "tactics",
+      "canyon",
+      "guard"
+     ],
+     "nextNodeId": "camp_gorge_talk_cedric",
+     "completionFlag": "camp_gorge_cedric_complete"
+    },
+    {
+     "id": "camp_gorge_c_zephyr",
+     "text": "Speak with Zephyr about facing Master Nocturne",
+     "voiceKeywords": [
+      "zephyr",
+      "nocturne",
+      "guild",
+      "duel",
+      "assassin"
+     ],
+     "nextNodeId": "camp_gorge_talk_zephyr",
+     "completionFlag": "camp_gorge_zephyr_complete"
+    },
+    {
+     "id": "camp_gorge_c_sleep",
+     "text": "Extinguish the fire and advance into the Blind Gorge",
+     "voiceKeywords": [
+      "sleep",
+      "extinguish",
+      "gorge",
+      "march",
+      "leave"
+     ],
+     "nextNodeId": "ch11_intro",
+     "completionFlag": "camp_gorge_rest_complete"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_gorge_lyra_complete",
+     "camp_gorge_cedric_complete",
+     "camp_gorge_zephyr_complete"
+    ],
+    "redirectToNodeId": "camp_gorge_all_completed"
+   }
+  },
+  {
+   "id": "camp_gorge_talk_lyra",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Lyra touches the blossoms in her hair, her eyes shining with quiet joy. 'For two long winters, I thought I was an orphan of a dead world. But seeing the Elder Dryad open her eyes... hearing the choir sing again... it healed a hollow in my chest I thought would stay empty forever. We are bringing the dawn back, Aethel. One seed at a time.'",
+   "nextNodeId": "camp_gorge_hub",
+   "setFlagOnEnter": "camp_gorge_lyra_complete"
+  },
+  {
+   "id": "camp_gorge_talk_cedric",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "'This canyon is built for treachery,' Cedric grunts, squinting into the smog. 'Acoustic tripwires, narrow culverts, blind corners. My shield can turn steel, but it cannot block poison gas. Keep your voice spells ready to blast away the mist, Invocator. And keep Zephyr in your sights. Not because I doubt him... but because I intend to make sure he comes back alive.'",
+   "nextNodeId": "camp_gorge_hub",
+   "setFlagOnEnter": "camp_gorge_cedric_complete"
+  },
+  {
+   "id": "camp_gorge_talk_zephyr",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr pauses his whetstone, gazing down into the chasm. 'Nocturne took me off the streets when I was eight. He taught me to walk without making a ripple in puddle water. He told me the world had no voice worth hearing, only targets. Tomorrow, I show him what a boy with a voice can do. Don't worry about my back, Aethel. Just keep the sky open.'",
+   "nextNodeId": "camp_gorge_hub",
+   "setFlagOnEnter": "camp_gorge_zephyr_complete"
+  },
+  {
+   "id": "camp_gorge_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fire burns down to amber embers as the four companions check straps, tighten cloaks, and share a quiet moment of unity. The bond between knight, warden, assassin, and invocator feels unbreakable. Extinguishing the coals, you plunge into Chapter 11's shadowed chasm.",
+   "nextNodeId": "ch11_intro",
+   "setFlagOnEnter": "camp_gorge_rest_complete"
+  },
+  {
+   "id": "ch11_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Blind Gorge is a labyrinth of razor obsidian slabs and subterranean thermal vents. An oppressive silence hangs in the air, muffled by dark alchemical smog.",
+   "nextNodeId": "ch11_gorge_entry",
+   "changeSceneId": "scene_blind_gorge",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch11_traps_complete",
+     "ch11_vials_complete",
+     "ch11_doctrine_complete"
+    ],
+    "redirectToNodeId": "ch11_all_completed"
+   }
+  },
+  {
+   "id": "ch11_gorge_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The gorge narrows ahead into the killing lanes Nocturne staked out decades ago: glass-edged culverts, blackened shrines to the mute, and cauterized scaffolding where the Black Guild once trained its apprentices in silence. Now the smog has begun to move against the wind.",
+   "choices": [
+    {
+     "id": "ch11_lane_traps",
+     "text": "Advance down the trap-laden culverts with blade in hand",
+     "voiceKeywords": [
+      "advance",
+      "culverts",
+      "traps",
+      "blade"
+     ],
+     "nextNodeId": "ch11_lane_traps_scene"
+    },
+    {
+     "id": "ch11_lane_shadow",
+     "text": "Stalk the smog in silence, a step behind your own shadow",
+     "voiceKeywords": [
+      "stalk",
+      "shadow",
+      "silence",
+      "smog"
+     ],
+     "nextNodeId": "ch11_lane_shadow_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch11_lane_traps_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Zephyr graces his old master's traps, snapping wires and cutting garrotes with the flat of his daggers. 'Every one of these,' he says without breaking pace, 'was invented to teach apprentices to feel an enemy before it moves. Nocturne has been teaching me how to beat him since I was nine.'",
+   "nextNodeId": "ch11_first_strike_trigger"
+  },
+  {
+   "id": "ch11_lane_shadow_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You walk the gorge the way its keepers did — no heartbeat of sound, no chink of mail. Even the smog seems unsure where you are. Somewhere ahead, a footstep falters, and you know the hunt has gone in the wrong direction.",
+   "nextNodeId": "ch11_first_strike_trigger"
+  },
+  {
+   "id": "ch11_first_strike_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The gorge widens into a killing bowl — and it is already occupied. Nocturne's stalkers, masked assassins of the Black Guild, drift out of the culverts in a silent ring, crossbows nocked and poisoned blades dripping!",
+   "triggerBattleEncounterId": "ch11_gorge_stalkers",
+   "nextNodeId": "ch11_first_strike_victory"
+  },
+  {
+   "id": "ch11_first_strike_victory",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "The stalkers fall, and with them the guild's watch on the approach. Zephyr gathers a handful of their broken mask-class tokens and casts them into the vents. 'They were children, once. So was I. Nocturne made us all the same blade — and dulled us with it.'",
+   "nextNodeId": "ch11_gorge_cleared",
+   "setFlagOnEnter": "ch11_gorge_cleared"
+  },
+  {
+   "id": "ch11_gorge_cleared",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The path to Nocturne's sanctum lies open and silent. In the hush, the gorge feels less like a hunting ground and more like a tomb waiting to be emptied of its ghost.",
+   "nextNodeId": "ch11_hub"
+  },
+  {
+   "id": "ch11_hub",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr tests the wind. 'Nocturne is the deadliest assassin in Aethelgard. He moves without sound or shadow. Watch your footing—the gorge is rigged with sonic mines and poisoned garrotes.'",
+   "choices": [
+    {
+     "id": "ch11_traps_choice",
+     "text": "Disarm the acoustic tripwires strung across the canyon",
+     "voiceKeywords": [
+      "traps",
+      "tripwires",
+      "disarm",
+      "acoustic",
+      "mines"
+     ],
+     "nextNodeId": "ch11_traps_dialogue"
+    },
+    {
+     "id": "ch11_vials_choice",
+     "text": "Identify the obsidian venom vials left along the trail",
+     "voiceKeywords": [
+      "vials",
+      "venom",
+      "poison",
+      "identify",
+      "trail"
+     ],
+     "nextNodeId": "ch11_vials_dialogue"
+    },
+    {
+     "id": "ch11_doctrine_choice",
+     "text": "Study the Black Guild's doctrine of stolen breath in the sanctum",
+     "voiceKeywords": [
+      "doctrine",
+      "guild",
+      "stolen",
+      "breath",
+      "sanctum"
+     ],
+     "nextNodeId": "ch11_doctrine_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch11_traps_complete",
+     "ch11_vials_complete",
+     "ch11_doctrine_complete"
+    ],
+    "redirectToNodeId": "ch11_all_completed"
+   }
+  },
+  {
+   "id": "ch11_doctrine_dialogue",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Look at this: the Doctrine of the Mute, written in the guild's breath-code. Every name on this list had their tongue cut before they were sixteen. They called it purification. It was just cowardice made into law.",
+   "nextNodeId": "ch11_hub",
+   "setFlagOnEnter": "ch11_doctrine_complete"
+  },
+  {
+   "id": "ch11_traps_dialogue",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr nimbly snips the nearly invisible obsidian wires, disabling the sonic concussion mines. 'My former master taught me these traps. Now they will not harm us.'",
+   "nextNodeId": "ch11_hub",
+   "setFlagOnEnter": "ch11_traps_complete"
+  },
+  {
+   "id": "ch11_vials_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Lyra treats the obsidian vials with eucalyptus spores, neutralizing the airborne paralysis toxins. The air in the gorge clears!",
+   "nextNodeId": "ch11_hub",
+   "setFlagOnEnter": "ch11_vials_complete"
+  },
+  {
+   "id": "ch11_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "A whirlpool of black mist congeals on the canyon floor as Master Nocturne steps forth in obsidian bone! Zephyr uncrosses his daggers with lethal resolve: 'Silence is death. Words are how we choose each other!' Pursue Nocturne into the Obsidian Vaults beneath the gorge!",
+   "nextNodeId": "ch11_vaults_entry"
+  },
+  {
+   "id": "ch11_nocturne_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Master Nocturne dissolves into three shadow duplicates, striking from the dark! Zephyr leaps forward to meet his former master blade to blade!",
+   "triggerBattleEncounterId": "ch11_nocturne_trial",
+   "nextNodeId": "ch11_nocturne_victory"
+  },
+  {
+   "id": "ch11_nocturne_victory",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr's twin daggers pierce Nocturne's shadow core. The master's obsidian mask splits in half and clatters to the stone floor. Nocturne dissolves into drifting soot. Zephyr breathes deeply, tearing the Black Guild insignias from his cloak: 'I am no longer an assassin of the mute. I am Zephyr of the Fellowship!' Zephyr unlocks the Master Chant: Umbral Oblivion!",
+   "nextNodeId": "ch11_severing_memory",
+   "setFlagOnEnter": "zephyr_trial_complete"
+  },
+  {
+   "id": "ch11_severing_memory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "In the dying dark of the sanctum, Zephyr kneels and opens a small locket he has never shown anyone. Inside is a portrait of a woman whose eyes are the same grey as his. 'The guild took her voice, and then her breath, to make me their perfect weapon,' he says. 'I never got to hear her call my name. I have carried the silence of it long enough.'",
+   "choices": [
+    {
+     "id": "ch11_memory_name",
+     "text": "Speak her name aloud for him into the quiet",
+     "voiceKeywords": [
+      "her",
+      "name",
+      "speak",
+      "locket"
+     ],
+     "nextNodeId": "ch11_carry_name"
+    },
+    {
+     "id": "ch11_memory_renew",
+     "text": "Ask him to renew his oath in his own voice, not the guild's",
+     "voiceKeywords": [
+      "oath",
+      "renew",
+      "voice",
+      "guild"
+     ],
+     "nextNodeId": "ch11_renew_oath"
+    }
+   ]
+  },
+  {
+   "id": "ch11_carry_name",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr listens as you say the name from beneath the locket's hinge — a soft name, a mother's name. He repeats it once, roughly, then again, gently. 'There,' he says, and closes the locket. 'Now it is mine to carry, not theirs to keep.'",
+   "nextNodeId": "ch11_gorge_dawn"
+  },
+  {
+   "id": "ch11_renew_oath",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "I once swore my life to the mute. Now I swear my blades to the speakers. Let that be the only contract that outlives me.",
+   "nextNodeId": "ch11_gorge_dawn"
+  },
+  {
+   "id": "ch11_gorge_dawn",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fellowship takes its rest at the mouth of the gorge as the smoke clears and the first clean wind of morning rushes through the canyon. Wounds are bound, silence is broken with campfire talk, and by light of the risen sun the path to Ouros stands open.",
+   "nextNodeId": "ch11_post_victory",
+   "setFlagOnEnter": "ch11_gorge_rest_complete"
+  },
+  {
+   "id": "ch11_vaults_entry",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Beneath the gorge floor, the Black Guild's true heart: a reliquary of every voice it ever stole. Racks of sealed lead jars line the vaults, each trembling faintly with a sound that can never be forgotten. 'He buries them here,' Zephyr says, 'to prove silence outlasts speech. Let us prove him wrong.'",
+   "choices": [
+    {
+     "id": "ch11_vault_ledger",
+     "text": "Read the ledger of the stolen to free the names from the archives",
+     "voiceKeywords": [
+      "read",
+      "ledger",
+      "names",
+      "archives",
+      "vault"
+     ],
+     "nextNodeId": "ch11_vault_ledger_scene"
+    },
+    {
+     "id": "ch11_vault_altar",
+     "text": "Shatter the guild's altar of severed tongues",
+     "voiceKeywords": [
+      "shatter",
+      "altar",
+      "severed",
+      "tongues"
+     ],
+     "nextNodeId": "ch11_vault_altar_scene"
+    }
+   ],
+   "changeSceneId": "scene_obsidian_vaults"
+  },
+  {
+   "id": "ch11_vault_ledger_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The ledger runs to thousands of names, each struck through with a guild seal. Zephyr begins at the oldest page and reads every name aloud, unbroken, until his voice has restored each one to the air. The sealed lead jars hum in answer, refusing to be silent.",
+   "nextNodeId": "ch11_archive_battle_trigger"
+  },
+  {
+   "id": "ch11_vault_altar_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You bring the altar of severed tongues crashing down with a blast of light. Beyond it, the true sanctum door stands revealed, and from the shadows behind the fallen shrine, the guild's archivists rise to defend their silence with blades.",
+   "nextNodeId": "ch11_archive_battle_trigger"
+  },
+  {
+   "id": "ch11_archive_battle_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Obsidian Archive Enforcers — the guild's voiceless wardens, bred to guard its silence — emerge from the walls in black robes, each carrying a blade forged to cut sound itself from the air!",
+   "triggerBattleEncounterId": "ch11_archive_enforcers",
+   "nextNodeId": "ch11_archive_victory"
+  },
+  {
+   "id": "ch11_archive_victory",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "The archivists fall, and with them the last armed will of the guild. Zephyr stands amid the shattered racks and says, softly: 'Silence has no blade of its own. It only borrows ours. Come — Nocturne is waiting at the end of this passage.'",
+   "nextNodeId": "ch11_grandmaster_found",
+   "setFlagOnEnter": "ch11_archive_purged"
+  },
+  {
+   "id": "ch11_grandmaster_found",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The vault corridor empties into a vast dark arena: the cavern heart of the Blind Gorge, where Master Nocturne himself waits beneath a single hanging lamp, his obsidian mask the only lit thing in the black. The chord of ending blows cold.",
+   "nextNodeId": "ch11_nocturne_assault",
+   "changeSceneId": "scene_blind_gorge"
+  },
+  {
+   "id": "ch11_post_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Sir Cedric claps Zephyr firmly on the shoulder. 'All four companions have proven their souls in trial! Our blades are keen, our spirits unyielding. The Clockwork Bastion of Ouros stands before us. Let us awaken the Third Great Bell!' Assault the Clockwork Bastion of Ouros!",
+   "nextNodeId": "camp_foundry_intro"
+  },
+  {
+   "id": "camp_foundry_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "At an abandoned stone quarry nestled beneath the smoking chimneys of the Clockwork Bastion, the four companions kindle a welcoming fire. The rhythmic, thunderous pounding of Warmaster Ouros's titan forges vibrates through the bedrock, but around the hearth, the air is warm with the scent of roasted mountain potatoes.",
+   "choices": [
+    {
+     "id": "camp_foundry_sit",
+     "text": "Sit by the fire with the fellowship",
+     "voiceKeywords": [
+      "sit",
+      "fire",
+      "fellowship",
+      "talk",
+      "converse"
+     ],
+     "nextNodeId": "camp_foundry_hub"
+    },
+    {
+     "id": "camp_foundry_skip",
+     "text": "Rest briefly and begin the assault on the Clockwork Bastion",
+     "voiceKeywords": [
+      "rest",
+      "bastion",
+      "foundry",
+      "advance",
+      "continue",
+      "assault"
+     ],
+     "nextNodeId": "ch12_intro",
+     "completionFlag": "camp_foundry_rest_complete"
+    }
+   ],
+   "changeSceneId": "scene_camp",
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_foundry_zephyr_complete",
+     "camp_foundry_cedric_complete",
+     "camp_foundry_lyra_complete"
+    ],
+    "redirectToNodeId": "camp_foundry_all_completed"
+   }
+  },
+  {
+   "id": "camp_foundry_hub",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Cedric passes a steaming tin plate of roasted roots to Zephyr, who stares at it as if expecting it to detonate. Lyra grinds sovereign balm in an alabaster mortar, while the red furnace glow paints the night sky in molten crimson. 'Eat, lad,' Cedric grunts. 'Tomorrow we face an army of iron. What thoughts do you carry into the foundry?'",
+   "choices": [
+    {
+     "id": "camp_foundry_c_zephyr",
+     "text": "Speak with Zephyr about life after breaking his guild contract",
+     "voiceKeywords": [
+      "zephyr",
+      "contract",
+      "freedom",
+      "locket",
+      "mother"
+     ],
+     "nextNodeId": "camp_foundry_talk_zephyr",
+     "completionFlag": "camp_foundry_zephyr_complete"
+    },
+    {
+     "id": "camp_foundry_c_cedric",
+     "text": "Speak with Cedric about facing Ouros's clockwork army",
+     "voiceKeywords": [
+      "cedric",
+      "ouros",
+      "automatons",
+      "machines",
+      "armor"
+     ],
+     "nextNodeId": "camp_foundry_talk_cedric",
+     "completionFlag": "camp_foundry_cedric_complete"
+    },
+    {
+     "id": "camp_foundry_c_lyra",
+     "text": "Speak with Lyra about treating the land scarred by the foundries",
+     "voiceKeywords": [
+      "lyra",
+      "land",
+      "foundries",
+      "smoke",
+      "salve"
+     ],
+     "nextNodeId": "camp_foundry_talk_lyra",
+     "completionFlag": "camp_foundry_lyra_complete"
+    },
+    {
+     "id": "camp_foundry_c_sleep",
+     "text": "Extinguish the hearth and assault the Clockwork Bastion",
+     "voiceKeywords": [
+      "sleep",
+      "extinguish",
+      "bastion",
+      "march",
+      "leave"
+     ],
+     "nextNodeId": "ch12_intro",
+     "completionFlag": "camp_foundry_rest_complete"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_foundry_zephyr_complete",
+     "camp_foundry_cedric_complete",
+     "camp_foundry_lyra_complete"
+    ],
+    "redirectToNodeId": "camp_foundry_all_completed"
+   }
+  },
+  {
+   "id": "camp_foundry_talk_zephyr",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr takes a tentative bite of the roasted potato, shaking his head with a faint chuckle. 'In ten years with Nocturne, nobody ever handed me food that wasn't meant to keep me quiet. Having people watch my flank instead of my coin purse... it's unsettling. But I could get used to it. The Third Bell is inside that iron furnace. Ouros won't know what hit him.'",
+   "nextNodeId": "camp_foundry_hub",
+   "setFlagOnEnter": "camp_foundry_zephyr_complete"
+  },
+  {
+   "id": "camp_foundry_talk_cedric",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "'Warmaster Ouros was the greatest siege engineer the kingdom ever produced,' Cedric rumbles, adjusting his breastplate. 'His automatons feel no fear, no remorse, and no pain. But machines have one fatal flaw: they obey rigid logic. They cannot anticipate an invocator chanting flame while an assassin drops from the ceiling vents. We will break their clockwork hearts.'",
+   "nextNodeId": "camp_foundry_hub",
+   "setFlagOnEnter": "camp_foundry_cedric_complete"
+  },
+  {
+   "id": "camp_foundry_talk_lyra",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Lyra gently applies soothing amber salve to Zephyr's acid-scarred fingers. 'The earth here weeps black oil and choking soot,' she whispers sorrowfully. 'Ouros stripped the ancient veins of the mountain to forge cold iron soldiers. When the Third Bell rings, the pulse of dawn will purge the ash from these peaks, and grass will grow over the gears once more.'",
+   "nextNodeId": "camp_foundry_hub",
+   "setFlagOnEnter": "camp_foundry_lyra_complete"
+  },
+  {
+   "id": "camp_foundry_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The clanking of distant steam valves echoes into the midnight quiet. Fully fed and rested, the four companions take their stations. At dawn, with the furnace glare lighting your path, you advance into Chapter 12 to awaken the Third Great Bell.",
+   "nextNodeId": "ch12_intro",
+   "setFlagOnEnter": "camp_foundry_rest_complete"
+  },
+  {
+   "id": "ch12_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Clockwork Bastion rises like an iron mountain into the clouds. Colossal brass gears groan with mechanical rhythm as pressurized steam vents roar along the parapets. At the pinnacle hangs the Third Great Bell: The Resonant Bastion!",
+   "nextNodeId": "ch12_steamworks_entry",
+   "changeSceneId": "scene_clockwork_bastion",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch12_valves_complete",
+     "ch12_cogs_complete",
+     "ch12_grimoire_complete"
+    ],
+    "redirectToNodeId": "ch12_all_completed"
+   }
+  },
+  {
+   "id": "ch12_steamworks_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The outer ironworks churn in a deafening heart of pistons and drop-forges. Catwalks cross roaring furnaces, and at every junction, armored clockwork sentinels stand locked mid-march, waiting for the intrusion alarm to let them finish their stride.",
+   "choices": [
+    {
+     "id": "ch12_pipe_lanes",
+     "text": "Thread the high pipe-lanes above the furnace floor",
+     "voiceKeywords": [
+      "thread",
+      "pipe",
+      "lanes",
+      "furnace",
+      "high"
+     ],
+     "nextNodeId": "ch12_pipe_lanes_scene"
+    },
+    {
+     "id": "ch12_furnace_heat",
+     "text": "Move through the furnace heat, where the sentinels scan least",
+     "voiceKeywords": [
+      "furnace",
+      "heat",
+      "below",
+      "sentinels"
+     ],
+     "nextNodeId": "ch12_furnace_heat_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch12_pipe_lanes_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Zephyr hurls the grapple into the vaulted girders and the fellowship climbs hand over hand into the steam-choked dark above the works. Below, the sentinels march on, unaware, their clockwork heads turning in the empty lanes they were set to guard.",
+   "nextNodeId": "ch12_patrol_trigger"
+  },
+  {
+   "id": "ch12_furnace_heat_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You walk straight into the roar of the furnaces, letting the heat wrap the fellowship in its shroud. Sensors tuned for the cold of living breath go blind around you. On the far catwalk, a patrol halts, scans, and marches on whistling steam.",
+   "nextNodeId": "ch12_patrol_trigger"
+  },
+  {
+   "id": "ch12_patrol_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The catwalk collapses under concealed counterweights! From the smoke, Ouros's automaton patrol — tripod wardens of riveted brass and molten cores — clanks into formation, their targeting lenses burning with furnace light!",
+   "triggerBattleEncounterId": "ch12_automaton_patrol",
+   "nextNodeId": "ch12_patrol_victory"
+  },
+  {
+   "id": "ch12_patrol_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The warden-automata grind to a halt, sparks guttering out of their cracked cores. Cedric wipes cinders from his brow. 'It will take more than iron to keep this bell from ringing,' he says, and the forge-light glints off his smile.",
+   "nextNodeId": "ch12_bastion_core",
+   "setFlagOnEnter": "ch12_sentry_down"
+  },
+  {
+   "id": "ch12_bastion_core",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The express lift hauls you up through the bastion's living gears into the belfry command deck. Stands of black machinery surround the great furnace heart, and above, caged and humming, hangs the Resonant Bastion itself.",
+   "nextNodeId": "ch12_hub"
+  },
+  {
+   "id": "ch12_hub",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "The bell is clamped by magnetic hydraulic locks powered by the main steam generators. If we disable the pressure valves and decouple the interlock gears, the housing will retract, allowing us to challenge High Engineer Ouros!",
+   "choices": [
+    {
+     "id": "ch12_valves_choice",
+     "text": "Override the steam pressure bypass valves",
+     "voiceKeywords": [
+      "valves",
+      "steam",
+      "pressure",
+      "override",
+      "bypass"
+     ],
+     "nextNodeId": "ch12_valves_dialogue"
+    },
+    {
+     "id": "ch12_cogs_choice",
+     "text": "Disengage the magnetic clamps locking the Great Bell",
+     "voiceKeywords": [
+      "cogs",
+      "clamps",
+      "magnetic",
+      "disengage",
+      "gear"
+     ],
+     "nextNodeId": "ch12_cogs_dialogue"
+    },
+    {
+     "id": "ch12_grimoire_choice",
+     "text": "Read the forge-master's grimoire of lost incantations",
+     "voiceKeywords": [
+      "grimoire",
+      "forge",
+      "incantations",
+      "read",
+      "oaths"
+     ],
+     "nextNodeId": "ch12_grimoire_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch12_valves_complete",
+     "ch12_cogs_complete",
+     "ch12_grimoire_complete"
+    ],
+    "redirectToNodeId": "ch12_all_completed"
+   }
+  },
+  {
+   "id": "ch12_grimoire_dialogue",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr deciphers the forge-master's iron-bound grimoire by the light of the furnace. Its margins carry warnings in half-erased breath-code: the bell's resonance has been wired to feed the void. 'Knowledge sharpens any blade,' he says, and tucks the book into his satchel.",
+   "nextNodeId": "ch12_hub",
+   "setFlagOnEnter": "ch12_grimoire_complete"
+  },
+  {
+   "id": "ch12_valves_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Aethel invokes a burst of intense glacial ice, freezing the superheated pressure valves shut. The steam sirens howl and sputter out!",
+   "nextNodeId": "ch12_hub",
+   "setFlagOnEnter": "ch12_valves_complete"
+  },
+  {
+   "id": "ch12_cogs_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Cedric wedges his greatsword into the magnetic interlock lever, throwing his entire weight into it. With a thunderous clank, the massive iron clamps retract from the bell!",
+   "nextNodeId": "ch12_hub",
+   "setFlagOnEnter": "ch12_cogs_complete"
+  },
+  {
+   "id": "ch12_all_completed",
+   "speakerId": "ouros",
+   "side": "RIGHT",
+   "text": "The foundry floor trembles as Clockwork Warmaster Ouros deploys from the furnace elevator—a ten-foot armored automaton wielding molten steam cannons and backed by iron phalanx guards! 'Intruders detected! Protocol: Silence the living!' Destroy Warmaster Ouros and ring the Iron Belfry!",
+   "nextNodeId": "ch12_warmaster_assault"
+  },
+  {
+   "id": "ch12_warmaster_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The 4-hero fellowship clashes against Warmaster Ouros and his clockwork phalanx battalion high on the belfry platform!",
+   "triggerBattleEncounterId": "ch12_warmaster_ouros",
+   "nextNodeId": "ch12_warmaster_victory"
+  },
+  {
+   "id": "ch12_warmaster_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "With a cataclysmic blast of steam and flying cogs, Warmaster Ouros collapses into glowing molten scrap! The fellowship grips the massive iron chain and pulls together. The Third Great Bell—The Resonant Bastion—tolls with a thunderous, metallic roar that shakes the very foundations of the earth! Across the skies, a blinding ribbon of celestial light solidifies into a sky bridge leading directly to the capital of Sol-Aethel!",
+   "nextNodeId": "ch12_skybridge_rise",
+   "setFlagOnEnter": "ch12_ouros_defeated"
+  },
+  {
+   "id": "ch12_skybridge_rise",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The sky bridge hangs like a fallen moonbeam, wide enough for a full company, spanning from the belfry platform to the distant marble walls of the capital. Below, the Blight-ravaged kingdom lies folded in shadow — and for the first time, the road home is made of light.",
+   "nextNodeId": "ch12_bridge_crossing"
+  },
+  {
+   "id": "ch12_bridge_crossing",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The crossing is long enough for thoughts to unspool with each step above the void. The city ahead glitters, and somewhere in Aethelgard, a village square waits to be filled with the sound of its own bells.",
+   "choices": [
+    {
+     "id": "ch12_bridge_step",
+     "text": "Walk with steady stride toward the capital gates",
+     "voiceKeywords": [
+      "walk",
+      "steady",
+      "gates",
+      "capital",
+      "bridge"
+     ],
+     "nextNodeId": "ch12_bridge_scene"
+    },
+    {
+     "id": "ch12_bridge_gaze",
+     "text": "Gaze down at the freed lands and name what you fight for",
+     "voiceKeywords": [
+      "gaze",
+      "freed",
+      "lands",
+      "below",
+      "name"
+     ],
+     "nextNodeId": "ch12_bridge_gaze_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch12_bridge_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You match the rhythm of the party's footfalls as one. The sky bridge holds firm; the wind carries the faint sound of clover-fields and far-off sheep bells, and beneath your cuirass your heart beats to the old march of returning soldiers.",
+   "nextNodeId": "ch12_threshold_rest"
+  },
+  {
+   "id": "ch12_bridge_gaze_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You stop on the crown of the bridge and name them all aloud — the Marsh Fane, the Willow Sanctuary, the sunken catacombs, the Emerald Choir — each a place that went silent and each, by your hand, learning to sing again. The fellowship listens, and the bridge does not hurry you.",
+   "nextNodeId": "ch12_threshold_rest"
+  },
+  {
+   "id": "ch12_threshold_rest",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fellowship camps on the sky bridge's far end, on the roof of the outer curtain wall, watching the capital's lights edge closer with the dawn. Restored and armed in spirit, the company wakes ready to enter the silent city.",
+   "nextNodeId": "ch12_post_victory",
+   "setFlagOnEnter": "ch12_threshold_rest_complete"
+  },
+  {
+   "id": "ch12_post_victory",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Three Great Bells restored! Look—the sky bridge has opened! The capital gates of Sol-Aethel lie just ahead. The final trial draws near!",
+   "nextNodeId": "ch13_intro"
+  },
+  {
+   "id": "ch13_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "High above the cloudline on the floating plateau of Sol-Aethel, the Silent Citadel looms in terrifying majesty. Monolithic battlements of black glass reflect the eerie silence of the capital. The Great Gates are bolted shut with obsidian sorcery.",
+   "nextNodeId": "ch13_whisperway_entry",
+   "changeSceneId": "scene_silent_citadel",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch13_gate_complete",
+     "ch13_seal_complete",
+     "ch13_banners_complete"
+    ],
+    "redirectToNodeId": "ch13_all_completed"
+   }
+  },
+  {
+   "id": "ch13_whisperway_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Between the outer rampart and the Great Gates runs the Whisperway: the pilgrim road into Sol-Aethel, once hung with festival banners and the songs of a thousand travelers. Now shadow moves along it in skirls, and the banner poles hold garlands of black glass.",
+   "choices": [
+    {
+     "id": "ch13_way_still",
+     "text": "Walk the Whisperway still and watchful, banners overhead",
+     "voiceKeywords": [
+      "walk",
+      "still",
+      "banners",
+      "whisperway",
+      "watch"
+     ],
+     "nextNodeId": "ch13_way_still_scene"
+    },
+    {
+     "id": "ch13_way_voice",
+     "text": "Call out a greeting to the empty city as you approach",
+     "voiceKeywords": [
+      "call",
+      "greeting",
+      "voice",
+      "empty",
+      "city"
+     ],
+     "nextNodeId": "ch13_way_voice_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch13_way_still_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Cedric walks the road in perfect silence, and it moves his heart in ways silence seldom does. 'I have heard this road since I was a squire,' he says. 'It never sounded like this. It sounded like a festival that refused to end.'",
+   "nextNodeId": "ch13_plaza_trigger"
+  },
+  {
+   "id": "ch13_way_voice_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You send your voice ringing against the black glass walls, a field-call of the old realm. It returns thinner than it left, but somewhere far up among the battlements, a shutter bangs open — someone is still listening.",
+   "nextNodeId": "ch13_plaza_trigger"
+  },
+  {
+   "id": "ch13_plaza_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Whisperway opens onto the Pilgrim's Plaza — and the plaza is not empty. Vaelor's garrison, a legion of obsidian-sheathed sentinels in ordered ranks, stand lamp-lit where the pilgrims once bought their candles. They turn as one at your approach!",
+   "triggerBattleEncounterId": "ch13_plaza_legion",
+   "nextNodeId": "ch13_plaza_victory"
+  },
+  {
+   "id": "ch13_plaza_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The garrison ranks lie broken across the flagstones, and the lamps they guarded still burn. Cedric stoops to right a toppled pilgrim's shrine at the plaza's center. 'Their candles were lit for the living,' he says. 'The city has gone long without that kind of light.'",
+   "nextNodeId": "ch13_gate_foot",
+   "setFlagOnEnter": "ch13_plaza_cleared"
+  },
+  {
+   "id": "ch13_gate_foot",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You stand at the foot of the Great Gates, dwarfed by black glass and iron older than the kingdom's name. The seal of the void hums against the stone, waiting for the touch of a living voice to reveal its weakness.",
+   "nextNodeId": "ch13_hub"
+  },
+  {
+   "id": "ch13_hub",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The streets of Sol-Aethel were once filled with songs, market calls, and the laughter of children. Now it is a graveyard of black glass and petrified sentinels. Malakor has turned our glorious capital into a monument to grief.",
+   "choices": [
+    {
+     "id": "ch13_gate_choice",
+     "text": "Inspect the fortified black glass portcullis",
+     "voiceKeywords": [
+      "gate",
+      "portcullis",
+      "inspect",
+      "glass",
+      "black"
+     ],
+     "nextNodeId": "ch13_gate_dialogue"
+    },
+    {
+     "id": "ch13_seal_choice",
+     "text": "Purge the obsidian seal binding the entrance",
+     "voiceKeywords": [
+      "seal",
+      "purge",
+      "dispel",
+      "binding",
+      "obsidian"
+     ],
+     "nextNodeId": "ch13_seal_dialogue"
+    },
+    {
+     "id": "ch13_banners_choice",
+     "text": "Take down a fallen Whisperway banner and carry it to the gates",
+     "voiceKeywords": [
+      "banners",
+      "banner",
+      "whisperway",
+      "carry",
+      "gates"
+     ],
+     "nextNodeId": "ch13_banners_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch13_gate_complete",
+     "ch13_seal_complete",
+     "ch13_banners_complete"
+    ],
+    "redirectToNodeId": "ch13_all_completed"
+   }
+  },
+  {
+   "id": "ch13_banners_dialogue",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Lyra finds one banner that survived the purge — the old lion-and-sun of Sol-Aethel, threadbare but whole. She folds it carefully into her satchel. 'When we ring the bells,' she says, 'I want this going back up on that pole before the echoes fade.'",
+   "nextNodeId": "ch13_hub",
+   "setFlagOnEnter": "ch13_banners_complete"
+  },
+  {
+   "id": "ch13_gate_dialogue",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr inspects the locking mechanism: 'The gate is held by void resonance. If we strike the seal with a unified chant, the glass will shatter!'",
+   "nextNodeId": "ch13_hub",
+   "setFlagOnEnter": "ch13_gate_complete"
+  },
+  {
+   "id": "ch13_seal_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Aethel unleashes a focused harmonic incantation. Cracks of golden fire race across the black glass seal, weakening its grip!",
+   "nextNodeId": "ch13_hub",
+   "setFlagOnEnter": "ch13_seal_complete"
+  },
+  {
+   "id": "ch13_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The black gates open to reveal Commander Vaelor, Hand of Malakor, flanked by obsidian sentinels! At his belt hangs the terrifying Void Horn as he sneers: 'You have climbed high, little songbirds. But here, the sky belongs to the void!' Slay Commander Vaelor and breach the Citadel!",
+   "nextNodeId": "ch13_vaelor_assault"
+  },
+  {
+   "id": "ch13_vaelor_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Commander Vaelor sounds the Void Horn, summoning spectral reapers from the abyss as the fellowship charges the gatehouse!",
+   "triggerBattleEncounterId": "ch13_commander_vaelor",
+   "nextNodeId": "ch13_vaelor_victory"
+  },
+  {
+   "id": "ch13_vaelor_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Commander Vaelor falls from the ramparts, and the Void Horn shatters into harmless glass shards! Beyond the citadel gates, a grand celestial plaza opens onto the lake of the Void Reservoir, where the stolen voices of the world are pooled.",
+   "nextNodeId": "ch13_capital_stirs",
+   "setFlagOnEnter": "ch13_vaelor_defeated"
+  },
+  {
+   "id": "ch13_capital_stirs",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "With the garrison broken and the seal undone, the high city begins, at last, to stir. Here and there a shutter opens, a lantern wavers, a frozen fountain sighs back into motion. The citizens of Sol-Aethel emerge in twos and threes, blinking in the light of their own reclaimed streets.",
+   "nextNodeId": "ch13_cedric_memory"
+  },
+  {
+   "id": "ch13_cedric_memory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "My mother sold cured meats in that stall by the awning. She had a voice like iron. When she called us home for dinner, half the district heard her. I would give every medal I ever took to hear her shout my name once more.",
+   "choices": [
+    {
+     "id": "ch13_memory_song",
+     "text": "Promise him that the first toll shall carry her name",
+     "voiceKeywords": [
+      "promise",
+      "song",
+      "toll",
+      "her",
+      "name"
+     ],
+     "nextNodeId": "ch13_market_song"
+    },
+    {
+     "id": "ch13_memory_promise",
+     "text": "Swear you will return here to ring them together",
+     "voiceKeywords": [
+      "swear",
+      "return",
+      "ring",
+      "together",
+      "plaza"
+     ],
+     "nextNodeId": "ch13_market_promise"
+    }
+   ]
+  },
+  {
+   "id": "ch13_market_song",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Sir Cedric repeats his mother's name once, like a man testing a blade for balance, then smiles — the first true smile you have seen since the mausoleum. 'Then she will hear the end of the Blight,' he says, 'and that will be worth every scar between here and the summit.'",
+   "nextNodeId": "ch13_plaza_rest"
+  },
+  {
+   "id": "ch13_market_promise",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You clasp his gauntlet in the manner of knights sealing vows and make the promise plain: when the bells of Sol-Aethel sing again, Sir Cedric will stand at the great bell's rope and give it his name. He nods once, formal and grave, and the plaza watches them both with its new, waking eyes.",
+   "nextNodeId": "ch13_plaza_rest"
+  },
+  {
+   "id": "ch13_plaza_rest",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The citizens of the high city bring bread and water to the rampart camp, whispering their first words in months as gifts. By the time the stars wheel, the fellowship is healed, fed, and standing at the threshold of the Void Reservoir, ready to descend.",
+   "nextNodeId": "ch13_post_victory",
+   "setFlagOnEnter": "ch13_plaza_rest_complete",
+   "healPartyOnEnter": "full"
+  },
+  {
+   "id": "ch13_post_victory",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Vaelor is dead. The path to the Void Reservoir is clear. Let us reclaim what was stolen! Enter the Chamber of the Void Reservoir",
+   "nextNodeId": "camp_reservoir_intro"
+  },
+  {
+   "id": "camp_reservoir_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "High upon the alabaster ramparts overlooking Sol-Aethel, the fellowship kindles a crackling brazier of white birch. Below the marble balustrade lies the sunken expanse of the Void Reservoir—silent, obsidian waters stretching into mist, holding the stolen voices of thirty thousand souls.",
+   "choices": [
+    {
+     "id": "camp_reservoir_sit",
+     "text": "Sit by the brazier with the fellowship",
+     "voiceKeywords": [
+      "sit",
+      "brazier",
+      "fellowship",
+      "talk",
+      "converse"
+     ],
+     "nextNodeId": "camp_reservoir_hub"
+    },
+    {
+     "id": "camp_reservoir_skip",
+     "text": "Rest briefly and begin the descent into the Void Reservoir",
+     "voiceKeywords": [
+      "rest",
+      "reservoir",
+      "abyss",
+      "advance",
+      "continue",
+      "descend"
+     ],
+     "nextNodeId": "ch14_intro",
+     "completionFlag": "camp_reservoir_rest_complete"
+    }
+   ],
+   "changeSceneId": "scene_camp",
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_reservoir_zephyr_complete",
+     "camp_reservoir_lyra_complete",
+     "camp_reservoir_cedric_complete"
+    ],
+    "redirectToNodeId": "camp_reservoir_all_completed"
+   }
+  },
+  {
+   "id": "camp_reservoir_hub",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Cedric gazes down into his liberated home city, his face illuminated by the birch embers. Zephyr reclines on the balustrade, watching ripples on the black water below, while Lyra hums a soft lullaby into the evening wind. 'The high city is ours,' Cedric says quietly. 'What weighs on your minds before we plunge into the black lake?'",
+   "choices": [
+    {
+     "id": "camp_reservoir_c_zephyr",
+     "text": "Speak with Zephyr about what they will do when the war ends",
+     "voiceKeywords": [
+      "zephyr",
+      "future",
+      "after",
+      "war",
+      "peace",
+      "plans"
+     ],
+     "nextNodeId": "camp_reservoir_talk_zephyr",
+     "completionFlag": "camp_reservoir_zephyr_complete"
+    },
+    {
+     "id": "camp_reservoir_c_lyra",
+     "text": "Speak with Lyra about the drowning voices calling from the deep",
+     "voiceKeywords": [
+      "lyra",
+      "drowned",
+      "voices",
+      "deep",
+      "reservoir",
+      "water"
+     ],
+     "nextNodeId": "camp_reservoir_talk_lyra",
+     "completionFlag": "camp_reservoir_lyra_complete"
+    },
+    {
+     "id": "camp_reservoir_c_cedric",
+     "text": "Speak with Sir Cedric about seeing his homeland freed",
+     "voiceKeywords": [
+      "cedric",
+      "homeland",
+      "capital",
+      "mother",
+      "freed",
+      "city"
+     ],
+     "nextNodeId": "camp_reservoir_talk_cedric",
+     "completionFlag": "camp_reservoir_cedric_complete"
+    },
+    {
+     "id": "camp_reservoir_c_sleep",
+     "text": "Extinguish the brazier and dive into the Sunken Shallows",
+     "voiceKeywords": [
+      "sleep",
+      "extinguish",
+      "dive",
+      "reservoir",
+      "leave"
+     ],
+     "nextNodeId": "ch14_intro",
+     "completionFlag": "camp_reservoir_rest_complete"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "camp_reservoir_zephyr_complete",
+     "camp_reservoir_lyra_complete",
+     "camp_reservoir_cedric_complete"
+    ],
+    "redirectToNodeId": "camp_reservoir_all_completed"
+   }
+  },
+  {
+   "id": "camp_reservoir_talk_zephyr",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "Zephyr smirks, staring out at the starlit rooftops of the capital. 'Suppose we actually kill Malakor and ring that final bell. What then? Cedric goes back to drilling recruits, Lyra tends her garden... What does an ex-assassin do in a world where everyone can shout for the guard? Maybe I'll open a tavern down on the docks. Free stew for anyone with a good song. How does that sound, Invocator?'",
+   "nextNodeId": "camp_reservoir_hub",
+   "setFlagOnEnter": "camp_reservoir_zephyr_complete"
+  },
+  {
+   "id": "camp_reservoir_talk_lyra",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Lyra leans against the cool stone railing, closing her eyes. 'The lake below is not just water, Aethel. It is a reservoir of stolen hymns, children's laughter, and dying words trapped in the silence. The Leviathan swims through their grief. When you cast your spells down there, sing with compassion. Those voices want to be free. They will guide our light if we listen.'",
+   "nextNodeId": "camp_reservoir_hub",
+   "setFlagOnEnter": "camp_reservoir_lyra_complete"
+  },
+  {
+   "id": "camp_reservoir_talk_cedric",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "Cedric places his gauntleted hand over his heart, looking at the distant bell towers rising like silver spears above the rooftops. 'My whole life, I believed this city would die in chains. But seeing the lights flicker on in the market squares tonight... my mother was right. No winter lasts forever. Whatever horror lurks in that black lake, we dive with the strength of a liberated people at our backs.'",
+   "nextNodeId": "camp_reservoir_hub",
+   "setFlagOnEnter": "camp_reservoir_cedric_complete"
+  },
+  {
+   "id": "camp_reservoir_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The white birch burns down to fine grey ash as midnight envelopes the capital. The fellowship binds water-breathing charms to their collars and checks their gear one final time. Standing at the brink of the reservoir, you prepare to dive into the watery abyss of Chapter 14.",
+   "nextNodeId": "ch14_intro",
+   "setFlagOnEnter": "camp_reservoir_rest_complete"
+  },
+  {
+   "id": "ch14_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "A vast sunken lake of pitch-black liquid silence stretches beneath a weeping starlight dome. Ripples move across the dark pool in complete, eerie noiselessness. Swirling voice motes struggle beneath the surface, trapped like captive stars.",
+   "nextNodeId": "ch14_shore_entry",
+   "changeSceneId": "scene_void_reservoir",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch14_archons_complete",
+     "ch14_eddies_complete",
+     "ch14_rites_complete"
+    ],
+    "redirectToNodeId": "ch14_all_completed"
+   }
+  },
+  {
+   "id": "ch14_shore_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The reservoir shore is a drowned pilgrim road, its flagstones half-swallowed by the black lake. Broken lanterns line the way, and the water laps without a sound — a wrongness that presses on the ears like held breath.",
+   "choices": [
+    {
+     "id": "ch14_shore_kneel",
+     "text": "Kneel at the drowned pilgrims' shrine before the crossing",
+     "voiceKeywords": [
+      "kneel",
+      "shrine",
+      "pilgrims",
+      "crossing",
+      "shore"
+     ],
+     "nextNodeId": "ch14_shore_kneel_scene"
+    },
+    {
+     "id": "ch14_shore_ward",
+     "text": "Trace a ward of protection over the silent waters",
+     "voiceKeywords": [
+      "ward",
+      "protect",
+      "waters",
+      "silent",
+      "trace"
+     ],
+     "nextNodeId": "ch14_shore_ward_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch14_shore_kneel_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Cedric kneels before the half-drowned shrine and says the old traveler's blessing for the lost. The lake does not mock him. Somewhere under the black glass water, a voice-still-light answers once, faint as a struck bell far below.",
+   "nextNodeId": "ch14_shallows_trigger"
+  },
+  {
+   "id": "ch14_shore_ward_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You draw the ward across the shallows and the water recoils in a ring of shivering light, as if the silence itself flinches from the touch of a living syllable. Beyond the ring, the lake's surface grows taut and watchful.",
+   "nextNodeId": "ch14_shallows_trigger"
+  },
+  {
+   "id": "ch14_shallows_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The shallows erupt! Drowned husks — pilgrims who waded in seeking their stolen voices only to be caught by the lake — drag themselves ashore by the hundreds, their throats still open in silent screams, and close on the fellowship!",
+   "triggerBattleEncounterId": "ch14_shallows_husks",
+   "nextNodeId": "ch14_shallows_victory"
+  },
+  {
+   "id": "ch14_shallows_victory",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "The husks crumble into silt, and for a single beat the lake goes clear as glass. Lyra watches the drowned settle gently to the bottom and speaks the old grove-prayer over them. 'They were not taken by the water,' she says. 'They were taken by forgetting.'",
+   "nextNodeId": "ch14_shore_cleared",
+   "setFlagOnEnter": "ch14_shallows_cleared"
+  },
+  {
+   "id": "ch14_shore_cleared",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The shore of the Reservoir is quiet again, but now it is the quiet of the living, not of the void. The drowned lights of the voice motes shift below the surface, and the true crossing opens ahead.",
+   "nextNodeId": "ch14_hub"
+  },
+  {
+   "id": "ch14_hub",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "Lyra clutches her ears. 'The water... it is drinking our echoes before they can even leave our lips. This is where Malakor pools the stolen voices of everyone petrified across Aethelgard.'",
+   "choices": [
+    {
+     "id": "ch14_archons_choice",
+     "text": "Commune with the petrified High Archons kneeling by the lake",
+     "voiceKeywords": [
+      "archons",
+      "commune",
+      "high",
+      "statues",
+      "kneeling"
+     ],
+     "nextNodeId": "ch14_archons_dialogue"
+    },
+    {
+     "id": "ch14_eddies_choice",
+     "text": "Dispel the swirling silt eddies of liquid silence",
+     "voiceKeywords": [
+      "eddies",
+      "dispel",
+      "silt",
+      "liquid",
+      "silence"
+     ],
+     "nextNodeId": "ch14_eddies_dialogue"
+    },
+    {
+     "id": "ch14_rites_choice",
+     "text": "Perform the ancient rite of the drowned whose names are not lost",
+     "voiceKeywords": [
+      "rites",
+      "drowned",
+      "ancient",
+      "names",
+      "lost"
+     ],
+     "nextNodeId": "ch14_rites_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch14_archons_complete",
+     "ch14_eddies_complete",
+     "ch14_rites_complete"
+    ],
+    "redirectToNodeId": "ch14_all_completed"
+   }
+  },
+  {
+   "id": "ch14_rites_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You stand at the shore's crown and name the drowned — every pilgrim name the Archons' records give — and at each name a single mote of light shakes loose from the lake's black bed and rises, until a dim constellation of the lost floats above the water, waiting to be freed.",
+   "nextNodeId": "ch14_hub",
+   "setFlagOnEnter": "ch14_rites_complete"
+  },
+  {
+   "id": "ch14_archons_dialogue",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The frozen Archons... their minds are still trapped in prayer. They warn us: the lake has a guardian—the Leviathan of Whispers. It feeds upon the harvested voices of the drowned!",
+   "nextNodeId": "ch14_hub",
+   "setFlagOnEnter": "ch14_archons_complete"
+  },
+  {
+   "id": "ch14_eddies_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Lyra chants an invigorating cleansing verse. The black liquid eddies churn and clear, restoring acoustic clarity to the shoreline!",
+   "nextNodeId": "ch14_hub",
+   "setFlagOnEnter": "ch14_eddies_complete"
+  },
+  {
+   "id": "ch14_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The liquid silence rises into a towering tidal wave as the colossal Abyssal Leviathan breaches the surface! Tendrils of pure void lash out, suffocating all sound in their wake! Descend the umbilical trench into the Leviathan's den.",
+   "nextNodeId": "ch14_trench_descent"
+  },
+  {
+   "id": "ch14_trench_descent",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Leviathan does not wait on the shore — it retreats down the umbilical trench that feeds the reservoir, trailing thick black silk. Following it means entering the drowned dark where the voices of the reservoir are drawn and buried.",
+   "nextNodeId": "ch14_trench_entry",
+   "changeSceneId": "scene_umbral_trench"
+  },
+  {
+   "id": "ch14_trench_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The trench walls are lined with the calcified shells of swallowed songs — pearl-and-glass growths that hold the dim shapes of motes thrashing inside. The way ahead splits, both branches falling into the same swallowing dark.",
+   "choices": [
+    {
+     "id": "ch14_trench_dive",
+     "text": "Dive straight down after the Leviathan's wake",
+     "voiceKeywords": [
+      "dive",
+      "straight",
+      "wake",
+      "down",
+      "trench"
+     ],
+     "nextNodeId": "ch14_trench_dive_scene"
+    },
+    {
+     "id": "ch14_trench_hook",
+     "text": "Hang back and follow the trench wall to its hidden edge",
+     "voiceKeywords": [
+      "hang",
+      "wall",
+      "edge",
+      "hidden",
+      "follow"
+     ],
+     "nextNodeId": "ch14_trench_hook_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch14_trench_dive_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You follow the silk-threaded wake with a torch of pure voice-light, letting its hum hold the dark at bay. Around you, the cocoons of stolen songs sway like a drowned orchard, and the trench floor slants toward a vast buried chamber.",
+   "nextNodeId": "ch14_trench_trigger"
+  },
+  {
+   "id": "ch14_trench_hook_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Lyra finds the sideroad the Leviathan's keepers used — a shelf of worked stone running beneath the main bed. Its carvings show the drowned rite of the Reservoir being performed by figures who did not want to be seen. The shelf ends in the wall of the buried chamber.",
+   "nextNodeId": "ch14_trench_trigger"
+  },
+  {
+   "id": "ch14_trench_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The buried chamber's floor comes alive! Trench leeches — great blind coils, each with the stolen voice of a hundred throats knotted inside its hide — wreathe up from the silt to feed the Leviathan's feast, singing with mouths that are not theirs!",
+   "triggerBattleEncounterId": "ch14_trench_leeches",
+   "nextNodeId": "ch14_trench_victory"
+  },
+  {
+   "id": "ch14_trench_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The leeches burst into cataracts of freed motes, and the voice-stars they release spiral up through the trench like a river of lantern-light. Lyra staggers under the swell of it — a thousand names and lullabies rushing past her ears, all of them, at last, free.",
+   "nextNodeId": "ch14_broach",
+   "setFlagOnEnter": "ch14_trench_cleared"
+  },
+  {
+   "id": "ch14_broach",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The ribbon of freed motes carves a tunnel of light back up to the reservoir floor, and you rise with it into the open air of the lakeshore — just as the black water convulses and the Abyssal Leviathan bursts from the reservoir's heart, howling with all the voices it has swallowed!",
+   "nextNodeId": "ch14_leviathan_assault",
+   "changeSceneId": "scene_void_reservoir"
+  },
+  {
+   "id": "ch14_leviathan_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Abyssal Leviathan envelops the party in its Muffle Aura! Speak your chants with unyielding conviction and volume to pierce the void!",
+   "triggerBattleEncounterId": "ch14_abyssal_leviathan",
+   "nextNodeId": "ch14_leviathan_victory"
+  },
+  {
+   "id": "ch14_leviathan_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "With a deafening shriek of dissolving shadow, the Abyssal Leviathan bursts into millions of incandescent voice motes! The motes swirl around the fellowship like a spiral galaxy, singing melodies of love, hope, and courage. The liquid silence evaporates, revealing the crystalline Ribbon Stair ascending to the Spire Summit!",
+   "nextNodeId": "ch14_motes_awakened",
+   "setFlagOnEnter": "ch14_leviathan_defeated"
+  },
+  {
+   "id": "ch14_motes_awakened",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The freed voices do not scatter. They coil around the fellowship in a slow, warm galaxy, and one mote — brighter than the rest — drifts to rest above the everyone's upturned palms. It is not a stranger's voice. It is the one you have both been carrying unfound at the bottom of your own grief.",
+   "nextNodeId": "ch14_mote_of_sister"
+  },
+  {
+   "id": "ch14_mote_of_sister",
+   "speakerId": "voice_mote",
+   "side": "LEFT",
+   "text": "Lyra... do not weep. The grove remembers every song you ever gave it. We are not lost. Ring the bells... and call us home.",
+   "choices": [
+    {
+     "id": "ch14_mote_listen",
+     "text": "Listen to her voice as long as the mote will hold",
+     "voiceKeywords": [
+      "listen",
+      "voice",
+      "mote",
+      "hold",
+      "hear"
+     ],
+     "nextNodeId": "ch14_mote_scene"
+    },
+    {
+     "id": "ch14_mote_answer",
+     "text": "Answer her, and give her a memory of your own",
+     "voiceKeywords": [
+      "answer",
+      "memory",
+      "give",
+      "speak",
+      "her"
+     ],
+     "nextNodeId": "ch14_mote_answer_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch14_mote_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You stay still while the mote sings the fragment of her life the lake had stolen: a rainy market day, a shared apple, a joke whose punchline neither of you ever fully remembered. When it fades, you are crying without noticing, and the galaxy of voices overhead kindles a little brighter for it.",
+   "nextNodeId": "ch14_stair_rest"
+  },
+  {
+   "id": "ch14_mote_answer_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You tell the mote the memory it could not have stolen — the morning she left, and the last thing she said, and how you have carried it verbatim since. The mote shudders, brightens to a small sun, and then, so softly it is almost a thought, says: 'Then I was not wasted.'",
+   "nextNodeId": "ch14_stair_rest"
+  },
+  {
+   "id": "ch14_stair_rest",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fellowship makes rest beneath the drifting constellation of freed voices, wrapped in songs the reservoir will never drink again. Sleep comes easily, woundless and deep, and in the morning the Ribbon Stair stands bright, waiting to be climbed.",
+   "nextNodeId": "ch14_post_victory",
+   "setFlagOnEnter": "ch14_stair_rest_complete"
+  },
+  {
+   "id": "ch14_post_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "The voices are free! They swirl ahead of us, lighting the ribbon stair into the heavens. The summit is within our grasp! Ascend the Celestial Ribbon Stair to the Summit",
+   "nextNodeId": "ch15_intro"
+  },
+  {
+   "id": "ch15_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You ascend a stairway made of solidified harmonic light suspended between the clouds and stars. The four Great Bell Towers of Aethelgard form a colossal cross of gold, jade, and iron below you. Ahead stands the Celestial Belfry.",
+   "nextNodeId": "ch15_stair_entry",
+   "changeSceneId": "scene_celestial_spire",
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch15_cedric_complete",
+     "ch15_lyra_complete",
+     "ch15_zephyr_complete",
+     "ch15_bell_complete"
+    ],
+    "redirectToNodeId": "ch15_all_completed"
+   }
+  },
+  {
+   "id": "ch15_stair_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Ribbon Stair narrows as it climbs, and the air thins to crystal. Higher still, the stair rises through a ring of worn stone archways that have stood since before the first syllable — and beneath each arch, a gate of unfinished business waits for a companion's name.",
+   "choices": [
+    {
+     "id": "ch15_stair_sing",
+     "text": "Climb singing, letting each step carry the fellowship's songs",
+     "voiceKeywords": [
+      "sing",
+      "climb",
+      "songs",
+      "steps",
+      "stair"
+     ],
+     "nextNodeId": "ch15_stair_sing_scene"
+    },
+    {
+     "id": "ch15_stair_logic",
+     "text": "Climb in steady, measured silence, mapping every arch",
+     "voiceKeywords": [
+      "steady",
+      "silence",
+      "arch",
+      "measure",
+      "climb"
+     ],
+     "nextNodeId": "ch15_stair_logic_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch15_stair_sing_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Lyra begins the song of the four bells — Solaria, the Veridian Chime, the Resonant Bastion, and the Bell of Eternity — and one by one the fellowship takes up a part. The celestial stair brightens beneath your feet, and the first archway's shadow draws back like a curtain.",
+   "nextNodeId": "ch15_trial_gold_gate"
+  },
+  {
+   "id": "ch15_stair_logic_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Cedric counts the arches aloud, noting the worn patterns in each threshold — the marks of countless pilgrims who climbed to judgment and never returned. 'These gates weigh a soul,' he says. 'Let us give them a fellowship to weigh.'",
+   "nextNodeId": "ch15_trial_gold_gate"
+  },
+  {
+   "id": "ch15_trial_gold_gate",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The first archway bars the stair with a shimmer of molten light. Within it, the companion who has been weighed most by fortune and coffer stands revealed — Sir Cedric, whose vow was once sold to silence for a chance to atone.",
+   "nextNodeId": "ch15_trial_gold_trigger"
+  },
+  {
+   "id": "ch15_trial_gold_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Gate of Gold summons Cedric's trial: the gilded reflections of every oath bought and bent — armored creditors of light who would have him, even now, trade his name for peace. Sir Cedric raises his shield. 'My vow was never for sale. Even peace may not buy it.'",
+   "triggerBattleEncounterId": "ch15_trial_gold",
+   "nextNodeId": "ch15_trial_gold_victory"
+  },
+  {
+   "id": "ch15_trial_gold_victory",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "It tried to buy me with everything I never wanted enough. My vow was never for sale. The gate of gold is broken.",
+   "nextNodeId": "ch15_trial_grove_gate",
+   "setFlagOnEnter": "ch15_trial_gold_complete"
+  },
+  {
+   "id": "ch15_trial_grove_gate",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The second archway curtains the stair in tender green shadow. Within it, the companion whose heart was torn between duty and homeland steps forward — Lyra, who fled the choir, and has not forgiven herself for it.",
+   "nextNodeId": "ch15_trial_grove_trigger"
+  },
+  {
+   "id": "ch15_trial_grove_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Gate of the Grove answers with the roots that always grow back: snarled memories of the day she ran, made into thorn-vined guardians that know her every fear. Lyra's staff comes up, her jaw set: 'I ran then. I am walking through it now.'",
+   "triggerBattleEncounterId": "ch15_trial_grove",
+   "nextNodeId": "ch15_trial_grove_victory"
+  },
+  {
+   "id": "ch15_trial_grove_victory",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "I am the promise now. Not the flight. The grove's trial has bloomed.",
+   "nextNodeId": "ch15_trial_shadow_gate",
+   "setFlagOnEnter": "ch15_trial_grove_complete"
+  },
+  {
+   "id": "ch15_trial_shadow_gate",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The third archway bleeds darkness into the ascending light. Within it, the companion who has lived longest in shadow waits to be judged — Zephyr, the guild's blade who has carried the silence of his mother like a wound.",
+   "nextNodeId": "ch15_trial_shadow_trigger"
+  },
+  {
+   "id": "ch15_trial_shadow_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Gate of Shadow releases all that Nocturne ever was — every lesson of stealth and breath-stealing, made into assassins of the dark. Zephyr draws his daggers and walks in: 'I learned all their tricks. I was never one of them.'",
+   "triggerBattleEncounterId": "ch15_trial_shadow",
+   "nextNodeId": "ch15_trial_shadow_victory"
+  },
+  {
+   "id": "ch15_trial_shadow_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The shadow assassins dissolve at the first stroke of a blade that no longer hunts. Zephyr stands in the returning starlight, and for the first time his own shadow at his feet looks like a guard, not a chain.",
+   "nextNodeId": "ch15_threshold",
+   "setFlagOnEnter": "ch15_trial_shadow_complete"
+  },
+  {
+   "id": "ch15_threshold",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The three archways stand open behind the fellowship as the stair reaches its crown — a wide starlit landing before the great double doors of the Celestial Belfry. Ahead, the doors hum with expectation, waiting on one last, human pause.",
+   "nextNodeId": "ch15_hub"
+  },
+  {
+   "id": "ch15_hub",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The four companions pause on the final landing before the great double doors. The fellowship stands at the edge of destiny.",
+   "choices": [
+    {
+     "id": "ch15_cedric_choice",
+     "text": "Speak with Sir Cedric upon the threshold of dawn",
+     "voiceKeywords": [
+      "cedric",
+      "dawn",
+      "vow",
+      "speak",
+      "templar"
+     ],
+     "nextNodeId": "ch15_cedric_dialogue"
+    },
+    {
+     "id": "ch15_lyra_choice",
+     "text": "Speak with Lyra beneath the starlight canopy",
+     "voiceKeywords": [
+      "lyra",
+      "starlight",
+      "grove",
+      "warden",
+      "speak"
+     ],
+     "nextNodeId": "ch15_lyra_dialogue"
+    },
+    {
+     "id": "ch15_zephyr_choice",
+     "text": "Speak with Zephyr overlooking the waking world",
+     "voiceKeywords": [
+      "zephyr",
+      "shadow",
+      "world",
+      "overlook",
+      "speak"
+     ],
+     "nextNodeId": "ch15_zephyr_dialogue"
+    },
+    {
+     "id": "ch15_bell_choice",
+     "text": "Steady the hush with the chant that awaits the toll",
+     "voiceKeywords": [
+      "bell",
+      "toll",
+      "chant",
+      "hush",
+      "steady"
+     ],
+     "nextNodeId": "ch15_bell_dialogue"
+    }
+   ],
+   "hubCompletion": {
+    "requiredFlags": [
+     "ch15_cedric_complete",
+     "ch15_lyra_complete",
+     "ch15_zephyr_complete",
+     "ch15_bell_complete"
+    ],
+    "redirectToNodeId": "ch15_all_completed"
+   }
+  },
+  {
+   "id": "ch15_bell_dialogue",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You lead the fellowship in the tolling chant — the verse each Bell of Aethelgard is meant to answer, the one the four companions will strike together in the belfry beyond. Their voices braid and hold a single long note, and the doors themselves shiver with the sound of what attends them.",
+   "nextNodeId": "ch15_hub",
+   "setFlagOnEnter": "ch15_bell_complete"
+  },
+  {
+   "id": "ch15_cedric_dialogue",
+   "speakerId": "cedric",
+   "side": "RIGHT",
+   "text": "I was an exile, broken by guilt. You taught me that honor is not a wall—it is the courage to speak for those who cannot. Whatever waits behind those doors, Invocator, my shield is yours until my last breath.",
+   "nextNodeId": "ch15_hub",
+   "setFlagOnEnter": "ch15_cedric_complete"
+  },
+  {
+   "id": "ch15_lyra_dialogue",
+   "speakerId": "lyra",
+   "side": "LEFT",
+   "text": "I lived in terror of the quiet for so many years. But together, our voices made the blossoms bloom and the dryads sing. We are going to bring the morning back to everyone.",
+   "nextNodeId": "ch15_hub",
+   "setFlagOnEnter": "ch15_lyra_complete"
+  },
+  {
+   "id": "ch15_zephyr_dialogue",
+   "speakerId": "zephyr",
+   "side": "LEFT",
+   "text": "In the shadows, they told me words were weakness. But I see now that words are how we bind our hearts together in the dark. Malakor thinks silence is peace. Let us show him the storm.",
+   "nextNodeId": "ch15_hub",
+   "setFlagOnEnter": "ch15_zephyr_complete"
+  },
+  {
+   "id": "ch15_all_completed",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Golden Archon Custodians and Celestial Spires materialize to guard the final sanctum. They raise their halberds: 'Only those of true harmonic resonance may enter the Belfry of Eternity!' Prove your fellowship's resonance to the Archons!",
+   "nextNodeId": "ch15_custodians_assault"
+  },
+  {
+   "id": "ch15_custodians_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Archon Custodians strike with celestial radiance! The four companions unite their master spells to break through the final test!",
+   "triggerBattleEncounterId": "ch15_archon_custodians",
+   "nextNodeId": "ch15_custodians_victory"
+  },
+  {
+   "id": "ch15_custodians_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Archon Custodians bow low, their halberds lowering as the golden doors slowly swing open into the celestial belfry. Beyond, against a swirling backdrop of cosmic auroras, stands Grand Inquisitor Malakor—The Mute Sovereign!",
+   "nextNodeId": "ch15_doors_open",
+   "setFlagOnEnter": "ch15_custodians_defeated"
+  },
+  {
+   "id": "ch15_doors_open",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The golden doors swing wide on their own, silent as everything Malakor has made. Beyond them, at the far end of the belfry floor, the Bell of Eternity hangs in a field of starlight — and the pathway to it is open, waiting, absolute.",
+   "nextNodeId": "ch15_fellowship_oath"
+  },
+  {
+   "id": "ch15_fellowship_oath",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The four companions stand at the threshold of the belfry, looking across the final floor to the waiting Bell. One long breath passes through them all at once. This is the last step before the last word.",
+   "choices": [
+    {
+     "id": "ch15_oath_together",
+     "text": "Bind the fellowship's promise before crossing the floor",
+     "voiceKeywords": [
+      "oath",
+      "promise",
+      "bind",
+      "together",
+      "fellowship"
+     ],
+     "nextNodeId": "ch15_oath_scene"
+    },
+    {
+     "id": "ch15_oath_bell",
+     "text": "Promise each other one thing each will do when the bells ring",
+     "voiceKeywords": [
+      "promise",
+      "each",
+      "bell",
+      "ring",
+      "one"
+     ],
+     "nextNodeId": "ch15_oath_bell_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch15_oath_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Cedric lays his gauntlet flat, palm up, and the others set their hands upon it, one by one. 'However this ends,' he says, 'it ends with us having spoken. That is more than Malakor has ever given anyone.' The four hands hold, and the belfry floor may finally be crossed.",
+   "nextNodeId": "ch15_prefinale_rest"
+  },
+  {
+   "id": "ch15_oath_bell_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Each of you names one thing the ringing of the bells will mean — a mother's name for Zephyr, a choir for Lyra, a promise by an old market stall for Cedric, and for you, a world that can say 'I remember' again. The staircase of stars beneath them brightens at the sound of it.",
+   "nextNodeId": "ch15_prefinale_rest"
+  },
+  {
+   "id": "ch15_prefinale_rest",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fellowship rests in the antechamber of the belfry, tenders to each other's armor and robes under the first stars of an infinite hour. When they rise, they are whole, and the Bell of Eternity has grown impatient with silence.",
+   "nextNodeId": "ch15_post_victory",
+   "setFlagOnEnter": "ch15_prefinale_rest_complete"
+  },
+  {
+   "id": "ch15_post_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The final belfry is open. The fourth Great Bell—The Bell of Eternity—awaits. It is time to end the silence forever. Enter the Celestial Belfry to confront Grand Inquisitor Malakor",
+   "nextNodeId": "ch16_intro"
+  },
+  {
+   "id": "ch16_intro",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The pinnacle of the Spire of Echoes touches the outer rim of the cosmos. High above hangs the Fourth Great Bell—The Bell of Eternity—cast from star-metal and meteoric glass. Grand Inquisitor Malakor stands beneath it, his filigree muzzle mask gleaming beneath cold crimson eyes.",
+   "nextNodeId": "ch16_vestibule_entry",
+   "changeSceneId": "scene_final_summit"
+  },
+  {
+   "id": "ch16_vestibule_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Between the summit stairs and Malakor's dais lies the Vestibule of Echoes: four pillars of living glass, each holding a fragment of the world's song, each ringed by the frozen supplicants who came to bow to silence and never left. The glass pillars hum as the fellowship passes — and one by one, the supplicants begin to rise.",
+   "choices": [
+    {
+     "id": "ch16_vest_chant",
+     "text": "Raise the Toll Chant to match the hum of the pillars",
+     "voiceKeywords": [
+      "chant",
+      "pillars",
+      "hum",
+      "raise",
+      "toll"
+     ],
+     "nextNodeId": "ch16_vest_chant_scene"
+    },
+    {
+     "id": "ch16_vest_face",
+     "text": "Face the risen supplicants and hold your ground",
+     "voiceKeywords": [
+      "face",
+      "supplicants",
+      "ground",
+      "stand",
+      "rise"
+     ],
+     "nextNodeId": "ch16_vest_face_scene"
+    }
+   ],
+   "changeSceneId": "scene_celestial_vestibule"
+  },
+  {
+   "id": "ch16_vest_chant_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You strike the Toll Chant and the pillars drink it in, their hum climbing toward the Bell of Eternity. The supplicants' heads turn toward the sound like flowers toward dawn, and their frozen hands unclench from their raptor-prayers.",
+   "nextNodeId": "ch16_vest_trigger"
+  },
+  {
+   "id": "ch16_vest_face_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Cedric plants himself before the rising supplicants, shield high, and the company closes ranks at his back. The risen ones look at the wall of living defiance before them — and for the first time since their petrification, their mouths frame a question rather than a plea.",
+   "nextNodeId": "ch16_vest_trigger"
+  },
+  {
+   "id": "ch16_vest_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The four glass pillars shatter inward and the Echo Nullifiers — Malakor's last gatekeepers, each forged to erase a thousand voices — step from the shards, weapons shaped like the negative spaces where songs used to be!",
+   "triggerBattleEncounterId": "ch16_nullifier_gate",
+   "nextNodeId": "ch16_vest_victory"
+  },
+  {
+   "id": "ch16_vest_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Nullifiers fall, and with them the last armed echo of the old silence. The four pillars slowly repair themselves — now glowing softer, hymn-bright instead of void-bright — as the supplicants kneel back down, this time in quiet wonder at the pillars' restored light.",
+   "nextNodeId": "ch16_mirror_gate",
+   "setFlagOnEnter": "ch16_vestibule_cleared"
+  },
+  {
+   "id": "ch16_mirror_gate",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Beyond the pillars, the vestibule narrows into a gallery of polished obsidian — a hall of mirrors that has caught and kept every doubt spoken within it for a thousand years. At the far end stands Malakor, unmoved, watching your approach in every reflection.",
+   "nextNodeId": "ch16_confrontation"
+  },
+  {
+   "id": "ch16_confrontation",
+   "speakerId": "malakor",
+   "side": "RIGHT",
+   "text": "Why do you fight so fiercely for voice? Every war began with a proclamation. Every betrayal began with a whisper. Every cruelty was sanctified with a spoken lie. In the Great Stillness, there is no grief, no malice, no deceit. Silence is the only mercy that endures.",
+   "nextNodeId": "ch16_fellowship_reply"
+  },
+  {
+   "id": "ch16_fellowship_reply",
+   "speakerId": "hero",
+   "side": "LEFT",
+   "text": "A world without voice is not peace, Malakor—it is an unmarked grave. Words can wound, yes, but they are also how we reach across the dark. How we forge our sacred vows, remember the fallen, and stand together against despair. To silence the living to spare them sorrow is not mercy—it is surrender. We will not let your grief extinguish the dawn!",
+   "nextNodeId": "ch16_mirror_entry"
+  },
+  {
+   "id": "ch16_mirror_entry",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The gallery of mirrors swallows the light. In each polished face, a reflection of the fellowship appears — then begins to move of its own accord, whispering every fear that was ever set down here in the shape of your own voices. Malakor watches from the far end, patient, unmoved.",
+   "choices": [
+    {
+     "id": "ch16_mirror_deny",
+     "text": "Deny the doubts and walk through the gallery unbroken",
+     "voiceKeywords": [
+      "deny",
+      "doubts",
+      "walk",
+      "through",
+      "unbroken"
+     ],
+     "nextNodeId": "ch16_mirror_deny_scene"
+    },
+    {
+     "id": "ch16_mirror_speak",
+     "text": "Speak every doubt aloud so the mirrors lose their hold",
+     "voiceKeywords": [
+      "speak",
+      "aloud",
+      "doubts",
+      "mirrors",
+      "hold"
+     ],
+     "nextNodeId": "ch16_mirror_speak_scene"
+    }
+   ]
+  },
+  {
+   "id": "ch16_mirror_deny_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You refuse the reflections one by one — every whispered could-have, every doubt Malakor has steeped in this hall for generations — until the mirrors, having no purchase, begin to crack with the strain of holding lies against a will that will not bend.",
+   "nextNodeId": "ch16_mirror_trigger"
+  },
+  {
+   "id": "ch16_mirror_speak_scene",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "You walk the gallery saying each doubt aloud as your own voice — not a reflection's, but yours — and the naming of them drains the venom from the hall. 'A fear that is named,' Lyra says softly, 'is a fear that has already lost.'",
+   "nextNodeId": "ch16_mirror_trigger"
+  },
+  {
+   "id": "ch16_mirror_trigger",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The mirrors shatter all at once — and from the shards, the Mirror Gauntlet rises: the doubt-shadows of the entire fellowship, given blade and shape, their reflections turning against their originals in Malakor's last trick before the dais!",
+   "triggerBattleEncounterId": "ch16_mirror_gauntlet",
+   "nextNodeId": "ch16_mirror_victory"
+  },
+  {
+   "id": "ch16_mirror_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The doubt-shadows dissolve into cascading starlight, and the gallery opens onto the windswept summit of the Spire. Above, the Fourth Great Bell—the Bell of Eternity—hangs suspended between the constellations. Ahead, upon the obsidian dais, Grand Inquisitor Malakor turns to face you. There is nothing left between you now.",
+   "nextNodeId": "ch16_malakor_assault",
+   "changeSceneId": "scene_final_summit",
+   "setFlagOnEnter": "ch16_mirror_cleared"
+  },
+  {
+   "id": "ch16_malakor_assault",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Grand Inquisitor Malakor strikes his meteoric staff upon the dais! The Glass Monolith hums with blinding void-resonance as the Echo Nullifiers materialize to seal creation in perpetual stillness. Stand firm, Awakened Invocators—speak your truth and shatter the silence!",
+   "triggerBattleEncounterId": "ch16_malakor_finale",
+   "nextNodeId": "ch16_malakor_victory"
+  },
+  {
+   "id": "ch16_malakor_victory",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Malakor falls to his knees upon the celestial dais. The filigree mask cracks and clatters to the stone floor. For the first time in five hundred years, color returns to his pale skin and a tear tracks down his cheek. He touches his throat and whispers with a restored, frail human voice: 'I remember... the song my mother sang.' He closes his eyes with a serene smile and dissolves into peaceful motes of golden light.",
+   "nextNodeId": "ch16_incantation_verse",
+   "setFlagOnEnter": "malakor_defeated"
+  },
+  {
+   "id": "ch16_incantation_verse",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The last mote of Malakor's light rises past your face and is gone into the auroras. In the hush that follows, you realize the summit is not silent at all — it is humming, the four-line Primordial Incantation already forming itself unbidden in each of your four voices, waiting for one joined breath.",
+   "nextNodeId": "ch16_bell_vigil"
+  },
+  {
+   "id": "ch16_bell_vigil",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The four companions gather under the Bell of Eternity, hands on the cord of braided starlight, and hold the incantation ready in the living hush. The Mute Sovereign's reign is over; only the first toll remains. Whatever comes after the ringing, none of you will face it alone.",
+   "nextNodeId": "ch16_toll_bell"
+  },
+  {
+   "id": "ch16_toll_bell",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fellowship approaches the Bell of Eternity. Together, all four companions grasp the cord of braided starlight. The player invokes the First Word with full lung power: 'LET THERE BE ECHO!' Toll the Bell of Eternity and awaken Aethelgard!",
+   "nextNodeId": "epilogue_awakening"
+  },
+  {
+   "id": "epilogue_awakening",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The Bell of Eternity tolls! A blinding shockwave of incandescent golden sound cascades down from the summit. Across the four quadrants of Aethelgard, the Bell of Solaria, the Veridian Chime, and the Resonant Bastion answer in symphonic four-part resonance! The sky turns brilliant sapphire, woven with auroras of pure melodic light!",
+   "nextNodeId": "epilogue_village",
+   "changeSceneId": "scene_epilogue"
+  },
+  {
+   "id": "epilogue_village",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "Down in Whispering Pines, the thick obsidian vines that strangled the village square shatter into iridescent dust! The frozen statues gasp and draw their first deep breaths of mountain air! The village elder shouts with joy. Parents weep as they embrace their children. Down in the valley, the river sings over smooth stones, and thousands of songbirds burst into joyful morning hymn!",
+   "nextNodeId": "epilogue_destinies"
+  },
+  {
+   "id": "epilogue_destinies",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "The fellowship stands upon the high overlook above Whispering Pines. Sir Cedric pledges to rebuild the Order of the Harmonious Dawn, defending the right of every living soul to speak freely. Beside him, Lyra watches green sprouts burst from her staff, promising the Emerald Choir will sing again. And with a grin, Zephyr flips his daggers into his belt, vowing to carry the tale of your victory across every province.",
+   "nextNodeId": "epilogue_invocator"
+  },
+  {
+   "id": "epilogue_invocator",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "And what of you, Invocator? As the First Invocator of the New Age, you will keep vigil at the Spire of Echoes, teaching the children of Aethelgard to speak with conviction, kindness, and truth—so that the silence of fear may never claim the world again.",
+   "nextNodeId": "epilogue_credits"
+  },
+  {
+   "id": "epilogue_credits",
+   "speakerId": "narrator",
+   "side": "CENTER_NARRATOR",
+   "text": "CONGRATULATIONS! You have completed Voice RPG: Chronicles of the Logos! Every chapter, every trial, every companion bond, and the ultimate confrontation with the Mute Sovereign was conquered by your courage, your voice, and your heart. Thank you for playing!",
+   "setFlagOnEnter": "game_completed"
+  }
+ ]
+}

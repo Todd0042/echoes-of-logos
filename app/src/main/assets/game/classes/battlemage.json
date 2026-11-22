@@ -1,0 +1,32 @@
+{
+  "id": "battlemage",
+  "title": "Battlemage",
+  "subtitle": "Armored Frontline Spellblade",
+  "description": "Blends heavy melee strikes with explosive pyro and electro surges. High durability and guard mitigation.",
+  "startingHp": 300,
+  "startingMp": 100,
+  "startingSpeed": 60,
+  "startingBaseAttack": 25,
+  "preferredSchool": "PHYSICAL",
+  "starterSpellIds": [
+    "flame_strike",
+    "arcane_barrier",
+    "thunder_cleave",
+    "attune"
+  ],
+  "voiceKeywords": [
+    "battlemage",
+    "spellblade",
+    "knight",
+    "warrior",
+    "battle",
+    "blade"
+  ],
+  "growth": {
+    "maxHp": 18,
+    "maxMp": 8,
+    "speed": 1,
+    "defense": 2,
+    "potencyPct": 0.03
+  }
+}

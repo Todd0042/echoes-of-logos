@@ -1,0 +1,9 @@
+{
+  "id": "dryad_matron",
+  "role": "npc",
+  "name": "The Elder Dryad",
+  "title": "Voice of the Emerald Choir",
+  "portraitAsset": "portraits/dryad_matron.jpg",
+  "themeColor": "#66BB6A",
+  "ttsPitch": 1.05
+}

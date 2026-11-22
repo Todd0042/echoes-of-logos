@@ -1,0 +1,32 @@
+{
+  "id": "chanter",
+  "title": "Chanter",
+  "subtitle": "Vocalist of Harmonic Resonances",
+  "description": "Uses rhythmic acoustic cadence to manipulate ATB tempo, restore fellowship health, and shatter enemies with harmonic waves.",
+  "startingHp": 220,
+  "startingMp": 160,
+  "startingSpeed": 65,
+  "startingBaseAttack": 18,
+  "preferredSchool": "HOLY",
+  "starterSpellIds": [
+    "temporal_stasis",
+    "haste_cadence",
+    "resonant_surge",
+    "attune"
+  ],
+  "voiceKeywords": [
+    "chanter",
+    "bard",
+    "singer",
+    "vocalist",
+    "skald",
+    "cantor"
+  ],
+  "growth": {
+    "maxHp": 11,
+    "maxMp": 16,
+    "speed": 1,
+    "defense": 1,
+    "potencyPct": 0.05
+  }
+}

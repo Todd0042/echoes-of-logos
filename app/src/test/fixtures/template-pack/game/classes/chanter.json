@@ -1,0 +1,15 @@
+{
+  "_doc": "TEMPLATE HERO CLASS. See elementalist.json for the schema.",
+  "id": "chanter",
+  "title": "Chanter",
+  "subtitle": "Acoustic Chronomancer",
+  "description": "Manipulates battle cadence, accelerates turn gauges, and doubles vocal resonance bonuses. High agility and tactical speed.",
+  "startingHp": 220,
+  "startingMp": 180,
+  "startingSpeed": 80,
+  "startingBaseAttack": 18,
+  "preferredSchool": "ELECTROMANCY",
+  "starterSpellIds": ["temporal_stasis", "haste_cadence", "resonant_surge", "attune"],
+  "voiceKeywords": ["chanter", "bard", "singer", "chronomancer", "monk", "cleric"],
+  "growth": { "maxHp": 14, "maxMp": 12, "speed": 1, "defense": 1, "potencyPct": 0.03 }
+}

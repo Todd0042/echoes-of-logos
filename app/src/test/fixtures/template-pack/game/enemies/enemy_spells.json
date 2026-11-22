@@ -1,0 +1,277 @@
+{
+  "_doc": "Enemy movesets and special spells library with visual VFX graphics mappings. Referenced by enemies in enemies.json via movesetId.",
+  "movesets": {
+    "construct_bruiser": {
+      "moves": [
+        {
+          "name": "Iron Slam",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#ECEFF1",
+            "secondaryColor": "#B0BEC5",
+            "particleCount": 14,
+            "screenShake": 4.0
+          }
+        },
+        {
+          "name": "Crush",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.6,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "cooldownTurns": 3,
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#CFD8DC",
+            "secondaryColor": "#90A4AE",
+            "particleCount": 18,
+            "screenShake": 8.0
+          }
+        },
+        {
+          "name": "Steam Vent",
+          "school": "PYROMANCY",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "BURN",
+          "cooldownTurns": 4,
+          "weight": 2,
+          "graphics": {
+            "effectType": "WAVE",
+            "primaryColor": "#FF7043",
+            "secondaryColor": "#FFE082",
+            "particleCount": 24,
+            "screenShake": 6.0
+          }
+        }
+      ]
+    },
+    "flesh_bruiser": {
+      "moves": [
+        {
+          "name": "Cleave",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 6,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#EF5350",
+            "secondaryColor": "#B71C1C",
+            "particleCount": 12,
+            "screenShake": 4.0
+          }
+        },
+        {
+          "name": "Savage Rip",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.6,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "applyStatus": "BLEED",
+          "cooldownTurns": 3,
+          "weight": 3,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#D32F2F",
+            "secondaryColor": "#FFCDD2",
+            "particleCount": 16,
+            "screenShake": 7.0
+          }
+        },
+        {
+          "name": "War Cry",
+          "school": "PHYSICAL",
+          "kind": "BUFF",
+          "powerMult": 0.0,
+          "targetRule": "SELF",
+          "applyStatus": "BLESS",
+          "cooldownTurns": 5,
+          "weight": 1,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FFA726",
+            "secondaryColor": "#FFE082",
+            "particleCount": 10,
+            "screenShake": 2.0
+          }
+        }
+      ]
+    },
+    "flesh_sniper": {
+      "moves": [
+        {
+          "name": "Volley Shot",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 7,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#AB47BC",
+            "secondaryColor": "#E1BEE7",
+            "particleCount": 10,
+            "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Aimed Shot",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.5,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "cooldownTurns": 3,
+          "weight": 3,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#7B1FA2",
+            "secondaryColor": "#BA68C8",
+            "particleCount": 15,
+            "screenShake": 6.0
+          }
+        }
+      ]
+    },
+    "void_caster": {
+      "moves": [
+        {
+          "name": "Void Bolt",
+          "school": "SHADOW",
+          "kind": "BASIC",
+          "powerMult": 1.0,
+          "targetRule": "SINGLE_RANDOM",
+          "applyStatus": "CORRODE",
+          "weight": 5,
+          "graphics": {
+            "effectType": "PROJECTILE",
+            "primaryColor": "#7E57C2",
+            "secondaryColor": "#311B92",
+            "particleCount": 14,
+            "screenShake": 4.0
+          }
+        },
+        {
+          "name": "Enveloping Dark",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 0.7,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 5,
+          "weight": 3,
+          "graphics": {
+            "effectType": "WAVE",
+            "primaryColor": "#5E35B1",
+            "secondaryColor": "#EDE7F6",
+            "particleCount": 20,
+            "screenShake": 6.0
+          }
+        },
+        {
+          "name": "Siphon Essence",
+          "school": "SHADOW",
+          "kind": "DRAIN",
+          "powerMult": 1.1,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "cooldownTurns": 4,
+          "weight": 2,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#4527A0",
+            "secondaryColor": "#B39DDB",
+            "particleCount": 16,
+            "screenShake": 5.0
+          }
+        }
+      ]
+    },
+    "boss_template": {
+      "moves": [
+        {
+          "name": "Crushing Blow",
+          "school": "PHYSICAL",
+          "kind": "BASIC",
+          "powerMult": 1.2,
+          "targetRule": "SINGLE_RANDOM",
+          "weight": 4,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#FFD54F",
+            "secondaryColor": "#FF8F00",
+            "particleCount": 16,
+            "screenShake": 7.0
+          }
+        },
+        {
+          "name": "Heavy Slam",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 1.7,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "cooldownTurns": 3,
+          "weight": 3,
+          "graphics": {
+            "effectType": "BURST",
+            "primaryColor": "#FFA000",
+            "secondaryColor": "#FFE082",
+            "particleCount": 22,
+            "screenShake": 10.0
+          }
+        },
+        {
+          "name": "Shockwave",
+          "school": "PHYSICAL",
+          "kind": "AOE",
+          "powerMult": 0.8,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4,
+          "weight": 3,
+          "graphics": {
+            "effectType": "WAVE",
+            "primaryColor": "#FFB300",
+            "secondaryColor": "#FFF8E1",
+            "particleCount": 28,
+            "screenShake": 9.0
+          }
+        },
+        {
+          "name": "Cataclysm",
+          "school": "PHYSICAL",
+          "kind": "AOE",
+          "powerMult": 2.4,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "OVERLOAD",
+          "cooldownTurns": 5,
+          "weight": 2,
+          "graphics": {
+            "effectType": "PILLAR",
+            "primaryColor": "#E65100",
+            "secondaryColor": "#FFD54F",
+            "particleCount": 35,
+            "screenShake": 14.0
+          }
+        }
+      ],
+      "phases": [
+        {
+          "hpBelow": 0.66,
+          "note": "Enrages: summons reinforcements"
+        },
+        {
+          "hpBelow": 0.33,
+          "note": "Overload: cataclysmic party-wide pressure"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "shadowweaver",
+  "title": "Shadowweaver",
+  "subtitle": "Weaver of Umbral Siphons",
+  "description": "Channels the dark void to pierce enemy defenses, siphon health, and blind enemies with corrosive shadow veil.",
+  "startingHp": 230,
+  "startingMp": 130,
+  "startingSpeed": 75,
+  "startingBaseAttack": 24,
+  "preferredSchool": "SHADOW",
+  "starterSpellIds": [
+    "shadow_spike",
+    "void_drain",
+    "umbral_veil",
+    "attune"
+  ],
+  "voiceKeywords": [
+    "shadowweaver",
+    "shadow",
+    "weaver",
+    "warlock",
+    "necromancer",
+    "void"
+  ],
+  "growth": {
+    "maxHp": 13,
+    "maxMp": 12,
+    "speed": 2,
+    "defense": 1,
+    "potencyPct": 0.04
+  }
+}

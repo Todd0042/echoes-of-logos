@@ -1,0 +1,11 @@
+{
+  "id": "narrator",
+  "role": "narrator",
+  "name": "Narrator",
+  "title": "Chronicle",
+  "portraitAsset": "portraits/narrator.jpg",
+  "themeColor": "#FFE082",
+  "ttsPitch": 1.0,
+  "samplePhrase": "Listen closely to the chronicles of Solaria.",
+  "preferredVoiceId": "en-gb-x-rjs-local"
+}

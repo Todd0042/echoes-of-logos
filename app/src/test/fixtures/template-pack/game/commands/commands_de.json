@@ -1,0 +1,251 @@
+{
+  "locale": "de",
+  "metaCommands": {
+    "STATUS_REPORT": [
+      "status",
+      "bericht",
+      "statusbericht",
+      "gesundheit",
+      "lebenspunkte",
+      "hp"
+    ],
+    "CHECK_ENEMIES": [
+      "feinde",
+      "monster",
+      "ziele",
+      "wer lebt",
+      "gegner"
+    ],
+    "CHECK_PARTY": [
+      "gruppe",
+      "verbuendete",
+      "team",
+      "gefaehrten",
+      "gruppenstatus"
+    ],
+    "UNLOCK_SCREEN": [
+      "entsperren",
+      "bildschirm entsperren",
+      "bildschirm an",
+      "aufwachen"
+    ],
+    "LOCK_SCREEN": [
+      "sperren",
+      "bildschirm sperren",
+      "bildschirm aus",
+      "taschensperre"
+    ],
+    "DISABLE_EYES_FREE": [
+      "taschenmodus beenden",
+      "taschenmodus aus",
+      "taschenmodus deaktivieren"
+    ],
+    "ENABLE_EYES_FREE": [
+      "taschenmodus aktivieren",
+      "taschenmodus an",
+      "taschenmodus starten"
+    ],
+    "TOGGLE_EYES_FREE": [
+      "taschenmodus",
+      "ohne bildschirm",
+      "audiomodus",
+      "erzaehler"
+    ],
+    "TOGGLE_AUTO_LISTEN": [
+      "automatisches zuhoeren",
+      "freisprechen",
+      "auto mikrofon"
+    ],
+    "TOGGLE_NARRATION": [
+      "erzaehlung umschalten",
+      "erzaehlung",
+      "dialog vorlesen"
+    ],
+    "TOGGLE_READ_CHOICES": [
+      "optionen vorlesen",
+      "auswahl vorlesen",
+      "optionen lesen"
+    ],
+    "TOGGLE_SPEAKER_ATTRIBUTION": [
+      "sprechername",
+      "wer spricht",
+      "sprecher anzeigen"
+    ],
+    "TOGGLE_MUSIC": [
+      "musik",
+      "musik an",
+      "musik aus",
+      "hintergrundmusik"
+    ],
+    "OPEN_OPTIONS": [
+      "optionen",
+      "einstellungen",
+      "menue",
+      "optionen oeffnen"
+    ],
+    "CLOSE_OPTIONS": [
+      "optionen schliessen",
+      "zurueck",
+      "weiter",
+      "menue schliessen"
+    ],
+    "OPEN_BACKLOG": [
+      "protokoll",
+      "verlauf",
+      "verlauf oeffnen",
+      "dialogverlauf"
+    ],
+    "CLOSE_BACKLOG": [
+      "protokoll schliessen",
+      "verlauf schliessen"
+    ],
+    "FAST_FORWARD": [
+      "ueberspringen",
+      "vorspulen",
+      "weiter",
+      "schnell"
+    ],
+    "STOP_FAST_FORWARD": [
+      "stopp",
+      "anhalten",
+      "pause"
+    ],
+    "STORY_RECAP": [
+      "zusammenfassung",
+      "geschichte bisher",
+      "was geschah"
+    ],
+    "HELP": [
+      "hilfe",
+      "befehle",
+      "sprachbefehle",
+      "was kann ich sagen"
+    ],
+    "SPEED_UP_NARRATION": [
+      "schneller sprechen",
+      "schnellere stimme",
+      "schneller"
+    ],
+    "SLOW_DOWN_NARRATION": [
+      "langsamer sprechen",
+      "langsamere stimme",
+      "langsamer"
+    ],
+    "RESET_NARRATION_SPEED": [
+      "normale geschwindigkeit",
+      "standardgeschwindigkeit"
+    ]
+  },
+  "targeting": {
+    "ordinals": {
+      "0": [
+        "erster",
+        "erste",
+        "erstes",
+        "feind 1",
+        "monster 1",
+        "1"
+      ],
+      "1": [
+        "zweiter",
+        "zweite",
+        "zweites",
+        "feind 2",
+        "monster 2",
+        "2"
+      ],
+      "2": [
+        "dritter",
+        "dritte",
+        "drittes",
+        "feind 3",
+        "monster 3",
+        "3"
+      ],
+      "3": [
+        "vierter",
+        "vierte",
+        "viertes",
+        "feind 4",
+        "monster 4",
+        "4"
+      ],
+      "4": [
+        "fuenfter",
+        "fuenfte",
+        "fuenftes",
+        "feind 5",
+        "monster 5",
+        "5"
+      ],
+      "5": [
+        "sechster",
+        "sechste",
+        "sechstes",
+        "feind 6",
+        "monster 6",
+        "6"
+      ]
+    },
+    "positionals": {
+      "leftmost": [
+        "ganz links",
+        "aeussert links"
+      ],
+      "rightmost": [
+        "ganz rechts",
+        "aeussert rechts"
+      ],
+      "left": [
+        "links",
+        "linke"
+      ],
+      "right": [
+        "rechts",
+        "rechte"
+      ],
+      "center": [
+        "mitte",
+        "zentrum"
+      ]
+    },
+    "groups": {
+      "all": [
+        "alle",
+        "alle feinde",
+        "horde",
+        "jeder"
+      ],
+      "party": [
+        "gruppe",
+        "verbuendete",
+        "team"
+      ],
+      "self": [
+        "selbst",
+        "mich",
+        "mir"
+      ]
+    }
+  },
+  "actions": {
+    "heal": [
+      "heilen",
+      "heilung",
+      "wiederherstellen",
+      "kurieren"
+    ],
+    "defend": [
+      "verteidigen",
+      "blocken",
+      "abwehren",
+      "schild"
+    ],
+    "attack": [
+      "angreifen",
+      "schlagen",
+      "angriff",
+      "treffen"
+    ]
+  }
+}

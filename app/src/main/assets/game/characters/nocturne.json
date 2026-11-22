@@ -1,0 +1,9 @@
+{
+  "id": "nocturne",
+  "role": "npc",
+  "name": "Master Nocturne",
+  "title": "Spymaster of the Mute",
+  "portraitAsset": "portraits/nocturne.jpg",
+  "themeColor": "#7E57C2",
+  "ttsPitch": 0.7
+}

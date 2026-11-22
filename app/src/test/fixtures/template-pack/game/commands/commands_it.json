@@ -1,0 +1,237 @@
+{
+  "locale": "it",
+  "metaCommands": {
+    "STATUS_REPORT": [
+      "stato",
+      "rapporto",
+      "rapporto di stato",
+      "salute",
+      "vita",
+      "hp"
+    ],
+    "CHECK_ENEMIES": [
+      "nemici",
+      "mostri",
+      "bersagli",
+      "chi e vivo"
+    ],
+    "CHECK_PARTY": [
+      "gruppo",
+      "alleati",
+      "squadra",
+      "compagni"
+    ],
+    "UNLOCK_SCREEN": [
+      "sblocca",
+      "sblocca schermo",
+      "accendi schermo"
+    ],
+    "LOCK_SCREEN": [
+      "blocca schermo",
+      "spegni schermo",
+      "schermo nero"
+    ],
+    "DISABLE_EYES_FREE": [
+      "esci da modalita tasca",
+      "disattiva modalita tasca"
+    ],
+    "ENABLE_EYES_FREE": [
+      "attiva modalita tasca",
+      "avvia modalita tasca"
+    ],
+    "TOGGLE_EYES_FREE": [
+      "modalita tasca",
+      "senza schermo",
+      "modalita audio",
+      "narratore"
+    ],
+    "TOGGLE_AUTO_LISTEN": [
+      "ascolto automatico",
+      "mani libere",
+      "auto microfono"
+    ],
+    "TOGGLE_NARRATION": [
+      "attiva narrazione",
+      "narrazione",
+      "leggi dialogo"
+    ],
+    "TOGGLE_READ_CHOICES": [
+      "leggi scelte",
+      "leggi opzioni",
+      "scelte a voce alta"
+    ],
+    "TOGGLE_SPEAKER_ATTRIBUTION": [
+      "chi parla",
+      "nome oratore",
+      "attribuzione"
+    ],
+    "TOGGLE_MUSIC": [
+      "musica",
+      "musica on",
+      "musica off",
+      "muta musica"
+    ],
+    "OPEN_OPTIONS": [
+      "opzioni",
+      "impostazioni",
+      "menu",
+      "apri opzioni"
+    ],
+    "CLOSE_OPTIONS": [
+      "chiudi opzioni",
+      "indietro",
+      "continua",
+      "chiudi menu"
+    ],
+    "OPEN_BACKLOG": [
+      "registro",
+      "cronologia",
+      "apri cronologia"
+    ],
+    "CLOSE_BACKLOG": [
+      "chiudi registro",
+      "chiudi cronologia"
+    ],
+    "FAST_FORWARD": [
+      "salta",
+      "avanti",
+      "avanti veloce"
+    ],
+    "STOP_FAST_FORWARD": [
+      "stop",
+      "ferma",
+      "pausa"
+    ],
+    "STORY_RECAP": [
+      "riassunto",
+      "storia finora",
+      "cosa e successo"
+    ],
+    "HELP": [
+      "aiuto",
+      "comandi",
+      "cosa posso dire"
+    ],
+    "SPEED_UP_NARRATION": [
+      "parla piu veloce",
+      "voce piu veloce",
+      "piu veloce"
+    ],
+    "SLOW_DOWN_NARRATION": [
+      "parla piu lentamente",
+      "voce piu lenta",
+      "piu lento"
+    ],
+    "RESET_NARRATION_SPEED": [
+      "velocita normale",
+      "reimposta velocita"
+    ]
+  },
+  "targeting": {
+    "ordinals": {
+      "0": [
+        "primo",
+        "prima",
+        "nemico 1",
+        "mostro 1",
+        "1"
+      ],
+      "1": [
+        "secondo",
+        "seconda",
+        "nemico 2",
+        "monstro 2",
+        "2"
+      ],
+      "2": [
+        "terzo",
+        "terza",
+        "nemico 3",
+        "monstro 3",
+        "3"
+      ],
+      "3": [
+        "quarto",
+        "quarta",
+        "nemico 4",
+        "monstro 4",
+        "4"
+      ],
+      "4": [
+        "quinto",
+        "quinta",
+        "nemico 5",
+        "monstro 5",
+        "5"
+      ],
+      "5": [
+        "sesto",
+        "sesta",
+        "nemico 6",
+        "monstro 6",
+        "6"
+      ]
+    },
+    "positionals": {
+      "leftmost": [
+        "piu a sinistra",
+        "estrema sinistra"
+      ],
+      "rightmost": [
+        "piu a destra",
+        "estrema destra"
+      ],
+      "left": [
+        "sinistra",
+        "a sinistra"
+      ],
+      "right": [
+        "destra",
+        "a destra"
+      ],
+      "center": [
+        "centro",
+        "in mezzo"
+      ]
+    },
+    "groups": {
+      "all": [
+        "tutti",
+        "tutti i nemici",
+        "orda"
+      ],
+      "party": [
+        "gruppo",
+        "alleati",
+        "squadra"
+      ],
+      "self": [
+        "me",
+        "me stesso",
+        "io"
+      ]
+    }
+  },
+  "actions": {
+    "heal": [
+      "curare",
+      "guarire",
+      "ripristinare",
+      "purificare",
+      "cura"
+    ],
+    "defend": [
+      "difendere",
+      "parare",
+      "scudo",
+      "proteggere",
+      "difesa"
+    ],
+    "attack": [
+      "attaccare",
+      "colpire",
+      "attacca",
+      "colpisci"
+    ]
+  }
+}

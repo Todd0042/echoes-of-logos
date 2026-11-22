@@ -1,0 +1,71 @@
+{
+  "_note": "Status effects applied by spells/enemy moves. Potency & duration are gated by resonance tier. Family RESISTANCE multiplies (potency AND duration) DOWN but never to zero. INVARIANT I-2: every status always lands at minimum 1 turn and >=0.25 potency (clamp), so nothing is blocked.",
+  "resistanceTiers": { "normal": 1.0, "mild": 0.6, "strong": 0.35 },
+  "landingFloor": { "minTurns": 1, "minPotencyFraction": 0.25 },
+  "tiers": ["BASIC", "ADEPT", "MASTER", "MYTHIC", "TRANSCENDENTAL"],
+  "statuses": {
+    "BURN": {
+      "kind": "DOT", "sourceSchools": ["PYROMANCY"],
+      "effect": "per-turn DoT = potPct * spellHit; stacks by 1/turn up to maxStacks",
+      "byTier": { "BASIC": {"turns":1,"potPct":0.10,"stacks":1}, "ADEPT":{"turns":2,"potPct":0.12,"stacks":2}, "MASTER":{"turns":3,"potPct":0.15,"stacks":3}, "MYTHIC":{"turns":4,"potPct":0.18,"stacks":4}, "TRANSCENDENTAL":{"turns":5,"potPct":0.22,"stacks":5} },
+      "familyResist": { "UNDEAD": "strong", "CONSTRUCT": "strong", "VERDANT": "normal", "FLESH": "normal", "VOID": "mild", "RADIANT": "mild", "SILENCE": "normal" }
+    },
+    "CHILL": {
+      "kind": "ATB_SLOW", "sourceSchools": ["CRYOMANCY"],
+      "effect": "reduces target ATB advance rate; at MASTER+ also applies one-turn FREEZE",
+      "byTier": { "BASIC": {"turns":1,"potPct":0.25}, "ADEPT":{"turns":2,"potPct":0.30}, "MASTER":{"turns":2,"potPct":0.40,"freeze":1}, "MYTHIC":{"turns":3,"potPct":0.45,"freeze":1}, "TRANSCENDENTAL":{"turns":3,"potPct":0.50,"freeze":2} },
+      "familyResist": { "UNDEAD": "strong", "CONSTRUCT": "mild", "VERDANT": "normal", "FLESH": "normal", "VOID": "normal", "RADIANT": "normal", "SILENCE": "normal" }
+    },
+    "OVERLOAD": {
+      "kind": "STUN", "sourceSchools": ["ELECTROMANCY"],
+      "effect": "skips target turn(s); CONSTRUCTs take +1 stun (disruption) but resist nothing",
+      "byTier": { "BASIC": {"turns":0}, "ADEPT":{"turns":0}, "MASTER":{"turns":1}, "MYTHIC":{"turns":1}, "TRANSCENDENTAL":{"turns":2} },
+      "familyResist": { "VERDANT": "strong", "UNDEAD": "strong", "CONSTRUCT": "normal", "FLESH": "normal", "VOID": "mild", "RADIANT": "mild", "SILENCE": "mild" }
+    },
+    "ROOT": {
+      "kind": "ATB_SLOW", "sourceSchools": ["NATURE"],
+      "flavor": "Briar Entangle — binding vines impede the foe",
+      "effect": "heavy ATB slow; blocks retarget/flee; cannot be cleansed while a Verdant ally lives",
+      "byTier": { "BASIC": {"turns":1,"potPct":0.35}, "ADEPT":{"turns":2,"potPct":0.45}, "MASTER":{"turns":2,"potPct":0.60}, "MYTHIC":{"turns":3,"potPct":0.70}, "TRANSCENDENTAL":{"turns":3,"potPct":0.80} },
+      "familyResist": { "CONSTRUCT": "strong", "UNDEAD": "strong", "VOID": "strong", "VERDANT": "mild", "FLESH": "normal", "RADIANT": "normal", "SILENCE": "mild" }
+    },
+    "POISON": {
+      "kind": "DOT", "sourceSchools": ["NATURE","SHADOW"],
+      "effect": "stacking DoT + shaves maxHp for duration",
+      "byTier": { "BASIC": {"turns":2,"potPct":0.08,"stacks":1}, "ADEPT":{"turns":2,"potPct":0.10,"stacks":2}, "MASTER":{"turns":3,"potPct":0.12,"stacks":3}, "MYTHIC":{"turns":3,"potPct":0.14,"stacks":4}, "TRANSCENDENTAL":{"turns":4,"potPct":0.16,"stacks":5} },
+      "familyResist": { "UNDEAD": "strong", "CONSTRUCT": "strong", "VERDANT": "mild", "FLESH": "normal", "VOID": "mild", "RADIANT": "normal", "SILENCE": "strong" }
+    },
+    "CORRODE": {
+      "kind": "DEBUFF_DEF", "sourceSchools": ["SHADOW"],
+      "effect": "reduces target defense and ATB",
+      "byTier": { "BASIC": {"turns":1,"defCut":0.10}, "ADEPT":{"turns":2,"defCut":0.15}, "MASTER":{"turns":2,"defCut":0.20}, "MYTHIC":{"turns":3,"defCut":0.25}, "TRANSCENDENTAL":{"turns":3,"defCut":0.30} },
+      "familyResist": { "CONSTRUCT": "normal", "RADIANT": "strong", "UNDEAD": "mild", "VERDANT": "normal", "FLESH": "normal", "VOID": "mild", "SILENCE": "normal" }
+    },
+    "WEAKEN": {
+      "kind": "DEBUFF_ATK", "sourceSchools": ["VOID-moves","SILENCE-moves"],
+      "effect": "reduces target attack (party) or lowers resonance gain on next cast (party-facing Silence)",
+      "byTier": { "BASIC": {"turns":1,"atkCut":0.10,"resonanceCut":0.05}, "ADEPT":{"turns":2,"atkCut":0.15,"resonanceCut":0.10}, "MASTER":{"turns":2,"atkCut":0.20,"resonanceCut":0.15}, "MYTHIC":{"turns":3,"atkCut":0.25,"resonanceCut":0.20}, "TRANSCENDENTAL":{"turns":3,"atkCut":0.30,"resonanceCut":0.25} },
+      "familyResist": { "all": "normal" }
+    },
+    "BLEED": {
+      "kind": "DOT", "sourceSchools": ["PHYSICAL"],
+      "effect": "physical DoT; does not scale off school DoT caps",
+      "byTier": { "BASIC": {"turns":1,"potPct":0.08}, "ADEPT":{"turns":2,"potPct":0.10}, "MASTER":{"turns":2,"potPct":0.12}, "MYTHIC":{"turns":3,"potPct":0.14}, "TRANSCENDENTAL":{"turns":3,"potPct":0.16} },
+      "familyResist": { "UNDEAD": "strong", "CONSTRUCT": "strong", "VOID": "strong", "VERDANT": "mild", "FLESH": "normal", "RADIANT": "normal", "SILENCE": "mild" }
+    },
+    "BLESS": {
+      "kind": "BUFF", "sourceSchools": ["HOLY"], "targetSide": "party",
+      "effect": "ATB haste + small regen; affinity-immune",
+      "byTier": { "BASIC": {"turns":2,"regenPct":0.03,"atbBoost":0.10}, "ADEPT":{"turns":2,"regenPct":0.05,"atbBoost":0.15}, "MASTER":{"turns":3,"regenPct":0.07,"atbBoost":0.20}, "MYTHIC":{"turns":3,"regenPct":0.09,"atbBoost":0.25}, "TRANSCENDENTAL":{"turns":4,"regenPct":0.12,"atbBoost":0.30} },
+      "familyResist": { "none": "normal" }
+    },
+    "GUARD": {
+      "kind": "BUFF_DEF", "sourceSchools": ["PHYSICAL"], "targetSide": "party",
+      "flavor": "Sir Cedric's Shield Wall / Defend — vanguard protection",
+      "effect": "incoming damage x0.5 and taunts single-target enemy attacks until the guard's next turn; affinity-immune",
+      "byTier": { "BASIC": {"turns":1,"dmgCut":0.5}, "ADEPT":{"turns":1,"dmgCut":0.5}, "MASTER":{"turns":2,"dmgCut":0.5}, "MYTHIC":{"turns":2,"dmgCut":0.55}, "TRANSCENDENTAL":{"turns":2,"dmgCut":0.6} },
+      "familyResist": { "none": "normal" }
+    }
+  },
+  "_statusAppliedOnlyIf": "effectiveTurns>=1 AND effectivePotencyFraction>=landingFloor.minPotencyFraction after family resistance (clamp up to floor; never drop to 0)"
+}

@@ -1,0 +1,53 @@
+{
+  "gameTitle": "Echoes of the Logos",
+  "gameSubtitle": "The Voice-Commanded Epic",
+  "worldName": "Solaria",
+  "initialSceneId": "scene_cottage",
+  "initialNodeId": "cottage_intro",
+  "defaultEncounterId": "prologue_solo",
+  "startingAchievementId": "QUEST_BEGUN",
+  "victoryLine": "Victory! The voice rings true across the field.",
+  "defeatLine": "Defeat. The silence claims you...",
+  "titleBackgroundAsset": "story/cottage_bedroom.jpg",
+  "defaultHeroName": "Aethel",
+  "defaultHeroTitle": "Elemental Invocator",
+  "quickNames": [
+    "Aethel",
+    "Kaelen",
+    "Rowan",
+    "Seraphina",
+    "Darius",
+    "Lyra"
+  ],
+  "characterTitles": [
+    "Elemental Invocator",
+    "Warmage Vanguard",
+    "Harmonic Chanter",
+    "Umbral Adept",
+    "Logos Seeker"
+  ],
+  "creationTitle": "⚔️ FORGE YOUR INVOCATOR ⚔️",
+  "creationSubtitle": "Character Creation & Initial Loadout",
+  "creationEmbarkPrompt": "AWAKEN ➔",
+  "creationVoiceKeywords": [
+    "awaken",
+    "begin",
+    "start",
+    "embark",
+    "journey"
+  ],
+  "defaultHeroPortrait": "portraits/aethel.jpg",
+  "tutorialCompletionText": "Your voice has resonated with the ancient spark. Step forth into the realm of Solaria.",
+  "voicePermissionTitle": "The Awakening of Voice",
+  "voicePermissionSubtitle": "VoiceRPG requires microphone access to chant incantations and command the fellowship.",
+  "voicePermissionPrompt": "GRANT VOICE ACCESS",
+  "resonance": {
+    "mode": "CLASSIC",
+    "topDamageAccessible": true,
+    "conciseCommandBonus": false,
+    "singleRootMaxBonus": false,
+    "bypassPoeticRequirement": false,
+    "urgencyBonus": 0.0,
+    "acousticSensitivity": 1.0
+  }
+}

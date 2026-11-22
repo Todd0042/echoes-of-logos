@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.voicerpg.android"
+    namespace = "com.voicerpg.engine"
     compileSdk = 35
 
     defaultConfig {
@@ -21,14 +21,13 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("boolean", "DEBUG_WARP_MENU", "false")
         }
         debug {
             isMinifyEnabled = false
             isDebuggable = true
+            buildConfigField("boolean", "DEBUG_WARP_MENU", "true")
         }
     }
 
@@ -43,11 +42,19 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+
+    androidResources {
+        noCompress += listOf("ogg", "tflite")
     }
 
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+        jniLibs {
+            useLegacyPackaging = false
         }
     }
 }
@@ -74,6 +81,15 @@ dependencies {
 
     // JSON Serialization for Game Save System
     implementation("com.google.code.gson:gson:2.11.0")
+
+    // MLKit for Custom Selfie Portrait Generation and On-Device Translation
+    implementation("com.google.mlkit:segmentation-selfie:16.0.0-beta6")
+    implementation("com.google.mlkit:face-detection:16.1.7")
+    implementation("com.google.mlkit:translate:17.0.3")
+
+    // TensorFlow Lite for Neural Stylization
+    implementation("org.tensorflow:tensorflow-lite:2.16.1")
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

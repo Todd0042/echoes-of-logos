@@ -1,0 +1,191 @@
+{
+  "_note": "Enemy movesets. A move: name, school, kind (BASIC|HEAVY|AOE|DRAIN|SUMMON|BUFF), powerMult (x enemy.atk after variance), targetRule (SINGLE_RANDOM|SINGLE_LOWEST_HP|SINGLE_MARKED|PARTY_AOE|SELF), applyStatus (ref status-catalog, uses ADEPT tier as baseline potency), cooldownTurns, weight (selection). Bosses carry 'phases': [{hpBelow, addMoves|replace}] evaluated on turn pick, giving real phase-shifts instead of the blanket 3x hack (fixes #8/#14).",
+  "defaultPhase": { "hpBelow": 1.0 },
+  "movesets": {
+    "flesh_bruiser": { "moves": [
+      { "name":"Cleave",        "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":6 },
+      { "name":"Savage Rip",    "school":"PHYSICAL", "kind":"HEAVY", "powerMult":1.6, "targetRule":"SINGLE_LOWEST_HP","applyStatus":"BLEED", "cooldownTurns":3, "weight":3 },
+      { "name":"War Cry",       "school":"PHYSICAL", "kind":"BUFF",  "powerMult":0.0, "targetRule":"SELF",            "applyStatus":"BLESS", "cooldownTurns":5, "weight":1 }
+    ]},
+    "flesh_sniper": { "moves": [
+      { "name":"Volley Shot",   "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":7 },
+      { "name":"Aimed Shot",    "school":"PHYSICAL", "kind":"HEAVY", "powerMult":1.5, "targetRule":"SINGLE_LOWEST_HP","cooldownTurns":3, "weight":3 }
+    ]},
+    "flesh_caster": { "moves": [
+      { "name":"Hex Bolt",      "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"CORRODE", "weight":5 },
+      { "name":"Mind Rake",     "school":"SHADOW",   "kind":"AOE",   "powerMult":0.7, "targetRule":"PARTY_AOE",       "applyStatus":"WEAKEN", "cooldownTurns":4, "weight":2 },
+      { "name":"Siphon Life",   "school":"SHADOW",   "kind":"DRAIN", "powerMult":1.0, "targetRule":"SINGLE_MARKED",   "cooldownTurns":4, "weight":2 }
+    ]},
+    "beast_sniper": { "moves": [
+      { "name":"Skitter Bite",  "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"BLEED", "weight":6 },
+      { "name":"Swarm Flurry",  "school":"PHYSICAL", "kind":"HEAVY", "powerMult":1.4, "targetRule":"SINGLE_RANDOM",   "cooldownTurns":3, "weight":3 }
+    ]},
+    "assassin_sniper": { "moves": [
+      { "name":"Shiv",          "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_LOWEST_HP","weight":5 },
+      { "name":"Backstab",      "school":"SHADOW",   "kind":"HEAVY", "powerMult":1.8, "targetRule":"SINGLE_LOWEST_HP","applyStatus":"BLEED", "cooldownTurns":3, "weight":3 },
+      { "name":"Venom Blade",   "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"POISON", "cooldownTurns":2, "weight":2 }
+    ]},
+    "undead_bruiser": { "moves": [
+      { "name":"Rot Claw",      "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"POISON", "weight":6 },
+      { "name":"Grave Chill",   "school":"CRYOMANCY","kind":"HEAVY", "powerMult":1.4, "targetRule":"SINGLE_MARKED",   "applyStatus":"CHILL", "cooldownTurns":3, "weight":2 },
+      { "name":"Bone Shield",   "school":"PHYSICAL", "kind":"BUFF",  "powerMult":0.0, "targetRule":"SELF",            "applyStatus":"GUARD", "cooldownTurns":5, "weight":1 }
+    ]},
+    "undead_sniper": { "moves": [
+      { "name":"Bone Shot",     "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":7 },
+      { "name":"Gravewail",     "school":"SHADOW",   "kind":"AOE",   "powerMult":0.6, "targetRule":"PARTY_AOE",       "applyStatus":"CHILL", "cooldownTurns":4, "weight":2 }
+    ]},
+    "undead_summoner": { "moves": [
+      { "name":"Necrotic Bolt", "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"POISON", "weight":4 },
+      { "name":"Raise Restless","school":"SHADOW",   "kind":"SUMMON","powerMult":0.0, "targetRule":"SELF",            "summon":"Silt Ghoul", "cooldownTurns":4, "weight":4 }
+    ]},
+    "undead_caster": { "moves": [
+      { "name":"Wither Touch",  "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"POISON", "weight":5 },
+      { "name":"Dread Wail",    "school":"SHADOW",   "kind":"AOE",   "powerMult":0.6, "targetRule":"PARTY_AOE",       "applyStatus":"WEAKEN", "cooldownTurns":4, "weight":3 }
+    ]},
+    "construct_bruiser": { "moves": [
+      { "name":"Iron Slam",     "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":6 },
+      { "name":"Crush",         "school":"PHYSICAL", "kind":"HEAVY", "powerMult":1.6, "targetRule":"SINGLE_LOWEST_HP","cooldownTurns":3, "weight":3 },
+      { "name":"Steam Vent",    "school":"PYROMANCY","kind":"AOE",   "powerMult":0.7, "targetRule":"PARTY_AOE",       "applyStatus":"BURN", "cooldownTurns":4, "weight":2 }
+    ]},
+    "construct_sniper": { "moves": [
+      { "name":"Bolt Volley",   "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":6 },
+      { "name":"Suppressive Fire","school":"PHYSICAL","kind":"AOE",  "powerMult":0.6, "targetRule":"PARTY_AOE",       "cooldownTurns":4, "weight":3 }
+    ]},
+    "construct_caster": { "moves": [
+      { "name":"Grinding Slab", "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":5 },
+      { "name":"Sigil Pulse",   "school":"ELECTROMANCY","kind":"AOE","powerMult":0.7, "targetRule":"PARTY_AOE",       "applyStatus":"OVERLOAD", "cooldownTurns":5, "weight":2 }
+    ]},
+    "verdant_bruiser": { "moves": [
+      { "name":"Vine Lash",     "school":"NATURE",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":6 },
+      { "name":"Root Grasp",    "school":"NATURE",   "kind":"HEAVY", "powerMult":1.3, "targetRule":"SINGLE_MARKED",   "applyStatus":"ROOT", "cooldownTurns":3, "weight":3 },
+      { "name":"Thorn Burst",   "school":"NATURE",   "kind":"AOE",   "powerMult":0.6, "targetRule":"PARTY_AOE",       "applyStatus":"BLEED", "cooldownTurns":5, "weight":2 }
+    ]},
+    "verdant_sniper": { "moves": [
+      { "name":"Spore Shot",    "school":"NATURE",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"POISON", "weight":6 },
+      { "name":"Snare Seed",    "school":"NATURE",   "kind":"HEAVY", "powerMult":1.2, "targetRule":"SINGLE_LOWEST_HP","applyStatus":"ROOT", "cooldownTurns":4, "weight":2 }
+    ]},
+    "verdant_caster": { "moves": [
+      { "name":"Thorn Lash",    "school":"NATURE",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":5 },
+      { "name":"Bramble Whip",  "school":"NATURE",   "kind":"HEAVY", "powerMult":1.2, "targetRule":"SINGLE_RANDOM",   "applyStatus":"ROOT", "cooldownTurns":3, "weight":3 },
+      { "name":"Choking Pollen","school":"NATURE",   "kind":"AOE",   "powerMult":0.6, "targetRule":"PARTY_AOE",       "applyStatus":"POISON", "cooldownTurns":4, "weight":3 }
+    ]},
+    "void_wisp": { "moves": [
+      { "name":"Drain Whisper", "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"CORRODE", "weight":6 },
+      { "name":"Huddle",        "school":"SHADOW",   "kind":"AOE",   "powerMult":0.5, "targetRule":"PARTY_AOE",       "cooldownTurns":4, "weight":2 }
+    ]},
+    "void_bruiser": { "moves": [
+      { "name":"Tendril Rake",  "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":6 },
+      { "name":"Devour Shadow", "school":"SHADOW",   "kind":"DRAIN", "powerMult":1.2, "targetRule":"SINGLE_LOWEST_HP","cooldownTurns":3, "weight":3 }
+    ]},
+    "void_sniper": { "moves": [
+      { "name":"Umbral Lance",  "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":6 },
+      { "name":"Silence Grip",  "school":"SHADOW",   "kind":"HEAVY", "powerMult":1.3, "targetRule":"SINGLE_MARKED",   "applyStatus":"WEAKEN", "cooldownTurns":4, "weight":3 }
+    ]},
+    "void_caster": { "moves": [
+      { "name":"Void Bolt",     "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"CORRODE", "weight":5 },
+      { "name":"Enveloping Dark","school":"SHADOW",   "kind":"AOE",  "powerMult":0.7, "targetRule":"PARTY_AOE",       "applyStatus":"WEAKEN", "cooldownTurns":5, "weight":3 },
+      { "name":"Siphon Essence","school":"SHADOW",   "kind":"DRAIN", "powerMult":1.1, "targetRule":"SINGLE_LOWEST_HP","cooldownTurns":4, "weight":2 }
+    ]},
+    "radiant_bruiser": { "moves": [
+      { "name":"Gleaming Blow", "school":"HOLY",     "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":6 },
+      { "name":"Judgement",     "school":"HOLY",     "kind":"HEAVY", "powerMult":1.6, "targetRule":"SINGLE_LOWEST_HP","cooldownTurns":3, "weight":3 },
+      { "name":"Consecrate",    "school":"HOLY",     "kind":"AOE",   "powerMult":0.6, "targetRule":"PARTY_AOE",       "applyStatus":"BURN", "cooldownTurns":5, "weight":2 }
+    ]},
+    "radiant_caster": { "moves": [
+      { "name":"Searing Ray",   "school":"HOLY",     "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":6 },
+      { "name":"Radiant Nova",  "school":"HOLY",     "kind":"AOE",   "powerMult":0.7, "targetRule":"PARTY_AOE",       "cooldownTurns":4, "weight":3 }
+    ]},
+    "radiant_healer": { "moves": [
+      { "name":"Smite",         "school":"HOLY",     "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":5 },
+      { "name":"Mend Ally",     "school":"HOLY",     "kind":"BUFF",  "powerMult":0.0, "targetRule":"SELF",            "applyStatus":"BLESS", "healAllies":true, "cooldownTurns":3, "weight":4 }
+    ]},
+    "silence_bruiser": { "moves": [
+      { "name":"Hush",          "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"WEAKEN", "weight":6 },
+      { "name":"Null Crush",    "school":"PHYSICAL", "kind":"HEAVY", "powerMult":1.5, "targetRule":"SINGLE_LOWEST_HP","cooldownTurns":3, "weight":3 }
+    ]},
+    "silence_sniper": { "moves": [
+      { "name":"Silencing Shot","school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"WEAKEN", "weight":6 },
+      { "name":"Dampening Field","school":"SHADOW",  "kind":"AOE",   "powerMult":0.5, "targetRule":"PARTY_AOE",       "applyStatus":"WEAKEN", "cooldownTurns":4, "weight":3 }
+    ]},
+    "silence_caster": { "moves": [
+      { "name":"Void Dirge",    "school":"SHADOW",   "kind":"AOE",   "powerMult":0.6, "targetRule":"PARTY_AOE",       "applyStatus":"WEAKEN", "cooldownTurns":4, "weight":4 },
+      { "name":"Hollow Word",   "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_MARKED",   "applyStatus":"CORRODE", "weight":4 }
+    ]},
+    "mirror_doppel": { "moves": [
+      { "name":"Mimic Strike",  "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":5 },
+      { "name":"Echo Incantation","school":"ELECTROMANCY","kind":"AOE","powerMult":0.7,"targetRule":"PARTY_AOE",      "applyStatus":"WEAKEN", "cooldownTurns":4, "weight":3 }
+    ], "_":"generic mirror fallback; shadows use dedicated archetypes below" },
+    "shadow_knight": { "moves": [
+      { "name":"Holy Cleave",   "school":"HOLY",     "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":5 },
+      { "name":"Radiant Smite", "school":"HOLY",     "kind":"HEAVY", "powerMult":1.4, "targetRule":"SINGLE_LOWEST_HP","cooldownTurns":3, "weight":3 },
+      { "name":"Petrified Aegis","school":"HOLY",    "kind":"BUFF",  "powerMult":0.0, "targetRule":"SELF",            "applyStatus":"GUARD", "cooldownTurns":4, "weight":2 }
+    ]},
+    "shadow_warden": { "moves": [
+      { "name":"Briar Shot",    "school":"NATURE",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":5 },
+      { "name":"Snare of Doubt","school":"NATURE",   "kind":"HEAVY", "powerMult":1.2, "targetRule":"SINGLE_RANDOM",   "applyStatus":"ROOT", "cooldownTurns":3, "weight":3 },
+      { "name":"Shadow Bloom",  "school":"NATURE",   "kind":"BUFF",  "powerMult":0.0, "targetRule":"SELF",            "applyStatus":"BLESS", "cooldownTurns":4, "weight":2 }
+    ]},
+    "shadow_blade": { "moves": [
+      { "name":"Shadow Slash",  "school":"SHADOW",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "weight":5 },
+      { "name":"Severing Cut",  "school":"SHADOW",   "kind":"HEAVY", "powerMult":1.5, "targetRule":"SINGLE_LOWEST_HP","applyStatus":"BLEED", "cooldownTurns":3, "weight":3 },
+      { "name":"Shadow Step",   "school":"SHADOW",   "kind":"BASIC", "powerMult":1.1, "targetRule":"SINGLE_RANDOM",   "cooldownTurns":2, "weight":2 }
+    ]},
+    "shadow_invocator": { "moves": [
+      { "name":"Arcane Bolt",   "school":"ELECTROMANCY","kind":"BASIC","powerMult":1.0,"targetRule":"SINGLE_RANDOM",   "weight":5 },
+      { "name":"Forked Lightning","school":"ELECTROMANCY","kind":"AOE","powerMult":0.7,"targetRule":"PARTY_AOE",      "cooldownTurns":4, "weight":3 },
+      { "name":"Disrupt Pulse", "school":"ELECTROMANCY","kind":"HEAVY","powerMult":1.3,"targetRule":"SINGLE_RANDOM",   "applyStatus":"WEAKEN", "cooldownTurns":3, "weight":2 }
+    ]},
+
+    "boss_broodmother": { "moves": [
+      { "name":"Bite",          "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"POISON", "weight":5 },
+      { "name":"Spawn Hatchlings","school":"SHADOW",  "kind":"SUMMON","powerMult":0.0, "targetRule":"SELF",            "summon":"Toxic Hatchling", "summonCount":2, "cooldownTurns":3, "weight":5 }
+    ], "phases": [ { "hpBelow":0.5, "note":"Enrages: +30% speed, spawns 3 instead of 2" } ] },
+    "boss_behemoth": { "moves": [
+      { "name":"Trample",       "school":"NATURE",   "kind":"HEAVY", "powerMult":1.6, "targetRule":"SINGLE_LOWEST_HP","weight":4 },
+      { "name":"Bog Quake",     "school":"PHYSICAL", "kind":"AOE",   "powerMult":0.8, "targetRule":"PARTY_AOE",       "applyStatus":"OVERLOAD", "cooldownTurns":4, "weight":3 },
+      { "name":"Bog Breath",    "school":"NATURE",   "kind":"BASIC", "powerMult":1.0, "targetRule":"SINGLE_RANDOM",   "applyStatus":"POISON", "weight":3 }
+    ], "phases": [ { "hpBelow":0.35, "note":"Rooted Fury: Root-grasp every other turn, +def" } ] },
+    "boss_wyrm": { "moves": [
+      { "name":"Tail Lash",     "school":"NATURE",   "kind":"AOE",   "powerMult":0.8, "targetRule":"PARTY_AOE",       "weight":4 },
+      { "name":"Silt Breath",   "school":"NATURE",   "kind":"HEAVY", "powerMult":1.5, "targetRule":"SINGLE_LOWEST_HP","applyStatus":"POISON", "cooldownTurns":3, "weight":3 },
+      { "name":"Burrow",        "school":"PHYSICAL", "kind":"BUFF",  "powerMult":0.0, "targetRule":"SELF",            "applyStatus":"GUARD", "cooldownTurns":6, "weight":1 }
+    ]},
+    "boss_kaelen": { "moves": [
+      { "name":"Executioner Cut","school":"PHYSICAL","kind":"HEAVY", "powerMult":1.7, "targetRule":"SINGLE_LOWEST_HP","applyStatus":"BLEED", "cooldownTurns":2, "weight":5 },
+      { "name":"Shadow Fan",    "school":"SHADOW",   "kind":"AOE",   "powerMult":0.7, "targetRule":"PARTY_AOE",       "applyStatus":"BLEED", "cooldownTurns":4, "weight":3 },
+      { "name":"Blink Strike",  "school":"SHADOW",   "kind":"BASIC", "powerMult":1.1, "targetRule":"SINGLE_RANDOM",   "weight":3 }
+    ], "phases": [ { "hpBelow":0.4, "note":"Death Rattle: gains extra turn every 3rd round" } ] },
+    "boss_galahault": { "moves": [
+      { "name":"Oathbreaker Smite","school":"HOLY",  "kind":"HEAVY", "powerMult":1.6, "targetRule":"SINGLE_LOWEST_HP","weight":4 },
+      { "name":"Dawn Judgment", "school":"HOLY",     "kind":"AOE",   "powerMult":0.8, "targetRule":"PARTY_AOE",       "applyStatus":"BURN", "cooldownTurns":4, "weight":3 },
+      { "name":"Petrified Aegis","school":"HOLY",    "kind":"BUFF",  "powerMult":0.0, "targetRule":"SELF",            "applyStatus":"GUARD", "cooldownTurns":5, "weight":2 }
+    ], "phases": [ { "hpBelow":0.5, "note":"Broken Vow: drops aegis, hits harder (mult +0.3), takes +50% shadow" } ] },
+    "boss_nocturne": { "moves": [
+      { "name":"Silent Kill",   "school":"SHADOW",   "kind":"HEAVY", "powerMult":1.9, "targetRule":"SINGLE_LOWEST_HP","applyStatus":"BLEED", "cooldownTurns":2, "weight":5 },
+      { "name":"Murder of Blades","school":"SHADOW",  "kind":"AOE",  "powerMult":0.8, "targetRule":"PARTY_AOE",       "applyStatus":"BLEED", "cooldownTurns":4, "weight":4 }
+    ], "phases": [ { "hpBelow":0.6, "note":"Vanishes: untargetable for 1 turn each phase step" } ] },
+    "boss_ouros": { "moves": [
+      { "name":"Gear Cleave",   "school":"PHYSICAL", "kind":"BASIC", "powerMult":1.2, "targetRule":"SINGLE_RANDOM",   "weight":4 },
+      { "name":"Overdrive",     "school":"PHYSICAL", "kind":"HEAVY", "powerMult":1.7, "targetRule":"SINGLE_LOWEST_HP","cooldownTurns":3, "weight":3 },
+      { "name":"Bellow of Iron","school":"ELECTROMANCY","kind":"AOE","powerMult":0.7, "targetRule":"PARTY_AOE",       "applyStatus":"OVERLOAD", "cooldownTurns":5, "weight":3 }
+    ], "phases": [ { "hpBelow":0.5, "note":"Wind-down: Shock Nova hits all + self-repairs 8%/turn for 2 turns" } ] },
+    "boss_vaelor": { "moves": [
+      { "name":"Void Horn Blast","school":"SHADOW",  "kind":"AOE",   "powerMult":0.8, "targetRule":"PARTY_AOE",       "applyStatus":"WEAKEN", "cooldownTurns":4, "weight":4 },
+      { "name":"Standard Charge","school":"PHYSICAL", "kind":"HEAVY", "powerMult":1.6, "targetRule":"SINGLE_LOWEST_HP","weight":4 },
+      { "name":"Summon Spectral Legion","school":"SHADOW","kind":"SUMMON","powerMult":0.0,"targetRule":"SELF",         "summon":"Spectral Reaper", "summonCount":1, "cooldownTurns":6, "weight":2 }
+    ]},
+    "boss_leviathan": { "moves": [
+      { "name":"Tidal Maw",     "school":"SHADOW",   "kind":"HEAVY", "powerMult":1.7, "targetRule":"SINGLE_LOWEST_HP","applyStatus":"WEAKEN", "cooldownTurns":3, "weight":4 },
+      { "name":"Drowning Silence","school":"SHADOW",  "kind":"AOE",  "powerMult":0.8, "targetRule":"PARTY_AOE",       "applyStatus":"WEAKEN", "cooldownTurns":4, "weight":4 },
+      { "name":"Void Spawn",    "school":"SHADOW",   "kind":"SUMMON","powerMult":0.0, "targetRule":"SELF",            "summon":"Void Tendril", "summonCount":1, "cooldownTurns":5, "weight":2 }
+    ]},
+    "boss_malakor": { "moves": [
+      { "name":"Nullifying Word","school":"SHADOW",  "kind":"BASIC", "powerMult":1.2, "targetRule":"SINGLE_RANDOM",   "applyStatus":"WEAKEN", "weight":4 },
+      { "name":"Choir of Silence","school":"SHADOW", "kind":"AOE",   "powerMult":0.8, "targetRule":"PARTY_AOE",       "applyStatus":"WEAKEN", "cooldownTurns":3, "weight":4 },
+      { "name":"Sever Echo",    "school":"SHADOW",   "kind":"HEAVY", "powerMult":1.8, "targetRule":"SINGLE_LOWEST_HP","applyStatus":"CORRODE", "cooldownTurns":4, "weight":2 }
+    ], "phases": [
+      { "hpBelow":0.34, "note":"Death of Voice (scripted, ONCE): total silence for 1 round; the party breaks it with the Primordial Incantation (single Transcendental 3x grant, then cleared - not every turn)." },
+      { "hpBelow":0.66, "note":"Summons Echo Nullifiers (cap 4)" }
+    ] }
+  }
+}

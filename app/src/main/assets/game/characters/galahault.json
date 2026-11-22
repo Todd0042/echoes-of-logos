@@ -1,0 +1,9 @@
+{
+  "id": "galahault",
+  "role": "npc",
+  "name": "Sir Galahault",
+  "title": "The Obsidian Grandmaster",
+  "portraitAsset": "portraits/galahault.jpg",
+  "themeColor": "#FFD54F",
+  "ttsPitch": 0.78
+}
