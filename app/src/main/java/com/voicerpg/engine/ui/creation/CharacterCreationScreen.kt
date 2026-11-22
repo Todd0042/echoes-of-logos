@@ -85,6 +85,18 @@ fun CharacterCreationScreen(
     onConfirmCharacter: (PlayerCustomization) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Perspective games: pick one of the campaign tracks' preset heroes instead of building a custom one.
+    if (GameContent.manifest.isPresetSelect) {
+        PresetSelectScreen(
+            initialCustomization = initialCustomization,
+            speechManager = speechManager,
+            combatNarrator = combatNarrator,
+            onBack = onBack,
+            onConfirmCharacter = onConfirmCharacter,
+            modifier = modifier
+        )
+        return
+    }
     var name by remember(slot, initialCustomization.name) { mutableStateOf(initialCustomization.name) }
     var selectedClass by remember(slot, initialCustomization.heroClassId) { mutableStateOf(initialCustomization.heroClass) }
     var selectedTitle by remember(slot, initialCustomization.title) { mutableStateOf(initialCustomization.title) }

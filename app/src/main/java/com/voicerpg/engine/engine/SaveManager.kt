@@ -8,6 +8,7 @@ import com.voicerpg.engine.model.PlayerCustomization
 import com.voicerpg.engine.model.SaveSlotInfo
 import com.voicerpg.engine.model.SaveSummary
 import com.voicerpg.engine.model.SavedCharacterStats
+import androidx.core.util.AtomicFile
 import java.io.File
 import java.io.FileOutputStream
 
@@ -110,34 +111,29 @@ class SaveManager(private val context: Context? = null) {
     }
 
     private fun writeAtomic(file: File, content: String) {
-        val parentDir = file.parentFile
-        if (parentDir != null && !parentDir.exists()) {
-            parentDir.mkdirs()
-        }
-        val tempFile = File(parentDir, "${file.name}.tmp")
+        file.parentFile?.let { if (!it.exists()) it.mkdirs() }
+        // AtomicFile keeps the previous save as a backup until the new one is fully written, so a crash
+        // or power loss mid-write never leaves a truncated save.
+        val atomicFile = AtomicFile(file)
         var stream: FileOutputStream? = null
         try {
-            stream = FileOutputStream(tempFile)
+            stream = atomicFile.startWrite()
             stream.write(content.toByteArray(Charsets.UTF_8))
-            stream.flush()
-            stream.close()
+            atomicFile.finishWrite(stream)
             stream = null
-            if (!tempFile.renameTo(file)) {
-                throw Exception("Failed to rename temp file to target")
-            }
         } catch (e: Exception) {
             if (stream != null) {
-                try { stream.close() } catch (_: Exception) {}
+                atomicFile.failWrite(stream)
             }
-            tempFile.delete()
             throw e
         }
     }
 
     private fun readAtomic(file: File): String? {
-        if (!file.exists()) return null
+        // AtomicFile restores from its .bak copy when a write was interrupted, so check both.
+        if (!file.exists() && !File(file.path + ".bak").exists()) return null
         return try {
-            file.readText()
+            String(AtomicFile(file).readFully(), Charsets.UTF_8)
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -200,7 +196,7 @@ class SaveManager(private val context: Context? = null) {
         }
         val file = getSaveFile(validSlot)
         return if (file != null) {
-            file.delete()
+            AtomicFile(file).delete()
             true
         } else {
             true

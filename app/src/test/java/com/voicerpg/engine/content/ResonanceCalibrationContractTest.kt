@@ -4,7 +4,6 @@ import com.voicerpg.engine.engine.NoveltyCache
 import com.voicerpg.engine.engine.ResonanceEngine
 import com.voicerpg.engine.engine.SpellChantPresets
 import com.voicerpg.engine.model.ResonanceTier
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -36,6 +35,8 @@ class ResonanceCalibrationContractTest {
             ResonanceTier.TRANSCENDENTAL
         )
 
+        val failures = mutableListOf<String>()
+        fun check(message: String, ok: Boolean) { if (!ok) failures += message }
         for (spell in allSpells) {
             for (expectedTier in tiers) {
                 val preset = SpellChantPresets.getPreset(spell, expectedTier)
@@ -53,22 +54,17 @@ class ResonanceCalibrationContractTest {
                     // A spell name containing two thematic roots (e.g. "Aegis Guard")
                     // inherently floors at 22% above the BASIC ceiling, so the BASIC
                     // preset only guarantees staying near BASIC (never MASTER+).
-                    assertTrue(tierMessage, result.bonusPercent < 55)
+                    check(tierMessage, result.bonusPercent < 55)
                 } else {
-                    assertEquals(tierMessage, expectedTier, result.tier)
+                    check(tierMessage, expectedTier == result.tier)
                 }
 
                 if (expectedTier == ResonanceTier.TRANSCENDENTAL) {
-                    assertTrue(
-                        "Transcendental tier for ${spell.id} should hit >= 155% bonus (got ${result.bonusPercent}%)",
-                        result.bonusPercent >= 155
-                    )
-                    assertTrue(
-                        "Damage multiplier should be >= 2.55x (got ${result.damageMultiplier}x)",
-                        result.damageMultiplier >= 2.55f
-                    )
+                    check("Transcendental tier for ${spell.id} should hit >= 155% bonus (got ${result.bonusPercent}%)", result.bonusPercent >= 155)
+                    check("Damage multiplier for ${spell.id} should be >= 2.55x (got ${result.damageMultiplier}x)", result.damageMultiplier >= 2.55f)
                 }
             }
         }
+        assertTrue("${failures.size} preset chant(s) miss their tier:\n" + failures.joinToString("\n"), failures.isEmpty())
     }
 }

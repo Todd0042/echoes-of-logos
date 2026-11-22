@@ -37,4 +37,14 @@ class TemplateFixtureContentTest {
         assertNotNull("Color grade loads", config.colorGrade)
         assertNotNull("Scanlines load", config.scanlines)
     }
+
+    @Test
+    fun templateMovesetsAndSpritesLoad() {
+        val bruiser = GameContent.movesetById("construct_bruiser")
+        assertNotNull("construct_bruiser moveset must exist", bruiser)
+        assertTrue("construct_bruiser moveset must have moves", bruiser!!.moves.isNotEmpty())
+        val dummy = GameContent.enemySpriteById("practice_dummy")
+        assertNotNull("practice_dummy sprite must exist", dummy)
+        assertTrue("practice_dummy must have idleUpright frame", dummy!!.idleUpright.isNotEmpty())
+    }
 }

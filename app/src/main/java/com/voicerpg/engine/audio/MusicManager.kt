@@ -36,9 +36,14 @@ class MusicManager(
 ) {
     companion object {
         private const val TAG = "MusicManager"
-        const val TRACK_TITLE = "audio/music/bgm_title.ogg"
-        const val TRACK_EXPLORATION = "audio/music/bgm_exploration.ogg"
-        const val TRACK_COMBAT = "audio/music/bgm_combat.ogg"
+        const val DEFAULT_TRACK_TITLE = "audio/music/bgm_title.ogg"
+        const val DEFAULT_TRACK_EXPLORATION = "audio/music/bgm_exploration.ogg"
+        const val DEFAULT_TRACK_COMBAT = "audio/music/bgm_combat.ogg"
+
+        // The game may name its own default tracks in the manifest (titleMusic, explorationMusic, combatMusic).
+        val TRACK_TITLE: String get() = com.voicerpg.engine.content.GameContent.manifest.titleMusic ?: DEFAULT_TRACK_TITLE
+        val TRACK_EXPLORATION: String get() = com.voicerpg.engine.content.GameContent.manifest.explorationMusic ?: DEFAULT_TRACK_EXPLORATION
+        val TRACK_COMBAT: String get() = com.voicerpg.engine.content.GameContent.manifest.combatMusic ?: DEFAULT_TRACK_COMBAT
 
         const val DUCK_RATIO = 0.22f
     }

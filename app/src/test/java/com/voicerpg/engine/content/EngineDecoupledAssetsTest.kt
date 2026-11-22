@@ -61,11 +61,8 @@ class EngineDecoupledAssetsTest {
             val landscapeFile = File(rootAssets, env.backgroundAsset)
             assertTrue("Landscape asset '${env.backgroundAsset}' must exist on disk", landscapeFile.exists())
 
-            // Verify portrait background asset exists on disk (_p variant)
-            val dotIdx = env.backgroundAsset.lastIndexOf('.')
-            val portraitPath = env.backgroundAsset.substring(0, dotIdx) + "_p" + env.backgroundAsset.substring(dotIdx)
-            val portraitFile = File(rootAssets, portraitPath)
-            assertTrue("Portrait asset '$portraitPath' must exist on disk", portraitFile.exists())
+            // A portrait-orientation variant (_p) is optional: EnvironmentAssetLoader falls back to the
+            // landscape image when a game doesn't provide one.
         }
 
         // Every declared alias resolves to its environment (case-insensitive), whatever the game declares.
@@ -132,15 +129,15 @@ class EngineDecoupledAssetsTest {
         assertTrue("Enemy movesets should not be empty", pack.enemyMovesets.isNotEmpty())
         assertTrue("Enemy sprites should not be empty", pack.enemySprites.isNotEmpty())
 
-        // Verify construct bruiser moveset loaded
-        val bruiserMoveset = GameContent.movesetById("construct_bruiser")
-        assertNotNull("construct_bruiser moveset must exist", bruiserMoveset)
-        assertTrue("construct_bruiser moveset must have moves", bruiserMoveset!!.moves.isNotEmpty())
-
-        // Verify enemy sprite loaded
-        val dummySprite = GameContent.enemySpriteById("practice_dummy")
-        assertNotNull("practice_dummy sprite must exist", dummySprite)
-        assertTrue("practice_dummy must have idleUpright frame", dummySprite!!.idleUpright.isNotEmpty())
+        // Every enemy's moveset and sprite resolve (a blank id means the engine's defaults).
+        for (enemy in pack.enemyTemplates.values) {
+            if (enemy.movesetId.isNotBlank()) {
+                assertNotNull("Enemy '${enemy.id}' moveset '${enemy.movesetId}' must exist", GameContent.movesetById(enemy.movesetId))
+            }
+        }
+        for ((id, sprite) in pack.enemySprites) {
+            assertTrue("Enemy sprite '$id' must have an idleUpright frame", sprite.idleUpright.isNotEmpty())
+        }
     }
 
     @Test

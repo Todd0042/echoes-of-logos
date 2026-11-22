@@ -483,6 +483,8 @@ class StoryGraphSchemaTest {
         val visited = mutableSetOf<String>()
         val queue = ArrayDeque<String>()
         queue.add(startId)
+        // Every campaign track starts somewhere of its own (multi-perspective games).
+        GameContent.manifest.campaignTracks.forEach { track -> track.startNodeId.takeIf { it.isNotBlank() }?.let { queue.add(it) } }
         // Incidents are entry points the engine jumps to on its own (IncidentManager), not story links.
         GameContent.incidents.values.forEach { incident -> incident.triggerNodeId?.let { queue.add(it) } }
         while (queue.isNotEmpty()) {

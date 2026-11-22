@@ -15,7 +15,9 @@ data class EnemyMove(
     val weight: Int = 1,
     val summon: String? = null,
     val summonCount: Int = 0,
-    val graphics: SpellGraphics? = null
+    val graphics: SpellGraphics? = null,
+    /** Recorded clips played when this move is used (one at random). */
+    val soundBites: List<String> = emptyList()
 )
 data class PhaseRule(val hpBelow: Float, val addMoves: List<EnemyMove>, val note: String = "")
 data class Moveset(val moves: List<EnemyMove>, val phases: List<PhaseRule> = emptyList())

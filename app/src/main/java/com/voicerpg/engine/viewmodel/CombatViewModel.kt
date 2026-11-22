@@ -642,6 +642,7 @@ class CombatViewModel(
 
             delay(if (isBossUltimate) 550 else 350)
             sfxManager.playHitImpact()
+            sfxManager.playSoundBite(move.soundBites.ifEmpty { refreshedSelf.soundBites })
             val moveShake = enemyGraphics?.screenShake ?: 0f
             if (isBossUltimate || moveShake > 0f) {
                 triggerScreenShake(if (isBossUltimate) 18f.coerceAtLeast(moveShake) else moveShake)
@@ -1791,13 +1792,22 @@ class CombatViewModel(
             } else {
                 "It is ${activeHero.name}'s turn. Switch heroes to command ${outOfTurnHero.name}."
             }
-            combatNarrator.speak(feedbackSpeech, force = true) {
+            val relisten: () -> Unit = {
                 if (speechManager.isAutoListen.value && _state.value.phase == CombatPhase.PLAYER_INPUT) {
                     activeScope.launch {
                         delay(150)
                         startVoiceListening()
                     }
                 }
+            }
+            // The active hero may answer in character (outOfTurnLine in their character file).
+            val activeCharacter = com.voicerpg.engine.content.GameContent.characterById(activeHero.id)
+            val inCharacterLine = activeCharacter?.outOfTurnLine?.takeIf { it.isNotBlank() }
+                ?.replace("{owner}", outOfTurnHero.name)?.replace("{active}", activeHero.name)
+            if (inCharacterLine != null) {
+                combatNarrator.narrateDialogue(activeCharacter.speaker, inCharacterLine, force = true) { relisten() }
+            } else {
+                combatNarrator.speak(feedbackSpeech, force = true) { relisten() }
             }
             return
         }
@@ -1869,6 +1879,9 @@ class CombatViewModel(
 
             // Audio & Feedback
             sfxManager.playSpellCast()
+            sfxManager.playSoundBite(parsed.spell.soundBites.ifEmpty {
+                com.voicerpg.engine.content.GameContent.characterById(activeHero.id)?.soundBites ?: emptyList()
+            })
             if (isSuperLogos) {
                 sfxManager.playLogosFanfare()
                 triggerScreenShake(if (isTranscendental) 30f else 18f)

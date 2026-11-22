@@ -397,11 +397,14 @@ class StoryViewModel(
             val defaultName = manifest.defaultHeroName.ifBlank { "Hero" }
             val defaultTitle = manifest.defaultHeroTitle.ifBlank { "The Awakened Hero" }
             val resolvedTrackId = campaignTrackId ?: manifest.campaignTracks.firstOrNull()?.id ?: "track_a"
-            val defaultPlayer = PlayerCustomization(
+            val baseDefaultPlayer = PlayerCustomization(
                 name = defaultName,
                 title = defaultTitle,
                 campaignTrackId = resolvedTrackId
             )
+            // A track with a preset hero (perspective games) plays as that hero.
+            val resolvedTrack = manifest.campaignTracks.firstOrNull { it.id == resolvedTrackId }
+            val defaultPlayer = resolvedTrack?.hero?.toCustomization(resolvedTrack, baseDefaultPlayer) ?: baseDefaultPlayer
             saveManager.createInitialSave(defaultPlayer, storySlot)
             saveManager.currentSlot = storySlot
             StoryAssetLoader.activeSlot = storySlot

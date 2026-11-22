@@ -1,6 +1,8 @@
 package com.voicerpg.engine.audio
 
+import android.content.Context
 import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.media.AudioFormat
 import android.media.AudioTrack
 import kotlinx.coroutines.CoroutineScope
@@ -10,10 +12,11 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 /**
- * Procedural retro sound synthesizer for hit impacts, spell casts, and Logos fanfare.
- * Requires zero external audio files.
+ * Procedural retro sound synthesizer for hit impacts, spell casts, and Logos fanfare (no audio files),
+ * plus recorded sound bites from the game's assets (characters', spells' and enemies' soundBites).
+ * Without a [context] (unit tests) sound bites are skipped.
  */
-class SfxManager {
+class SfxManager(private val context: Context? = null) {
 
     private val scope = CoroutineScope(Dispatchers.Default)
     private val sampleRate = 22050
@@ -21,6 +24,34 @@ class SfxManager {
 
     fun mute(muted: Boolean) {
         isMuted = muted
+    }
+
+    private var soundBitePlayer: MediaPlayer? = null
+
+    /** Plays one of [clips] (asset paths) at random, replacing any sound bite still playing. */
+    fun playSoundBite(clips: List<String>) {
+        if (clips.isEmpty()) return
+        playAssetAudio(clips.random())
+    }
+
+    /** Plays a compressed audio asset (e.g. audio/quotes/x.ogg). A missing or unplayable file is logged, not fatal. */
+    fun playAssetAudio(assetPath: String) {
+        val ctx = context ?: return
+        if (isMuted) return
+        try {
+            soundBitePlayer?.release()
+            val player = MediaPlayer()
+            ctx.assets.openFd(assetPath).use { fd -> player.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length) }
+            player.setAudioAttributes(
+                AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME).setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build()
+            )
+            player.setOnCompletionListener { it.release(); if (soundBitePlayer === it) soundBitePlayer = null }
+            player.prepare()
+            player.start()
+            soundBitePlayer = player
+        } catch (e: Exception) {
+            android.util.Log.e("SfxManager", "Sound bite '$assetPath' couldn't be played: ${e.message}", e)
+        }
     }
 
     fun playHitImpact() {

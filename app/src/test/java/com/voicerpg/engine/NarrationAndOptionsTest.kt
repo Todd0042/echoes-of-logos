@@ -153,7 +153,6 @@ class NarrationAndOptionsTest {
     fun testCombatNarratorPreferredVoiceIdsConfiguredForAllSpeakers() {
         val preferred = CombatNarrator.PREFERRED_VOICE_IDS
         assertEquals(GameContent.preferredVoiceIds, preferred)
-        assertEquals("en-gb-x-rjs-local", preferred["narrator"])
         for (speaker in GameContent.allSpeakers) {
             assertEquals(
                 speaker.id,

@@ -27,8 +27,44 @@ data class CampaignTrackDef(
     val startSceneId: String = "",
     val rosterDescription: String = "",
     val badgeText: String = "1P",
-    val voiceKeywords: List<String> = emptyList()
+    val voiceKeywords: List<String> = emptyList(),
+    /**
+     * A fixed protagonist for this track (perspective games: each track is told by its own hero).
+     * With manifest creationMode "preset_select", character creation becomes a pick between the tracks'
+     * heroes; choosing one sets the hero and the track together.
+     */
+    val hero: TrackHeroPreset? = null
 )
+
+/** The protagonist a campaign track starts with, and how its select card presents them. All optional. */
+data class TrackHeroPreset(
+    val name: String = "",
+    val title: String = "",
+    val heroClassId: String = "",
+    val portraitAsset: String? = null,
+    /** AuraColor name, e.g. SOLAR_GOLD. */
+    val auraColor: String? = null,
+    // Select card flavour
+    val alias: String = "",
+    val slogan: String = "",
+    val playstyle: String = "",
+    val featuredMoves: List<String> = emptyList(),
+    val accentColor: String = "#FFD700",
+    val secondaryColor: String = "#B71C1C",
+    /** Clips played when the hero is picked; [soundBiteLabel] captions them on the card. */
+    val soundBites: List<String> = emptyList(),
+    val soundBiteLabel: String = ""
+) {
+    /** The player this preset produces on [track], with [fallback] filling anything the preset leaves out. */
+    fun toCustomization(track: CampaignTrackDef, fallback: PlayerCustomization): PlayerCustomization = fallback.copy(
+        name = name.ifBlank { fallback.name },
+        title = title.ifBlank { fallback.title },
+        heroClassId = heroClassId.ifBlank { fallback.heroClassId },
+        auraColor = auraColor?.let { a -> AuraColor.entries.firstOrNull { it.name.equals(a, ignoreCase = true) } } ?: fallback.auraColor,
+        customPortraitAsset = portraitAsset ?: fallback.customPortraitAsset,
+        campaignTrackId = track.id
+    )
+}
 
 /**
  * Player-created hero identity. Hero classes are data-driven: [heroClassId]

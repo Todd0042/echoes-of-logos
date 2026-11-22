@@ -53,7 +53,9 @@ data class Spell(
     val graphics: SpellGraphics? = null,
     val cleansesDebuffs: Boolean = false,
     /** Game-written chants per tier name (BASIC..TRANSCENDENTAL) for hands-free presets; English only. */
-    val presetChants: Map<String, String> = emptyMap()
+    val presetChants: Map<String, String> = emptyMap(),
+    /** Recorded clips played when this spell is cast (one at random). */
+    val soundBites: List<String> = emptyList()
 ) {
     val isCleanse: Boolean get() = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true)
 
@@ -127,7 +129,9 @@ data class Enemy(
     val statuses: List<StatusInstance> = emptyList(),
     val moveCooldowns: Map<String, Int> = emptyMap(),
     /** Extra voice words for targeting (from enemies.json), besides name and subtitle. */
-    val voiceAliases: List<String> = emptyList()
+    val voiceAliases: List<String> = emptyList(),
+    /** Recorded clips played when this enemy attacks (unless the move has its own). */
+    val soundBites: List<String> = emptyList()
 ) {
     val isAlive: Boolean get() = currentHp > 0
     val isTurnReady: Boolean get() = isAlive && atbGauge >= 1.0f
