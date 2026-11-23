@@ -6,10 +6,11 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.voicerpg.engine.content.GameContent
 import com.voicerpg.engine.model.BattleEnvironment
+import com.voicerpg.engine.ui.story.BackgroundAspect
 
 /**
  * Loads and caches 16-bit SNES JRPG battle background artworks from assets.
- * Supports orientation-aware variants (_p.jpg) and drop-in environments from GameContent.
+ * Supports aspect-aware variants (_p.jpg / _s.jpg) and drop-in environments from GameContent.
  */
 object EnvironmentAssetLoader {
     private val cache = mutableMapOf<String, ImageBitmap?>()
@@ -18,7 +19,7 @@ object EnvironmentAssetLoader {
         context: Context,
         environmentId: String? = null,
         environment: BattleEnvironment = BattleEnvironment.FOREST,
-        isPortrait: Boolean = false
+        aspect: BackgroundAspect = BackgroundAspect.LANDSCAPE
     ): ImageBitmap? {
         val envDef = GameContent.environmentById(environmentId) ?: GameContent.environmentById(environment.name)
         val basePath = envDef?.backgroundAsset?.ifBlank { null } ?: when (environment) {
@@ -29,9 +30,8 @@ object EnvironmentAssetLoader {
             BattleEnvironment.SWAMP -> "environments/swamp.jpg"
         }
 
-        val resolvedPath = if (isPortrait) portraitVariantPath(basePath) else basePath
-        val primaryPath = resolvedPath
-        val fallbackPath = if (resolvedPath != basePath) basePath else null
+        val primaryPath = BackgroundAspect.variantPath(basePath, aspect)
+        val fallbackPath = if (primaryPath != basePath) basePath else null
 
         if (cache.containsKey(primaryPath)) return cache[primaryPath]
 
@@ -50,14 +50,20 @@ object EnvironmentAssetLoader {
         return fallbackBitmap
     }
 
-    fun getOrLoad(context: Context, environment: BattleEnvironment): ImageBitmap? =
-        getOrLoad(context, null, environment, false)
+    fun getOrLoad(
+        context: Context,
+        environmentId: String? = null,
+        environment: BattleEnvironment = BattleEnvironment.FOREST,
+        isPortrait: Boolean = false
+    ): ImageBitmap? = getOrLoad(
+        context = context,
+        environmentId = environmentId,
+        environment = environment,
+        aspect = if (isPortrait) BackgroundAspect.PORTRAIT else BackgroundAspect.LANDSCAPE
+    )
 
-    private fun portraitVariantPath(assetPath: String): String {
-        val dotIdx = assetPath.lastIndexOf('.')
-        return if (dotIdx < 0) assetPath
-        else assetPath.substring(0, dotIdx) + "_p" + assetPath.substring(dotIdx)
-    }
+    fun getOrLoad(context: Context, environment: BattleEnvironment): ImageBitmap? =
+        getOrLoad(context, null, environment, BackgroundAspect.LANDSCAPE)
 
     private fun tryLoadBitmap(context: Context, path: String): ImageBitmap? = try {
         context.assets.open(path).use { stream ->

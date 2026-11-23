@@ -76,7 +76,7 @@ fun RetroBattleScreen(
     val rmsLevel by viewModel.speechManager.rmsLevel.collectAsState()
     val showDeveloperTools by viewModel.isDeveloperToolsEnabled.collectAsState()
     val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val bgAspect = com.voicerpg.engine.ui.story.BackgroundAspect.fromConfiguration(configuration)
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -195,7 +195,7 @@ fun RetroBattleScreen(
                     BattleEnvironmentCanvas(
                         environment = state.currentEnvironment,
                         environmentId = state.currentEnvironmentId,
-                        isPortrait = !isLandscape,
+                        bgAspect = bgAspect,
                         partyCount = state.party.size,
                         enemyCount = state.enemies.size,
                         modifier = Modifier.fillMaxSize()

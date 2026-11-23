@@ -135,11 +135,11 @@ fun TitleScreen(
     var slotDialogIsNewGameMode by remember { mutableStateOf(false) }
 
     val configuration = androidx.compose.ui.platform.LocalConfiguration.current
-    val isPortrait = configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT
+    val bgAspect = com.voicerpg.engine.ui.story.BackgroundAspect.fromConfiguration(configuration)
 
-    val backgroundBitmap = remember(manifest.titleBackgroundAsset, isPortrait) {
+    val backgroundBitmap = remember(manifest.titleBackgroundAsset, bgAspect) {
         val assetPath = manifest.titleBackgroundAsset ?: "backgrounds/bg_summit.jpg"
-        StoryAssetLoader.loadBackground(context, assetPath, isPortrait)
+        StoryAssetLoader.loadBackground(context, assetPath, bgAspect)
     }
 
     val infiniteTransition = rememberInfiniteTransition(label = "title_glow")

@@ -288,4 +288,46 @@ class MultiLanguageSupportTest {
         assertEquals("es", com.voicerpg.engine.engine.IntentParser.currentLocale)
         assertTrue(saveManager.loadGlobalSettings().isLanguageSetupCompleted)
     }
+
+    /**
+     * The real screens finish through applyLanguageAndFinish (Dialect confirm / download standby), not
+     * completeLanguageSetup. That path must persist the choice, or the language screen returns on every
+     * launch; and a new save must not route back through language selection.
+     */
+    @Test
+    fun testLanguageChosenOnScreensIsRememberedAcrossLaunchesAndNewSaves() {
+        val saveManager = com.voicerpg.engine.engine.SaveManager()
+        saveManager.saveGlobalSettings(com.voicerpg.engine.engine.SaveManager.GlobalGameSettings(isLanguageSetupCompleted = false))
+        val testScope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Default)
+        fun launch() = com.voicerpg.engine.viewmodel.StoryViewModel(
+            speechManager = com.voicerpg.engine.audio.SpeechManager(null),
+            combatNarrator = com.voicerpg.engine.audio.CombatNarrator(null),
+            saveManager = saveManager,
+            musicManager = null,
+            scopeOverride = testScope
+        )
+
+        val first = launch()
+        assertEquals(com.voicerpg.engine.model.GameScreen.LANGUAGE_SELECTION, first.state.value.gameScreen)
+        first.onLanguageChosen("de")
+        first.applyLanguageAndFinish("de", "AT")
+
+        assertEquals(com.voicerpg.engine.model.GameScreen.TITLE, first.state.value.gameScreen)
+        val stored = saveManager.loadGlobalSettings()
+        assertTrue(stored.isLanguageSetupCompleted)
+        assertEquals("de", stored.selectedLanguage)
+        assertEquals("AT", stored.selectedRegion)
+
+        // Next app launch: straight to the title screen, in the saved language.
+        val second = launch()
+        assertEquals(com.voicerpg.engine.model.GameScreen.TITLE, second.state.value.gameScreen)
+        assertEquals("de", second.state.value.selectedLanguage)
+        assertEquals("AT", second.state.value.selectedRegion)
+        org.junit.Assert.assertFalse(second.state.value.showFirstLaunchLanguagePrompt)
+
+        // Starting a new save goes to voice/audio setup, never back to language selection.
+        second.startNewGameFlow(1)
+        assertEquals(com.voicerpg.engine.model.GameScreen.AUDIO_SETUP, second.state.value.gameScreen)
+        assertTrue(second.state.value.isNewGameFlow)
+    }
 }

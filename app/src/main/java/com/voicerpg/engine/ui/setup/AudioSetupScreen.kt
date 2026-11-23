@@ -96,6 +96,9 @@ fun AudioSetupScreen(
     val availableVoiceCount by combatNarrator.availableVoiceCount.collectAsState()
     val installedVoiceCount by combatNarrator.installedVoiceCount.collectAsState()
     var voiceUpdateKey by remember { mutableStateOf(0) }
+    // New-save setup keeps the per-character voice list behind an optional button so players
+    // don't have to scroll past every character; from Options it stays open.
+    var showVoiceAssignments by remember { mutableStateOf(!isNewGameFlow) }
 
     // Auto-refresh voices when returning from Android TTS settings
     DisposableEffect(lifecycleOwner) {
@@ -117,6 +120,13 @@ fun AudioSetupScreen(
     fun handleVoiceInput(utterance: String) {
         val lower = utterance.lowercase().trim()
         if (lower.isBlank()) return
+
+        // 0. Open the optional per-character voice assignments
+        if (lower.contains("customize") || lower.contains("assignment") || lower.contains("voice list") || lower.contains("character voices")) {
+            showVoiceAssignments = true
+            combatNarrator.speak("Voice assignments opened. Say a character's name to hear them, or switch, then the name, to change their voice.", force = true)
+            return
+        }
 
         // 1. Proceed to Character Creation / Return to Game
         val proceedKeywords = listOf(
@@ -298,7 +308,9 @@ fun AudioSetupScreen(
             // =============================================================
             // Language & Regional Dialect Selection
             // =============================================================
-            if (onOpenLanguageSelection != null) {
+            // Not shown while creating a save: the language is chosen once on first launch (and can be
+            // changed from Options), so a new save doesn't ask again.
+            if (onOpenLanguageSelection != null && !isNewGameFlow) {
                 val currentLang = com.voicerpg.engine.localization.TranslationManager.currentLanguage.value
                 val currentReg = com.voicerpg.engine.localization.TranslationManager.currentRegion.value
                 val langOpt = com.voicerpg.engine.model.LanguageCatalog.getLanguage(currentLang)
@@ -364,8 +376,51 @@ fun AudioSetupScreen(
 
             // =============================================================
             // Card 1: The Fellowship & Why Multiple Voices Matter
+            // (optional during new-save setup: collapsed behind a button)
             // =============================================================
-            Box(
+            if (!showVoiceAssignments) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(RetroPanel.copy(alpha = 0.9f))
+                        .border(1.dp, RetroBorderGold, RoundedCornerShape(12.dp))
+                        .clickable { showVoiceAssignments = true }
+                        .padding(14.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "🎭 CUSTOMIZE VOICE ASSIGNMENTS",
+                                color = LogosGlow,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Black,
+                                fontFamily = FontFamily.Monospace
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Optional. Every character already has a voice. Tap to audition or change them.",
+                                color = Color.LightGray,
+                                fontSize = 10.sp,
+                                fontFamily = FontFamily.Monospace,
+                                lineHeight = 14.sp
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "OPEN ▾",
+                            color = LogosGold,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Monospace
+                        )
+                    }
+                }
+            } else Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
@@ -429,6 +484,20 @@ fun AudioSetupScreen(
                         fontSize = 9.sp,
                         fontFamily = FontFamily.Monospace
                     )
+                    if (isNewGameFlow) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "▴ HIDE VOICE ASSIGNMENTS",
+                            color = LogosGold,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Monospace,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .clickable { showVoiceAssignments = false }
+                                .padding(vertical = 4.dp)
+                        )
+                    }
                 }
             }
 

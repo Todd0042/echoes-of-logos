@@ -98,14 +98,15 @@ fun StoryScreen(
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val bgAspect = BackgroundAspect.fromConfiguration(configuration)
 
-    // Load orientation-aware background: portrait variant (_p.jpg) when in portrait mode,
-    // falling back to the landscape image when no portrait variant asset is present.
-    val backgroundBitmap = remember(storyState.currentScene.backgroundAsset, isLandscape) {
+    // Load aspect-aware background: portrait (_p.jpg) for tall phones, square (_s.jpg) for
+    // unfolded foldables, falling back to the base landscape image when no variant exists.
+    val backgroundBitmap = remember(storyState.currentScene.backgroundAsset, bgAspect) {
         StoryAssetLoader.loadBackground(
             context,
             storyState.currentScene.backgroundAsset,
-            isPortrait = !isLandscape
+            bgAspect
         )
     }
     val manifest = GameContent.manifest
@@ -217,31 +218,20 @@ fun StoryScreen(
                     } else Modifier
                 )
         ) {
-            // 1. Scene Background — orientation-aware scaling strategy:
-            //    • Landscape + 16:9 source  → ContentScale.Crop  (fills frame, minimal crop)
-            //    • Portrait  + 9:16 _p.jpg  → ContentScale.FillBounds (fills frame perfectly)
-            //    • Portrait  + 16:9 fallback → ContentScale.FillWidth  (pins width, avoids
-            //      severe horizontal crop; lower gradient vignette masks the letterbox naturally)
+            // 1. Scene Background — aspect-aware scaling strategy:
+            //    • Matching aspect (16:9 landscape, 1:1 _s.jpg unfolded, 9:16 _p.jpg portrait)
+            //      → ContentScale.Crop + Alignment.Center (fills frame cleanly with minimal crop)
+            //    • Portrait + 16:9 fallback → ContentScale.FillWidth + Alignment.TopCenter
+            //      (pins width so horizontal scene stays visible; lower gradient masks letterbox)
             if (backgroundBitmap != null) {
-                val bgScale = when {
-                    isLandscape -> ContentScale.Crop
-                    // If the bitmap is wider than tall it came from the landscape fallback;
-                    // pin width so the full horizontal composition stays visible.
-                    backgroundBitmap.width > backgroundBitmap.height -> ContentScale.FillWidth
-                    // Native portrait asset: fill the frame perfectly.
-                    else -> ContentScale.FillBounds
-                }
+                val isPortraitLandscapeFallback =
+                    bgAspect == BackgroundAspect.PORTRAIT && backgroundBitmap.width > backgroundBitmap.height
+                val bgScale = if (isPortraitLandscapeFallback) ContentScale.FillWidth else ContentScale.Crop
                 Image(
                     bitmap = backgroundBitmap,
                     contentDescription = storyState.currentScene.name,
                     contentScale = bgScale,
-                    alignment = if (!isLandscape && backgroundBitmap.width > backgroundBitmap.height) {
-                        // Align landscape-fallback image to the top so the most meaningful
-                        // part of the scene (storefront, faces) stays in the upper 2/3.
-                        Alignment.TopCenter
-                    } else {
-                        Alignment.Center
-                    },
+                    alignment = if (isPortraitLandscapeFallback) Alignment.TopCenter else Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 )
             } else {

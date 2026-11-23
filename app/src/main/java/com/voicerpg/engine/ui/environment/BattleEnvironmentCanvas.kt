@@ -21,9 +21,12 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import com.voicerpg.engine.content.GameContent
 import com.voicerpg.engine.model.BattleEnvironment
+import com.voicerpg.engine.ui.story.BackgroundAspect
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /**
@@ -40,16 +43,18 @@ fun BattleEnvironmentCanvas(
     environment: BattleEnvironment = BattleEnvironment.FOREST,
     environmentId: String? = null,
     isPortrait: Boolean = false,
+    bgAspect: BackgroundAspect? = null,
     partyCount: Int = 4,
     enemyCount: Int = 3,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val resolvedAspect = bgAspect ?: if (isPortrait) BackgroundAspect.PORTRAIT else BackgroundAspect.LANDSCAPE
     val envDef = remember(environmentId, environment) {
         GameContent.environmentById(environmentId) ?: GameContent.environmentById(environment.name)
     }
-    val backgroundBitmap = remember(environmentId, environment, isPortrait) {
-        EnvironmentAssetLoader.getOrLoad(context, environmentId, environment, isPortrait)
+    val backgroundBitmap = remember(environmentId, environment, resolvedAspect) {
+        EnvironmentAssetLoader.getOrLoad(context, environmentId, environment, resolvedAspect)
     }
 
     // 4-frame continuous loop: 400ms per frame (1600ms full cycle)
@@ -75,11 +80,24 @@ fun BattleEnvironmentCanvas(
         val horizonY = h * 0.43f // SNES horizon line separating BG3/BG2 wall from Mode-7 floor plane
 
         if (backgroundBitmap != null) {
-            // 1. BG3/BG2 Backdrop Artwork
-            drawImage(
-                image = backgroundBitmap,
-                dstSize = IntSize(w.toInt(), h.toInt())
-            )
+            // 1. BG3/BG2 Backdrop Artwork (aspect-preserving center crop)
+            val srcW = backgroundBitmap.width
+            val srcH = backgroundBitmap.height
+            if (w > 0f && h > 0f && srcW > 0 && srcH > 0) {
+                val dstRatio = w / h
+                val srcRatio = srcW.toFloat() / srcH.toFloat()
+                val (cropW, cropH) = if (srcRatio > dstRatio) {
+                    (srcH * dstRatio).roundToInt().coerceIn(1, srcW) to srcH
+                } else {
+                    srcW to (srcW / dstRatio).roundToInt().coerceIn(1, srcH)
+                }
+                drawImage(
+                    image = backgroundBitmap,
+                    srcOffset = IntOffset((srcW - cropW) / 2, (srcH - cropH) / 2),
+                    srcSize = IntSize(cropW, cropH),
+                    dstSize = IntSize(w.toInt(), h.toInt())
+                )
+            }
             // Soft darkening over backdrop to push it into depth behind the stage
             drawRect(
                 color = Color.Black.copy(alpha = 0.22f),

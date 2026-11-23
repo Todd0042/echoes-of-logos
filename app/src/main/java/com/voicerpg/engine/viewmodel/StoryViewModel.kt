@@ -794,15 +794,29 @@ class StoryViewModel(
     }
 
     fun applyLanguageAndFinish(languageCode: String, regionCode: String) {
-        com.voicerpg.engine.localization.TranslationManager.setLanguageAndRegion(languageCode, regionCode)
-        combatNarrator.setSelectedLanguageAndRegion(languageCode, regionCode)
-        speechManager.setSelectedLocale(languageCode)
-        speechManager.setSelectedRegion(regionCode)
+        val cleanLang = languageCode.lowercase().trim().take(2).ifBlank { "en" }
+        val cleanReg = regionCode.uppercase().trim()
+        // Persist the choice so the language screen is shown only on first launch, not every boot.
+        saveManager.saveGlobalSettings(
+            SaveManager.GlobalGameSettings(
+                isLanguageSetupCompleted = true,
+                selectedLanguage = cleanLang,
+                selectedRegion = cleanReg
+            )
+        )
+        com.voicerpg.engine.localization.TranslationManager.setLanguageAndRegion(cleanLang, cleanReg)
+        combatNarrator.setSelectedLanguageAndRegion(cleanLang, cleanReg)
+        speechManager.setSelectedLocale(cleanLang)
+        speechManager.setSelectedRegion(cleanReg)
+        com.voicerpg.engine.engine.IntentParser.currentLocale = cleanLang
 
         val dest = _state.value.previousScreen ?: GameScreen.TITLE
         _state.value = _state.value.copy(
             gameScreen = dest,
-            previousScreen = null
+            previousScreen = null,
+            selectedLanguage = cleanLang,
+            selectedRegion = cleanReg,
+            showFirstLaunchLanguagePrompt = false
         )
     }
 

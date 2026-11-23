@@ -102,7 +102,7 @@ fun TutorialBattleScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val bgAspect = com.voicerpg.engine.ui.story.BackgroundAspect.fromConfiguration(configuration)
 
     // Start battle BGM on enter
     LaunchedEffect(Unit) {
@@ -150,7 +150,7 @@ fun TutorialBattleScreen(
                     BattleEnvironmentCanvas(
                         environment = GameContent.defaultEncounter?.environment ?: BattleEnvironment.CASTLE,
                         environmentId = GameContent.defaultEncounter?.environmentId,
-                        isPortrait = !isLandscape,
+                        bgAspect = bgAspect,
                         partyCount = state.party.size,
                         enemyCount = state.enemies.size,
                         modifier = Modifier.fillMaxSize()

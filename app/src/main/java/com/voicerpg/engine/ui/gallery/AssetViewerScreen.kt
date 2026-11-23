@@ -82,6 +82,7 @@ import androidx.compose.ui.window.Dialog
 import com.voicerpg.engine.audio.MusicManager
 import com.voicerpg.engine.audio.SpeechManager
 import com.voicerpg.engine.content.GameContent
+import com.voicerpg.engine.ui.story.BackgroundAspect
 import com.voicerpg.engine.ui.story.StoryAssetLoader
 import com.voicerpg.engine.ui.theme.FrostCyan
 import com.voicerpg.engine.ui.theme.HolyYellow
@@ -217,7 +218,8 @@ object AssetCatalog {
             try {
                 val files = context.assets.list(folder) ?: emptyArray()
                 for (f in files) {
-                    if (f.contains("_p.")) continue
+                    val stem = f.substringBeforeLast('.')
+                    if (stem.endsWith("_p", ignoreCase = true) || stem.endsWith("_s", ignoreCase = true)) continue
                     if (f.endsWith(".jpg", ignoreCase = true) || f.endsWith(".png", ignoreCase = true)) {
                         val fullPath = "$folder/$f"
                         if (seenPaths.add(fullPath)) {
@@ -321,7 +323,7 @@ fun AssetViewerScreen(
 ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
-    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val bgAspect = BackgroundAspect.fromConfiguration(configuration)
 
     var currentTab by remember { mutableStateOf(GalleryTab.PORTRAITS) }
 
@@ -521,7 +523,7 @@ fun AssetViewerScreen(
                     GalleryTab.BACKGROUNDS -> {
                         BackgroundsGrid(
                             backgrounds = backgrounds,
-                            isPortrait = isPortrait,
+                            bgAspect = bgAspect,
                             onSelect = {
                                 selectedBackgroundIndex = it
                                 isBackgroundImmersionMode = true
@@ -568,7 +570,7 @@ fun AssetViewerScreen(
                     item = item,
                     index = selectedBackgroundIndex!!,
                     total = backgrounds.size,
-                    isPortrait = isPortrait,
+                    bgAspect = bgAspect,
                     onPrev = {
                         selectedBackgroundIndex = if (selectedBackgroundIndex!! > 0) selectedBackgroundIndex!! - 1 else backgrounds.size - 1
                     },
@@ -702,11 +704,11 @@ private fun PortraitsGrid(
 @Composable
 private fun BackgroundsGrid(
     backgrounds: List<BackgroundAssetItem>,
-    isPortrait: Boolean,
+    bgAspect: BackgroundAspect,
     onSelect: (Int) -> Unit
 ) {
     val context = LocalContext.current
-    val gridColumns = if (isPortrait) 1 else 2
+    val gridColumns = if (bgAspect == BackgroundAspect.PORTRAIT) 1 else 2
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(gridColumns),
@@ -716,8 +718,8 @@ private fun BackgroundsGrid(
         modifier = Modifier.fillMaxSize()
     ) {
         itemsIndexed(backgrounds) { index, item ->
-            val bitmap = remember(item.assetPath, isPortrait) {
-                StoryAssetLoader.loadBackground(context, item.assetPath, isPortrait)
+            val bitmap = remember(item.assetPath, bgAspect) {
+                StoryAssetLoader.loadBackground(context, item.assetPath, bgAspect)
             }
 
             Card(
@@ -1244,14 +1246,14 @@ private fun BackgroundImmersionView(
     item: BackgroundAssetItem,
     index: Int,
     total: Int,
-    isPortrait: Boolean,
+    bgAspect: BackgroundAspect,
     onPrev: () -> Unit,
     onNext: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
-    val bitmap = remember(item.assetPath, isPortrait) {
-        StoryAssetLoader.loadBackground(context, item.assetPath, isPortrait)
+    val bitmap = remember(item.assetPath, bgAspect) {
+        StoryAssetLoader.loadBackground(context, item.assetPath, bgAspect)
     }
 
     var showControls by remember { mutableStateOf(true) }
