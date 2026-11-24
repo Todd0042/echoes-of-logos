@@ -21,9 +21,9 @@
       "graphics": {
         "effectType": "PROJECTILE",
         "primaryColor": "#FF5722",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
-        "screenShake": 4.0
+        "secondaryColor": "#FFC107",
+        "particleCount": 20,
+        "screenShake": 5.0
       },
       "status": "BURN"
     },
@@ -47,10 +47,10 @@
       "exampleChant": "Glacial frost spike the orc!",
       "graphics": {
         "effectType": "PROJECTILE",
-        "primaryColor": "#00BCD4",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
-        "screenShake": 0.0
+        "primaryColor": "#00E5FF",
+        "secondaryColor": "#E0F7FA",
+        "particleCount": 22,
+        "screenShake": 4.0
       },
       "status": "CHILL"
     },
@@ -74,10 +74,10 @@
       "exampleChant": "Tempest lightning strike all enemies!",
       "graphics": {
         "effectType": "PROJECTILE",
-        "primaryColor": "#FFEB3B",
-        "secondaryColor": "#FFE082",
-        "particleCount": 24,
-        "screenShake": 6.0
+        "primaryColor": "#E040FB",
+        "secondaryColor": "#FFFFFF",
+        "particleCount": 26,
+        "screenShake": 7.0
       },
       "status": "OVERLOAD"
     },
@@ -94,10 +94,10 @@
       "exampleChant": "Searing flame strike the orc!",
       "graphics": {
         "effectType": "PROJECTILE",
-        "primaryColor": "#FF5722",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
-        "screenShake": 4.0
+        "primaryColor": "#FF3D00",
+        "secondaryColor": "#FFD54F",
+        "particleCount": 24,
+        "screenShake": 7.0
       },
       "status": "BURN"
     },
@@ -113,11 +113,11 @@
       "description": "Absorbing vanguard protection",
       "exampleChant": "Arcane barrier protect our line!",
       "graphics": {
-        "effectType": "SHIELD",
+        "effectType": "BURST",
         "primaryColor": "#9C27B0",
-        "secondaryColor": "#FFE082",
-        "particleCount": 24,
-        "screenShake": 6.0
+        "secondaryColor": "#E1BEE7",
+        "particleCount": 20,
+        "screenShake": 0.0
       },
       "status": "GUARD"
     },
@@ -133,11 +133,11 @@
       "description": "Sweeping lightning sword cleave",
       "exampleChant": "Thunder cleave shatter the horde!",
       "graphics": {
-        "effectType": "PROJECTILE",
-        "primaryColor": "#FFEB3B",
-        "secondaryColor": "#FFE082",
-        "particleCount": 24,
-        "screenShake": 6.0
+        "effectType": "SLASH",
+        "primaryColor": "#FFF176",
+        "secondaryColor": "#E040FB",
+        "particleCount": 28,
+        "screenShake": 9.0
       },
       "status": "OVERLOAD"
     },
@@ -153,10 +153,10 @@
       "description": "Acoustic distortion freezing foe in time",
       "exampleChant": "Temporal stasis freeze the archer!",
       "graphics": {
-        "effectType": "PROJECTILE",
-        "primaryColor": "#FFEB3B",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
+        "effectType": "BURST",
+        "primaryColor": "#B388FF",
+        "secondaryColor": "#EDE7F6",
+        "particleCount": 20,
         "screenShake": 0.0
       },
       "status": "OVERLOAD"
@@ -173,11 +173,11 @@
       "description": "Rhythmic breath healing and quickening hero ATB",
       "exampleChant": "Swift rhythm hasten our fellowship!",
       "graphics": {
-        "effectType": "WAVE",
-        "primaryColor": "#FFD700",
-        "secondaryColor": "#FFE082",
+        "effectType": "PILLAR",
+        "primaryColor": "#FFD54F",
+        "secondaryColor": "#FFF8E1",
         "particleCount": 24,
-        "screenShake": 6.0
+        "screenShake": 0.0
       },
       "status": "BLESS"
     },
@@ -193,11 +193,11 @@
       "description": "Multi-tonal acoustic shockwave",
       "exampleChant": "Harmonic surge ignite all enemies!",
       "graphics": {
-        "effectType": "PROJECTILE",
-        "primaryColor": "#FF5722",
-        "secondaryColor": "#FFE082",
-        "particleCount": 24,
-        "screenShake": 6.0
+        "effectType": "WAVE",
+        "primaryColor": "#FF6E40",
+        "secondaryColor": "#FFE0B2",
+        "particleCount": 28,
+        "screenShake": 8.0
       },
       "status": "BURN"
     },
@@ -213,11 +213,11 @@
       "description": "Piercing needle from darkness",
       "exampleChant": "Abyssal shadow spike the shaman!",
       "graphics": {
-        "effectType": "SLASH",
-        "primaryColor": "#9C27B0",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
-        "screenShake": 4.0
+        "effectType": "PROJECTILE",
+        "primaryColor": "#7C4DFF",
+        "secondaryColor": "#E040FB",
+        "particleCount": 20,
+        "screenShake": 6.0
       },
       "status": "CORRODE"
     },
@@ -233,11 +233,11 @@
       "description": "Siphons life essence from enemy to caster",
       "exampleChant": "Void siphon drain their life essence!",
       "graphics": {
-        "effectType": "SLASH",
-        "primaryColor": "#9C27B0",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
-        "screenShake": 0.0
+        "effectType": "BURST",
+        "primaryColor": "#311B92",
+        "secondaryColor": "#B388FF",
+        "particleCount": 18,
+        "screenShake": 2.0
       },
       "status": "CORRODE",
       "lifesteal": true,
@@ -258,11 +258,11 @@
       "description": "Blinding smoke of dark matter",
       "exampleChant": "Veil of night consume the battlefield!",
       "graphics": {
-        "effectType": "SLASH",
-        "primaryColor": "#9C27B0",
-        "secondaryColor": "#FFE082",
+        "effectType": "WAVE",
+        "primaryColor": "#4A148C",
+        "secondaryColor": "#B388FF",
         "particleCount": 24,
-        "screenShake": 6.0
+        "screenShake": 4.0
       },
       "status": "CORRODE"
     },
@@ -285,11 +285,11 @@
       "description": "Righteous celestial blow",
       "exampleChant": "By celestial dawn, smite the heretic!",
       "graphics": {
-        "effectType": "SLASH",
+        "effectType": "PROJECTILE",
         "primaryColor": "#FFD700",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
-        "screenShake": 4.0
+        "secondaryColor": "#FFFFFF",
+        "particleCount": 22,
+        "screenShake": 6.0
       }
     },
     {
@@ -311,11 +311,11 @@
       "description": "Restorative blessing",
       "exampleChant": "Sacred radiance mend Cedric's wounds!",
       "graphics": {
-        "effectType": "WAVE",
-        "primaryColor": "#FFD700",
-        "secondaryColor": "#FFE082",
-        "particleCount": 24,
-        "screenShake": 6.0
+        "effectType": "PILLAR",
+        "primaryColor": "#FFF59D",
+        "secondaryColor": "#FFFFFF",
+        "particleCount": 28,
+        "screenShake": 0.0
       }
     },
     {
@@ -337,11 +337,11 @@
       "description": "Vanguard protection",
       "exampleChant": "Raise the golden aegis against the horde!",
       "graphics": {
-        "effectType": "SHIELD",
-        "primaryColor": "#9C27B0",
-        "secondaryColor": "#FFE082",
-        "particleCount": 24,
-        "screenShake": 6.0
+        "effectType": "BURST",
+        "primaryColor": "#90A4AE",
+        "secondaryColor": "#ECEFF1",
+        "particleCount": 20,
+        "screenShake": 0.0
       },
       "status": "GUARD"
     },
@@ -364,11 +364,11 @@
       "description": "Radiant invulnerability barrier",
       "exampleChant": "By celestial dawn, raise the morning star!",
       "graphics": {
-        "effectType": "WAVE",
+        "effectType": "PILLAR",
         "primaryColor": "#FFD700",
-        "secondaryColor": "#FFE082",
-        "particleCount": 24,
-        "screenShake": 6.0
+        "secondaryColor": "#FFFDE7",
+        "particleCount": 30,
+        "screenShake": 3.0
       },
       "status": "GUARD"
     },
@@ -422,11 +422,11 @@
       "description": "Grove restorative mist",
       "exampleChant": "Spirits of the grove, grant soothing rain upon our party!",
       "graphics": {
-        "effectType": "WAVE",
-        "primaryColor": "#4CAF50",
-        "secondaryColor": "#FFE082",
+        "effectType": "PILLAR",
+        "primaryColor": "#81D4FA",
+        "secondaryColor": "#C8E6C9",
         "particleCount": 24,
-        "screenShake": 6.0
+        "screenShake": 0.0
       }
     },
     {
@@ -448,11 +448,11 @@
       "description": "Thorny vines snare the foe",
       "exampleChant": "Thorny vines and briars ensnare that archer!",
       "graphics": {
-        "effectType": "SLASH",
-        "primaryColor": "#4CAF50",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
-        "screenShake": 0.0
+        "effectType": "PROJECTILE",
+        "primaryColor": "#66BB6A",
+        "secondaryColor": "#C5E1A5",
+        "particleCount": 20,
+        "screenShake": 3.0
       },
       "status": "ROOT"
     },
@@ -475,11 +475,11 @@
       "description": "Cataclysmic grove-cry shook the whole field",
       "exampleChant": "Ancient roots of the deep earth awaken!",
       "graphics": {
-        "effectType": "SLASH",
-        "primaryColor": "#4CAF50",
-        "secondaryColor": "#FFE082",
-        "particleCount": 24,
-        "screenShake": 6.0
+        "effectType": "WAVE",
+        "primaryColor": "#2E7D32",
+        "secondaryColor": "#AED581",
+        "particleCount": 30,
+        "screenShake": 9.0
       },
       "status": "POISON"
     },
@@ -536,10 +536,10 @@
       "exampleChant": "From the silent umbra, strike the shaman's throat!",
       "graphics": {
         "effectType": "SLASH",
-        "primaryColor": "#9C27B0",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
-        "screenShake": 4.0
+        "primaryColor": "#651FFF",
+        "secondaryColor": "#B388FF",
+        "particleCount": 20,
+        "screenShake": 6.0
       }
     },
     {
@@ -562,10 +562,10 @@
       "exampleChant": "Abyssal venom coat my blades!",
       "graphics": {
         "effectType": "SLASH",
-        "primaryColor": "#9C27B0",
-        "secondaryColor": "#FFE082",
+        "primaryColor": "#76FF03",
+        "secondaryColor": "#7C4DFF",
         "particleCount": 24,
-        "screenShake": 6.0
+        "screenShake": 5.0
       },
       "status": "POISON"
     },
@@ -588,11 +588,11 @@
       "description": "Siphons shadow essence to mend wounds",
       "exampleChant": "Abyssal shadow siphon drain the shaman!",
       "graphics": {
-        "effectType": "SLASH",
-        "primaryColor": "#9C27B0",
-        "secondaryColor": "#FFE082",
-        "particleCount": 16,
-        "screenShake": 0.0
+        "effectType": "BURST",
+        "primaryColor": "#4527A0",
+        "secondaryColor": "#D1C4E9",
+        "particleCount": 18,
+        "screenShake": 2.0
       },
       "status": "CORRODE",
       "lifesteal": true,
