@@ -947,6 +947,7 @@ class GameContentPack(
     val environments: Map<String, EnvironmentDefinition> = emptyMap(),
     val statusCatalog: Map<String, StatusDef> = emptyMap(),
     val affinityMatrix: AffinityMatrix? = null,
+    val presentation: PresentationConfig = PresentationConfig(),
     val thesaurusRoots: Map<SpellSchool, List<String>> = emptyMap(),
     val metrics: Map<String, MetricDefinition> = emptyMap(),
     val incidents: Map<String, IncidentDefinition> = emptyMap(),
@@ -1197,6 +1198,8 @@ class GameContentLoader(private val source: ContentSource) {
             )
         }
 
+        val presentation = read("combat/presentation.json", PresentationFileDto::class.java)?.toConfig() ?: PresentationConfig()
+
         val thesaurusDto = read("spells/thesaurus.json", ThesaurusFileDto::class.java)
         val thesaurusRoots = thesaurusDto?.schools?.mapNotNull { (schoolStr, words) ->
             runCatching { SpellSchool.valueOf(schoolStr) }.getOrNull()?.let { school ->
@@ -1287,6 +1290,7 @@ class GameContentLoader(private val source: ContentSource) {
             environments = environments,
             statusCatalog = statusCatalog,
             affinityMatrix = affinityMatrix,
+            presentation = presentation,
             thesaurusRoots = thesaurusRoots,
             metrics = metrics,
             incidents = incidents,
@@ -1708,6 +1712,7 @@ object GameContent {
     val environments: Map<String, EnvironmentDefinition> get() = pack.environments
     val statusCatalog: Map<String, StatusDef> get() = pack.statusCatalog
     val affinityMatrix: AffinityMatrix? get() = pack.affinityMatrix
+    val presentation: PresentationConfig get() = pack.presentation
     val thesaurusRoots: Map<SpellSchool, List<String>> get() = pack.thesaurusRoots
     val selfieConfig: SelfieFilterConfig get() = manifest.selfieConfig
     val metrics: Map<String, MetricDefinition> get() = pack.metrics

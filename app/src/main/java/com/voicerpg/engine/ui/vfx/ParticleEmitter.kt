@@ -1,16 +1,10 @@
 package com.voicerpg.engine.ui.vfx
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.withFrameNanos
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.voicerpg.engine.model.Particle
 import com.voicerpg.engine.model.SpellSchool
 import kotlin.math.cos
@@ -18,7 +12,7 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 /**
- * High-performance 60 FPS retro particle engine rendered on Compose Canvas.
+ * Retro particle bursts for spell impacts. Advanced by the battle's FxClock and drawn by BattleFxCanvas.
  */
 class ParticleEmitter {
     val particles = mutableStateListOf<Particle>()
@@ -78,11 +72,13 @@ class ParticleEmitter {
         particles.addAll(newParticles)
     }
 
-    fun update() {
+    /** Advance every particle by [dtSeconds] of arena time (see FxClock) and drop the dead ones. */
+    fun update(dtSeconds: Float) {
+        if (dtSeconds <= 0f || particles.isEmpty()) return
         val iterator = particles.iterator()
         while (iterator.hasNext()) {
             val p = iterator.next()
-            p.update()
+            p.update(dtSeconds)
             if (p.isDead) {
                 iterator.remove()
             }
@@ -168,30 +164,15 @@ class ParticleEmitter {
     }
 }
 
-@Composable
-fun ParticleCanvas(
-    emitter: ParticleEmitter,
-    modifier: Modifier = Modifier
-) {
-    LaunchedEffect(emitter) {
-        while (true) {
-            withFrameNanos {
-                emitter.update()
-            }
-        }
-    }
-
-    Canvas(modifier = modifier.fillMaxSize()) {
-        val list = emitter.particles
-        for (i in list.indices) {
-            val p = list.getOrNull(i) ?: continue
-            val alphaColor = p.color.copy(alpha = p.alpha)
-            // Retro square pixels
-            drawRect(
-                color = alphaColor,
-                topLeft = Offset(p.x - p.size / 2f, p.y - p.size / 2f),
-                size = Size(p.size, p.size)
-            )
-        }
+/** Draws the emitter's particles as retro square pixels. */
+fun DrawScope.drawParticles(emitter: ParticleEmitter) {
+    val list = emitter.particles
+    for (i in list.indices) {
+        val p = list.getOrNull(i) ?: continue
+        drawRect(
+            color = p.color.copy(alpha = p.alpha),
+            topLeft = Offset(p.x - p.size / 2f, p.y - p.size / 2f),
+            size = Size(p.size, p.size)
+        )
     }
 }

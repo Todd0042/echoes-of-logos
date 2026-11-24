@@ -81,6 +81,7 @@ class StoryViewModel(
     val combatNarrator: CombatNarrator,
     val saveManager: SaveManager = SaveManager(),
     val musicManager: com.voicerpg.engine.audio.MusicManager? = null,
+    val motionSettings: com.voicerpg.engine.engine.MotionSettings = com.voicerpg.engine.engine.MotionSettings(),
     private val scopeOverride: CoroutineScope? = null
 ) : ViewModel() {
 
@@ -546,6 +547,7 @@ class StoryViewModel(
             speechManager.setChimeMuted(existingSave.isChimeMuted)
             musicManager?.setMusicEnabled(existingSave.isMusicEnabled)
             musicManager?.setVolume(existingSave.musicVolume)
+            motionSettings.setReduceMotion(existingSave.isReduceMotion)
             musicManager?.playTrack(com.voicerpg.engine.audio.MusicManager.TRACK_EXPLORATION)
         } else {
             // First time player: start at Language Selection or Title Screen
@@ -644,6 +646,7 @@ class StoryViewModel(
         speechManager.setChimeMuted(existingSave.isChimeMuted)
         musicManager?.setMusicEnabled(existingSave.isMusicEnabled)
         musicManager?.setVolume(existingSave.musicVolume)
+        motionSettings.setReduceMotion(existingSave.isReduceMotion)
         musicManager?.playTrack(restoredScene.musicAsset)
         narrateCurrentNode()
         if (isStoryMode) {
@@ -1375,6 +1378,7 @@ class StoryViewModel(
             isSpeakerAttributionEnabled = combatNarrator.isSpeakerAttributionEnabled.value,
             isMusicEnabled = musicManager?.isMusicEnabled?.value ?: currentSave.isMusicEnabled,
             musicVolume = musicManager?.musicVolume?.value ?: currentSave.musicVolume,
+            isReduceMotion = motionSettings.reduceMotion.value,
             voiceAssignments = combatNarrator.getVoiceAssignments(),
             dynamicMetrics = s.dynamicMetrics
         )

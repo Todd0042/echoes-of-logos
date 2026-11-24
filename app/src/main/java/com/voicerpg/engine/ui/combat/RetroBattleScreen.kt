@@ -55,8 +55,11 @@ import com.voicerpg.engine.ui.theme.RetroBlack
 import com.voicerpg.engine.ui.theme.RetroBorder
 import com.voicerpg.engine.ui.theme.RetroDeepSlate
 import com.voicerpg.engine.ui.theme.RetroPanel
-import com.voicerpg.engine.ui.vfx.ParticleCanvas
-import com.voicerpg.engine.ui.vfx.SpellVfxCanvas
+import androidx.compose.ui.geometry.Offset
+import com.voicerpg.engine.engine.MotionSettings
+import com.voicerpg.engine.ui.fx.BattleFxCanvas
+import com.voicerpg.engine.ui.fx.BattleFxDirector
+import com.voicerpg.engine.ui.fx.FxBenchBar
 import com.voicerpg.engine.viewmodel.CombatViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,11 +67,23 @@ import kotlinx.coroutines.launch
 @Composable
 fun RetroBattleScreen(
     viewModel: CombatViewModel,
+    motionSettings: MotionSettings,
     onReturnToStory: (() -> Unit)? = null,
     onContinueStory: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
+    val reduceMotion by motionSettings.reduceMotion.collectAsState()
+
+    // Battle effects: the view model announces cues, the director plays them (ui/fx).
+    val director = remember(viewModel) {
+        BattleFxDirector(positionOf = { id -> viewModel.combatantSlot(id).let { (x, y) -> Offset(x, y) } })
+    }
+    director.presentation = GameContent.presentation
+    director.reduceMotion = reduceMotion
+    LaunchedEffect(viewModel, director) {
+        viewModel.cues.collect { director.play(it) }
+    }
     val speechState by viewModel.speechManager.speechState.collectAsState()
     val liveTranscript by viewModel.speechManager.liveTranscript.collectAsState()
     val isChimeMuted by viewModel.speechManager.isChimeMuted.collectAsState()
@@ -86,7 +101,6 @@ fun RetroBattleScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .offset(x = state.screenShakeOffsetX.dp, y = state.screenShakeOffsetY.dp)
                 .then(
                     if (speechState is com.voicerpg.engine.audio.SpeechState.Standby && state.phase == CombatPhase.PLAYER_INPUT) {
                         Modifier.clickable { viewModel.resumeVoiceListening() }
@@ -172,6 +186,12 @@ fun RetroBattleScreen(
                         },
                         modifier = Modifier.padding(vertical = 2.dp)
                     )
+                    FxBenchBar(
+                        director = director,
+                        partyIds = state.party.filter { it.isAlive }.map { it.id },
+                        enemyIds = state.enemies.filter { it.isAlive }.map { it.id },
+                        bossId = state.enemies.firstOrNull { it.isAlive && it.isBoss }?.id
+                    )
                 }
 
                 // Middle: 32-bit Tactical Battle Arena (Left: Party, Right: Monsters)
@@ -182,6 +202,11 @@ fun RetroBattleScreen(
                         .fillMaxWidth()
                         .weight(1f)
                         .padding(horizontal = 4.dp, vertical = 2.dp)
+                        // Only the arena shakes; the status bar and console stay readable.
+                        .offset {
+                            val shake = director.shake.offset
+                            IntOffset(shake.x.dp.roundToPx(), shake.y.dp.roundToPx())
+                        }
                         .clip(RoundedCornerShape(8.dp))
                         .border(1.dp, RetroBorder, RoundedCornerShape(8.dp))
                         .onSizeChanged { size ->
@@ -240,15 +265,9 @@ fun RetroBattleScreen(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // Spell Projectiles Layer
-                    SpellVfxCanvas(
-                        engine = viewModel.spellVfxEngine,
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    // Hardware-Accelerated Particle Canvas Layer
-                    ParticleCanvas(
-                        emitter = viewModel.particleEmitter,
+                    // Spell projectiles and particle bursts
+                    BattleFxCanvas(
+                        director = director,
                         modifier = Modifier.fillMaxSize()
                     )
 

@@ -1,16 +1,6 @@
 package com.voicerpg.engine.ui.vfx
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameNanos
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -38,6 +28,8 @@ data class ActiveSpellProjectile(
     val tier: ResonanceTier = ResonanceTier.BASIC,
     var progress: Float = 0f,
     val graphics: SpellGraphics? = null,
+    /** Flight time in arena milliseconds (FxClock); 0 lands on the next frame. */
+    val durationMs: Long = SpellVfxEngine.DEFAULT_TRAVEL_MS,
     val onImpact: () -> Unit
 )
 
@@ -54,6 +46,7 @@ class SpellVfxEngine {
         bonusPercent: Int = 0,
         tier: ResonanceTier = ResonanceTier.BASIC,
         graphics: SpellGraphics? = null,
+        durationMs: Long = DEFAULT_TRAVEL_MS,
         onImpact: () -> Unit
     ) {
         projectiles.add(
@@ -67,48 +60,36 @@ class SpellVfxEngine {
                 bonusPercent = bonusPercent,
                 tier = tier,
                 graphics = graphics,
+                durationMs = durationMs,
                 onImpact = onImpact
             )
         )
     }
 
-    fun update(deltaProgress: Float = 0.045f) {
+    /** Advance every projectile by [dtSeconds] of arena time; a projectile that arrives fires onImpact. */
+    fun update(dtSeconds: Float) {
+        if (projectiles.isEmpty()) return
+        val landed = mutableListOf<ActiveSpellProjectile>()
         val iterator = projectiles.iterator()
         while (iterator.hasNext()) {
             val p = iterator.next()
-            p.progress += deltaProgress
+            p.progress = if (p.durationMs <= 0L) 1f else p.progress + dtSeconds * 1000f / p.durationMs
             if (p.progress >= 1.0f) {
-                p.onImpact()
+                landed += p
                 iterator.remove()
             }
         }
+        landed.forEach { it.onImpact() }
+    }
+
+    companion object {
+        const val DEFAULT_TRAVEL_MS = 420L
     }
 }
 
-@Composable
-fun SpellVfxCanvas(
-    engine: SpellVfxEngine,
-    modifier: Modifier = Modifier
-) {
-    var frameTick by remember { mutableLongStateOf(0L) }
-
-    LaunchedEffect(engine) {
-        while (true) {
-            withFrameNanos { nanos ->
-                engine.update()
-                frameTick = nanos
-            }
-        }
-    }
-
-    Canvas(modifier = modifier.fillMaxSize()) {
-        val _tick = frameTick // Observes frame tick so Canvas reliably redraws every frame while projectiles exist
-        if (engine.projectiles.isNotEmpty()) {
-            for (p in engine.projectiles) {
-                renderProjectile(p)
-            }
-        }
-    }
+/** Draws every projectile in flight. */
+fun DrawScope.drawProjectiles(engine: SpellVfxEngine) {
+    for (p in engine.projectiles) renderProjectile(p)
 }
 
 private fun DrawScope.renderProjectile(p: ActiveSpellProjectile) {

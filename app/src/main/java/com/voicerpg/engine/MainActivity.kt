@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var combatNarrator: CombatNarrator
     private lateinit var musicManager: MusicManager
     private lateinit var saveManager: SaveManager
+    private lateinit var motionSettings: com.voicerpg.engine.engine.MotionSettings
     private lateinit var combatViewModel: CombatViewModel
     private lateinit var storyViewModel: StoryViewModel
     private lateinit var tutorialBattleViewModel: TutorialBattleViewModel
@@ -100,6 +101,7 @@ class MainActivity : ComponentActivity() {
         combatNarrator.registerSpeakers(com.voicerpg.engine.content.GameContent.allSpeakers)
         musicManager = MusicManager(this)
         saveManager = SaveManager(this)
+        motionSettings = com.voicerpg.engine.engine.MotionSettings()
 
         combatViewModel = CombatViewModel(
             speechManager = speechManager,
@@ -111,7 +113,8 @@ class MainActivity : ComponentActivity() {
             speechManager = speechManager,
             combatNarrator = combatNarrator,
             saveManager = saveManager,
-            musicManager = musicManager
+            musicManager = musicManager,
+            motionSettings = motionSettings
         )
         tutorialBattleViewModel = TutorialBattleViewModel(
             speechManager = speechManager,
@@ -173,6 +176,7 @@ class MainActivity : ComponentActivity() {
             val isChimeMuted by speechManager.isChimeMuted.collectAsState()
             val isMusicEnabled by musicManager.isMusicEnabled.collectAsState()
             val musicVolume by musicManager.musicVolume.collectAsState()
+            val isReduceMotion by motionSettings.reduceMotion.collectAsState()
             var showDebugWarp by remember { mutableStateOf(false) }
             val isDeveloperToolsEnabled by combatViewModel.isDeveloperToolsEnabled.collectAsState()
 
@@ -399,6 +403,7 @@ class MainActivity : ComponentActivity() {
                         GameScreen.COMBAT_ARENA -> {
                             RetroBattleScreen(
                                 viewModel = combatViewModel,
+                                motionSettings = motionSettings,
                                 onReturnToStory = { storyViewModel.switchToStory() },
                                 onContinueStory = {
                                     combatNarrator.stop()
@@ -535,6 +540,11 @@ class MainActivity : ComponentActivity() {
                         },
                         onMusicVolumeChange = { vol ->
                             musicManager.setVolume(vol)
+                            storyViewModel.persistCurrentState()
+                        },
+                        isReduceMotion = isReduceMotion,
+                        onToggleReduceMotion = {
+                            motionSettings.toggleReduceMotion()
                             storyViewModel.persistCurrentState()
                         },
                         onOpenVoiceSettings = {

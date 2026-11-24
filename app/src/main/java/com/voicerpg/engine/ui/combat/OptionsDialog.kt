@@ -74,6 +74,8 @@ fun OptionsDialog(
     onToggleChimeMute: () -> Unit,
     onToggleMusic: () -> Unit = {},
     onMusicVolumeChange: (Float) -> Unit = {},
+    isReduceMotion: Boolean = false,
+    onToggleReduceMotion: () -> Unit = {},
     onOpenVoiceSettings: (() -> Unit)? = null,
     onOpenVoiceAssignment: (() -> Unit)? = null,
     onOpenLanguageSelection: (() -> Unit)? = null,
@@ -703,6 +705,18 @@ fun OptionsDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // Toggle: Reduce Motion (visual comfort)
+                OptionToggleRow(
+                    title = "🌀 Reduce Motion",
+                    subtitle = "Battles keep the arena still: no screen shake when spells land or bosses strike.",
+                    voiceHint = "",
+                    checked = isReduceMotion,
+                    activeColor = Color(0xFFB39DDB),
+                    onCheckedChange = { onToggleReduceMotion() }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 // Toggle: Hands-Free Auto Listen
                 OptionToggleRow(
                     title = "👂 Hands-Free Auto-Listen",
@@ -1009,13 +1023,15 @@ private fun OptionToggleRow(
                     lineHeight = 13.sp,
                     fontFamily = FontFamily.Monospace
                 )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = voiceHint,
-                    color = Color(0xFF80D8FF),
-                    fontSize = 9.sp,
-                    fontFamily = FontFamily.Monospace
-                )
+                if (voiceHint.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = voiceHint,
+                        color = Color(0xFF80D8FF),
+                        fontSize = 9.sp,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.width(8.dp))

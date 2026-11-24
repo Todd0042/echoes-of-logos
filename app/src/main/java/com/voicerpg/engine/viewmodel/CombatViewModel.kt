@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voicerpg.engine.combat.AffinityTable
+import com.voicerpg.engine.combat.BattleCue
+import com.voicerpg.engine.combat.CombatTiming
 import com.voicerpg.engine.combat.DamageInputs
 import com.voicerpg.engine.combat.DamageResolver
 import com.voicerpg.engine.combat.EnemyBrain
@@ -40,12 +42,14 @@ import com.voicerpg.engine.model.ResonanceTier
 import com.voicerpg.engine.model.Spell
 import com.voicerpg.engine.model.SpellSchool
 import com.voicerpg.engine.model.TargetSelection
-import com.voicerpg.engine.ui.vfx.ParticleEmitter
-import com.voicerpg.engine.ui.vfx.SpellVfxEngine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -62,8 +66,6 @@ data class CombatState(
     val lastResonance: ResonanceResult? = null,
     val isLogosBannerVisible: Boolean = false,
     val floatingTexts: List<FloatingCombatText> = emptyList(),
-    val screenShakeOffsetX: Float = 0f,
-    val screenShakeOffsetY: Float = 0f,
     val currentEnvironment: BattleEnvironment = BattleEnvironment.DUNGEON,
     val currentEnvironmentId: String = "",
     val isEyesFreeMode: Boolean = false,
@@ -83,10 +85,10 @@ class CombatViewModel(
     val speechManager: SpeechManager,
     val sfxManager: SfxManager = SfxManager(),
     val resonanceEngine: ResonanceEngine = ResonanceEngine(),
-    val particleEmitter: ParticleEmitter = ParticleEmitter(),
-    val spellVfxEngine: SpellVfxEngine = SpellVfxEngine(),
     val combatNarrator: CombatNarrator = CombatNarrator(),
     val musicManager: com.voicerpg.engine.audio.MusicManager? = null,
+    /** Every wait in a turn; [CombatTiming.INSTANT] in tests that don't measure time. */
+    val timing: CombatTiming = CombatTiming.DEFAULT,
     private val scopeOverride: CoroutineScope? = null
 ) : ViewModel() {
 
@@ -98,6 +100,35 @@ class CombatViewModel(
 
     internal fun setCombatStateForTesting(testState: CombatState) {
         _state.value = testState
+    }
+
+    // ---- Battle cues: what happened, in order, for the presentation layer (ui/fx) to play -----------
+    // Never blocks logic: with no screen collecting (pocket mode, tests) cues are simply dropped.
+    private val _cues = MutableSharedFlow<BattleCue>(extraBufferCapacity = 64, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val cues: SharedFlow<BattleCue> = _cues.asSharedFlow()
+
+    private fun cue(c: BattleCue) {
+        _cues.tryEmit(c)
+    }
+
+    /** Waits the [timing] table's hold for [c]: the only way combat logic pauses between beats. */
+    private suspend fun hold(c: BattleCue) {
+        val ms = timing.holdMs(c, pocket = combatNarrator.isEyesFreeMode.value)
+        if (ms > 0L) delay(ms)
+    }
+
+    private suspend fun beat(c: BattleCue) {
+        cue(c)
+        hold(c)
+    }
+
+    private fun aliveIds(): Set<String> =
+        (_state.value.party.filter { it.isAlive }.map { it.id } + _state.value.enemies.filter { it.isAlive }.map { it.id }).toSet()
+
+    /** Announces a [BattleCue.Death] for everyone alive in [before] who has fallen since. */
+    private fun announceFallen(before: Set<String>) {
+        val enemyIds = _state.value.enemies.map { it.id }.toSet()
+        for (id in before - aliveIds()) cue(BattleCue.Death(id, isEnemy = id in enemyIds))
     }
 
     // Debug-only developer tools visibility. Kept OUT of CombatState so that
@@ -177,6 +208,10 @@ class CombatViewModel(
             x to (startY + rowIdx * spacing)
         }
     }
+
+    /** Live sprite centre of any combatant, party or enemy. */
+    fun combatantSlot(id: String): Pair<Float, Float> =
+        if (_state.value.party.any { it.id == id }) partyFloatSlot(id) else enemyFloatSlot(id)
 
     fun partyFloatSlot(memberId: String): Pair<Float, Float> {
         _combatantPositions[memberId]?.let { return it }
@@ -380,6 +415,7 @@ class CombatViewModel(
             fell = newHp <= 0
             val (sx, sy) = partyFloatSlot(heroId)
             val fct = FloatingCombatText(text = "-$dot", color = Color(0xFF9CCC65), startX = sx, startY = sy)
+            val aliveBefore = aliveIds()
             _state.value = _state.value.copy(
                 party = _state.value.party.map {
                     if (it.id == heroId) it.copy(
@@ -391,6 +427,7 @@ class CombatViewModel(
                 },
                 floatingTexts = _state.value.floatingTexts + fct
             )
+            announceFallen(aliveBefore)
             activeScope.launch {
                 delay(1200)
                 _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filter { it.id != fct.id })
@@ -452,12 +489,14 @@ class CombatViewModel(
                 if (dot > 0) {
                     val (sx, sy) = enemyFloatSlot(enemy.id)
                     val dotFct = FloatingCombatText(text = "-$dot", color = Color(0xFFFFAB40), startX = sx, startY = sy)
+                    val aliveBefore = aliveIds()
                     _state.value = _state.value.copy(
                         enemies = _state.value.enemies.map {
                             if (it.id == enemy.id) it.copy(currentHp = selfNewHp, atbGauge = if (died) 0f else it.atbGauge, statuses = advanced) else it
                         },
                         floatingTexts = _state.value.floatingTexts + dotFct
                     )
+                    announceFallen(aliveBefore)
                     activeScope.launch {
                         delay(1200)
                         _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filterNot { f -> f.id == dotFct.id })
@@ -506,9 +545,12 @@ class CombatViewModel(
                     _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filterNot { f -> f.id == phaseFct.id })
                 }
                 combatNarrator.speak("${enemy.name} changes tactics! ${phase.note}", force = true)
-                delay(400)
+                beat(BattleCue.PhaseShift(enemy.id, phase.note))
             }
             val move = EnemyBrain.pickMove(moveset, refreshedSelf.hpRatio, refreshedSelf.moveCooldowns)
+            val isBossUltimate = enemy.isBoss && move.powerMult >= 2.0f
+            val moveCue = BattleCue.EnemyMove(enemy.id, move.name, move.kind, isBossUltimate)
+            cue(moveCue)
 
             // SUMMON moves spawn codex-true minions instead of attacking.
             if (move.kind == "SUMMON") {
@@ -525,18 +567,9 @@ class CombatViewModel(
                     )
                 }
                 summonReinforcements(minions)
-                if (combatNarrator.isEyesFreeMode.value) {
-                    val waitStart = System.currentTimeMillis()
-                    while (combatNarrator.isSpeaking.value && (System.currentTimeMillis() - waitStart < 7000L)) {
-                        delay(50)
-                    }
-                    delay(300)
-                } else {
-                    delay(700)
-                }
-                lastActedFaction = CombatantFaction.ENEMY
-                registerTurnCompleted()
-                checkAndTransitionNextTurn()
+                waitForPocketNarration()
+                hold(moveCue)
+                finishEnemyTurn(enemy.id)
                 return@launch
             }
 
@@ -552,10 +585,8 @@ class CombatViewModel(
                     }
                 )
                 combatNarrator.speak("${enemy.name} uses ${move.name}!", force = false)
-                delay(combatDelay())
-                lastActedFaction = CombatantFaction.ENEMY
-                registerTurnCompleted()
-                checkAndTransitionNextTurn()
+                hold(moveCue)
+                finishEnemyTurn(enemy.id)
                 return@launch
             }
 
@@ -568,9 +599,7 @@ class CombatViewModel(
                 else -> listOf(aliveHeroes.random())
             }
 
-            val isBossUltimate = enemy.isBoss && move.powerMult >= 2.0f
             if (isBossUltimate) {
-                triggerScreenShake(20f)
                 combatNarrator.speak("${enemy.name} unleashes their ultimate: ${move.name}!", force = true)
                 val (ex, ey) = enemyFloatSlot(enemy.id)
                 val ultFct = FloatingCombatText(
@@ -589,67 +618,28 @@ class CombatViewModel(
 
             val weakenedMult = StatusSystem.attackDebuffMult(refreshedSelf.statuses)
             val moveSchool = runCatching { SpellSchool.valueOf(move.school) }.getOrDefault(SpellSchool.PHYSICAL)
-            val (enemyCasterX, enemyCasterY) = enemyFloatSlot(enemy.id)
-
             val enemyGraphics = move.graphics
-            if (targetList.size > 1) {
-                // Multi-projectile AoE from enemy caster to each targeted hero
-                val perHeroParticles = enemyGraphics?.particleCount ?: (15 / targetList.size).coerceAtLeast(8)
-                for (targetHero in targetList) {
-                    val (heroX, heroY) = partyFloatSlot(targetHero.id)
-                    spellVfxEngine.launch(
-                        startX = enemyCasterX,
-                        startY = enemyCasterY,
-                        targetX = heroX,
-                        targetY = heroY,
-                        school = moveSchool,
-                        isHeal = false,
-                        graphics = enemyGraphics,
-                        onImpact = {
-                            particleEmitter.emit(
-                                school = moveSchool,
-                                originX = heroX,
-                                originY = heroY,
-                                count = perHeroParticles,
-                                isLogos = false
-                            )
-                        }
-                    )
-                }
-            } else {
-                val targetHero = targetList.firstOrNull()
-                val (heroX, heroY) = if (targetHero != null) partyFloatSlot(targetHero.id) else (250f to 350f)
-                val particleCount = enemyGraphics?.particleCount ?: 15
-                spellVfxEngine.launch(
-                    startX = enemyCasterX,
-                    startY = enemyCasterY,
-                    targetX = heroX,
-                    targetY = heroY,
-                    school = moveSchool,
-                    isHeal = false,
-                    graphics = enemyGraphics,
-                    onImpact = {
-                        particleEmitter.emit(
-                            school = moveSchool,
-                            originX = heroX,
-                            originY = heroY,
-                            count = particleCount,
-                            isLogos = false
-                        )
-                    }
-                )
-            }
 
-            delay(if (isBossUltimate) 550 else 350)
+            // 6. The move flies (one projectile per targeted hero), then lands.
+            beat(
+                BattleCue.Release(
+                    casterId = enemy.id,
+                    fromParty = false,
+                    targetIds = targetList.map { it.id },
+                    school = moveSchool,
+                    style = BattleCue.ReleaseStyle.PROJECTILE,
+                    particleCount = ENEMY_IMPACT_PARTICLES,
+                    graphics = enemyGraphics,
+                    travelMs = timing.travelMs(fromParty = false, isBossUltimate = isBossUltimate)
+                )
+            )
             sfxManager.playHitImpact()
             sfxManager.playSoundBite(move.soundBites.ifEmpty { refreshedSelf.soundBites })
             val moveShake = enemyGraphics?.screenShake ?: 0f
-            if (isBossUltimate || moveShake > 0f) {
-                triggerScreenShake(if (isBossUltimate) 18f.coerceAtLeast(moveShake) else moveShake)
-            }
 
             val moveStatusId = StatusId.fromNameOrNull(move.applyStatus)
             val newFloats = mutableListOf<FloatingCombatText>()
+            val hits = mutableListOf<BattleCue.Hit>()
             var totalDamage = 0
             var anyFallen = false
             var struckHeroName: String? = null
@@ -668,6 +658,7 @@ class CombatViewModel(
                         defenderStatusMitigation = blessMitigation.coerceIn(0.5f, 1.25f)
                     )
                     totalDamage += damage
+                    hits += BattleCue.Hit(hero.id, damage)
                     val newHp = (hero.currentHp - damage).coerceAtLeast(0)
                     val isFallen = newHp <= 0
                     anyFallen = anyFallen || isFallen
@@ -705,11 +696,20 @@ class CombatViewModel(
                 ) else it
             }
 
+            val aliveBefore = aliveIds()
             _state.value = _state.value.copy(
                 enemies = updatedEnemies,
                 party = updatedParty,
                 floatingTexts = _state.value.floatingTexts + newFloats
             )
+            val impact = BattleCue.Impact(
+                sourceId = enemy.id,
+                fromParty = false,
+                hits = hits,
+                shake = if (isBossUltimate) maxOf(18f, moveShake) else moveShake
+            )
+            cue(impact)
+            announceFallen(aliveBefore)
 
             activeScope.launch {
                 delay(1200)
@@ -719,7 +719,7 @@ class CombatViewModel(
                 )
             }
 
-            delay(300)
+            hold(impact)
 
             // Restore damaged hero to READY if still alive
             _state.value = _state.value.copy(
@@ -744,20 +744,26 @@ class CombatViewModel(
                 return@launch
             }
 
-            if (combatNarrator.isEyesFreeMode.value) {
-                delay(300)
-            } else {
-                delay(250)
-            }
-
-            // Turn transition: check if another combatant is already ready
-            lastActedFaction = CombatantFaction.ENEMY
-            registerTurnCompleted()
-            checkAndTransitionNextTurn()
+            finishEnemyTurn(enemy.id)
         }
     }
 
-    private fun combatDelay(): Long = if (combatNarrator.isEyesFreeMode.value) 300L else 500L
+    /** Ends an enemy's action: its turn-end beat, then the next combatant. */
+    private suspend fun finishEnemyTurn(enemyId: String) {
+        beat(BattleCue.TurnEnd(enemyId, fromParty = false))
+        lastActedFaction = CombatantFaction.ENEMY
+        registerTurnCompleted()
+        checkAndTransitionNextTurn()
+    }
+
+    /** In pocket mode, let the narrator finish before the battle moves on (capped at 7 s). */
+    private suspend fun waitForPocketNarration() {
+        if (!combatNarrator.isEyesFreeMode.value) return
+        val waitStart = System.currentTimeMillis()
+        while (combatNarrator.isSpeaking.value && (System.currentTimeMillis() - waitStart < 7000L)) {
+            delay(50)
+        }
+    }
 
     /** Family/role-derived fallback when an enemy has no codex moveset (never one-note). */
     private fun defaultMovesetFor(enemy: Enemy): Moveset {
@@ -782,6 +788,7 @@ class CombatViewModel(
         conclusionTransitionJob?.cancel()
         conclusionWatchdogJob?.cancel()
         _state.value = _state.value.copy(phase = CombatPhase.BATTLE_WON)
+        cue(BattleCue.BattleEnd(victory = true))
         val levelUpLines = awardVictoryXp()
 
         fun proceedToStory() {
@@ -834,6 +841,7 @@ class CombatViewModel(
         conclusionTransitionJob?.cancel()
         conclusionWatchdogJob?.cancel()
         _state.value = _state.value.copy(phase = CombatPhase.BATTLE_LOST)
+        cue(BattleCue.BattleEnd(victory = false))
 
         fun proceedToStory() {
             if (_state.value.phase == CombatPhase.BATTLE_LOST && _state.value.isPureStoryMode) {
@@ -1101,12 +1109,12 @@ class CombatViewModel(
                 delay(1000)
                 _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filter { it.id != fct.id })
             }
+            cue(BattleCue.Guard(activeHero.id))
             if (combatNarrator.isEyesFreeMode.value) {
                 combatNarrator.speakSuspend("${activeHero.name} braces and defends!", force = true)
-                delay(200)
-            } else {
-                delay(300)
             }
+            hold(BattleCue.Guard(activeHero.id))
+            beat(BattleCue.TurnEnd(activeHero.id, fromParty = true))
             lastActedFaction = CombatantFaction.HERO
             registerTurnCompleted()
             checkAndTransitionNextTurn()
@@ -1865,8 +1873,6 @@ class CombatViewModel(
             )
 
             val isSuperLogos = resonance.bonusPercent >= 100
-            val isTranscendental = resonance.tier == ResonanceTier.TRANSCENDENTAL
-
             val showBanner = resonance.bonusPercent >= 50
 
             _state.value = _state.value.copy(
@@ -1877,151 +1883,43 @@ class CombatViewModel(
                 }
             )
 
-            // Audio & Feedback
+            // 2. Reveal the resonance: the banner holds the screen, then clears before the spell fires.
             sfxManager.playSpellCast()
             sfxManager.playSoundBite(parsed.spell.soundBites.ifEmpty {
                 com.voicerpg.engine.content.GameContent.characterById(activeHero.id)?.soundBites ?: emptyList()
             })
-            if (isSuperLogos) {
-                sfxManager.playLogosFanfare()
-                triggerScreenShake(if (isTranscendental) 30f else 18f)
-            } else if (resonance.bonusPercent >= 50) {
-                triggerScreenShake(10f)
-            }
-
-            // Let the banner shine in its full glory, then dismiss it BEFORE the spell fires
+            if (isSuperLogos) sfxManager.playLogosFanfare()
+            beat(BattleCue.ResonanceReveal(activeHero.id, resonance, showBanner))
             if (showBanner) {
-                delay(if (isTranscendental) 1200L else 1000L)
                 _state.value = _state.value.copy(isLogosBannerVisible = false)
-                delay(220L) // Wait for smooth scaleOut + fadeOut exit animation
-            } else {
-                delay(250L)
+                delay(timing.bannerExitMs)
             }
 
-            // 3. Play VFX on Canvas - Projectile Launch & Impact (Screen is now completely clear!)
+            // 3. Release: the spell flies from the caster to its targets.
             _state.value = _state.value.copy(phase = CombatPhase.SPELL_VFX_PLAYING)
-
-            // Spatially place particles & projectile: launch from caster slot to target slots
             val isAttune = parsed.spell.manaRestorePct > 0f
             val isHeal = parsed.spell.isHeal || parsed.spell.cleansesDebuffs || parsed.spell.isCleanse
-            val (casterX, casterY) = partyFloatSlot(activeHero.id)
-            val spellGraphics = parsed.spell.graphics
-
-            if (isAttune) {
-                // Attune restorative radiance directly over the active hero
-                particleEmitter.emit(
-                    school = parsed.spell.school,
-                    originX = casterX,
-                    originY = casterY,
-                    count = 16,
-                    isLogos = isSuperLogos
-                )
-            } else if (isHeal) {
-                val healTargets = resolveHealTargets(activeHero, parsed.spell, parsed.target, parsed.targetHeroId)
-                val effectiveTargets = if (healTargets.isNotEmpty()) healTargets else listOf(activeHero)
-                val perHeroParticles = spellGraphics?.particleCount ?: (resonance.particleCount / effectiveTargets.size).coerceAtLeast(8)
-                for (targetHero in effectiveTargets) {
-                    val (targetX, targetY) = partyFloatSlot(targetHero.id)
-                    spellVfxEngine.launch(
-                        startX = casterX,
-                        startY = casterY,
-                        targetX = targetX,
-                        targetY = targetY,
-                        school = parsed.spell.school,
-                        isHeal = true,
-                        bonusPercent = resonance.bonusPercent,
-                        tier = resonance.tier,
-                        graphics = spellGraphics,
-                        onImpact = {
-                            particleEmitter.emit(
-                                school = parsed.spell.school,
-                                originX = targetX,
-                                originY = targetY,
-                                count = perHeroParticles,
-                                isLogos = isSuperLogos
-                            )
-                        }
-                    )
-                }
-            } else {
-                val damageTargets = resolveDamageTargets(parsed.spell, parsed.target, parsed.targetEnemyId)
-                if (damageTargets.isEmpty()) {
-                    // Fallback if no enemies alive
-                    spellVfxEngine.launch(
-                        startX = casterX,
-                        startY = casterY,
-                        targetX = 800f,
-                        targetY = 350f,
-                        school = parsed.spell.school,
-                        isHeal = false,
-                        bonusPercent = resonance.bonusPercent,
-                        tier = resonance.tier,
-                        graphics = spellGraphics,
-                        onImpact = {
-                            particleEmitter.emit(
-                                school = parsed.spell.school,
-                                originX = 800f,
-                                originY = 350f,
-                                count = spellGraphics?.particleCount ?: resonance.particleCount,
-                                isLogos = isSuperLogos
-                            )
-                        }
-                    )
-                } else if (damageTargets.size == 1) {
-                    val targetEnemy = damageTargets.first()
-                    val (targetX, targetY) = enemyFloatSlot(targetEnemy.id)
-                    spellVfxEngine.launch(
-                        startX = casterX,
-                        startY = casterY,
-                        targetX = targetX,
-                        targetY = targetY,
-                        school = parsed.spell.school,
-                        isHeal = false,
-                        bonusPercent = resonance.bonusPercent,
-                        tier = resonance.tier,
-                        graphics = spellGraphics,
-                        onImpact = {
-                            particleEmitter.emit(
-                                school = parsed.spell.school,
-                                originX = targetX,
-                                originY = targetY,
-                                count = spellGraphics?.particleCount ?: resonance.particleCount,
-                                isLogos = isSuperLogos
-                            )
-                        }
-                    )
-                } else {
-                    // Multi-projectile AoE: one projectile aimed at each enemy in formation!
-                    val perTargetParticles = spellGraphics?.particleCount ?: (resonance.particleCount / damageTargets.size).coerceAtLeast(8)
-                    for (targetEnemy in damageTargets) {
-                        val (targetX, targetY) = enemyFloatSlot(targetEnemy.id)
-                        spellVfxEngine.launch(
-                            startX = casterX,
-                            startY = casterY,
-                            targetX = targetX,
-                            targetY = targetY,
-                            school = parsed.spell.school,
-                            isHeal = false,
-                            bonusPercent = resonance.bonusPercent,
-                            tier = resonance.tier,
-                            graphics = spellGraphics,
-                            onImpact = {
-                                particleEmitter.emit(
-                                    school = parsed.spell.school,
-                                    originX = targetX,
-                                    originY = targetY,
-                                    count = perTargetParticles,
-                                    isLogos = isSuperLogos
-                                )
-                            }
-                        )
-                    }
-                }
+            val (style, targetIds) = when {
+                isAttune -> BattleCue.ReleaseStyle.ATTUNE to listOf(activeHero.id)
+                isHeal -> BattleCue.ReleaseStyle.HEAL to
+                    resolveHealTargets(activeHero, parsed.spell, parsed.target, parsed.targetHeroId).ifEmpty { listOf(activeHero) }.map { it.id }
+                else -> BattleCue.ReleaseStyle.PROJECTILE to
+                    resolveDamageTargets(parsed.spell, parsed.target, parsed.targetEnemyId).map { it.id }
             }
-
-            // Allow projectile(s) to travel to target
-            delay(420)
-            spellGraphics?.screenShake?.let { if (it > 0f) triggerScreenShake(it) }
+            beat(
+                BattleCue.Release(
+                    casterId = activeHero.id,
+                    fromParty = true,
+                    targetIds = targetIds,
+                    school = parsed.spell.school,
+                    style = style,
+                    tier = resonance.tier,
+                    bonusPercent = resonance.bonusPercent,
+                    particleCount = resonance.particleCount,
+                    graphics = parsed.spell.graphics,
+                    travelMs = timing.travelMs(fromParty = true, isBossUltimate = false)
+                )
+            )
 
             // 4. Spend mana, then resolve through the combat doctrine:
             //    affinity scales the BASE; the resonance multiplier stays untouched by any matchup.
@@ -2034,19 +1932,24 @@ class CombatViewModel(
                 }
             )
 
-            if (isAttune) {
+            val aliveBefore = aliveIds()
+            val hits = if (isAttune) {
                 applyAttuneAction(activeHero, parsed.spell)
             } else if (isHeal) {
                 applyHealAction(activeHero, parsed.spell, parsed.target, parsed.targetHeroId, resonance)
             } else {
                 applyDamageToEnemies(activeHero, parsed.spell, parsed.target, parsed.targetEnemyId, resonance)
             }
-
-            if (combatNarrator.isEyesFreeMode.value) {
-                delay(300)
-            } else {
-                delay(700)
-            }
+            val impact = BattleCue.Impact(
+                sourceId = activeHero.id,
+                fromParty = true,
+                hits = hits,
+                tier = resonance.tier,
+                shake = parsed.spell.graphics?.screenShake ?: 0f
+            )
+            cue(impact)
+            announceFallen(aliveBefore)
+            hold(impact)
 
             // 5. Reset active hero's ATB gauge to 0 and record lastActedHeroId for round-robin rotation
             lastActedHeroId = activeHero.id
@@ -2070,9 +1973,8 @@ class CombatViewModel(
                 return@launch
             }
 
-            delay(200)
-
             // Strictly Turn-Based Progression: check if next combatant is ready or resume charging
+            beat(BattleCue.TurnEnd(activeHero.id, fromParty = true))
             lastActedFaction = CombatantFaction.HERO
             registerTurnCompleted()
             checkAndTransitionNextTurn()
@@ -2084,7 +1986,7 @@ class CombatViewModel(
      * percentage of max MP. Deliberately resonance-INDEPENDENT: sustain can never
      * inflate the voice multiplier.
      */
-    private fun applyAttuneAction(member: PartyMember, spell: Spell) {
+    private fun applyAttuneAction(member: PartyMember, spell: Spell): List<BattleCue.Hit> {
         val restore = (member.maxMp * spell.manaRestorePct).roundToInt().coerceAtLeast(1)
         val (ax, ay) = partyFloatSlot(member.id)
         sfxManager.playSpellCast()
@@ -2106,6 +2008,7 @@ class CombatViewModel(
             _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filterNot { it.id == fct.id })
         }
         combatNarrator.speak("${member.name} breathes slow and steady; $restore mana returns.", force = false)
+        return listOf(BattleCue.Hit(member.id, restore, kind = BattleCue.HitKind.MANA))
     }
 
     private fun resolveHealTargets(
@@ -2161,7 +2064,7 @@ class CombatViewModel(
         target: TargetSelection,
         targetHeroId: String?,
         resonance: ResonanceResult
-    ) {
+    ): List<BattleCue.Hit> {
         sfxManager.playLogosFanfare()
 
         val healStatus = StatusId.fromNameOrNull(spell.status)
@@ -2256,6 +2159,7 @@ class CombatViewModel(
                 floatingTexts = _state.value.floatingTexts.filterNot { it.id in idsToRemove }
             )
         }
+        return targetsToHeal.map { BattleCue.Hit(it.id, healAmount, kind = BattleCue.HitKind.HEAL) }
     }
 
     private suspend fun applyDamageToEnemies(
@@ -2264,7 +2168,7 @@ class CombatViewModel(
         target: TargetSelection,
         targetEnemyId: String?,
         resonance: ResonanceResult
-    ) {
+    ): List<BattleCue.Hit> {
         val currentEnemies = _state.value.enemies
         val isAoe = spell.hitsAll || target == TargetSelection.ALL_ENEMIES
         val targetList = resolveDamageTargets(spell, target, targetEnemyId)
@@ -2392,19 +2296,7 @@ class CombatViewModel(
                 enemies = _state.value.enemies.map { it.copy(isDamagedFlash = false) }
             )
         }
-    }
-
-    private fun triggerScreenShake(magnitude: Float = 20f) {
-        activeScope.launch {
-            for (i in 0 until 8) {
-                val dx = (Random.nextFloat() * magnitude * 2f - magnitude)
-                val dy = (Random.nextFloat() * magnitude * 2f - magnitude)
-                // Atomic recompute-from-current so concurrent summons/attacks can never be lost to a stale snapshot write.
-                _state.update { it.copy(screenShakeOffsetX = dx, screenShakeOffsetY = dy) }
-                delay(30)
-            }
-            _state.update { it.copy(screenShakeOffsetX = 0f, screenShakeOffsetY = 0f) }
-        }
+        return hits.map { BattleCue.Hit(it.enemy.id, it.damage, it.affinity) }
     }
 
     fun setEnvironment(env: BattleEnvironment) {
@@ -2438,7 +2330,7 @@ class CombatViewModel(
         )
 
         sfxManager.playSpellCast()
-        triggerScreenShake(12f)
+        cue(BattleCue.Reinforcements(toAdd.map { it.id }))
         combatNarrator.narrateReinforcements(toAdd.size, toAdd.map { it.name })
 
         _state.update { prev ->
@@ -2604,8 +2496,6 @@ class CombatViewModel(
         conclusionWatchdogJob = null
         atbJob?.cancel()
         speechManager.cancel()
-        particleEmitter.clear()
-        spellVfxEngine.projectiles.clear()
         resonanceEngine.noveltyCache.clear()
         _combatantPositions.clear()
         turnsTakenInRound = 0
@@ -2623,6 +2513,7 @@ class CombatViewModel(
             currentEnvironmentId = environmentId,
             isPureStoryMode = _state.value.isPureStoryMode
         )
+        cue(BattleCue.BattleStart(currentEncounterId))
         startAtbLoop()
     }
 
@@ -2642,8 +2533,6 @@ class CombatViewModel(
         lastActedHeroId = null
         lastActedFaction = CombatantFaction.NONE
         _combatantPositions.clear()
-        particleEmitter.clear()
-        spellVfxEngine.projectiles.clear()
         resonanceEngine.noveltyCache.clear()
         val initialParty = GameContent.createDuoParty()
         val fallbackEnemies = GameContent.enemyTemplates.values.take(3)
@@ -2662,6 +2551,7 @@ class CombatViewModel(
             currentEnvironmentId = currentEnvId,
             isPureStoryMode = _state.value.isPureStoryMode
         )
+        cue(BattleCue.BattleStart(currentEncounterId))
         startAtbLoop()
     }
 
@@ -2683,5 +2573,8 @@ class CombatViewModel(
     companion object {
         /** Global enemy speed pacing multiplier: minor increment to grant enemies more turns. */
         const val ENEMY_SPEED_PACING_MULT = 1.15f
+
+        /** Particle burst of an enemy move that declares none in its graphics. */
+        const val ENEMY_IMPACT_PARTICLES = 15
     }
 }

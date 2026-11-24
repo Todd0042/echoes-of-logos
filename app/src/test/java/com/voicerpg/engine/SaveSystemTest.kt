@@ -303,6 +303,42 @@ class SaveSystemTest {
     }
 
     @Test
+    fun testReduceMotionSurvivesAnAppReload() {
+        val testScope = CoroutineScope(Dispatchers.Default)
+        val motion1 = com.voicerpg.engine.engine.MotionSettings()
+        val storyVm1 = StoryViewModel(
+            speechManager = speechManager,
+            combatNarrator = combatNarrator,
+            saveManager = saveManager,
+            motionSettings = motion1,
+            scopeOverride = testScope
+        )
+        storyVm1.startNewGame(PlayerCustomization(name = "Elora", heroClassId = "chanter"))
+        assertFalse("off by default", motion1.reduceMotion.value)
+
+        // Options -> Reduce Motion, as MainActivity wires it: toggle, then persist.
+        motion1.toggleReduceMotion()
+        storyVm1.persistCurrentState()
+
+        // Fresh launch: new settings object, same save.
+        val motion2 = com.voicerpg.engine.engine.MotionSettings()
+        val storyVm2 = StoryViewModel(
+            speechManager = speechManager,
+            combatNarrator = combatNarrator,
+            saveManager = saveManager,
+            motionSettings = motion2,
+            scopeOverride = testScope
+        )
+        assertTrue("restored on launch", motion2.reduceMotion.value)
+        storyVm2.continueGame()
+        assertTrue("and kept when the game continues", motion2.reduceMotion.value)
+
+        motion2.toggleReduceMotion()
+        storyVm2.persistCurrentState()
+        assertFalse(saveManager.load()!!.isReduceMotion)
+    }
+
+    @Test
     fun testCombatVictoryUpdatesAccomplishmentsAndPersists() {
         val testScope = CoroutineScope(Dispatchers.Default)
         val storyVm = StoryViewModel(
