@@ -48,16 +48,19 @@ object FxBench {
             matchedThematicRoots = emptyList(), syllableCount = 0
         )
         val reveal = BattleCue.ResonanceReveal(casterId, resonance, showBanner = bonus >= 50)
-        val travel = timing.travelMs(fromParty = true, isBossUltimate = false)
+        val travel = timing.travelMs(fromParty = true, isBossUltimate = false, tier = tier)
+        val charge = BattleCue.ChargeStart(casterId, typed = true)
         return listOf(
-            Step(0, reveal),
-            Step(timing.holdMs(reveal, pocket = false), BattleCue.Release(
+            Step(0, charge),
+            Step(timing.holdMs(charge, pocket = false), BattleCue.ChargeEnd(casterId)),
+            Step(0, BattleCue.Release(
                 casterId = casterId, fromParty = true, targetIds = targetIds, school = SpellSchool.PYROMANCY,
                 style = BattleCue.ReleaseStyle.PROJECTILE, tier = tier, bonusPercent = bonus,
                 particleCount = tier.baseParticleCount, travelMs = travel
             )),
-            Step(travel, BattleCue.Impact(casterId, fromParty = true, tier = tier, shake = 8f,
-                hits = targetIds.map { BattleCue.Hit(it, 100) }))
+            Step(travel, reveal),
+            Step(0, BattleCue.Impact(casterId, fromParty = true, tier = tier, shake = 8f,
+                hits = targetIds.mapIndexed { i, id -> BattleCue.Hit(id, 100 + 40 * tier.ordinal, affinity = if (i == 0 && tier >= ResonanceTier.MASTER) 1.6f else 1f) }))
         )
     }
 

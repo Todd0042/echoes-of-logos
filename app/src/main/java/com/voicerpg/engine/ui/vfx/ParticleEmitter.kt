@@ -11,6 +11,11 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 
+/** Performance budget (docs/COMBAT_FEEL_PLAN.md §1.5): live particles at once. */
+object ParticleCap {
+    const val MAX_LIVE = 900
+}
+
 /**
  * Retro particle bursts for spell impacts. Advanced by the battle's FxClock and drawn by BattleFxCanvas.
  */
@@ -69,7 +74,14 @@ class ParticleEmitter {
             )
         }
 
-        particles.addAll(newParticles)
+        add(newParticles)
+    }
+
+    /** Adds [more], keeping at most [ParticleCap.MAX_LIVE] alive (the oldest go first). */
+    fun add(more: List<Particle>) {
+        particles.addAll(more)
+        val over = particles.size - ParticleCap.MAX_LIVE
+        if (over > 0) particles.removeRange(0, over)
     }
 
     /** Advance every particle by [dtSeconds] of arena time (see FxClock) and drop the dead ones. */

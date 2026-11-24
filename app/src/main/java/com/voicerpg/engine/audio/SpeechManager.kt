@@ -91,6 +91,9 @@ class SpeechManager(private val context: Context? = null) {
     internal fun setSpeechStateForTesting(state: SpeechState) {
         _speechState.value = state
     }
+    internal fun setRmsLevelForTesting(level: Float) {
+        _rmsLevel.value = level
+    }
     internal fun triggerStandbyForTesting() {
         isListeningSessionActive = false
         _speechState.value = SpeechState.Standby

@@ -131,13 +131,41 @@ data class Enemy(
     /** Extra voice words for targeting (from enemies.json), besides name and subtitle. */
     val voiceAliases: List<String> = emptyList(),
     /** Recorded clips played when this enemy attacks (unless the move has its own). */
-    val soundBites: List<String> = emptyList()
+    val soundBites: List<String> = emptyList(),
+    /** The move it telegraphed when its gauge passed 75% (M4), used on its next turn. */
+    val plannedMove: String? = null,
+    /** Charge turns left before a planned boss ultimate fires; 0 when not charging. */
+    val ultimateChargeLeft: Int = 0,
+    /** The round it was last staggered in (one stagger per enemy per round); 0 = never. */
+    val staggeredRound: Int = 0,
+    /** Sprite size multiplier (enemies.json `scale`; bosses default 2.0). */
+    val scale: Float = 1f,
+    /** Lines it may shout when it telegraphs a move (enemies.json `taunts`). */
+    val taunts: List<String> = emptyList(),
+    val hitReaction: HitReaction = HitReaction.FLINCH,
+    /** A portrait panel for its ultimate (enemies.json `cutIn`). */
+    val cutIn: CutInSpec? = null
 ) {
     val isAlive: Boolean get() = currentHp > 0
     val isTurnReady: Boolean get() = isAlive && atbGauge >= 1.0f
     val hpRatio: Float get() = if (isAlive) (currentHp.toFloat() / maxHp).coerceIn(0f, 1f) else 0f
     val atbRatio: Float get() = if (isAlive) atbGauge.coerceIn(0f, 1f) else 0f
 }
+
+/** How an enemy's sprite reacts to a blow (enemies.json `hitReaction`). */
+enum class HitReaction {
+    FLINCH, STAGGER, COMIC_SPIN;
+
+    companion object {
+        fun parse(raw: String?): HitReaction = entries.firstOrNull { it.name.equals(raw?.trim(), ignoreCase = true) } ?: FLINCH
+    }
+}
+
+/**
+ * A cut-in panel (characters' `combat.cutIn`, enemies' `cutIn`): portrait asset, colour (#RRGGBB) and an
+ * optional quote. Missing fields fall back to the character's portrait and theme colour.
+ */
+data class CutInSpec(val portrait: String? = null, val color: String? = null, val quote: String? = null)
 
 enum class TargetSelection {
     FIRST_ALIVE_ENEMY,
@@ -223,7 +251,9 @@ data class EncounterDefinition(
     val enemies: List<Enemy>,
     val initialParty: List<PartyMember>? = null,
     val bossPhases: List<BossPhaseRule> = emptyList(),
-    val midBattleJoin: MidBattleJoin? = null
+    val midBattleJoin: MidBattleJoin? = null,
+    /** Overrides `presentation.json` music.intensityTrack for this fight. */
+    val intensityTrack: String? = null
 )
 
 data class FloatingCombatText(

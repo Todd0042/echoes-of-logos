@@ -7,7 +7,13 @@ enum class SpriteFrame {
     IDLE_UPRIGHT,
     IDLE_CROUCH,
     ACTION_CAST,
-    DAMAGED
+    DAMAGED,
+    /** Optional: attacking (falls back to ACTION_CAST). */
+    ATTACK,
+    /** Optional: the instant of a hit (falls back to DAMAGED). */
+    HURT,
+    /** Optional: what shatters on death (falls back to DAMAGED). */
+    DEATH
 }
 
 /**
@@ -127,7 +133,7 @@ object PixelSpriteData {
 
         // 3. Fallback neutral silhouette
         val grid = when (frame) {
-            SpriteFrame.IDLE_UPRIGHT -> FALLBACK_UPRIGHT
+            SpriteFrame.IDLE_UPRIGHT, SpriteFrame.ATTACK -> FALLBACK_UPRIGHT
             else -> FALLBACK_CROUCH
         }
         return grid to FALLBACK_PALETTE

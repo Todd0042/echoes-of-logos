@@ -228,8 +228,8 @@ fun ResonanceConsole(
             }
         }
 
-        // Resonance Meter Bar
-        ResonanceMeterBar(lastResonance = lastResonance)
+        // Resonance Meter Bar (fills live with the voice while listening, then snaps to the scored value)
+        ResonanceMeterBar(lastResonance = lastResonance, liveLevel = if (isListening) rmsLevel else null)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -536,9 +536,17 @@ fun ResonanceConsole(
 }
 
 @Composable
-private fun ResonanceMeterBar(lastResonance: ResonanceResult?) {
-    val score = lastResonance?.score ?: 0f
-    val tier = lastResonance?.tier ?: ResonanceTier.BASIC
+private fun ResonanceMeterBar(lastResonance: ResonanceResult?, liveLevel: Float? = null) {
+    // While charging, the bar follows the voice (smoothed); when the chant is scored it snaps to the score.
+    val live = liveLevel?.let { level ->
+        androidx.compose.animation.core.animateFloatAsState(
+            targetValue = level.coerceIn(0f, 1f),
+            animationSpec = androidx.compose.animation.core.tween(90),
+            label = "live_resonance"
+        ).value
+    }
+    val score = live ?: lastResonance?.score ?: 0f
+    val tier = if (live != null) ResonanceTier.BASIC else lastResonance?.tier ?: ResonanceTier.BASIC
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -548,7 +556,7 @@ private fun ResonanceMeterBar(lastResonance: ResonanceResult?) {
         ) {
             val bonus = lastResonance?.bonusPercent ?: 0
             Text(
-                text = "RESONANCE: ${tier.title.uppercase()} (+${bonus}%)",
+                text = if (live != null) "RESONANCE: CHARGING…" else "RESONANCE: ${tier.title.uppercase()} (+${bonus}%)",
                 color = when (tier) {
                     ResonanceTier.TRANSCENDENTAL -> Color(0xFFFFEE58)
                     ResonanceTier.MYTHIC -> LogosGold

@@ -76,6 +76,8 @@ fun OptionsDialog(
     onMusicVolumeChange: (Float) -> Unit = {},
     isReduceMotion: Boolean = false,
     onToggleReduceMotion: () -> Unit = {},
+    isReduceFlashing: Boolean = false,
+    onToggleReduceFlashing: () -> Unit = {},
     onOpenVoiceSettings: (() -> Unit)? = null,
     onOpenVoiceAssignment: (() -> Unit)? = null,
     onOpenLanguageSelection: (() -> Unit)? = null,
@@ -708,11 +710,23 @@ fun OptionsDialog(
                 // Toggle: Reduce Motion (visual comfort)
                 OptionToggleRow(
                     title = "🌀 Reduce Motion",
-                    subtitle = "Battles keep the arena still: no screen shake when spells land or bosses strike.",
+                    subtitle = "Battles keep the arena still: no screen shake or zoom, and only a brief freeze when spells land.",
                     voiceHint = "",
                     checked = isReduceMotion,
                     activeColor = Color(0xFFB39DDB),
                     onCheckedChange = { onToggleReduceMotion() }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Toggle: Reduce Flashing (visual comfort, photosensitivity)
+                OptionToggleRow(
+                    title = "⚡ Reduce Flashing",
+                    subtitle = "No full-screen white flash on the strongest spells. Flashes are always limited to three a second.",
+                    voiceHint = "",
+                    checked = isReduceFlashing,
+                    activeColor = Color(0xFFFFF59D),
+                    onCheckedChange = { onToggleReduceFlashing() }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

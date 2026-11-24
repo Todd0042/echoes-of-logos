@@ -17,8 +17,16 @@ data class EnemyMove(
     val summonCount: Int = 0,
     val graphics: SpellGraphics? = null,
     /** Recorded clips played when this move is used (one at random). */
-    val soundBites: List<String> = emptyList()
-)
+    val soundBites: List<String> = emptyList(),
+    /** Show a title card when used. Null: named moves do, a plain "Attack" doesn't. */
+    val titleCard: Boolean? = null,
+    /** Wind-up before the attack lands, ms. Null: the engine default (longer for ultimates). */
+    val windupMs: Long? = null,
+    /** Overrides the telegraphed intent icon. */
+    val intentIcon: String? = null
+) {
+    val showsTitleCard: Boolean get() = titleCard ?: !name.equals("Attack", ignoreCase = true)
+}
 data class PhaseRule(val hpBelow: Float, val addMoves: List<EnemyMove>, val note: String = "")
 data class Moveset(val moves: List<EnemyMove>, val phases: List<PhaseRule> = emptyList())
 

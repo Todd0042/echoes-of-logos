@@ -187,6 +187,33 @@ class BattleFxTest {
     }
 
     @Test
+    fun `charging dims the arena and grows the caster's aura with the voice`() {
+        val d = director()
+        d.play(BattleCue.ChargeStart("hero", typed = false))
+        d.shakeTrace(0.5f)
+        assertEquals("the arena dims to 70%", 0.3f, d.dim, 0.03f)
+        val quiet = d.fxOf("hero").glowStrength
+
+        d.play(BattleCue.ChargeLevel("hero", 1f))
+        d.shakeTrace(0.5f)
+        assertTrue("a loud voice brightens the aura", d.fxOf("hero").glowStrength > quiet + 0.3f)
+        assertTrue("and throws off motes", d.particles.particles.isNotEmpty())
+
+        d.play(BattleCue.ChargeEnd("hero"))
+        d.shakeTrace(0.6f)
+        assertEquals(0f, d.dim, 0.02f)
+        assertTrue(d.fxOf("hero").glow == null)
+    }
+
+    @Test
+    fun `a typed chant charges by itself`() {
+        val d = director()
+        d.play(BattleCue.ChargeStart("hero", typed = true))
+        d.shakeTrace(0.35f)
+        assertTrue("ramps up without a microphone", d.chargeLevel > 0.5f)
+    }
+
+    @Test
     fun `reduce motion keeps the arena still for every kind of shake`() {
         val d = director(reduceMotion = true)
         d.play(impact(fromParty = true, shake = 20f))

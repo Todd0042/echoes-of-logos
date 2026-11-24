@@ -226,10 +226,10 @@ class MusicManager(
             if (player != null && !player.isPlaying) {
                 requestAudioFocus()
                 try {
-                    val vol = targetVolume()
-                    player.setVolume(vol, vol)
-                    currentAppliedVolume = vol
+                    currentAppliedVolume = targetVolume()
+                    applyMix()
                     player.start()
+                    intensityPlayer?.let { if (!it.isPlaying) it.start() }
                 } catch (e: Exception) {
                     _currentTrack.value?.let { startTrackPlayback(it) }
                 }
@@ -252,6 +252,7 @@ class MusicManager(
                 if (it.isPlaying) it.stop()
             } catch (_: Exception) {}
         }
+        setIntensityTrack(null)
         abandonAudioFocus()
     }
 
@@ -262,6 +263,7 @@ class MusicManager(
 
     fun destroy() {
         volumeFadeJob?.cancel()
+        setIntensityTrack(null)
         mediaPlayer?.let {
             try {
                 if (it.isPlaying) it.stop()
@@ -273,6 +275,7 @@ class MusicManager(
     }
 
     private fun pauseInternal() {
+        runCatching { intensityPlayer?.let { if (it.isPlaying) it.pause() } }
         try {
             mediaPlayer?.let {
                 if (it.isPlaying) it.pause()
@@ -280,6 +283,60 @@ class MusicManager(
         } catch (e: Exception) {
             Log.w(TAG, "Error pausing music: ${e.message}")
         }
+    }
+
+    // ---- Intensity layer (M8): a second track crossfaded in when a battle turns desperate ------------
+    private var intensityPlayer: MediaPlayer? = null
+    private var intensityTrack: String? = null
+    @Volatile private var intensityMix = 0f
+    private var intensityFadeJob: Job? = null
+
+    /** The current battle's intensity track (or none). Prepared silent, in step with the battle music. */
+    fun setIntensityTrack(assetPath: String?) {
+        if (assetPath == intensityTrack) return
+        intensityTrack = assetPath
+        intensityFadeJob?.cancel()
+        intensityMix = 0f
+        intensityPlayer?.release()
+        intensityPlayer = null
+        val ctx = context ?: return
+        if (assetPath == null || !_isMusicEnabled.value) return
+        try {
+            val player = MediaPlayer()
+            player.setAudioAttributes(audioAttributes)
+            player.isLooping = true
+            ctx.assets.openFd(assetPath).use { fd -> player.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length) }
+            player.setVolume(0f, 0f)
+            player.prepare()
+            player.start()
+            intensityPlayer = player
+        } catch (e: Exception) {
+            Log.e(TAG, "Intensity track $assetPath couldn't be prepared: ${e.message}", e)
+        }
+    }
+
+    /** Crossfade the intensity layer in or out over 1.5 s. No-op without an intensity track. */
+    fun setIntensity(on: Boolean) {
+        if (intensityPlayer == null) return
+        intensityFadeJob?.cancel()
+        val from = intensityMix
+        val to = if (on) 1f else 0f
+        intensityFadeJob = scope.launch {
+            val steps = 30
+            for (i in 1..steps) {
+                intensityMix = from + (to - from) * i / steps
+                applyMix()
+                delay(50)
+            }
+        }
+    }
+
+    private fun applyMix() {
+        val v = currentAppliedVolume
+        try {
+            mediaPlayer?.setVolume(v * (1f - intensityMix), v * (1f - intensityMix))
+            intensityPlayer?.setVolume(v * intensityMix, v * intensityMix)
+        } catch (_: Exception) {}
     }
 
     private fun targetVolume(): Float {
@@ -296,9 +353,7 @@ class MusicManager(
         if (!animated) {
             volumeFadeJob?.cancel()
             currentAppliedVolume = target
-            try {
-                player.setVolume(target, target)
-            } catch (_: Exception) {}
+            applyMix()
             return
         }
 
@@ -313,15 +368,11 @@ class MusicManager(
                 val t = i.toFloat() / steps
                 val current = startVol + (target - startVol) * t
                 currentAppliedVolume = current
-                try {
-                    mediaPlayer?.setVolume(current, current)
-                } catch (_: Exception) {}
+                applyMix()
                 delay(stepDelay)
             }
             currentAppliedVolume = target
-            try {
-                mediaPlayer?.setVolume(target, target)
-            } catch (_: Exception) {}
+            applyMix()
         }
     }
 

@@ -303,7 +303,7 @@ class SaveSystemTest {
     }
 
     @Test
-    fun testReduceMotionSurvivesAnAppReload() {
+    fun testReduceMotionAndFlashingSurviveAnAppReload() {
         val testScope = CoroutineScope(Dispatchers.Default)
         val motion1 = com.voicerpg.engine.engine.MotionSettings()
         val storyVm1 = StoryViewModel(
@@ -318,6 +318,7 @@ class SaveSystemTest {
 
         // Options -> Reduce Motion, as MainActivity wires it: toggle, then persist.
         motion1.toggleReduceMotion()
+        motion1.toggleReduceFlashing()
         storyVm1.persistCurrentState()
 
         // Fresh launch: new settings object, same save.
@@ -330,6 +331,7 @@ class SaveSystemTest {
             scopeOverride = testScope
         )
         assertTrue("restored on launch", motion2.reduceMotion.value)
+        assertTrue("reduce flashing too", motion2.reduceFlashing.value)
         storyVm2.continueGame()
         assertTrue("and kept when the game continues", motion2.reduceMotion.value)
 

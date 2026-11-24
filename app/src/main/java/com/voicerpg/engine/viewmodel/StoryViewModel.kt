@@ -548,6 +548,7 @@ class StoryViewModel(
             musicManager?.setMusicEnabled(existingSave.isMusicEnabled)
             musicManager?.setVolume(existingSave.musicVolume)
             motionSettings.setReduceMotion(existingSave.isReduceMotion)
+            motionSettings.setReduceFlashing(existingSave.isReduceFlashing)
             musicManager?.playTrack(com.voicerpg.engine.audio.MusicManager.TRACK_EXPLORATION)
         } else {
             // First time player: start at Language Selection or Title Screen
@@ -647,6 +648,7 @@ class StoryViewModel(
         musicManager?.setMusicEnabled(existingSave.isMusicEnabled)
         musicManager?.setVolume(existingSave.musicVolume)
         motionSettings.setReduceMotion(existingSave.isReduceMotion)
+            motionSettings.setReduceFlashing(existingSave.isReduceFlashing)
         musicManager?.playTrack(restoredScene.musicAsset)
         narrateCurrentNode()
         if (isStoryMode) {
@@ -1379,6 +1381,7 @@ class StoryViewModel(
             isMusicEnabled = musicManager?.isMusicEnabled?.value ?: currentSave.isMusicEnabled,
             musicVolume = musicManager?.musicVolume?.value ?: currentSave.musicVolume,
             isReduceMotion = motionSettings.reduceMotion.value,
+            isReduceFlashing = motionSettings.reduceFlashing.value,
             voiceAssignments = combatNarrator.getVoiceAssignments(),
             dynamicMetrics = s.dynamicMetrics
         )

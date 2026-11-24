@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -60,6 +61,12 @@ import com.voicerpg.engine.engine.MotionSettings
 import com.voicerpg.engine.ui.fx.BattleFxCanvas
 import com.voicerpg.engine.ui.fx.BattleFxDirector
 import com.voicerpg.engine.ui.fx.FxBenchBar
+import com.voicerpg.engine.ui.fx.DamageNumbersLayer
+import com.voicerpg.engine.ui.fx.ScreenFlashLayer
+import com.voicerpg.engine.ui.fx.TitleCardLayer
+import com.voicerpg.engine.ui.fx.StreakBadge
+import com.voicerpg.engine.ui.fx.CutInLayer
+import androidx.compose.ui.graphics.graphicsLayer
 import com.voicerpg.engine.viewmodel.CombatViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -74,13 +81,18 @@ fun RetroBattleScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val reduceMotion by motionSettings.reduceMotion.collectAsState()
+    val reduceFlashing by motionSettings.reduceFlashing.collectAsState()
 
     // Battle effects: the view model announces cues, the director plays them (ui/fx).
     val director = remember(viewModel) {
-        BattleFxDirector(positionOf = { id -> viewModel.combatantSlot(id).let { (x, y) -> Offset(x, y) } })
+        BattleFxDirector(
+            positionOf = { id -> viewModel.combatantSlot(id).let { (x, y) -> Offset(x, y) } },
+            lookOf = { id -> combatantLook(viewModel.state.value, id) }
+        )
     }
     director.presentation = GameContent.presentation
     director.reduceMotion = reduceMotion
+    director.reduceFlashing = reduceFlashing
     LaunchedEffect(viewModel, director) {
         viewModel.cues.collect { director.play(it) }
     }
@@ -207,6 +219,10 @@ fun RetroBattleScreen(
                             val shake = director.shake.offset
                             IntOffset(shake.x.dp.roundToPx(), shake.y.dp.roundToPx())
                         }
+                        .graphicsLayer {
+                            scaleX = director.zoom
+                            scaleY = director.zoom
+                        }
                         .clip(RoundedCornerShape(8.dp))
                         .border(1.dp, RetroBorder, RoundedCornerShape(8.dp))
                         .onSizeChanged { size ->
@@ -226,6 +242,13 @@ fun RetroBattleScreen(
                         modifier = Modifier.fillMaxSize()
                     )
 
+                    // The backdrop darkens while a chant charges (the combatants stay lit)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .drawBehind { drawRect(Color.Black.copy(alpha = director.dim)) }
+                    )
+
                     // SNES OBJ Layer: Combatants anchored onto the floor stage
                     Row(
                         modifier = Modifier
@@ -243,6 +266,7 @@ fun RetroBattleScreen(
                                 viewModel.updateCombatantPosition(id, offset.x, offset.y)
                             },
                             arenaCoordinates = arenaCoordinates,
+                            fxOf = director::fxOf,
                             modifier = Modifier.weight(1f)
                         )
 
@@ -254,6 +278,8 @@ fun RetroBattleScreen(
                                 viewModel.updateCombatantPosition(id, offset.x, offset.y)
                             },
                             arenaCoordinates = arenaCoordinates,
+                            fxOf = director::fxOf,
+                            onSpriteBounds = director::registerSpriteBounds,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -272,9 +298,11 @@ fun RetroBattleScreen(
                     )
 
                     // Floating Damage & Healing Numbers
-                    state.floatingTexts.forEach { ft ->
-                        FloatingNumberItem(fct = ft)
-                    }
+                    DamageNumbersLayer(director = director)
+                    TitleCardLayer(director = director)
+                    StreakBadge(director = director)
+                    CutInLayer(director = director)
+                    ScreenFlashLayer(director = director)
 
                     // Logos Golden Banner Overlay (Top-Center Notification Style)
                     LogosBanner(
@@ -296,6 +324,9 @@ fun RetroBattleScreen(
                         }
                     }
                 }
+
+                // Status line: turn, mana, charging and option messages (kept out of the arena)
+                BattleStatusLine(messages = state.floatingTexts)
 
                 // Bottom: Command Console with Mic & Resonance Meter
                 ResonanceConsole(
@@ -412,37 +443,40 @@ private fun BattleConclusionOverlay(
     }
 }
 
+/** The newest battle message (charging, not enough mana, guards, toggles), one line above the console. */
 @Composable
-private fun FloatingNumberItem(fct: FloatingCombatText) {
-    val offsetY = remember { Animatable(0f) }
-    val alpha = remember { Animatable(1f) }
-
-    LaunchedEffect(fct.id) {
-        launch {
-            offsetY.animateTo(-50f, animationSpec = tween(950))
-        }
-        launch {
-            delay(550)
-            alpha.animateTo(0f, animationSpec = tween(400))
-        }
-    }
-
+private fun BattleStatusLine(messages: List<FloatingCombatText>) {
+    val latest = messages.lastOrNull()
     Box(
         modifier = Modifier
-            .offset {
-                IntOffset(
-                    x = (fct.startX - 30f).roundToInt(),
-                    y = (fct.startY - 40f + offsetY.value).roundToInt()
-                )
-            }
+            .fillMaxWidth()
+            .height(22.dp)
+            .padding(horizontal = 10.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
-        Text(
-            text = fct.text,
-            color = fct.color.copy(alpha = alpha.value),
-            fontSize = if (fct.isCrit) 16.sp else 13.sp,
-            fontWeight = FontWeight.Black,
-            fontFamily = FontFamily.Monospace
-        )
+        if (latest != null) {
+            Text(
+                text = latest.text,
+                color = latest.color,
+                fontSize = if (latest.isCrit) 12.sp else 11.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace,
+                maxLines = 1
+            )
+        }
     }
 }
 
+/** What the effects director needs about a combatant's sprite: its death frame, facing and hit reaction. */
+private fun combatantLook(state: com.voicerpg.engine.viewmodel.CombatState, id: String): com.voicerpg.engine.ui.fx.CombatantLook? {
+    val enemy = state.enemies.firstOrNull { it.id == id }
+    val spriteId = enemy?.spriteId?.ifBlank { enemy.id } ?: state.party.firstOrNull { it.id == id }?.id ?: return null
+    val (matrix, palette) = com.voicerpg.engine.ui.sprites.PixelSpriteData.getPixelMatrix(spriteId, com.voicerpg.engine.ui.sprites.SpriteFrame.DEATH)
+    return com.voicerpg.engine.ui.fx.CombatantLook(
+        isEnemy = enemy != null,
+        matrix = matrix,
+        palette = palette,
+        flipped = enemy != null,
+        hitReaction = enemy?.hitReaction ?: com.voicerpg.engine.model.HitReaction.FLINCH
+    )
+}

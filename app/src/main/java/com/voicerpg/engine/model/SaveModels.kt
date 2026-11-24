@@ -159,6 +159,7 @@ data class GameSaveData(
     val isMusicEnabled: Boolean = true,
     val musicVolume: Float = 0.55f,
     val isReduceMotion: Boolean = false,
+    val isReduceFlashing: Boolean = false,
 
     // 7. Per-speaker TTS voice assignments (installed Android voice model names keyed by speaker id)
     val voiceAssignments: Map<String, String> = emptyMap(),

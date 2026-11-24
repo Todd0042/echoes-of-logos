@@ -12,6 +12,7 @@ import com.voicerpg.engine.combat.EnemyBrain
 import com.voicerpg.engine.combat.EnemyCodex
 import com.voicerpg.engine.combat.EnemyFamily
 import com.voicerpg.engine.combat.EnemyMove
+import com.voicerpg.engine.combat.Intent
 import com.voicerpg.engine.combat.Moveset
 import com.voicerpg.engine.combat.MovesetTable
 import com.voicerpg.engine.combat.Progression
@@ -50,6 +51,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -89,6 +94,8 @@ class CombatViewModel(
     val musicManager: com.voicerpg.engine.audio.MusicManager? = null,
     /** Every wait in a turn; [CombatTiming.INSTANT] in tests that don't measure time. */
     val timing: CombatTiming = CombatTiming.DEFAULT,
+    /** Enemy move choice and damage rolls; seed it in tests for repeatable battles. */
+    private val random: Random = Random.Default,
     private val scopeOverride: CoroutineScope? = null
 ) : ViewModel() {
 
@@ -125,10 +132,186 @@ class CombatViewModel(
     private fun aliveIds(): Set<String> =
         (_state.value.party.filter { it.isAlive }.map { it.id } + _state.value.enemies.filter { it.isAlive }.map { it.id }).toSet()
 
+    // ---- Voice charge-up: while the active hero is heard, the charge follows the microphone -------------
+    private var chargeJob: Job? = null
+    private var chargingId: String? = null
+
+    private fun startChargeWatcher() {
+        chargeJob?.cancel()
+        chargeJob = activeScope.launch {
+            combine(
+                speechManager.speechState,
+                _state.map { it.phase to it.activePartyMemberId }.distinctUntilChanged()
+            ) { speech, (phase, activeId) ->
+                if (speech == com.voicerpg.engine.audio.SpeechState.Listening && phase == CombatPhase.PLAYER_INPUT) activeId else null
+            }.distinctUntilChanged().collectLatest { casterId ->
+                endCharge()
+                if (casterId == null) return@collectLatest
+                chargingId = casterId
+                cue(BattleCue.ChargeStart(casterId, typed = false))
+                sfxManager.startChargeHum()
+                var lastSent = -1L
+                var lastLevel = -1f
+                speechManager.rmsLevel.collect { level ->
+                    val now = System.currentTimeMillis()
+                    // Small wobbles at most every 50 ms; a real jump (a shout) goes through at once.
+                    if (now - lastSent >= CHARGE_LEVEL_INTERVAL_MS || kotlin.math.abs(level - lastLevel) >= CHARGE_LEVEL_JUMP) {
+                        lastSent = now
+                        lastLevel = level
+                        cue(BattleCue.ChargeLevel(casterId, level))
+                    }
+                    sfxManager.setChargeLevel(level)
+                }
+            }
+        }
+    }
+
+    private fun endCharge() {
+        val id = chargingId ?: return
+        chargingId = null
+        sfxManager.stopChargeHum()
+        cue(BattleCue.ChargeEnd(id))
+    }
+
+    // ---- Music intensity (M8): the intensity layer follows party health and boss phases -------------
+    private var intensityJob: Job? = null
+    private var intensityOn = false
+    private var bossPhaseShifted = false
+
+    private fun partyHpRatio(party: List<PartyMember>): Float {
+        val mortal = party.filter { !it.isGhost }
+        val max = mortal.sumOf { it.maxHp }
+        return if (max <= 0) 1f else mortal.sumOf { it.currentHp.coerceAtLeast(0) }.toFloat() / max
+    }
+
+    private fun startIntensityWatcher(intensityTrack: String?) {
+        intensityJob?.cancel()
+        intensityOn = false
+        bossPhaseShifted = false
+        musicManager?.setIntensityTrack(intensityTrack)
+        intensityJob = activeScope.launch {
+            _state.map { partyHpRatio(it.party) }.distinctUntilChanged().collect { evaluateIntensity(it) }
+        }
+    }
+
+    private fun evaluateIntensity(ratio: Float = partyHpRatio(_state.value.party)) = synchronized(this) {
+        val next = com.voicerpg.engine.combat.MusicIntensityRule.next(
+            current = intensityOn, partyHpRatio = ratio,
+            threshold = GameContent.presentation.music.lowHpThreshold, bossPhaseShifted = bossPhaseShifted
+        )
+        if (next != intensityOn) {
+            intensityOn = next
+            cue(BattleCue.MusicIntensity(next))
+            musicManager?.setIntensity(next)
+        }
+    }
+
     /** Announces a [BattleCue.Death] for everyone alive in [before] who has fallen since. */
     private fun announceFallen(before: Set<String>) {
         val enemyIds = _state.value.enemies.map { it.id }.toSet()
-        for (id in before - aliveIds()) cue(BattleCue.Death(id, isEnemy = id in enemyIds))
+        for (id in before - aliveIds()) {
+            val isEnemy = id in enemyIds
+            cue(BattleCue.Death(id, isEnemy = isEnemy))
+            if (isEnemy && GameContent.presentation.deathEffect != com.voicerpg.engine.content.PresentationConfig.DeathEffect.FADE) {
+                sfxManager.playShatter()
+            }
+            if (!isEnemy) endStreak() // a fallen hero ends the streak
+        }
+    }
+
+    // ---- Reward bold voices (M5) ---------------------------------------------------------------------
+    private var streak = 0
+
+    /** Consecutive casts at or above the game's streak tier. Changes looks and sound only, never damage. */
+    private fun updateStreak(tier: ResonanceTier) {
+        if (tier >= GameContent.presentation.streak.minTier) {
+            streak++
+            if (streak >= 2) cue(BattleCue.Streak(streak))
+        } else {
+            endStreak()
+        }
+    }
+
+    private fun endStreak() {
+        if (streak == 0) return
+        streak = 0
+        cue(BattleCue.Streak(0))
+    }
+
+    // ---- Cut-ins (M7) ----------------------------------------------------------------------------------
+    private fun heroCutIn(member: PartyMember, tier: ResonanceTier): BattleCue.CutIn? {
+        if (tier < GameContent.presentation.cutIn.minTier) return null
+        val character = GameContent.characterById(member.id)
+        val spec = character?.combat?.cutIn
+        val portrait = spec?.portrait ?: character?.speaker?.portraitAsset
+            ?: if (member.id == "hero") GameContent.manifest.defaultHeroPortrait else null
+        val color = spec?.color?.let { com.voicerpg.engine.content.parseHexColor(it, member.avatarTint) }
+            ?: character?.speaker?.themeColor ?: member.avatarTint
+        return BattleCue.CutIn(member.id, member.name, tier, portrait, color, spec?.quote, isEnemy = false)
+    }
+
+    private fun enemyCutIn(enemy: Enemy): BattleCue.CutIn? {
+        val spec = enemy.cutIn ?: return null
+        return BattleCue.CutIn(
+            characterId = enemy.id, name = enemy.name, tier = ResonanceTier.TRANSCENDENTAL, portrait = spec.portrait,
+            color = spec.color?.let { com.voicerpg.engine.content.parseHexColor(it, enemy.spriteTint) } ?: enemy.spriteTint,
+            quote = spec.quote, isEnemy = true
+        )
+    }
+
+    /** Plays a cut-in; in pocket mode its quote is spoken instead of shown. */
+    private suspend fun playCutIn(cutIn: BattleCue.CutIn) {
+        cue(cutIn)
+        if (combatNarrator.isEyesFreeMode.value && !cutIn.quote.isNullOrBlank()) {
+            combatNarrator.speak("${cutIn.name}: ${cutIn.quote}", force = false)
+        }
+        hold(cutIn)
+    }
+
+    /** Is [enemy] a boss holding a planned ultimate (charging, or about to fire)? */
+    private fun holdsUltimate(enemy: Enemy): Boolean {
+        val planned = enemy.plannedMove ?: return false
+        if (!enemy.isBoss) return false
+        return enemy.ultimateChargeLeft > 0 ||
+            movesetOf(enemy).let { set -> (set.moves + set.phases.flatMap { it.addMoves }).any { it.name == planned && Intent.isUltimate(true, it) } }
+    }
+
+    /**
+     * After a hero's blow: a MASTER+ chant on a weakness pushes the target's gauge back; a MYTHIC+ hit on a
+     * boss holding its ultimate breaks it. At most one per enemy per round.
+     */
+    private fun applyBoldVoice(hits: List<BattleCue.Hit>, tier: ResonanceTier) {
+        val round = _state.value.roundNumber
+        val staggers = mutableListOf<BattleCue.Stagger>()
+        _state.update { prev ->
+            prev.copy(enemies = prev.enemies.map { e ->
+                val hit = hits.firstOrNull { it.targetId == e.id && it.kind == BattleCue.HitKind.DAMAGE && it.amount > 0 }
+                if (hit == null || !e.isAlive || e.staggeredRound == round) return@map e
+                val pushedBack = (e.atbGauge - STAGGER_GAUGE).coerceAtLeast(0f)
+                when {
+                    tier >= ResonanceTier.MYTHIC && holdsUltimate(e) -> {
+                        staggers += BattleCue.Stagger(e.id, interruptedMove = e.plannedMove)
+                        e.copy(atbGauge = pushedBack, plannedMove = null, ultimateChargeLeft = 0, staggeredRound = round)
+                    }
+                    tier >= ResonanceTier.MASTER && hit.affinity >= WEAKNESS_AFFINITY -> {
+                        staggers += BattleCue.Stagger(e.id, interruptedMove = null)
+                        e.copy(atbGauge = pushedBack, staggeredRound = round)
+                    }
+                    else -> e
+                }
+            })
+        }
+        for (s in staggers) {
+            cue(s)
+            if (s.interruptedMove != null) {
+                cue(BattleCue.TitleCard("BROKEN!", fromParty = true))
+                val name = _state.value.enemies.firstOrNull { it.id == s.enemyId }?.name ?: "The foe"
+                combatNarrator.speak("$name's ${s.interruptedMove} is broken!", force = true)
+                sfxManager.playStaggerStinger()
+            } else {
+                sfxManager.playStaggerStinger()
+            }
+        }
     }
 
     // Debug-only developer tools visibility. Kept OUT of CombatState so that
@@ -321,6 +504,8 @@ class CombatViewModel(
             )
         }
 
+        planEnemyMoves()
+
         val freshParty = _state.value.party
         val freshEnemies = _state.value.enemies
 
@@ -385,16 +570,44 @@ class CombatViewModel(
                         }
                     }
                 } else if (speechManager.isAutoListen.value) {
-                    activeScope.launch {
-                        delay(100)
-                        startVoiceListening()
-                    }
+                    relistenAfter(100)
                 }
             }
         } else if (topEnemy != null) {
             lastActedFaction = CombatantFaction.ENEMY
             // ENEMY TURN: PAUSE EVERYTHING until enemy executes attack
             executeSingleEnemyAttack(topEnemy)
+        }
+    }
+
+    private fun movesetOf(enemy: Enemy): Moveset = MovesetTable.movesetFor(enemy.movesetId) ?: defaultMovesetFor(enemy)
+
+    /**
+     * Telegraphs (M4): an enemy whose gauge passes [PLAN_AT_GAUGE] picks its next move now and shows it.
+     * A planned boss ultimate also starts its charge turns.
+     */
+    private fun planEnemyMoves() {
+        val toPlan = _state.value.enemies.filter { it.isAlive && it.plannedMove == null && it.atbGauge >= PLAN_AT_GAUGE }
+        if (toPlan.isEmpty()) return
+        val chargeTurns = GameContent.presentation.telegraph.bossUltimateChargeTurns
+        val plans = toPlan.associate { enemy ->
+            enemy.id to EnemyBrain.pickMove(movesetOf(enemy), enemy.hpRatio, enemy.moveCooldowns, random)
+        }
+        _state.update { prev ->
+            prev.copy(enemies = prev.enemies.map { e ->
+                val move = plans[e.id] ?: return@map e
+                e.copy(plannedMove = move.name, ultimateChargeLeft = if (Intent.isUltimate(e.isBoss, move)) chargeTurns else 0)
+            })
+        }
+        for (enemy in toPlan) {
+            val move = plans.getValue(enemy.id)
+            val intent = Intent.of(move, Intent.isUltimate(enemy.isBoss, move))
+            cue(BattleCue.Telegraph(enemy.id, move.name, intent, move.intentIcon ?: intent.icon))
+            if (enemy.taunts.isNotEmpty() && random.nextFloat() < TAUNT_CHANCE) {
+                val line = enemy.taunts[random.nextInt(enemy.taunts.size)]
+                cue(BattleCue.Taunt(enemy.id, line))
+                if (combatNarrator.isEyesFreeMode.value) combatNarrator.speak("${enemy.name}: $line", force = false)
+            }
         }
     }
 
@@ -413,8 +626,6 @@ class CombatViewModel(
         if (dot > 0) {
             val newHp = (member.currentHp - dot).coerceAtLeast(0)
             fell = newHp <= 0
-            val (sx, sy) = partyFloatSlot(heroId)
-            val fct = FloatingCombatText(text = "-$dot", color = Color(0xFF9CCC65), startX = sx, startY = sy)
             val aliveBefore = aliveIds()
             _state.value = _state.value.copy(
                 party = _state.value.party.map {
@@ -424,14 +635,10 @@ class CombatViewModel(
                         stance = if (fell) CharacterStance.DEAD else it.stance,
                         atbGauge = if (fell) 0f else it.atbGauge
                     ) else it
-                },
-                floatingTexts = _state.value.floatingTexts + fct
+                }
             )
+            cue(BattleCue.Impact(heroId, fromParty = false, hits = listOf(BattleCue.Hit(heroId, dot)), isTick = true))
             announceFallen(aliveBefore)
-            activeScope.launch {
-                delay(1200)
-                _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filter { it.id != fct.id })
-            }
             combatNarrator.speak("${member.name} suffers $dot damage from ongoing effects.", force = false)
         } else {
             _state.value = _state.value.copy(
@@ -487,20 +694,14 @@ class CombatViewModel(
                 val selfNewHp = (livingSelf.currentHp - dot).coerceAtLeast(0)
                 val died = dot > 0 && selfNewHp <= 0
                 if (dot > 0) {
-                    val (sx, sy) = enemyFloatSlot(enemy.id)
-                    val dotFct = FloatingCombatText(text = "-$dot", color = Color(0xFFFFAB40), startX = sx, startY = sy)
                     val aliveBefore = aliveIds()
                     _state.value = _state.value.copy(
                         enemies = _state.value.enemies.map {
                             if (it.id == enemy.id) it.copy(currentHp = selfNewHp, atbGauge = if (died) 0f else it.atbGauge, statuses = advanced) else it
-                        },
-                        floatingTexts = _state.value.floatingTexts + dotFct
+                        }
                     )
+                    cue(BattleCue.Impact(enemy.id, fromParty = true, hits = listOf(BattleCue.Hit(enemy.id, dot)), isTick = true))
                     announceFallen(aliveBefore)
-                    activeScope.launch {
-                        delay(1200)
-                        _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filterNot { f -> f.id == dotFct.id })
-                    }
                     combatNarrator.speak("${enemy.name} suffers $dot damage from ongoing effects.", force = false)
                 } else {
                     _state.value = _state.value.copy(
@@ -545,12 +746,48 @@ class CombatViewModel(
                     _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filterNot { f -> f.id == phaseFct.id })
                 }
                 combatNarrator.speak("${enemy.name} changes tactics! ${phase.note}", force = true)
+                if (enemy.isBoss) {
+                    bossPhaseShifted = true
+                    evaluateIntensity()
+                }
                 beat(BattleCue.PhaseShift(enemy.id, phase.note))
             }
-            val move = EnemyBrain.pickMove(moveset, refreshedSelf.hpRatio, refreshedSelf.moveCooldowns)
-            val isBossUltimate = enemy.isBoss && move.powerMult >= 2.0f
-            val moveCue = BattleCue.EnemyMove(enemy.id, move.name, move.kind, isBossUltimate)
+            // The move it telegraphed at 75% (re-picked only if it can no longer be used).
+            val planned = refreshedSelf.plannedMove?.let { name ->
+                EnemyBrain.availableMoves(moveset, refreshedSelf.hpRatio, refreshedSelf.moveCooldowns).firstOrNull { it.name == name }
+            }
+            val move = planned ?: EnemyBrain.pickMove(moveset, refreshedSelf.hpRatio, refreshedSelf.moveCooldowns, random)
+            val isBossUltimate = Intent.isUltimate(enemy.isBoss, move)
+
+            // A planned boss ultimate spends its charge turns first: a red bar fills and the narrator warns.
+            if (isBossUltimate && planned != null && refreshedSelf.ultimateChargeLeft > 0) {
+                val left = refreshedSelf.ultimateChargeLeft - 1
+                _state.update { prev ->
+                    prev.copy(enemies = prev.enemies.map { if (it.id == enemy.id) it.copy(atbGauge = 0f, ultimateChargeLeft = left) else it })
+                }
+                cue(BattleCue.UltimateCharge(enemy.id, move.name, turnsLeft = left,
+                    totalTurns = GameContent.presentation.telegraph.bossUltimateChargeTurns.coerceAtLeast(1)))
+                combatNarrator.speak("${enemy.name} gathers power for ${move.name}!", force = true)
+                waitForPocketNarration()
+                finishEnemyTurn(enemy.id)
+                return@launch
+            }
+            _state.update { prev ->
+                prev.copy(enemies = prev.enemies.map { if (it.id == enemy.id) it.copy(plannedMove = null, ultimateChargeLeft = 0) else it })
+            }
+
+            val attacks = move.kind != "SUMMON" && move.kind != "BUFF"
+            val moveCue = BattleCue.EnemyMove(
+                enemyId = enemy.id,
+                moveName = move.name,
+                kind = move.kind,
+                isBossUltimate = isBossUltimate,
+                school = runCatching { SpellSchool.valueOf(move.school) }.getOrDefault(SpellSchool.PHYSICAL),
+                windupMs = if (attacks) timing.windupMs(move.windupMs, isBossUltimate) else 0L
+            )
             cue(moveCue)
+            if (move.showsTitleCard) cue(BattleCue.TitleCard(move.name, fromParty = false))
+            if (isBossUltimate) enemyCutIn(refreshedSelf)?.let { playCutIn(it) }
 
             // SUMMON moves spawn codex-true minions instead of attacking.
             if (move.kind == "SUMMON") {
@@ -620,7 +857,8 @@ class CombatViewModel(
             val moveSchool = runCatching { SpellSchool.valueOf(move.school) }.getOrDefault(SpellSchool.PHYSICAL)
             val enemyGraphics = move.graphics
 
-            // 6. The move flies (one projectile per targeted hero), then lands.
+            // 6. Wind-up, then the move flies (one projectile per targeted hero) and lands.
+            hold(moveCue)
             beat(
                 BattleCue.Release(
                     casterId = enemy.id,
@@ -633,12 +871,11 @@ class CombatViewModel(
                     travelMs = timing.travelMs(fromParty = false, isBossUltimate = isBossUltimate)
                 )
             )
-            sfxManager.playHitImpact()
+            sfxManager.playImpact(moveSchool)
             sfxManager.playSoundBite(move.soundBites.ifEmpty { refreshedSelf.soundBites })
             val moveShake = enemyGraphics?.screenShake ?: 0f
 
             val moveStatusId = StatusId.fromNameOrNull(move.applyStatus)
-            val newFloats = mutableListOf<FloatingCombatText>()
             val hits = mutableListOf<BattleCue.Hit>()
             var totalDamage = 0
             var anyFallen = false
@@ -655,7 +892,8 @@ class CombatViewModel(
                         enemyAttack = enemy.baseAttack,
                         movePowerMult = move.powerMult * weakenedMult,
                         defenderGuarding = hero.isGuarding,
-                        defenderStatusMitigation = blessMitigation.coerceIn(0.5f, 1.25f)
+                        defenderStatusMitigation = blessMitigation.coerceIn(0.5f, 1.25f),
+                        random = random
                     )
                     totalDamage += damage
                     hits += BattleCue.Hit(hero.id, damage)
@@ -672,8 +910,6 @@ class CombatViewModel(
                             StatusSystem.apply(moveStatusId, "ADEPT", EnemyFamily.FLESH, damage.toFloat())
                         }
                     } else null
-                    val (hx, hy) = partyFloatSlot(hero.id)
-                    newFloats += FloatingCombatText(text = "-$damage", color = Color(0xFFFF1744), startX = hx, startY = hy)
                     hero.copy(
                         currentHp = newHp,
                         currentMp = if (isFallen) 0 else hero.currentMp,
@@ -699,8 +935,7 @@ class CombatViewModel(
             val aliveBefore = aliveIds()
             _state.value = _state.value.copy(
                 enemies = updatedEnemies,
-                party = updatedParty,
-                floatingTexts = _state.value.floatingTexts + newFloats
+                party = updatedParty
             )
             val impact = BattleCue.Impact(
                 sourceId = enemy.id,
@@ -710,14 +945,6 @@ class CombatViewModel(
             )
             cue(impact)
             announceFallen(aliveBefore)
-
-            activeScope.launch {
-                delay(1200)
-                val idsToRemove = newFloats.map { f -> f.id }.toSet()
-                _state.value = _state.value.copy(
-                    floatingTexts = _state.value.floatingTexts.filterNot { f -> f.id in idsToRemove }
-                )
-            }
 
             hold(impact)
 
@@ -829,10 +1056,7 @@ class CombatViewModel(
                     proceedToStory()
                 }
             } else if (speechManager.isAutoListen.value) {
-                activeScope.launch {
-                    delay(150)
-                    startVoiceListening()
-                }
+                relistenAfter(150)
             }
         }
     }
@@ -876,10 +1100,7 @@ class CombatViewModel(
                     proceedToStory()
                 }
             } else if (speechManager.isAutoListen.value) {
-                activeScope.launch {
-                    delay(150)
-                    startVoiceListening()
-                }
+                relistenAfter(150)
             }
         }
     }
@@ -1006,10 +1227,7 @@ class CombatViewModel(
                         }
                     }
                 } else if (speechManager.isAutoListen.value) {
-                    activeScope.launch {
-                        delay(100)
-                        startVoiceListening()
-                    }
+                    relistenAfter(100)
                 }
             }
         } else {
@@ -1144,15 +1362,20 @@ class CombatViewModel(
             if (combatNarrator.isEyesFreeMode.value) {
                 val heroName = _state.value.activePartyMember?.name ?: "Hero"
                 combatNarrator.speak("$heroName is ready. Speak your command.", force = true) {
-                    activeScope.launch {
-                        delay(100)
-                        startVoiceListening()
-                    }
+                    relistenAfter(100)
                 }
             } else {
                 startVoiceListening()
             }
         } else {
+            startVoiceListening()
+        }
+    }
+
+    /** Re-arm the microphone after [ms] (lets TTS release the audio route first). */
+    private fun relistenAfter(ms: Long) {
+        activeScope.launch {
+            delay(ms)
             startVoiceListening()
         }
     }
@@ -1163,7 +1386,7 @@ class CombatViewModel(
 
     fun submitTypedChant(text: String, forcedAcoustic: com.voicerpg.engine.model.AcousticProfile? = null) {
         speechManager.cancel()
-        processIncantation(text, forcedAcoustic)
+        processIncantation(text, forcedAcoustic, typed = true)
     }
 
     fun toggleEyesFreeMode(): Boolean {
@@ -1175,10 +1398,7 @@ class CombatViewModel(
         val text = if (enabled) "Eyes-free pocket mode enabled. Screen locked." else "Eyes-free pocket mode disabled."
         combatNarrator.speak(text, force = true) {
             if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                activeScope.launch {
-                    delay(100)
-                    startVoiceListening()
-                }
+                relistenAfter(100)
             }
         }
         return enabled
@@ -1280,10 +1500,7 @@ class CombatViewModel(
         _state.value = _state.value.copy(isOptionsOpen = true)
         combatNarrator.speak("Options open. Say Pocket Mode, Auto Listen, Speaker Names, Help, or Close Options.", force = _state.value.isEyesFreeMode) {
             if (speechManager.isAutoListen.value) {
-                activeScope.launch {
-                    delay(100)
-                    startVoiceListening()
-                }
+                relistenAfter(100)
             }
         }
     }
@@ -1292,10 +1509,7 @@ class CombatViewModel(
         _state.value = _state.value.copy(isOptionsOpen = false)
         combatNarrator.speak("Resuming battle.", force = _state.value.isEyesFreeMode) {
             if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                activeScope.launch {
-                    delay(100)
-                    startVoiceListening()
-                }
+                relistenAfter(100)
             }
         }
     }
@@ -1305,30 +1519,21 @@ class CombatViewModel(
             MetaCommand.STATUS_REPORT -> {
                 combatNarrator.narrateStatus(_state.value.party, _state.value.enemies) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
             MetaCommand.CHECK_ENEMIES -> {
                 combatNarrator.narrateEnemies(_state.value.enemies) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
             MetaCommand.CHECK_PARTY -> {
                 combatNarrator.narrateParty(_state.value.party) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
@@ -1352,10 +1557,7 @@ class CombatViewModel(
                 val text = "Eyes-free pocket mode enabled. Screen locked."
                 combatNarrator.speak(text, force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
@@ -1367,10 +1569,7 @@ class CombatViewModel(
                 combatNarrator.unlockPocketGuard()
                 combatNarrator.speak("Screen unlocked.", force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
@@ -1382,10 +1581,7 @@ class CombatViewModel(
                 combatNarrator.lockPocketGuard()
                 combatNarrator.speak("Screen locked. Pocket mode active.", force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
@@ -1395,10 +1591,7 @@ class CombatViewModel(
                 val status = if (enabled) "Auto listen enabled." else "Auto listen disabled."
                 combatNarrator.speak(status, force = true) {
                     if (enabled && _state.value.phase == CombatPhase.PLAYER_INPUT) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
                 val fct = FloatingCombatText(
@@ -1418,10 +1611,7 @@ class CombatViewModel(
                 val status = if (enabled) "Story narration enabled." else "Story narration muted."
                 combatNarrator.speak(status, force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
                 val fct = FloatingCombatText(
@@ -1441,10 +1631,7 @@ class CombatViewModel(
                 val status = if (enabled) "Choice reading enabled." else "Choice reading disabled."
                 combatNarrator.speak(status, force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
                 val fct = FloatingCombatText(
@@ -1464,10 +1651,7 @@ class CombatViewModel(
                 val status = if (enabled) "Speaker names will be announced." else "Speaker names hidden. Voices remain distinct."
                 combatNarrator.speak(status, force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
                 val fct = FloatingCombatText(
@@ -1487,10 +1671,7 @@ class CombatViewModel(
                 val status = if (enabled) "Background music enabled." else "Background music muted."
                 combatNarrator.speak(status, force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
                 val fct = FloatingCombatText(
@@ -1514,10 +1695,7 @@ class CombatViewModel(
             MetaCommand.HELP -> {
                 combatNarrator.narrateHelp {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
@@ -1531,10 +1709,7 @@ class CombatViewModel(
                 combatNarrator.setSpeechRate(next)
                 combatNarrator.speak("Narration speed increased to %.2fx.".format(next), force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
@@ -1548,10 +1723,7 @@ class CombatViewModel(
                 combatNarrator.setSpeechRate(next)
                 combatNarrator.speak("Narration speed decreased to %.2fx.".format(next), force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
@@ -1559,10 +1731,7 @@ class CombatViewModel(
                 combatNarrator.setSpeechRate(1.05f)
                 combatNarrator.speak("Narration speed reset to normal 1.05x.", force = true) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(100)
-                            startVoiceListening()
-                        }
+                        relistenAfter(100)
                     }
                 }
             }
@@ -1575,7 +1744,8 @@ class CombatViewModel(
         }
     }
 
-    fun processIncantation(utterance: String, forcedAcoustic: com.voicerpg.engine.model.AcousticProfile? = null) {
+    /** [typed]: the chant was typed (or chosen automatically), so it gets a short simulated charge. */
+    fun processIncantation(utterance: String, forcedAcoustic: com.voicerpg.engine.model.AcousticProfile? = null, typed: Boolean = false) {
         val lower = utterance.lowercase().trim()
         if (lower.isBlank()) return
 
@@ -1655,10 +1825,7 @@ class CombatViewModel(
                     selectPartyMember(switchTarget)
                     combatNarrator.speak("Switched to ${switchTarget.name}. Ready to act.", force = true) {
                         if (speechManager.isAutoListen.value) {
-                            activeScope.launch {
-                                delay(100)
-                                startVoiceListening()
-                            }
+                            relistenAfter(100)
                         }
                     }
                 } else {
@@ -1677,10 +1844,7 @@ class CombatViewModel(
                     }
                     combatNarrator.speak("${switchTarget.name} is not ready yet ($pct% charged). It is ${activeHero.name}'s turn.", force = true) {
                         if (speechManager.isAutoListen.value) {
-                            activeScope.launch {
-                                delay(100)
-                                startVoiceListening()
-                            }
+                            relistenAfter(100)
                         }
                     }
                 }
@@ -1802,10 +1966,7 @@ class CombatViewModel(
             }
             val relisten: () -> Unit = {
                 if (speechManager.isAutoListen.value && _state.value.phase == CombatPhase.PLAYER_INPUT) {
-                    activeScope.launch {
-                        delay(150)
-                        startVoiceListening()
-                    }
+                    relistenAfter(150)
                 }
             }
             // The active hero may answer in character (outOfTurnLine in their character file).
@@ -1849,10 +2010,7 @@ class CombatViewModel(
                     force = true
                 ) {
                     if (speechManager.isAutoListen.value) {
-                        activeScope.launch {
-                            delay(150)
-                            startVoiceListening()
-                        }
+                        relistenAfter(150)
                     }
                 }
                 return@launch
@@ -1863,6 +2021,10 @@ class CombatViewModel(
                 phase = CombatPhase.INCANTATION_RESOLVING,
                 activePartyMemberId = activeHero.id
             )
+            if (typed) {
+                beat(BattleCue.ChargeStart(activeHero.id, typed = true))
+                cue(BattleCue.ChargeEnd(activeHero.id))
+            }
 
             val acoustic = forcedAcoustic ?: speechManager.getLatestAcousticProfile()
             val resonance = resonanceEngine.evaluate(
@@ -1877,23 +2039,19 @@ class CombatViewModel(
 
             _state.value = _state.value.copy(
                 lastResonance = resonance,
-                isLogosBannerVisible = showBanner,
                 party = _state.value.party.map {
                     if (it.id == activeHero.id) it.copy(stance = CharacterStance.CASTING) else it
                 }
             )
 
-            // 2. Reveal the resonance: the banner holds the screen, then clears before the spell fires.
+            // 2. The cast: the voice is scored now, but revealed when the spell lands (step 4).
             sfxManager.playSpellCast()
             sfxManager.playSoundBite(parsed.spell.soundBites.ifEmpty {
                 com.voicerpg.engine.content.GameContent.characterById(activeHero.id)?.soundBites ?: emptyList()
             })
-            if (isSuperLogos) sfxManager.playLogosFanfare()
-            beat(BattleCue.ResonanceReveal(activeHero.id, resonance, showBanner))
-            if (showBanner) {
-                _state.value = _state.value.copy(isLogosBannerVisible = false)
-                delay(timing.bannerExitMs)
-            }
+
+            // A MYTHIC+ voice earns a portrait cut-in before the spell flies.
+            heroCutIn(activeHero, resonance.tier)?.let { playCutIn(it) }
 
             // 3. Release: the spell flies from the caster to its targets.
             _state.value = _state.value.copy(phase = CombatPhase.SPELL_VFX_PLAYING)
@@ -1917,7 +2075,7 @@ class CombatViewModel(
                     bonusPercent = resonance.bonusPercent,
                     particleCount = resonance.particleCount,
                     graphics = parsed.spell.graphics,
-                    travelMs = timing.travelMs(fromParty = true, isBossUltimate = false)
+                    travelMs = timing.travelMs(fromParty = true, isBossUltimate = false, tier = resonance.tier)
                 )
             )
 
@@ -1947,8 +2105,15 @@ class CombatViewModel(
                 tier = resonance.tier,
                 shake = parsed.spell.graphics?.screenShake ?: 0f
             )
+            // The resonance reveal lands with the blow: banner, fanfare and impact are one moment.
+            _state.value = _state.value.copy(isLogosBannerVisible = showBanner)
+            val streakBefore = streak
+            if (isSuperLogos) sfxManager.playLogosFanfare(pitch = 1f + 0.06f * streakBefore.coerceIn(0, 6))
+            cue(BattleCue.ResonanceReveal(activeHero.id, resonance, showBanner))
             cue(impact)
             announceFallen(aliveBefore)
+            if (!isAttune && !isHeal) applyBoldVoice(hits, resonance.tier)
+            updateStreak(resonance.tier)
             hold(impact)
 
             // 5. Reset active hero's ATB gauge to 0 and record lastActedHeroId for round-robin rotation
@@ -1988,25 +2153,12 @@ class CombatViewModel(
      */
     private fun applyAttuneAction(member: PartyMember, spell: Spell): List<BattleCue.Hit> {
         val restore = (member.maxMp * spell.manaRestorePct).roundToInt().coerceAtLeast(1)
-        val (ax, ay) = partyFloatSlot(member.id)
         sfxManager.playSpellCast()
-        val fct = FloatingCombatText(
-            text = "+$restore MP",
-            color = Color(0xFF4FC3F7),
-            startX = ax,
-            startY = ay,
-            isHeal = true
-        )
         _state.value = _state.value.copy(
             party = _state.value.party.map {
                 if (it.id == member.id) it.copy(currentMp = (it.currentMp + restore).coerceAtMost(it.maxMp)) else it
-            },
-            floatingTexts = _state.value.floatingTexts + fct
+            }
         )
-        activeScope.launch {
-            delay(1400)
-            _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filterNot { it.id == fct.id })
-        }
         combatNarrator.speak("${member.name} breathes slow and steady; $restore mana returns.", force = false)
         return listOf(BattleCue.Hit(member.id, restore, kind = BattleCue.HitKind.MANA))
     }
@@ -2076,7 +2228,8 @@ class CombatViewModel(
                 spellBasePower = spell.basePower.toFloat(),
                 attackerLevel = caster.level,
                 resonanceMultiplier = resonance.damageMultiplier,
-                partyWide = targetsToHeal.size > 1
+                partyWide = targetsToHeal.size > 1,
+                random = random
             )
         } else 0
 
@@ -2102,33 +2255,9 @@ class CombatViewModel(
             } else hero
         }
 
-        val newFloatingTexts = targetsToHeal.flatMap { targetHero ->
-            val (hx, hy) = partyFloatSlot(targetHero.id)
-            val list = mutableListOf<FloatingCombatText>()
-            if (healAmount > 0) {
-                list.add(
-                    FloatingCombatText(
-                        text = "+$healAmount HP",
-                        color = Color(0xFF00E676),
-                        startX = hx,
-                        startY = hy,
-                        isHeal = true,
-                        isCrit = resonance.tier == ResonanceTier.TRANSCENDENTAL || resonance.tier == ResonanceTier.MYTHIC
-                    )
-                )
-            }
-            if ((spell.cleansesDebuffs || spell.isCleanse) && targetHero.statuses.any { it.isDebuffOnTarget }) {
-                list.add(
-                    FloatingCombatText(
-                        text = "CLEANSED ✨",
-                        color = Color(0xFF80D8FF),
-                        startX = hx,
-                        startY = hy - (if (healAmount > 0) 30f else 0f)
-                    )
-                )
-            }
-            list
-        }
+        val cleansedAny = (spell.cleansesDebuffs || spell.isCleanse) && targetsToHeal.any { t -> t.statuses.any { it.isDebuffOnTarget } }
+        val cleanseNote = if (cleansedAny) FloatingCombatText(text = "CLEANSED ✨", color = Color(0xFF80D8FF), startX = 0f, startY = 0f) else null
+        val newFloatingTexts = listOfNotNull(cleanseNote)
 
         _state.value = _state.value.copy(
             party = updatedParty,
@@ -2173,7 +2302,14 @@ class CombatViewModel(
         val isAoe = spell.hitsAll || target == TargetSelection.ALL_ENEMIES
         val targetList = resolveDamageTargets(spell, target, targetEnemyId)
 
-        sfxManager.playHitImpact()
+        sfxManager.playImpact(spell.school, resonance.tier)
+        // A muffled whomp under the freeze of a strong blow (lengths follow the director's hit-stop table).
+        when (resonance.tier) {
+            ResonanceTier.MASTER -> sfxManager.playWhomp(110)
+            ResonanceTier.MYTHIC -> sfxManager.playWhomp(150)
+            ResonanceTier.TRANSCENDENTAL -> sfxManager.playWhomp(180)
+            else -> Unit
+        }
 
         // Per-enemy resolution: affinity lands on the base, voice multiplier untouched.
         val school = schoolOf(spell.school)
@@ -2191,7 +2327,8 @@ class CombatViewModel(
                     targetDefense = enemy.defense,
                     defenseMultiplier = StatusSystem.defenseMult(enemy.statuses),
                     attackerWeakened = weakenedCaster
-                )
+                ),
+                random
             )
             val effectiveDamage = if (_state.value.isPureStoryMode) {
                 (strike.damage * 2.5f).toInt().coerceAtLeast(100)
@@ -2259,35 +2396,7 @@ class CombatViewModel(
             updatedEnemies.map { it.copy(isTargeted = it.id == nextAlive?.id) }
         } else updatedEnemies
 
-        val isSuper = resonance.tier == ResonanceTier.TRANSCENDENTAL || resonance.tier == ResonanceTier.MYTHIC
-        val newFloatingTexts = hits.map { hit ->
-            val (ex, ey) = enemyFloatSlot(hit.enemy.id)
-            FloatingCombatText(
-                text = "-${hit.damage}",
-                color = when {
-                    hit.affinity >= 1.5f -> Color(0xFFFFD700)
-                    isSuper -> Color(0xFFFFC400)
-                    hit.affinity < 0.95f -> Color(0xFF90A4AE)
-                    else -> Color(0xFFFF5252)
-                },
-                startX = ex,
-                startY = ey,
-                isCrit = isSuper || hit.affinity >= 1.5f
-            )
-        }
-
-        _state.value = _state.value.copy(
-            enemies = finalEnemies,
-            floatingTexts = _state.value.floatingTexts + newFloatingTexts
-        )
-
-        activeScope.launch {
-            delay(1200)
-            val idsToRemove = newFloatingTexts.map { it.id }.toSet()
-            _state.value = _state.value.copy(
-                floatingTexts = _state.value.floatingTexts.filterNot { it.id in idsToRemove }
-            )
-        }
+        _state.value = _state.value.copy(enemies = finalEnemies)
 
         // Clear flash
         activeScope.launch {
@@ -2357,6 +2466,12 @@ class CombatViewModel(
         conclusionWatchdogJob = null
         atbJob?.cancel()
         atbJob = null
+        chargeJob?.cancel()
+        chargeJob = null
+        intensityJob?.cancel()
+        intensityJob = null
+        musicManager?.setIntensityTrack(null)
+        endCharge()
         combatNarrator.setCombatActive(false)
         _state.update { it.copy(phase = CombatPhase.INACTIVE) }
     }
@@ -2501,6 +2616,7 @@ class CombatViewModel(
         turnsTakenInRound = 0
         lastActedHeroId = null
         lastActedFaction = CombatantFaction.NONE
+        streak = 0
         musicManager?.playCombatMusic()
         combatNarrator.setCombatActive(true)
 
@@ -2515,6 +2631,9 @@ class CombatViewModel(
         )
         cue(BattleCue.BattleStart(currentEncounterId))
         startAtbLoop()
+        startChargeWatcher()
+        startIntensityWatcher(lastEncounterDefinition?.takeIf { it.id == currentEncounterId }?.intensityTrack
+            ?: GameContent.presentation.music.intensityTrack)
     }
 
     fun restartBattle() {
@@ -2532,6 +2651,7 @@ class CombatViewModel(
         turnsTakenInRound = 0
         lastActedHeroId = null
         lastActedFaction = CombatantFaction.NONE
+        streak = 0
         _combatantPositions.clear()
         resonanceEngine.noveltyCache.clear()
         val initialParty = GameContent.createDuoParty()
@@ -2553,6 +2673,8 @@ class CombatViewModel(
         )
         cue(BattleCue.BattleStart(currentEncounterId))
         startAtbLoop()
+        startChargeWatcher()
+        startIntensityWatcher(GameContent.presentation.music.intensityTrack)
     }
 
     fun cleanup() {
@@ -2561,6 +2683,9 @@ class CombatViewModel(
         conclusionWatchdogJob?.cancel()
         conclusionWatchdogJob = null
         atbJob?.cancel()
+        chargeJob?.cancel()
+        intensityJob?.cancel()
+        endCharge()
         speechManager.destroy()
         combatNarrator.destroy()
     }
@@ -2576,5 +2701,19 @@ class CombatViewModel(
 
         /** Particle burst of an enemy move that declares none in its graphics. */
         const val ENEMY_IMPACT_PARTICLES = 15
+
+        /** How far a stagger pushes an enemy's gauge back. */
+        const val STAGGER_GAUGE = 0.35f
+        const val WEAKNESS_AFFINITY = 1.5f
+
+        /** Chance an enemy with taunts shouts one when it telegraphs. */
+        const val TAUNT_CHANCE = 0.35f
+
+        /** Gauge at which an enemy picks and telegraphs its next move. */
+        const val PLAN_AT_GAUGE = 0.75f
+
+        /** How often a charge passes the live voice level on (the hum follows every sample). */
+        const val CHARGE_LEVEL_INTERVAL_MS = 50L
+        const val CHARGE_LEVEL_JUMP = 0.15f
     }
 }

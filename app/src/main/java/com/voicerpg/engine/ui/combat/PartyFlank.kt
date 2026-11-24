@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.voicerpg.engine.model.PartyMember
+import com.voicerpg.engine.ui.fx.CombatantFx
 import com.voicerpg.engine.ui.sprites.PixelCharacterView
 
 @Composable
@@ -28,6 +29,7 @@ fun PartyFlank(
     onSelectHero: (PartyMember) -> Unit,
     onPositionHero: ((String, Offset) -> Unit)? = null,
     arenaCoordinates: LayoutCoordinates? = null,
+    fxOf: ((String) -> CombatantFx)? = null,
     modifier: Modifier = Modifier
 ) {
     if (party.size <= 3) {
@@ -49,6 +51,7 @@ fun PartyFlank(
                     arenaCoordinates = arenaCoordinates,
                     onSelectHero = onSelectHero,
                     onPositionHero = onPositionHero,
+                    fx = fxOf?.invoke(member.id),
                     modifier = Modifier.offset(x = staggerX)
                 )
             }
@@ -105,7 +108,8 @@ fun PartyFlank(
                             depthScale = depthScale,
                             arenaCoordinates = arenaCoordinates,
                             onSelectHero = onSelectHero,
-                            onPositionHero = onPositionHero
+                            onPositionHero = onPositionHero,
+                            fx = fxOf?.invoke(member.id)
                         )
                     }
                 }
@@ -126,7 +130,8 @@ fun PartyFlank(
                             depthScale = depthScale,
                             arenaCoordinates = arenaCoordinates,
                             onSelectHero = onSelectHero,
-                            onPositionHero = onPositionHero
+                            onPositionHero = onPositionHero,
+                            fx = fxOf?.invoke(member.id)
                         )
                     }
                 }
@@ -144,6 +149,7 @@ private fun PartyFlankMemberItem(
     arenaCoordinates: LayoutCoordinates?,
     onSelectHero: (PartyMember) -> Unit,
     onPositionHero: ((String, Offset) -> Unit)?,
+    fx: CombatantFx? = null,
     modifier: Modifier = Modifier
 ) {
     var cardCoords by remember { mutableStateOf<LayoutCoordinates?>(null) }
@@ -178,6 +184,7 @@ private fun PartyFlankMemberItem(
         spriteAlpha = member.spriteAlpha,
         pixelSize = scaledPixelSize,
         depthScale = depthScale,
+        fx = fx,
         onClick = { onSelectHero(member) },
         modifier = modifier.onGloballyPositioned { cardCoords = it }
     )

@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.asStateFlow
  * Visual comfort options (Options → Visual comfort). Saved with the slot like the audio options;
  * the battle screen reads them live.
  *
- *  - Reduce motion: the battle arena never shakes (later also no zoom, and only a short hit-stop).
+ *  - Reduce motion: the battle arena never shakes or zooms, and hit-stops stay short.
+ *  - Reduce flashing: no full-screen white flash (flashes are already capped at three a second).
  */
 class MotionSettings {
     private val _reduceMotion = MutableStateFlow(false)
@@ -21,5 +22,17 @@ class MotionSettings {
     fun toggleReduceMotion(): Boolean {
         _reduceMotion.value = !_reduceMotion.value
         return _reduceMotion.value
+    }
+
+    private val _reduceFlashing = MutableStateFlow(false)
+    val reduceFlashing: StateFlow<Boolean> = _reduceFlashing.asStateFlow()
+
+    fun setReduceFlashing(enabled: Boolean) {
+        _reduceFlashing.value = enabled
+    }
+
+    fun toggleReduceFlashing(): Boolean {
+        _reduceFlashing.value = !_reduceFlashing.value
+        return _reduceFlashing.value
     }
 }

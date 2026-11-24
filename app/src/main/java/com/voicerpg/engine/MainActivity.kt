@@ -177,6 +177,7 @@ class MainActivity : ComponentActivity() {
             val isMusicEnabled by musicManager.isMusicEnabled.collectAsState()
             val musicVolume by musicManager.musicVolume.collectAsState()
             val isReduceMotion by motionSettings.reduceMotion.collectAsState()
+            val isReduceFlashing by motionSettings.reduceFlashing.collectAsState()
             var showDebugWarp by remember { mutableStateOf(false) }
             val isDeveloperToolsEnabled by combatViewModel.isDeveloperToolsEnabled.collectAsState()
 
@@ -545,6 +546,11 @@ class MainActivity : ComponentActivity() {
                         isReduceMotion = isReduceMotion,
                         onToggleReduceMotion = {
                             motionSettings.toggleReduceMotion()
+                            storyViewModel.persistCurrentState()
+                        },
+                        isReduceFlashing = isReduceFlashing,
+                        onToggleReduceFlashing = {
+                            motionSettings.toggleReduceFlashing()
                             storyViewModel.persistCurrentState()
                         },
                         onOpenVoiceSettings = {
