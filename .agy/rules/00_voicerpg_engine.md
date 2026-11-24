@@ -16,7 +16,9 @@ editing `.engine-sync/` by hand is detected too. Do not use `--no-verify`.
 
 ## What belongs in this repo
 - Game content: `app/src/main/assets/game/**` (except `commands/` and `localization/`), plus portraits,
-  story art, environments and audio under `app/src/main/assets/`.
+  story art, environments and audio under `app/src/main/assets/`. Translations of the game's own story
+  and content phrases go in `app/src/main/assets/game/translations/strings_<lang>.json` (the engine's
+  `localization/` holds only engine UI phrases).
 - App identity: `applicationId`, app name, icon and other resources in `app/build.gradle.kts` and `app/src/main/res/`.
 - Game-specific tests: `app/src/test/java/com/voicerpg/game/**`.
 

@@ -35,7 +35,8 @@ enum class ModelDownloadStatus {
  * 
  * Supports all 59 languages available in Google ML Kit on-device translation.
  * Uses a 3-tier architecture:
- * 1. Tier 1: Pre-compiled offline JSON dictionaries / APK assets for zero-latency instant rendering.
+ * 1. Tier 1: Offline JSON dictionaries in the APK: the engine's UI phrases (game/localization) with the
+ *    game's own story phrases (game/translations) over them, for zero-latency rendering.
  * 2. Tier 2: On-device ML Kit neural translator backed by persistent disk cache (translations_<lang>.json).
  * 3. Tier 3: Graceful fallback to original text.
  */
@@ -88,25 +89,43 @@ object TranslationManager {
         _downloadStatus.value = ModelDownloadStatus.IDLE
     }
 
+    /** The engine's UI phrases. Engine-owned: synced byte-identical into every game. */
+    private const val ENGINE_DICTIONARY_DIR = "game/localization"
+
+    /** The game's story and content phrases. Game-owned, never synced; wins over the engine's. */
+    private const val GAME_DICTIONARY_DIR = "game/translations"
+
     fun loadAssetDictionary(lang: String) {
+        val ctx = appContext ?: return
+        loadAssetDictionary(lang) { path -> ctx.assets.open(path) }
+    }
+
+    /** Loads the offline dictionary for [lang]: engine UI phrases, then the game's own phrases over them. */
+    internal fun loadAssetDictionary(lang: String, openAsset: (String) -> java.io.InputStream) {
         val clean = lang.lowercase().trim().take(2)
         if (clean == "en" || clean.isBlank()) return
         if (assetDictionaries.containsKey(clean)) return
-        val ctx = appContext ?: return
+        val merged = readDictionary(openAsset, "$ENGINE_DICTIONARY_DIR/strings_$clean.json") +
+            readDictionary(openAsset, "$GAME_DICTIONARY_DIR/strings_$clean.json")
+        if (merged.isNotEmpty()) {
+            assetDictionaries[clean] = merged
+            _translationVersion.value++
+        }
+    }
+
+    private fun readDictionary(openAsset: (String) -> java.io.InputStream, path: String): Map<String, String> =
         try {
-            val assetPath = "game/localization/strings_$clean.json"
-            ctx.assets.open(assetPath).use { inputStream ->
+            openAsset(path).use { inputStream ->
                 val reader = java.io.InputStreamReader(inputStream, Charsets.UTF_8)
                 val type = object : com.google.gson.reflect.TypeToken<Map<String, String>>() {}.type
-                val map: Map<String, String>? = com.google.gson.Gson().fromJson(reader, type)
-                if (!map.isNullOrEmpty()) {
-                    assetDictionaries[clean] = map
-                    _translationVersion.value++
-                }
+                com.google.gson.Gson().fromJson<Map<String, String>>(reader, type).orEmpty()
             }
         } catch (_: Throwable) {
-            // Asset might not exist or test environment without assets
+            emptyMap() // A pack without this file (or this language) is normal.
         }
+
+    internal fun clearAssetDictionaries() {
+        assetDictionaries.clear()
     }
 
     private fun loadDiskCache(lang: String) {
