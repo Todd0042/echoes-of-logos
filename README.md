@@ -185,6 +185,7 @@ Echoes of the Logos includes **224 automated unit tests** verifying multilingual
 
 - **Clean-Room Audio & Narrative:** All storyline text, character concepts, and sound effects are original creations.
 - **PolyForm Noncommercial 1.0.0:** Free for personal and hobbyist use. For commercial licensing, contact **[todd.0042.git@gmail.com](mailto:todd.0042.git@gmail.com)**.
+- **Media License**: the images, artwork and audio made for this project (paths listed in [LICENSE-MEDIA](LICENSE-MEDIA)) are © Todd0042 under **[CC BY-NC 4.0](LICENSE-MEDIA)**: free to share and adapt with credit for non-commercial purposes; commercial use requires permission.
 
 ---
 
