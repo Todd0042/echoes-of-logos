@@ -35,6 +35,9 @@
       "speed": 1,
       "defense": 2,
       "potencyPct": 0.03
+    },
+    "cutIn": {
+      "quote": "By my oath, you shall not pass!"
     }
   },
   "spellGrants": [

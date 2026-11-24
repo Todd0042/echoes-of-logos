@@ -1255,6 +1255,24 @@
             "screenShake": 3.0
           },
           "cooldownTurns": 3
+        },
+        {
+          "name": "Venomous Brood Cataclysm",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 2.2,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "POISON",
+          "cooldownTurns": 4,
+          "weight": 2,
+          "windupMs": 750,
+          "graphics": {
+            "effectType": "PILLAR",
+            "primaryColor": "#7C4DFF",
+            "secondaryColor": "#FFFFFF",
+            "particleCount": 36,
+            "screenShake": 14.0
+          }
         }
       ],
       "phases": [
@@ -1313,6 +1331,24 @@
             "screenShake": 3.0
           },
           "applyStatus": "POISON"
+        },
+        {
+          "name": "Primeval Tectonic Tremor",
+          "school": "NATURE",
+          "kind": "AOE",
+          "powerMult": 2.4,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "OVERLOAD",
+          "cooldownTurns": 5,
+          "weight": 2,
+          "windupMs": 750,
+          "graphics": {
+            "effectType": "PILLAR",
+            "primaryColor": "#43A047",
+            "secondaryColor": "#FFFFFF",
+            "particleCount": 36,
+            "screenShake": 14.0
+          }
         }
       ],
       "phases": [
@@ -1372,6 +1408,24 @@
           },
           "applyStatus": "GUARD",
           "cooldownTurns": 6
+        },
+        {
+          "name": "Acidic Silt Torrent",
+          "school": "NATURE",
+          "kind": "AOE",
+          "powerMult": 2.3,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "CORRODE",
+          "cooldownTurns": 4,
+          "weight": 2,
+          "windupMs": 750,
+          "graphics": {
+            "effectType": "PILLAR",
+            "primaryColor": "#43A047",
+            "secondaryColor": "#FFFFFF",
+            "particleCount": 36,
+            "screenShake": 14.0
+          }
         }
       ]
     },
@@ -1421,6 +1475,24 @@
             "primaryColor": "#BA68C8",
             "particleCount": 14,
             "screenShake": 3.0
+          }
+        },
+        {
+          "name": "Headsman's Crimson Guillotine",
+          "school": "PHYSICAL",
+          "kind": "HEAVY",
+          "powerMult": 2.6,
+          "targetRule": "SINGLE_LOWEST_HP",
+          "applyStatus": "BLEED",
+          "cooldownTurns": 4,
+          "weight": 2,
+          "windupMs": 750,
+          "graphics": {
+            "effectType": "SLASH",
+            "primaryColor": "#B71C1C",
+            "secondaryColor": "#FFFFFF",
+            "particleCount": 36,
+            "screenShake": 14.0
           }
         }
       ],
@@ -1481,6 +1553,24 @@
           },
           "applyStatus": "GUARD",
           "cooldownTurns": 5
+        },
+        {
+          "name": "Eclipse of the Corrupted Dawn",
+          "school": "HOLY",
+          "kind": "AOE",
+          "powerMult": 2.4,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "BURN",
+          "cooldownTurns": 5,
+          "weight": 2,
+          "windupMs": 750,
+          "graphics": {
+            "effectType": "PILLAR",
+            "primaryColor": "#FFD700",
+            "secondaryColor": "#FFFFFF",
+            "particleCount": 36,
+            "screenShake": 14.0
+          }
         }
       ],
       "phases": [
@@ -1526,6 +1616,24 @@
           },
           "applyStatus": "BLEED",
           "cooldownTurns": 4
+        },
+        {
+          "name": "Thousand Blade Umbral Requiem",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 2.5,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "BLEED",
+          "cooldownTurns": 4,
+          "weight": 2,
+          "windupMs": 750,
+          "graphics": {
+            "effectType": "PILLAR",
+            "primaryColor": "#7C4DFF",
+            "secondaryColor": "#FFFFFF",
+            "particleCount": 36,
+            "screenShake": 14.0
+          }
         }
       ],
       "phases": [
@@ -1584,6 +1692,24 @@
           },
           "applyStatus": "OVERLOAD",
           "cooldownTurns": 5
+        },
+        {
+          "name": "Omega Core Cataclysm Beam",
+          "school": "ELECTROMANCY",
+          "kind": "AOE",
+          "powerMult": 2.5,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "OVERLOAD",
+          "cooldownTurns": 5,
+          "weight": 2,
+          "windupMs": 750,
+          "graphics": {
+            "effectType": "PILLAR",
+            "primaryColor": "#E040FB",
+            "secondaryColor": "#FFFFFF",
+            "particleCount": 36,
+            "screenShake": 14.0
+          }
         }
       ],
       "phases": [
@@ -1642,6 +1768,24 @@
             "screenShake": 3.0
           },
           "cooldownTurns": 6
+        },
+        {
+          "name": "Phantasmal Vanguard Hellstorm",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 2.3,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4,
+          "weight": 2,
+          "windupMs": 750,
+          "graphics": {
+            "effectType": "PILLAR",
+            "primaryColor": "#7C4DFF",
+            "secondaryColor": "#FFFFFF",
+            "particleCount": 36,
+            "screenShake": 14.0
+          }
         }
       ]
     },
@@ -1693,6 +1837,24 @@
             "screenShake": 3.0
           },
           "cooldownTurns": 5
+        },
+        {
+          "name": "Abyssal Trench Tsunami",
+          "school": "SHADOW",
+          "kind": "AOE",
+          "powerMult": 2.5,
+          "targetRule": "PARTY_AOE",
+          "applyStatus": "WEAKEN",
+          "cooldownTurns": 4,
+          "weight": 2,
+          "windupMs": 750,
+          "graphics": {
+            "effectType": "PILLAR",
+            "primaryColor": "#7C4DFF",
+            "secondaryColor": "#FFFFFF",
+            "particleCount": 36,
+            "screenShake": 14.0
+          }
         }
       ]
     },
@@ -1751,8 +1913,28 @@
           "hpBelow": 0.34,
           "bannerText": "",
           "narrationText": "",
-          "addMoves": null,
-          "replaceWith": null
+          "addMoves": [
+            {
+              "name": "Cords of Severance",
+              "school": "SHADOW",
+              "kind": "AOE",
+              "powerMult": 2.6,
+              "targetRule": "PARTY_AOE",
+              "applyStatus": "CORRODE",
+              "cooldownTurns": 5,
+              "weight": 5,
+              "windupMs": 750,
+              "graphics": {
+                "effectType": "PILLAR",
+                "primaryColor": "#7C4DFF",
+                "secondaryColor": "#FFFFFF",
+                "particleCount": 36,
+                "screenShake": 14.0
+              }
+            }
+          ],
+          "replaceWith": null,
+          "note": "The Mute Sovereign draws the Cords of Severance!"
         },
         {
           "hpBelow": 0.66,

@@ -414,7 +414,11 @@
       "movesetId": "boss_galahault",
       "isBoss": true,
       "spriteId": "template_brute",
-      "spriteTint": "#7E57C2"
+      "spriteTint": "#7E57C2",
+      "cutIn": {
+        "portrait": "portraits/galahault.jpg",
+        "quote": "Kneel before the eclipse."
+      }
     },
     {
       "id": "penitent_templar",
@@ -510,7 +514,11 @@
       "movesetId": "boss_nocturne",
       "isBoss": true,
       "spriteId": "template_sniper",
-      "spriteTint": "#EF5350"
+      "spriteTint": "#EF5350",
+      "cutIn": {
+        "portrait": "portraits/nocturne.jpg",
+        "quote": "You never heard me coming."
+      }
     },
     {
       "id": "black_guild_stalker",
@@ -574,7 +582,11 @@
       "movesetId": "boss_ouros",
       "isBoss": true,
       "spriteId": "template_brute",
-      "spriteTint": "#78909C"
+      "spriteTint": "#78909C",
+      "cutIn": {
+        "portrait": "portraits/ouros.jpg",
+        "quote": "Iron does not tire."
+      }
     },
     {
       "id": "steam_arbalest",
@@ -606,7 +618,11 @@
       "movesetId": "boss_vaelor",
       "isBoss": true,
       "spriteId": "template_brute",
-      "spriteTint": "#EF5350"
+      "spriteTint": "#EF5350",
+      "cutIn": {
+        "portrait": "portraits/vaelor.jpg",
+        "quote": "Your voice is mine now!"
+      }
     },
     {
       "id": "citadel_ironclad",
@@ -734,7 +750,11 @@
       "movesetId": "boss_malakor",
       "isBoss": true,
       "spriteId": "template_brute",
-      "spriteTint": "#424242"
+      "spriteTint": "#424242",
+      "cutIn": {
+        "portrait": "portraits/malakor.jpg",
+        "quote": "Your voices end here."
+      }
     },
     {
       "id": "echo_nullifier",

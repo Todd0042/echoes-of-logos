@@ -29,6 +29,9 @@
       "speed": 1,
       "defense": 1,
       "potencyPct": 0.04
+    },
+    "cutIn": {
+      "quote": "The Logos answers my voice!"
     }
   },
   "sprite": {

@@ -33,6 +33,9 @@
       "speed": 2,
       "defense": 1,
       "potencyPct": 0.04
+    },
+    "cutIn": {
+      "quote": "Silence is my blade."
     }
   },
   "spellGrants": [
