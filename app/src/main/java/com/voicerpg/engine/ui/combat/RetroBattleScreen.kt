@@ -250,12 +250,10 @@ fun RetroBattleScreen(
                     )
 
                     // SNES OBJ Layer: Combatants anchored onto the floor stage
+                    // Both flanks fill the arena, so they share the backdrop's floor (BattleStage).
                     Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 44.dp, bottom = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Bottom
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         // Left Flank (Heroes / Party)
                         PartyFlank(

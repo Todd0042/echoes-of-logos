@@ -164,12 +164,10 @@ fun TutorialBattleScreen(
                     )
 
                     // Battle Grid Flanks
+                    // Both flanks fill the arena, so they stand on the backdrop's floor (BattleStage).
                     Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         // Left Flank (Fellowship Heroes)
                         PartyFlank(

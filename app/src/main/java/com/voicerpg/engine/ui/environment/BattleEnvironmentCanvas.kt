@@ -77,7 +77,8 @@ fun BattleEnvironmentCanvas(
     Canvas(modifier = modifier.fillMaxSize()) {
         val w = size.width
         val h = size.height
-        val horizonY = h * 0.43f // SNES horizon line separating BG3/BG2 wall from Mode-7 floor plane
+        // The horizon where scenery meets the floor: shared with the combatants' stage (BattleStage).
+        val horizonY = com.voicerpg.engine.ui.combat.BattleStage.horizonY(h)
 
         if (backgroundBitmap != null) {
             // 1. BG3/BG2 Backdrop Artwork (aspect-preserving center crop)

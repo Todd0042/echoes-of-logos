@@ -3,6 +3,7 @@ package com.voicerpg.engine.ui.combat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -34,9 +35,8 @@ fun PartyFlank(
 ) {
     if (party.size <= 3) {
         // Diagonal SNES-style staggered column anchored to the floor plane
-        Column(
-            modifier = modifier.padding(start = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        StageColumn(
+            modifier = modifier.fillMaxHeight().padding(start = 10.dp),
             horizontalAlignment = Alignment.Start
         ) {
             party.forEachIndexed { index, member ->
@@ -89,15 +89,15 @@ fun PartyFlank(
         }
 
         Row(
-            modifier = modifier.padding(start = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = modifier.fillMaxHeight().padding(start = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Back Row: left side of screen
             if (backRowMembers.isNotEmpty()) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(verticalSpacing),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                StageColumn(
+                    modifier = Modifier.fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    depth = BattleStage.BACK_COLUMN
                 ) {
                     backRowMembers.forEachIndexed { index, member ->
                         val depthScale = 0.88f + index * 0.05f
@@ -117,9 +117,10 @@ fun PartyFlank(
 
             // Front Row: in front of support row
             if (frontRowMembers.isNotEmpty()) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(frontVerticalSpacing),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                StageColumn(
+                    modifier = Modifier.fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    depth = BattleStage.FRONT_COLUMN
                 ) {
                     frontRowMembers.forEachIndexed { index, member ->
                         val depthScale = 0.98f + index * 0.06f

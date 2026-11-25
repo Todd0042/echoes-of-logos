@@ -3,6 +3,7 @@ package com.voicerpg.engine.ui.combat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -37,9 +38,8 @@ fun EnemyFlank(
 
     if (!isLargeHorde) {
         // Diagonal SNES-style staggered enemy formation
-        Column(
-            modifier = modifier.padding(end = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        StageColumn(
+            modifier = modifier.fillMaxHeight().padding(end = 10.dp),
             horizontalAlignment = Alignment.End
         ) {
             enemies.forEachIndexed { index, enemy ->
@@ -67,14 +67,14 @@ fun EnemyFlank(
         val backRow = bosses + others.filterIndexed { index, _ -> index % 2 != 0 }
 
         Row(
-            modifier = modifier.padding(end = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = modifier.fillMaxHeight().padding(end = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End)
         ) {
             // Front Row (closer to heroes)
-            Column(
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            StageColumn(
+                modifier = Modifier.fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                depth = BattleStage.FRONT_COLUMN
             ) {
                 frontRow.forEachIndexed { index, enemy ->
                     val depthScale = 0.96f + index * 0.05f
@@ -92,9 +92,10 @@ fun EnemyFlank(
             }
 
             // Back Row (rearguard)
-            Column(
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            StageColumn(
+                modifier = Modifier.fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                depth = BattleStage.BACK_COLUMN
             ) {
                 backRow.forEachIndexed { index, enemy ->
                     val depthScale = 0.88f + index * 0.04f
