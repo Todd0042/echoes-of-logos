@@ -592,7 +592,10 @@ data class EnvironmentDefinitionDto(
     val ambientThemeColor: String = "#FFFFFF",
     val backgroundAsset: String = "",
     val aliases: List<String>? = null,
-    val overlayType: String = "FOREST"
+    val overlayType: String = "FOREST",
+    /** Where the backdrop picture's floor starts, as a fraction of its height (the `_p` variant has its own). */
+    val artHorizon: Float? = null,
+    val artHorizonPortrait: Float? = null
 )
 
 data class EnvironmentFileDto(
@@ -772,8 +775,15 @@ data class EnvironmentDefinition(
     val ambientThemeColor: Color,
     val backgroundAsset: String,
     val aliases: List<String> = emptyList(),
-    val overlayType: String = "FOREST"
-)
+    val overlayType: String = "FOREST",
+    /** Painted horizon of the backdrop picture (fraction of its height); aligned with the battle stage's. */
+    val artHorizon: Float? = null,
+    val artHorizonPortrait: Float? = null
+) {
+    fun artHorizonFor(portraitVariant: Boolean): Float =
+        (if (portraitVariant) artHorizonPortrait ?: artHorizon else artHorizon)
+            ?: com.voicerpg.engine.ui.combat.BattleStage.DEFAULT_ART_HORIZON
+}
 
 data class AffinityMatrix(
     val floor: Float,
@@ -1600,7 +1610,9 @@ class GameContentLoader(private val source: ContentSource) {
         ambientThemeColor = parseHexColor(ambientThemeColor, Color.White),
         backgroundAsset = backgroundAsset,
         aliases = aliases ?: emptyList(),
-        overlayType = overlayType
+        overlayType = overlayType,
+        artHorizon = artHorizon?.takeIf { it in 0.05f..0.95f },
+        artHorizonPortrait = artHorizonPortrait?.takeIf { it in 0.05f..0.95f }
     )
 
     private fun StatusDefDto.toStatusDef(): StatusDef = StatusDef(

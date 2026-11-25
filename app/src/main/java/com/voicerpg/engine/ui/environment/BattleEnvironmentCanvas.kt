@@ -53,9 +53,13 @@ fun BattleEnvironmentCanvas(
     val envDef = remember(environmentId, environment) {
         GameContent.environmentById(environmentId) ?: GameContent.environmentById(environment.name)
     }
-    val backgroundBitmap = remember(environmentId, environment, resolvedAspect) {
-        EnvironmentAssetLoader.getOrLoad(context, environmentId, environment, resolvedAspect)
+    val backdrop = remember(environmentId, environment, resolvedAspect) {
+        EnvironmentAssetLoader.loadBackdrop(context, environmentId, environment, resolvedAspect)
     }
+    val backgroundBitmap = backdrop?.image
+    // The picture's own painted horizon, so the art and the combatants share one floor (BattleStage).
+    val artHorizon = envDef?.artHorizonFor(portraitVariant = backdrop?.variant == BackgroundAspect.PORTRAIT)
+        ?: com.voicerpg.engine.ui.combat.BattleStage.DEFAULT_ART_HORIZON
 
     // 4-frame continuous loop: 400ms per frame (1600ms full cycle)
     val infiniteTransition = rememberInfiniteTransition(label = "EnvAnimation")
@@ -81,21 +85,18 @@ fun BattleEnvironmentCanvas(
         val horizonY = com.voicerpg.engine.ui.combat.BattleStage.horizonY(h)
 
         if (backgroundBitmap != null) {
-            // 1. BG3/BG2 Backdrop Artwork (aspect-preserving center crop)
+            // 1. BG3/BG2 Backdrop Artwork: cover-cropped with its painted horizon on the stage horizon
             val srcW = backgroundBitmap.width
             val srcH = backgroundBitmap.height
             if (w > 0f && h > 0f && srcW > 0 && srcH > 0) {
-                val dstRatio = w / h
-                val srcRatio = srcW.toFloat() / srcH.toFloat()
-                val (cropW, cropH) = if (srcRatio > dstRatio) {
-                    (srcH * dstRatio).roundToInt().coerceIn(1, srcW) to srcH
-                } else {
-                    srcW to (srcW / dstRatio).roundToInt().coerceIn(1, srcH)
-                }
+                val crop = com.voicerpg.engine.ui.combat.BattleStage.backdropCrop(srcW, srcH, artHorizon, w, h)
                 drawImage(
                     image = backgroundBitmap,
-                    srcOffset = IntOffset((srcW - cropW) / 2, (srcH - cropH) / 2),
-                    srcSize = IntSize(cropW, cropH),
+                    srcOffset = IntOffset(crop.left.roundToInt(), crop.top.roundToInt()),
+                    srcSize = IntSize(
+                        crop.width.roundToInt().coerceIn(1, srcW - crop.left.roundToInt()),
+                        crop.height.roundToInt().coerceIn(1, srcH - crop.top.roundToInt())
+                    ),
                     dstSize = IntSize(w.toInt(), h.toInt())
                 )
             }

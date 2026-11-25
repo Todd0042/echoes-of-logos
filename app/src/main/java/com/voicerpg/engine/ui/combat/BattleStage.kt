@@ -49,6 +49,32 @@ object BattleStage {
 
     val BACK_COLUMN = 0f..0.75f
     val FRONT_COLUMN = 0.25f..1f
+
+    /** Where painted battle art usually puts its horizon, for environments that don't say. */
+    const val DEFAULT_ART_HORIZON = 0.55f
+
+    /** The part of a backdrop picture to draw over the whole arena, in picture pixels. */
+    data class Crop(val left: Float, val top: Float, val width: Float, val height: Float)
+
+    /**
+     * Crops a [srcW]x[srcH] picture whose painted horizon is at [artHorizon] (fraction of its height) to fill an
+     * [arenaW]x[arenaH] arena with that horizon drawn on the stage [HORIZON]. The picture covers the arena (no
+     * letterbox, no stretching), zooming in further when needed so both the sky above and the floor below the
+     * horizon reach the arena's edges; it stays centered horizontally.
+     */
+    fun backdropCrop(srcW: Int, srcH: Int, artHorizon: Float, arenaW: Float, arenaH: Float): Crop {
+        val hz = artHorizon.coerceIn(0.05f, 0.95f)
+        val scale = maxOf(
+            arenaW / srcW,
+            arenaH / srcH,
+            HORIZON * arenaH / (hz * srcH),                // enough sky above the horizon
+            (1f - HORIZON) * arenaH / ((1f - hz) * srcH)   // enough floor below it
+        )
+        val width = arenaW / scale
+        val height = arenaH / scale
+        val top = (hz * srcH - HORIZON * height).coerceIn(0f, srcH - height)
+        return Crop(left = (srcW - width) / 2f, top = top, width = width, height = height)
+    }
 }
 
 /**

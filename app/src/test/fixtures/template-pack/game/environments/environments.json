@@ -10,7 +10,9 @@
       "ambientThemeColor": "#2196F3",
       "backgroundAsset": "environments/castle.jpg",
       "aliases": ["courtyard", "CASTLE", "training_grounds"],
-      "overlayType": "CASTLE"
+      "overlayType": "CASTLE",
+      "artHorizon": 0.57,
+      "artHorizonPortrait": 0.55
     },
     {
       "id": "cave",
@@ -21,7 +23,9 @@
       "ambientThemeColor": "#78909C",
       "backgroundAsset": "environments/cave.jpg",
       "aliases": ["cavern", "CAVE", "crystal_cavern"],
-      "overlayType": "CAVE"
+      "overlayType": "CAVE",
+      "artHorizon": 0.54,
+      "artHorizonPortrait": 0.55
     },
     {
       "id": "dungeon",
@@ -32,7 +36,9 @@
       "ambientThemeColor": "#FF9800",
       "backgroundAsset": "environments/dungeon.jpg",
       "aliases": ["vaults", "DUNGEON", "echo_hall"],
-      "overlayType": "DUNGEON"
+      "overlayType": "DUNGEON",
+      "artHorizon": 0.56,
+      "artHorizonPortrait": 0.55
     },
     {
       "id": "forest",
@@ -43,7 +49,9 @@
       "ambientThemeColor": "#4CAF50",
       "backgroundAsset": "environments/forest.jpg",
       "aliases": ["woods", "FOREST", "whispering_woods"],
-      "overlayType": "FOREST"
+      "overlayType": "FOREST",
+      "artHorizon": 0.53,
+      "artHorizonPortrait": 0.54
     },
     {
       "id": "swamp",
@@ -54,7 +62,9 @@
       "ambientThemeColor": "#8D6E63",
       "backgroundAsset": "environments/swamp.jpg",
       "aliases": ["marsh", "SWAMP", "sunken_hollow"],
-      "overlayType": "SWAMP"
+      "overlayType": "SWAMP",
+      "artHorizon": 0.58,
+      "artHorizonPortrait": 0.56
     }
   ]
 }

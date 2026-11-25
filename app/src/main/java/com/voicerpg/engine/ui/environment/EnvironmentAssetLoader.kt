@@ -15,12 +15,22 @@ import com.voicerpg.engine.ui.story.BackgroundAspect
 object EnvironmentAssetLoader {
     private val cache = mutableMapOf<String, ImageBitmap?>()
 
+    /** A loaded backdrop and which variant it is (a missing `_p`/`_s` falls back to the base picture). */
+    data class Backdrop(val image: ImageBitmap, val variant: BackgroundAspect)
+
     fun getOrLoad(
         context: Context,
         environmentId: String? = null,
         environment: BattleEnvironment = BattleEnvironment.FOREST,
         aspect: BackgroundAspect = BackgroundAspect.LANDSCAPE
-    ): ImageBitmap? {
+    ): ImageBitmap? = loadBackdrop(context, environmentId, environment, aspect)?.image
+
+    fun loadBackdrop(
+        context: Context,
+        environmentId: String? = null,
+        environment: BattleEnvironment = BattleEnvironment.FOREST,
+        aspect: BackgroundAspect = BackgroundAspect.LANDSCAPE
+    ): Backdrop? {
         val envDef = GameContent.environmentById(environmentId) ?: GameContent.environmentById(environment.name)
         val basePath = envDef?.backgroundAsset?.ifBlank { null } ?: when (environment) {
             BattleEnvironment.FOREST -> "environments/forest.jpg"
@@ -29,26 +39,14 @@ object EnvironmentAssetLoader {
             BattleEnvironment.CAVE -> "environments/cave.jpg"
             BattleEnvironment.SWAMP -> "environments/swamp.jpg"
         }
-
         val primaryPath = BackgroundAspect.variantPath(basePath, aspect)
-        val fallbackPath = if (primaryPath != basePath) basePath else null
-
-        if (cache.containsKey(primaryPath)) return cache[primaryPath]
-
-        val primaryBitmap = tryLoadBitmap(context, primaryPath)
-        if (primaryBitmap != null) {
-            cache[primaryPath] = primaryBitmap
-            return primaryBitmap
-        }
-
-        cache[primaryPath] = null
-        if (fallbackPath == null) return null
-
-        if (cache.containsKey(fallbackPath)) return cache[fallbackPath]
-        val fallbackBitmap = tryLoadBitmap(context, fallbackPath)
-        cache[fallbackPath] = fallbackBitmap
-        return fallbackBitmap
+        cached(context, primaryPath)?.let { return Backdrop(it, aspect) }
+        if (primaryPath == basePath) return null
+        return cached(context, basePath)?.let { Backdrop(it, BackgroundAspect.LANDSCAPE) }
     }
+
+    private fun cached(context: Context, path: String): ImageBitmap? =
+        if (cache.containsKey(path)) cache[path] else tryLoadBitmap(context, path).also { cache[path] = it }
 
     fun getOrLoad(
         context: Context,
