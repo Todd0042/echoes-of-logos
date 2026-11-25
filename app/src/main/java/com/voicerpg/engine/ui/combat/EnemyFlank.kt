@@ -32,6 +32,8 @@ fun EnemyFlank(
     fxOf: ((String) -> CombatantFx)? = null,
     /** Where each enemy's sprite is drawn, in arena pixels (the death shatter starts there). */
     onSpriteBounds: ((String, androidx.compose.ui.geometry.Rect) -> Unit)? = null,
+    /** Enemies whose health runs in a boss bar on top (BattleHud): they get no sliver on the field. */
+    bossBarIds: Set<String> = emptySet(),
     modifier: Modifier = Modifier
 ) {
     val isLargeHorde = enemies.size > 3
@@ -54,7 +56,8 @@ fun EnemyFlank(
                     onPositionEnemy = onPositionEnemy,
                     arenaCoordinates = arenaCoordinates,
                     fx = fxOf?.invoke(enemy.id),
-                        onSpriteBounds = onSpriteBounds,
+                    onSpriteBounds = onSpriteBounds,
+                    hasBossBar = enemy.id in bossBarIds,
                     modifier = Modifier.offset(x = staggerX)
                 )
             }
@@ -86,7 +89,8 @@ fun EnemyFlank(
                         onPositionEnemy = onPositionEnemy,
                         arenaCoordinates = arenaCoordinates,
                         fx = fxOf?.invoke(enemy.id),
-                        onSpriteBounds = onSpriteBounds
+                        onSpriteBounds = onSpriteBounds,
+                        hasBossBar = enemy.id in bossBarIds
                     )
                 }
             }
@@ -107,7 +111,8 @@ fun EnemyFlank(
                         onPositionEnemy = onPositionEnemy,
                         arenaCoordinates = arenaCoordinates,
                         fx = fxOf?.invoke(enemy.id),
-                        onSpriteBounds = onSpriteBounds
+                        onSpriteBounds = onSpriteBounds,
+                        hasBossBar = enemy.id in bossBarIds
                     )
                 }
             }
@@ -125,6 +130,7 @@ private fun EnemyCard(
     arenaCoordinates: LayoutCoordinates? = null,
     fx: CombatantFx? = null,
     onSpriteBounds: ((String, androidx.compose.ui.geometry.Rect) -> Unit)? = null,
+    hasBossBar: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val stance = when {
@@ -154,8 +160,6 @@ private fun EnemyCard(
         subtitle = enemy.subtitle,
         hpRatio = enemy.hpRatio,
         currentHp = enemy.currentHp,
-        maxHp = enemy.maxHp,
-        atbRatio = enemy.atbRatio,
         isTurnReady = enemy.isTurnReady,
         isActiveTurn = false,
         isTargeted = enemy.isAlive && enemy.isTargeted,
@@ -163,6 +167,7 @@ private fun EnemyCard(
         isFlippedHorizontally = true,
         pixelSize = (if (isCompact) 1.65.dp else 2.2.dp) * enemy.scale,
         depthScale = depthScale,
+        sliverAlpha = if (hasBossBar) null else BattleHud.sliverAlpha(enemy, fx, hasBossBar = false),
         fx = fx,
         onSpriteLayout = if (onSpriteBounds == null) null else { coords ->
             val arena = arenaCoordinates

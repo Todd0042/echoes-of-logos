@@ -43,12 +43,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.voicerpg.engine.model.CharacterStance
-import com.voicerpg.engine.ui.theme.HpCritical
-import com.voicerpg.engine.ui.theme.HpGreen
-import com.voicerpg.engine.ui.theme.HpWarning
 import com.voicerpg.engine.ui.theme.LogosGold
 import com.voicerpg.engine.ui.theme.LogosGlow
-import com.voicerpg.engine.ui.theme.MpBlue
 
 @Composable
 fun PixelCharacterView(
@@ -57,9 +53,6 @@ fun PixelCharacterView(
     subtitle: String,
     hpRatio: Float,
     currentHp: Int,
-    maxHp: Int,
-    mpRatio: Float? = null,
-    atbRatio: Float,
     isTurnReady: Boolean,
     isActiveTurn: Boolean,
     isTargeted: Boolean = false,
@@ -69,6 +62,11 @@ fun PixelCharacterView(
     spriteAlpha: Float? = null,
     pixelSize: Dp = 2.2.dp,
     depthScale: Float = 1f,
+    /**
+     * Opacity of the thin health sliver under the name (regular enemies: targeted or just hit), or null for
+     * none. Gauges otherwise live in the HUD (BattleHud), not on the field.
+     */
+    sliverAlpha: Float? = null,
     /** Live battle effects (flash, knockback, squash, glow, intent, charge bar), from the FX director. */
     fx: com.voicerpg.engine.ui.fx.CombatantFx? = null,
     /** Reports where the sprite itself is drawn (for effects such as the death shatter). */
@@ -200,113 +198,8 @@ fun PixelCharacterView(
             fontFamily = FontFamily.Monospace
         )
 
-        if (isDead) {
-            // Defeated / Fallen Badge — zero resources available
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 2.dp)
-                    .clip(RoundedCornerShape(3.dp))
-                    .background(Color(0xFF2B1113))
-                    .border(1.dp, Color(0xFFEF5350), RoundedCornerShape(3.dp))
-                    .padding(horizontal = 6.dp, vertical = 2.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (isFlippedHorizontally) "DEFEATED" else "FALLEN",
-                    color = Color(0xFFFF8A80),
-                    fontSize = 8.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace
-                )
-            }
-        } else {
-            // Mini HP Bar
-            val hpColor = when {
-                hpRatio > 0.5f -> HpGreen
-                hpRatio > 0.2f -> HpWarning
-                else -> HpCritical
-            }
-
-            Box(
-                modifier = Modifier
-                    .width(48.dp)
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(Color(0xFF1E1E28))
-                    .border(0.5.dp, Color.Black, RoundedCornerShape(2.dp))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(hpRatio.coerceIn(0f, 1f))
-                        .fillMaxHeight()
-                        .background(hpColor)
-                )
-            }
-
-            // Optional MP Bar
-            if (mpRatio != null) {
-                Spacer(modifier = Modifier.height(1.dp))
-                Box(
-                    modifier = Modifier
-                        .width(48.dp)
-                        .height(2.5.dp)
-                        .clip(RoundedCornerShape(1.dp))
-                        .background(Color(0xFF1E1E28))
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(mpRatio.coerceIn(0f, 1f))
-                            .fillMaxHeight()
-                            .background(MpBlue)
-                    )
-                }
-            }
-
-            // ATB Bar
-            Spacer(modifier = Modifier.height(1.dp))
-            Box(
-                modifier = Modifier
-                    .width(48.dp)
-                    .height(3.dp)
-                    .clip(RoundedCornerShape(1.5.dp))
-                    .background(Color(0xFF1E1E28))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(atbRatio.coerceIn(0f, 1f))
-                        .fillMaxHeight()
-                        .background(if (isTurnReady) LogosGold else Color(0xFFFF9800))
-                )
-            }
-
-            // Boss ultimate charge (red, fills as it charges)
-            val charge = fx?.ultimateCharge
-            if (charge != null) {
-                Spacer(modifier = Modifier.height(1.dp))
-                Box(
-                    modifier = Modifier
-                        .width(48.dp)
-                        .height(4.dp)
-                        .clip(RoundedCornerShape(2.dp))
-                        .background(Color(0xFF3B0A0A))
-                        .border(0.5.dp, Color(0xFFFF1744), RoundedCornerShape(2.dp))
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(charge.coerceIn(0f, 1f))
-                            .fillMaxHeight()
-                            .background(Color(0xFFFF1744))
-                    )
-                }
-            }
-
-            Text(
-                text = "$currentHp/$maxHp",
-                color = Color(0xFFD0D8DC),
-                fontSize = 7.5.sp,
-                fontFamily = FontFamily.Monospace,
-                modifier = Modifier.padding(top = 1.dp)
-            )
+        if (sliverAlpha != null && !isDead) {
+            com.voicerpg.engine.ui.combat.EnemySliver(hpRatio = hpRatio, alpha = sliverAlpha, modifier = Modifier.padding(top = 1.dp))
         }
 
         Spacer(modifier = Modifier.height(3.dp))

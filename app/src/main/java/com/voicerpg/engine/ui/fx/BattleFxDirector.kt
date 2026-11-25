@@ -315,6 +315,7 @@ class BattleFxDirector(
             presentation.intensity.coerceAtLeast(0f)
         cue.hits.forEachIndexed { i, hit ->
             val land = {
+                fxOf(hit.targetId).revealVitals()
                 if (!cue.isTick && hit.kind == BattleCue.HitKind.DAMAGE && hit.amount > 0) {
                     val reaction = lookOf(hit.targetId)?.hitReaction ?: com.voicerpg.engine.model.HitReaction.FLINCH
                     fxOf(hit.targetId).hit(push, if (reduceMotion) amplitude * 0.5f else amplitude, reaction)

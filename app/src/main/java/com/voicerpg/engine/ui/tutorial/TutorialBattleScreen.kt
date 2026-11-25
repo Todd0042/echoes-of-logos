@@ -214,6 +214,13 @@ fun TutorialBattleScreen(
                     }
                 }
 
+                // The fellowship's gauges (the sprites carry none): the same chips as in battle
+                com.voicerpg.engine.ui.combat.PartyChips(
+                    chips = com.voicerpg.engine.ui.combat.BattleHud.partyChips(state.party, state.activePartyMemberId),
+                    onSelect = { /* Active hero managed by tutorial progression */ },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp)
+                )
+
                 // Bottom: Command Console & Spells Dock
                 TutorialCommandDock(
                     state = state,

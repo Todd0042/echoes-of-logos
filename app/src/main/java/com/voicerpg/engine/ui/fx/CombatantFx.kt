@@ -55,6 +55,17 @@ class CombatantFx {
         private set
     var leanTarget = 0f
 
+    /** 0..1: how visible this combatant's health sliver is (shown after a hit or heal, then fades). */
+    var vitals by mutableFloatStateOf(0f)
+        private set
+    private var vitalsHold = 0f
+
+    /** Shows the health sliver for a few seconds (a hit, a heal, a tick). */
+    fun revealVitals() {
+        vitals = 1f
+        vitalsHold = VITALS_HOLD_SECONDS
+    }
+
     private var knockAmp = 0f
     private var knockT = 0f
     private var squashAmp = 0f
@@ -104,6 +115,8 @@ class CombatantFx {
             if (kotlin.math.abs(lean - leanTarget) < 0.01f) lean = leanTarget
         }
         if (flash > 0f) flash = (flash - realSeconds / FLASH_SECONDS).coerceAtLeast(0f)
+        if (vitalsHold > 0f) vitalsHold -= realSeconds
+        else if (vitals > 0f) vitals = (vitals - realSeconds / VITALS_FADE_SECONDS).coerceAtLeast(0f)
         if (knockAmp != 0f) {
             knockT += fxSeconds
             val e = exp(-knockT / KNOCK_DECAY)
@@ -121,11 +134,13 @@ class CombatantFx {
     fun reset() {
         flash = 0f; knockAmp = 0f; knockback = 0f; squashAmp = 0f; squash = 0f
         glow = null; glowStrength = 0f; intent = null; ultimateCharge = null; hidden = false; lean = 0f; leanTarget = 0f
-        fade = 1f; fading = false; spin = 0f; spinning = false; speech = null
+        fade = 1f; fading = false; spin = 0f; spinning = false; speech = null; vitals = 0f; vitalsHold = 0f
     }
 
     private companion object {
         const val FLASH_SECONDS = 0.14f
+        const val VITALS_HOLD_SECONDS = 2.5f
+        const val VITALS_FADE_SECONDS = 0.4f
         const val FADE_SECONDS = 0.6f
         const val SPIN_SECONDS = 0.45f
         const val KNOCK_DECAY = 0.11f

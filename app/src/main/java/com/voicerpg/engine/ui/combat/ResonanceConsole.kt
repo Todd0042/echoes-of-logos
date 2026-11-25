@@ -80,7 +80,9 @@ fun ResonanceConsole(
     onStartListening: () -> Unit,
     onStopListening: () -> Unit,
     onSubmitChant: (String, AcousticProfile?) -> Unit,
-    onCycleHero: () -> Unit = {},
+    /** The party's gauges (BattleHud): one chip per hero; tapping one selects that hero. */
+    partyChips: List<BattleHud.PartyChip> = emptyList(),
+    onSelectHero: (String) -> Unit = {},
     isChimeMuted: Boolean = true,
     onToggleChimeMute: () -> Unit = {},
     isAutoListen: Boolean = false,
@@ -123,41 +125,16 @@ fun ResonanceConsole(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (activePartyMember != null && isInputEnabled) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "▶ ACTING: ${activePartyMember.name.uppercase()}",
-                        color = LogosGold,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace
-                    )
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(Color(0xFF263238))
-                            .border(1.dp, LogosGold, RoundedCornerShape(4.dp))
-                            .clickable { onCycleHero() }
-                            .padding(horizontal = 6.dp, vertical = 3.dp)
-                    ) {
-                        Text(
-                            text = "⟳ SWITCH",
-                            color = LogosGold,
-                            fontSize = 8.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
-                        )
-                    }
-                }
+            if (partyChips.isNotEmpty()) {
+                PartyChips(chips = partyChips, onSelect = onSelectHero, modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.width(6.dp))
             } else {
                 Text(
                     text = "COMMAND CONSOLE",
                     color = Color(0xFF90A4AE),
                     fontSize = 11.sp,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.weight(1f)
                 )
             }
 
@@ -175,7 +152,7 @@ fun ResonanceConsole(
                         .padding(horizontal = 6.dp, vertical = 3.dp)
                 ) {
                     Text(
-                        text = if (isAutoListen) "🎙️ AUTO" else "🎙️ TAP-TALK",
+                        text = if (isAutoListen) "🎙️AUTO" else "🎙️TAP",
                         color = if (isAutoListen) Color(0xFF82B1FF) else Color(0xFFCFD8DC),
                         fontSize = 8.sp,
                         fontWeight = FontWeight.Bold,
@@ -190,10 +167,10 @@ fun ResonanceConsole(
                         .background(if (isChimeMuted) Color(0xFF1B2A20) else Color(0xFF2E1C1D))
                         .border(1.dp, if (isChimeMuted) Color(0xFF69F0AE) else Color(0xFFFF5252), RoundedCornerShape(4.dp))
                         .clickable { onToggleChimeMute() }
-                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                        .padding(horizontal = 5.dp, vertical = 3.dp)
                 ) {
                     Text(
-                        text = if (isChimeMuted) "🔇 CHIME OFF" else "🔔 CHIME ON",
+                        text = if (isChimeMuted) "🔇" else "🔔",
                         color = if (isChimeMuted) Color(0xFF69F0AE) else Color(0xFFFF8A80),
                         fontSize = 8.sp,
                         fontWeight = FontWeight.Bold,

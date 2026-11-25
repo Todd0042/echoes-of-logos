@@ -249,6 +249,9 @@ fun RetroBattleScreen(
                             .drawBehind { drawRect(Color.Black.copy(alpha = director.dim)) }
                     )
 
+                    // Bosses' health and ultimate charge run across the top (BattleHud); their sprites carry no gauges.
+                    val bossBars = BattleHud.bossBars(state, director::fxOf)
+
                     // SNES OBJ Layer: Combatants anchored onto the floor stage
                     // Both flanks fill the arena, so they share the backdrop's floor (BattleStage).
                     Row(
@@ -278,6 +281,7 @@ fun RetroBattleScreen(
                             arenaCoordinates = arenaCoordinates,
                             fxOf = director::fxOf,
                             onSpriteBounds = director::registerSpriteBounds,
+                            bossBarIds = bossBars.map { it.id }.toSet(),
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -287,6 +291,13 @@ fun RetroBattleScreen(
                         environment = state.currentEnvironment,
                         environmentId = state.currentEnvironmentId,
                         modifier = Modifier.fillMaxSize()
+                    )
+
+                    BossBars(
+                        bars = bossBars,
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
                     )
 
                     // Spell projectiles and particle bursts
@@ -308,7 +319,7 @@ fun RetroBattleScreen(
                         visible = state.isLogosBannerVisible,
                         modifier = Modifier
                             .align(Alignment.TopCenter)
-                            .padding(top = 16.dp, start = 12.dp, end = 12.dp)
+                            .padding(top = 16.dp + 30.dp * bossBars.size, start = 12.dp, end = 12.dp)
                     )
 
                     // Battle Won / Lost Overlay
@@ -336,7 +347,8 @@ fun RetroBattleScreen(
                     onStartListening = { viewModel.resumeVoiceListening() },
                     onStopListening = { viewModel.stopVoiceListening() },
                     onSubmitChant = { chant, acoustic -> viewModel.submitTypedChant(chant, acoustic) },
-                    onCycleHero = { viewModel.cycleNextPartyMember() },
+                    partyChips = BattleHud.partyChips(state),
+                    onSelectHero = { id -> state.party.firstOrNull { it.id == id }?.let(viewModel::selectPartyMember) },
                     isChimeMuted = isChimeMuted,
                     onToggleChimeMute = { viewModel.speechManager.toggleChimeMute() },
                     isAutoListen = isAutoListen,
