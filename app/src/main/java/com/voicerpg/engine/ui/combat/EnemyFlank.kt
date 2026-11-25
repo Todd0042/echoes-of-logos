@@ -155,7 +155,7 @@ private fun EnemyCard(
     }
 
     PixelCharacterView(
-        characterId = enemy.spriteId.ifBlank { enemy.id },
+        characterId = com.voicerpg.engine.ui.sprites.SpriteLibrary.keyFor(enemy),
         name = enemy.name,
         subtitle = enemy.subtitle,
         hpRatio = enemy.hpRatio,
@@ -166,6 +166,8 @@ private fun EnemyCard(
         stance = stance,
         isFlippedHorizontally = true,
         pixelSize = (if (isCompact) 1.65.dp else 2.2.dp) * enemy.scale,
+        sprite = remember(enemy.id, enemy.spriteId) { com.voicerpg.engine.ui.sprites.SpriteLibrary.source(com.voicerpg.engine.ui.sprites.SpriteLibrary.keyFor(enemy)) },
+        baseAnim = com.voicerpg.engine.ui.sprites.SpriteBase.of(enemy),
         depthScale = depthScale,
         sliverAlpha = if (hasBossBar) null else BattleHud.sliverAlpha(enemy, fx, hasBossBar = false),
         fx = fx,

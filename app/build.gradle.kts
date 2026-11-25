@@ -100,3 +100,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
+
+apply(from = rootProject.file(".engine-sync/release_gate.gradle.kts")) // engine release gate

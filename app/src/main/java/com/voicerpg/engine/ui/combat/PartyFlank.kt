@@ -181,6 +181,8 @@ private fun PartyFlankMemberItem(
         isGhost = member.isGhost,
         spriteAlpha = member.spriteAlpha,
         pixelSize = scaledPixelSize,
+        sprite = remember(member.id) { com.voicerpg.engine.ui.sprites.SpriteLibrary.source(com.voicerpg.engine.ui.sprites.SpriteLibrary.keyFor(member)) },
+        baseAnim = com.voicerpg.engine.ui.sprites.SpriteBase.of(member, isActive = isActiveTurn),
         depthScale = depthScale,
         fx = fx,
         onClick = { onSelectHero(member) },

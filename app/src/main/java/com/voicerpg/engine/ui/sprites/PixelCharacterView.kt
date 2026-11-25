@@ -67,6 +67,10 @@ fun PixelCharacterView(
      * none. Gauges otherwise live in the HUD (BattleHud), not on the field.
      */
     sliverAlpha: Float? = null,
+    /** The sprite to draw (a sheet or a legacy grid); null looks it up from [characterId]. */
+    sprite: SpriteSource? = null,
+    /** The resting animation from the combat state (SpriteBase); the battle's cues play over it. */
+    baseAnim: AnimTag = AnimTag.IDLE,
     /** Live battle effects (flash, knockback, squash, glow, intent, charge bar), from the FX director. */
     fx: com.voicerpg.engine.ui.fx.CombatantFx? = null,
     /** Reports where the sprite itself is drawn (for effects such as the death shatter). */
@@ -105,17 +109,26 @@ fun PixelCharacterView(
         baseAlpha
     }
 
-    val currentFrame = when {
-        isDead -> SpriteFrame.DAMAGED
-        (fx?.flash ?: 0f) > 0.3f -> SpriteFrame.HURT
-        stance == CharacterStance.DAMAGED -> SpriteFrame.DAMAGED
-        (fx?.lean ?: 0f) > 0.5f -> SpriteFrame.ATTACK
-        stance == CharacterStance.CASTING -> SpriteFrame.ACTION_CAST
-        cycleProgress > 0.5f -> SpriteFrame.IDLE_CROUCH
-        else -> SpriteFrame.IDLE_UPRIGHT
+    // Sprite and animation: the director's animator in battle, a local one elsewhere (tutorial, gallery).
+    val source = sprite ?: androidx.compose.runtime.remember(characterId) { SpriteLibrary.source(characterId) }
+    val animator = fx?.animator ?: androidx.compose.runtime.remember(characterId) { SpriteAnimator() }
+    androidx.compose.runtime.SideEffect {
+        animator.source = source
+        animator.base = baseAnim
     }
-
-    val (matrix, palette) = PixelSpriteData.getPixelMatrix(characterId, currentFrame)
+    if (fx == null) {
+        androidx.compose.runtime.LaunchedEffect(animator) {
+            var last = 0L
+            while (true) {
+                androidx.compose.runtime.withFrameNanos { now ->
+                    if (last != 0L) animator.step((now - last) / 1_000_000_000f)
+                    last = now
+                }
+            }
+        }
+    }
+    // A sprite with its own fall animation lies down by itself; others are tipped over as before.
+    val hasOwnFall = (if (isFlippedHorizontally) "death" else "ko") in source.animationNames && source is SheetSprite
 
     val targetStepOffset = when {
         isDead -> 0.dp
@@ -142,7 +155,7 @@ fun PixelCharacterView(
                 scaleY = depthScale * (1f - 0.18f * squash)
                 rotationZ = facing * 6f * (fx?.lean ?: 0f)
                 // A small idle hop on the breathing cycle (still when fallen)
-                translationY = if (isDead) 0f else -(1.5f * cycleProgress).dp.toPx()
+                translationY = if (isDead || source is SheetSprite) 0f else -(1.5f * cycleProgress).dp.toPx() // sheets breathe in their own idle
                 transformOrigin = TransformOrigin(0.5f, 1.0f)
                 alpha = if (fx?.hidden == true) 0f else (fx?.fade ?: 1f)
             }
@@ -205,15 +218,21 @@ fun PixelCharacterView(
         Spacer(modifier = Modifier.height(3.dp))
 
         // Pixel Art Canvas anchored to a perspective ground contact shadow
-        val spriteWidth = pixelSize * (matrix.firstOrNull()?.length ?: 12)
-        val spriteHeight = pixelSize * matrix.size
+        val density = androidx.compose.ui.platform.LocalDensity.current
+        val artPx = when (source) {
+            is SheetSprite -> sheetArtPx(sizeFactor = (pixelSize / 2.2.dp) * source.scale)
+            is GridSprite -> with(density) { pixelSize.toPx() }
+        }
+        val spriteWidth = with(density) { (source.cellW * artPx).toDp() }
+        val spriteHeight = with(density) { (source.feet.second.coerceAtLeast(1) * artPx).toDp() }
+        val tipOver = isDead && !hasOwnFall
 
         Box(
             modifier = Modifier
-                .padding(top = if (isDead) 16.dp else 0.dp)
+                .padding(top = if (tipOver) 16.dp else 0.dp)
                 .graphicsLayer {
                     rotationZ = fx?.spin ?: 0f
-                    if (isDead) {
+                    if (tipOver) {
                         rotationZ = if (isFlippedHorizontally) 90f else -90f
                         transformOrigin = TransformOrigin(0.5f, 0.85f)
                         alpha = if (isEthereal) (spriteFinalAlpha * 0.55f) else 0.55f
@@ -280,32 +299,15 @@ fun PixelCharacterView(
                 }
             }
 
-            Canvas(
-                modifier = Modifier
-                    .size(width = spriteWidth, height = spriteHeight)
-                    .then(if (onSpriteLayout != null) Modifier.onGloballyPositioned(onSpriteLayout) else Modifier)
-            ) {
-                val pPx = pixelSize.toPx()
-                val flash = fx?.flash ?: 0f
-                val numCols = matrix.firstOrNull()?.length ?: 12
-
-                for (row in matrix.indices) {
-                    val line = matrix[row]
-                    for (col in line.indices) {
-                        val char = line[col]
-                        if (char != '.') {
-                            val color = palette[char] ?: Color.Magenta
-                            val targetCol = if (isFlippedHorizontally) (numCols - 1 - col) else col
-                            val base = if (stance == CharacterStance.DAMAGED && flash == 0f) Color(0xFFFF5252) else color
-                            drawRect(
-                                color = if (flash > 0f) androidx.compose.ui.graphics.lerp(base, Color.White, flash) else base,
-                                topLeft = Offset(targetCol * pPx, row * pPx),
-                                size = Size(pPx, pPx)
-                            )
-                        }
-                    }
-                }
-            }
+            SpriteCanvas(
+                source = source,
+                frame = animator.frame,
+                artPx = artPx,
+                flipped = isFlippedHorizontally,
+                flash = fx?.flash ?: 0f,
+                hurtTint = stance == CharacterStance.DAMAGED && source is GridSprite,
+                modifier = if (onSpriteLayout != null) Modifier.onGloballyPositioned(onSpriteLayout) else Modifier
+            )
         }
     }
 }

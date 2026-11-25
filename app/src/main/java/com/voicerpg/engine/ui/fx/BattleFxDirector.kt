@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import com.voicerpg.engine.combat.BattleCue
+import com.voicerpg.engine.ui.sprites.AnimTag
 import com.voicerpg.engine.content.PresentationConfig
 import com.voicerpg.engine.model.ResonanceTier
 import com.voicerpg.engine.ui.vfx.ParticleEmitter
@@ -34,7 +35,9 @@ import kotlin.math.sin
 class BattleFxDirector(
     private val positionOf: (String) -> Offset,
     /** What a combatant looks like (sprite grid, facing, hit reaction); null when unknown. */
-    private val lookOf: (String) -> CombatantLook? = { null }
+    private val lookOf: (String) -> CombatantLook? = { null },
+    /** A combatant's sprite (sheet or legacy grid) for its animations; null leaves it unanimated. */
+    private val spriteOf: (String) -> com.voicerpg.engine.ui.sprites.SpriteSource? = { null }
 ) {
 
     val clock = FxClock()
@@ -109,9 +112,12 @@ class BattleFxDirector(
     private val shardRandom = kotlin.random.Random(7)
 
     /** Live effects of one combatant (created on first use). */
-    fun fxOf(id: String): CombatantFx = combatants.getOrPut(id) { CombatantFx() }
+    fun fxOf(id: String): CombatantFx = combatants.getOrPut(id) { CombatantFx().also { it.animator.source = spriteOf(id) } }
+
+    private fun anim(id: String) = fxOf(id).animator
 
     fun play(cue: BattleCue) {
+        animate(cue)
         when (cue) {
             is BattleCue.BattleStart -> clear()
             is BattleCue.ChargeStart -> {
@@ -162,6 +168,57 @@ class BattleFxDirector(
         }
     }
 
+    /**
+     * The sprite animations each cue starts (docs/SPRITE_PLAN.md §3.2). A cast or attack is raised before
+     * its blow and held on the frame before the event until the `Release` cue, so the spell leaves the
+     * hand (or the blade connects) exactly when the battle says it does.
+     */
+    private fun animate(cue: BattleCue) {
+        when (cue) {
+            is BattleCue.BattleStart -> combatants.values.forEach { it.animator.reset() }
+            is BattleCue.ChargeStart -> anim(cue.casterId).setOverride(AnimTag.CHARGE)
+            is BattleCue.ChargeLevel -> anim(cue.casterId).speed = 0.8f + 0.8f * cue.level.coerceIn(0f, 1f)
+            is BattleCue.ChargeEnd -> anim(cue.casterId).let {
+                it.setOverride(null)
+                it.speed = 1f
+                it.play(AnimTag.CAST, holdFor = "release", holdTimeoutMs = com.voicerpg.engine.ui.sprites.SpriteAnimator.HERO_CAST_HOLD_TIMEOUT_MS)
+            }
+            is BattleCue.Telegraph -> anim(cue.enemyId).setOverride(AnimTag.WINDUP)
+            is BattleCue.UltimateCharge -> anim(cue.enemyId).setOverride(AnimTag.CHARGE_ULTIMATE)
+            is BattleCue.EnemyMove -> anim(cue.enemyId).let {
+                it.setOverride(null)
+                val (tag, event) = moveAnimation(cue.isBossUltimate, cue.school)
+                it.play(tag, holdFor = event, windupMs = cue.windupMs,
+                    holdTimeoutMs = cue.windupMs + com.voicerpg.engine.ui.sprites.SpriteAnimator.DEFAULT_HOLD_TIMEOUT_MS)
+            }
+            is BattleCue.Release -> {
+                val a = anim(cue.casterId)
+                if (a.isHolding) a.release() else {
+                    val (tag, event) = moveAnimation(isBossUltimate = false, school = cue.school)
+                    a.releaseAt(tag, event)
+                }
+            }
+            is BattleCue.Stagger -> anim(cue.enemyId).let { it.setOverride(null); it.play(AnimTag.HURT) }
+            is BattleCue.Guard -> anim(cue.memberId).play(AnimTag.GUARD)
+            is BattleCue.Taunt -> anim(cue.enemyId).play(AnimTag.TAUNT)
+            is BattleCue.PhaseShift -> anim(cue.enemyId).phase2 = true
+            is BattleCue.Death -> anim(cue.combatantId).let {
+                it.setOverride(null)
+                it.play(if (cue.isEnemy) AnimTag.DEATH else AnimTag.KO, holdLast = true)
+            }
+            is BattleCue.BattleEnd -> if (cue.victory) {
+                combatants.forEach { (id, fx) -> if (lookOf(id)?.isEnemy == false) fx.animator.setOverride(AnimTag.VICTORY) }
+            }
+            else -> Unit
+        }
+    }
+
+    private fun moveAnimation(isBossUltimate: Boolean, school: com.voicerpg.engine.model.SpellSchool): Pair<AnimTag, String> = when {
+        isBossUltimate -> AnimTag.ULTIMATE to "release"
+        school == com.voicerpg.engine.model.SpellSchool.PHYSICAL -> AnimTag.ATTACK to "impact"
+        else -> AnimTag.CAST to "release"
+    }
+
     /** Advance everything to the frame at [frameNanos]. */
     fun frame(frameNanos: Long) {
         val step = clock.tick(frameNanos)
@@ -204,8 +261,8 @@ class BattleFxDirector(
      * the hit (enemies are struck from the party side) under gravity; [rising]: they drift up instead.
      */
     private fun shatter(id: String, look: CombatantLook, rising: Boolean) {
-        val rows = look.matrix.size
-        val cols = look.matrix.maxOfOrNull { it.length } ?: return
+        val rows = look.pixels.height
+        val cols = look.pixels.width
         if (rows == 0 || cols == 0) return
         val centre = positionOf(id)
         val bounds = spriteBounds[id] ?: androidx.compose.ui.geometry.Rect(centre.x - cols * 2f, centre.y - rows * 2f, centre.x + cols * 2f, centre.y + rows * 2f)
@@ -214,12 +271,8 @@ class BattleFxDirector(
         val away = if (look.isEnemy) 1f else -1f
         val shards = ArrayList<com.voicerpg.engine.model.Particle>()
         for (r in 0 until rows) {
-            val line = look.matrix[r]
-            for (c in line.indices) {
-                val ch = line[c]
-                if (ch == '.') continue
-                val color = look.palette[ch] ?: continue
-                if (color.alpha == 0f) continue
+            for (c in 0 until cols) {
+                val color = look.pixels.colorAt(c, r) ?: continue
                 val col = if (look.flipped) cols - 1 - c else c
                 val x = bounds.left + (col + 0.5f) * pxW
                 val y = bounds.top + (r + 0.5f) * pxH
@@ -317,6 +370,7 @@ class BattleFxDirector(
             val land = {
                 fxOf(hit.targetId).revealVitals()
                 if (!cue.isTick && hit.kind == BattleCue.HitKind.DAMAGE && hit.amount > 0) {
+                    fxOf(hit.targetId).animator.play(AnimTag.HURT)
                     val reaction = lookOf(hit.targetId)?.hitReaction ?: com.voicerpg.engine.model.HitReaction.FLINCH
                     fxOf(hit.targetId).hit(push, if (reduceMotion) amplitude * 0.5f else amplitude, reaction)
                 }
@@ -475,13 +529,21 @@ data class ShownTitleCard(val text: String, val fromParty: Boolean, val bornAt: 
 /** What the director needs to know about a combatant's sprite. */
 data class CombatantLook(
     val isEnemy: Boolean,
-    /** The frame that shatters (its death frame), as the sprite grid rows. */
-    val matrix: List<String>,
-    val palette: Map<Char, Color>,
+    /** The frame that shatters (its death frame), as pixels. */
+    val pixels: com.voicerpg.engine.ui.sprites.PixelGrid,
     /** Drawn mirrored (enemies face the party). */
     val flipped: Boolean,
     val hitReaction: com.voicerpg.engine.model.HitReaction = com.voicerpg.engine.model.HitReaction.FLINCH
-)
+) {
+    /** From a legacy text grid. */
+    constructor(
+        isEnemy: Boolean,
+        matrix: List<String>,
+        palette: Map<Char, Color>,
+        flipped: Boolean,
+        hitReaction: com.voicerpg.engine.model.HitReaction = com.voicerpg.engine.model.HitReaction.FLINCH
+    ) : this(isEnemy, com.voicerpg.engine.ui.sprites.PixelGrid.fromRows(matrix, palette), flipped, hitReaction)
+}
 
 /** A cut-in panel shown since [bornAt] (director time). */
 data class ShownCutIn(val cue: BattleCue.CutIn, val bornAt: Float) {

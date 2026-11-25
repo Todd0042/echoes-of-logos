@@ -39,3 +39,13 @@ Every APK must pass `bash ../voice-rpg-engine/scripts/check_16kb.sh app/build/ou
 (or `check-16kb` if installed). Dependencies live in this game's `app/build.gradle.kts`: when adding or
 upgrading one, rebuild and re-check. A failing `.so` means that dependency needs a 16 KB-aligned version
 (e.g. TensorFlow Lite -> LiteRT `com.google.ai.edge.litert:litert`).
+
+## Battle sprites (release blocker)
+Every party fighter, enemy and boss needs a 64 px side-view Aseprite sheet (bosses 64, 96 or 128 px; each boss its
+own) in `app/src/main/assets/game/sprites/sheets/` with a `feet` slice and its role's animations (party: idle,
+ready, charge, cast, attack, hurt, ko, victory; enemies: idle, attack, hurt; bosses add windup, cast,
+charge_ultimate, ultimate), `release=`/`impact=` events on cast, attack and ultimate. Spec:
+`../voice-rpg-engine/docs/SPRITE_PLAN.md`. See what's missing with
+`../voice-rpg-engine/scripts/sprite_coverage.sh <this game>`. A release build (`assembleRelease`, `bundleRelease`)
+runs the release-variant tests through `.engine-sync/release_gate.gradle.kts` and fails until the contract is met;
+set `"spriteContract": 1` in `manifest.json` to enforce it in every test run once the art is in.

@@ -46,6 +46,8 @@ import java.io.File
 // =============================================================================
 
 data class ManifestDto(
+    /** 1 = the game opts in to the sprite contract (docs/SPRITE_PLAN.md); a release build checks it regardless. */
+    val spriteContract: Int = 0,
     val gameTitle: String = "VoiceRPG Engine",
     val gameSubtitle: String = "",
     val worldName: String = "the realm",
@@ -673,6 +675,7 @@ data class CommandCatalogDto(
 // =============================================================================
 
 data class GameManifest(
+    val spriteContract: Int = 0,
     val gameTitle: String,
     val gameSubtitle: String,
     val worldName: String = "the realm",
@@ -997,8 +1000,28 @@ class GameContentPack(
     val metrics: Map<String, MetricDefinition> = emptyMap(),
     val incidents: Map<String, IncidentDefinition> = emptyMap(),
     val minigames: Map<String, MiniGameConfig> = emptyMap(),
-    val commandCatalogs: Map<String, com.voicerpg.engine.model.CommandCatalog> = emptyMap()
+    val commandCatalogs: Map<String, com.voicerpg.engine.model.CommandCatalog> = emptyMap(),
+    /** Aseprite battle sheets by sprite id (`sprites/sheets/`), and per-sprite settings and variants. */
+    val spriteSheets: Map<String, SpriteSheet> = emptyMap(),
+    val spriteSettings: Map<String, SpriteSetting> = emptyMap()
 ) {
+    /**
+     * The sheet a sprite key draws: a variant of a sheet, the sheet itself, or the sheet named by the
+     * character or enemy template with that id. Null when only a legacy text grid (or nothing) exists.
+     */
+    fun resolveSheet(key: String): ResolvedSheet? {
+        direct(key)?.let { return it }
+        characters[key]?.spriteId?.takeIf { it.isNotBlank() && it != key }?.let { id -> direct(id)?.let { return it } }
+        enemyTemplates[key]?.spriteId?.takeIf { it.isNotBlank() && it != key }?.let { id -> direct(id)?.let { return it } }
+        return null
+    }
+
+    private fun direct(key: String): ResolvedSheet? {
+        val setting = spriteSettings[key]
+        val sheet = spriteSheets[setting?.base ?: key] ?: return null
+        return ResolvedSheet(key, sheet, setting)
+    }
+
     val heroCharacter: GameCharacter? = characters.values.firstOrNull { it.role == CharacterRole.HERO }
 
     /** All speakers that can hold a TTS voice binding (narrator first). */
@@ -1167,6 +1190,12 @@ class FileContentSource(private val rootDir: File) : ContentSource {
 /** Parses the JSON content tree into a resolved [GameContentPack]. */
 class GameContentLoader(private val source: ContentSource) {
 
+    private companion object {
+        const val SPRITE_SHEET_DIR = "sprites/sheets"
+        /** The content folder inside the APK's assets (sheet PNG paths are given from the assets root). */
+        const val CONTENT_ASSET_ROOT = "game"
+    }
+
     private val gson = Gson()
 
     fun load(): GameContentPack {
@@ -1220,6 +1249,16 @@ class GameContentLoader(private val source: ContentSource) {
                 dto.toSpriteDefinition()?.let { id to it }
             }
             .toMap()
+
+        val spriteSheets = source.listFiles(SPRITE_SHEET_DIR)
+            .mapNotNull { file ->
+                val id = file.removeSuffix(".json")
+                source.readText("$SPRITE_SHEET_DIR/$file")?.let { AsepriteParser.parse(id, it, "$CONTENT_ASSET_ROOT/$SPRITE_SHEET_DIR") }
+            }
+            .associateBy { it.id }
+        val spriteSettings = (read("sprites/sprites.json", SpriteSettingsFileDto::class.java)?.sprites ?: emptyMap())
+            .map { (id, dto) -> dto.toSetting(id) }
+            .associateBy { it.id }
 
         val enemyMovesets = (read("enemies/enemy_spells.json", EnemySpellsFileDto::class.java)?.movesets ?: emptyMap())
             .mapValues { it.value.toMoveset() }
@@ -1282,6 +1321,7 @@ class GameContentLoader(private val source: ContentSource) {
 
         val pack = GameContentPack(
             manifest = GameManifest(
+                spriteContract = manifestDto.spriteContract,
                 gameTitle = manifestDto.gameTitle,
                 gameSubtitle = manifestDto.gameSubtitle,
                 worldName = manifestDto.worldName,
@@ -1340,7 +1380,9 @@ class GameContentLoader(private val source: ContentSource) {
             metrics = metrics,
             incidents = incidents,
             minigames = minigames,
-            commandCatalogs = commandCatalogs
+            commandCatalogs = commandCatalogs,
+            spriteSheets = spriteSheets,
+            spriteSettings = spriteSettings
         )
         return if (pack.scenes.isEmpty() || pack.nodes.isEmpty()) EmergencyFallback.build() else pack
     }
@@ -1757,6 +1799,8 @@ object GameContent {
     val encounters: Map<String, EncounterDefinition> get() = pack.encounters
     val enemyTemplates: Map<String, EnemyTemplate> get() = pack.enemyTemplates
     val enemySprites: Map<String, SpriteDefinition> get() = pack.enemySprites
+    val spriteSheets: Map<String, SpriteSheet> get() = pack.spriteSheets
+    val spriteSettings: Map<String, SpriteSetting> get() = pack.spriteSettings
     val enemyMovesets: Map<String, Moveset> get() = pack.enemyMovesets
     val narrator: DialogueSpeaker get() = pack.narrator
     val heroCharacter: GameCharacter? get() = pack.heroCharacter

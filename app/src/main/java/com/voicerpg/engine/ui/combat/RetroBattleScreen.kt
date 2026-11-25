@@ -84,10 +84,12 @@ fun RetroBattleScreen(
     val reduceFlashing by motionSettings.reduceFlashing.collectAsState()
 
     // Battle effects: the view model announces cues, the director plays them (ui/fx).
+    val context = androidx.compose.ui.platform.LocalContext.current
     val director = remember(viewModel) {
         BattleFxDirector(
             positionOf = { id -> viewModel.combatantSlot(id).let { (x, y) -> Offset(x, y) } },
-            lookOf = { id -> combatantLook(viewModel.state.value, id) }
+            lookOf = { id -> combatantLook(context, viewModel.state.value, id) },
+            spriteOf = { id -> spriteKeyOf(viewModel.state.value, id)?.let(com.voicerpg.engine.ui.sprites.SpriteLibrary::source) }
         )
     }
     director.presentation = GameContent.presentation
@@ -477,15 +479,18 @@ private fun BattleStatusLine(messages: List<FloatingCombatText>) {
     }
 }
 
+/** The sprite key of combatant [id] (party member or enemy), or null when it isn't in the battle. */
+private fun spriteKeyOf(state: com.voicerpg.engine.viewmodel.CombatState, id: String): String? =
+    state.enemies.firstOrNull { it.id == id }?.let(com.voicerpg.engine.ui.sprites.SpriteLibrary::keyFor)
+        ?: state.party.firstOrNull { it.id == id }?.let(com.voicerpg.engine.ui.sprites.SpriteLibrary::keyFor)
+
 /** What the effects director needs about a combatant's sprite: its death frame, facing and hit reaction. */
-private fun combatantLook(state: com.voicerpg.engine.viewmodel.CombatState, id: String): com.voicerpg.engine.ui.fx.CombatantLook? {
+private fun combatantLook(context: android.content.Context, state: com.voicerpg.engine.viewmodel.CombatState, id: String): com.voicerpg.engine.ui.fx.CombatantLook? {
+    val key = spriteKeyOf(state, id) ?: return null
     val enemy = state.enemies.firstOrNull { it.id == id }
-    val spriteId = enemy?.spriteId?.ifBlank { enemy.id } ?: state.party.firstOrNull { it.id == id }?.id ?: return null
-    val (matrix, palette) = com.voicerpg.engine.ui.sprites.PixelSpriteData.getPixelMatrix(spriteId, com.voicerpg.engine.ui.sprites.SpriteFrame.DEATH)
     return com.voicerpg.engine.ui.fx.CombatantLook(
         isEnemy = enemy != null,
-        matrix = matrix,
-        palette = palette,
+        pixels = com.voicerpg.engine.ui.sprites.deathPixels(context, com.voicerpg.engine.ui.sprites.SpriteLibrary.source(key)),
         flipped = enemy != null,
         hitReaction = enemy?.hitReaction ?: com.voicerpg.engine.model.HitReaction.FLINCH
     )

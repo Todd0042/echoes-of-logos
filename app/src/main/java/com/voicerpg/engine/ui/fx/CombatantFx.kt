@@ -60,6 +60,9 @@ class CombatantFx {
         private set
     private var vitalsHold = 0f
 
+    /** The sprite's animations (docs/SPRITE_PLAN.md), driven by the director's cues on effects time. */
+    val animator = com.voicerpg.engine.ui.sprites.SpriteAnimator()
+
     /** Shows the health sliver for a few seconds (a hit, a heal, a tick). */
     fun revealVitals() {
         vitals = 1f
@@ -100,6 +103,7 @@ class CombatantFx {
     }
 
     fun step(realSeconds: Float, fxSeconds: Float) {
+        animator.step(fxSeconds)
         if (fading && fade > 0f) {
             fade = (fade - fxSeconds / FADE_SECONDS).coerceAtLeast(0f)
             if (fade == 0f) hidden = true
@@ -135,6 +139,7 @@ class CombatantFx {
         flash = 0f; knockAmp = 0f; knockback = 0f; squashAmp = 0f; squash = 0f
         glow = null; glowStrength = 0f; intent = null; ultimateCharge = null; hidden = false; lean = 0f; leanTarget = 0f
         fade = 1f; fading = false; spin = 0f; spinning = false; speech = null; vitals = 0f; vitalsHold = 0f
+        animator.reset()
     }
 
     private companion object {
