@@ -1,0 +1,297 @@
+{
+  "_doc": "Echoes of the Logos battle sprite roster: every enemy's sprite family, every boss's own sprite, with briefs for the artist. Source of truth for enemies.json spriteId and sprites.json; apply with art/apply_sprite_roster.py. Spec: ../voice-rpg-engine/docs/SPRITE_PLAN.md.",
+  "style": [
+    "16-bit SNES-era JRPG battle sprite, side view, facing RIGHT (the engine mirrors enemies to face the party).",
+    "Match the delivered heroes and templates: limited palette (4-8 colours per sprite), 1 px dark outline, no anti-aliasing, transparent background.",
+    "Cell 64x64 for regular enemies (the body about 40-56 px tall); bosses 96x96 or 128x128 as listed.",
+    "Soles on the same row in every frame (row 58 of a 64 cell, 90 of 96, 122 of 128); floating creatures put their lowest point or hover shadow there. The feet slice's bottom edge is the sole line (scripts/sprite_lint.py checks it).",
+    "Nothing but the character in a frame: no labels, frame names or text (sprite_lint removes them, but don't rely on it).",
+    "Frame duration 190 ms unless a move needs faster frames; events in the tag user data, counted from 1 within the tag."
+  ],
+  "animations": {
+    "enemy": {
+      "required": ["idle (4f loop)", "attack (5f, impact=4)", "hurt (4f)"],
+      "recommended": ["windup (4f loop: the telegraphed wind-up before a move)", "cast (5f, release=4: magic or ranged moves)", "death (6f: if absent the engine shatters the sprite)"]
+    },
+    "boss": {
+      "required": ["idle (4f loop)", "windup (4f loop)", "attack (5f, impact=4)", "cast (5f, release=4)", "hurt (4f)", "charge_ultimate (4f loop: charging its ultimate over a turn)", "ultimate (6-8f, release=5)"],
+      "recommended": ["death (6-8f)", "taunt (4f)", "p2_idle, p2_attack... (second phase after its health threshold)"]
+    }
+  },
+  "drawn": {
+    "hero": "Aethel (delivered)",
+    "cedric": "Sir Cedric (delivered)",
+    "lyra": "Lyra (delivered)",
+    "zephyr": "Zephyr (delivered)",
+    "template_brute": "Obsidian Brute family (delivered)",
+    "template_sniper": "Hooded Marksman family (delivered)",
+    "template_caster": "Hooded Occultist family (delivered)"
+  },
+  "families": [
+    {
+      "key": "template_brute", "name": "Obsidian Brute", "role": "enemy", "cell": 64, "delivered": true,
+      "look": "Hulking soldier in dark spiked plate with a heavy axe (delivered).",
+      "members": [
+        {"id": "iron_vanguard"},
+        {"id": "gate_captain", "variant": "royal garrison captain: crimson tabard over the plate, gold trim, plumed helm"},
+        {"id": "plaza_legionnaire", "variant": "Vaelor's garrison: glossy obsidian-black plate with violet lamp-glow highlights"},
+        {"id": "archive_enforcer", "variant": "the guild's voiceless warden: dull grey plate, mouth sealed by a stitched leather strap"},
+        {"id": "nullifier_warden", "variant": "Malakor's gatekeeper: ash-grey and bone-white plate, silver mesh mouth-guard like Malakor's"}
+      ]
+    },
+    {
+      "key": "template_sniper", "name": "Hooded Marksman", "role": "enemy", "cell": 64, "delivered": true,
+      "look": "Crouched hooded crossbow marksman (delivered).",
+      "members": [
+        {"id": "corrupted_archer", "variant": "blighted hunter: sickly green-brown leathers, rot spots"},
+        {"id": "castle_arbalest", "variant": "royal arbalest: red and steel livery"},
+        {"id": "obsidian_tracker", "variant": "obsidian-black cloak with violet trim"},
+        {"id": "mire_stalker", "variant": "swamp hunter: mossy green camouflage cloak, reeds in the hood"}
+      ]
+    },
+    {
+      "key": "template_caster", "name": "Hooded Occultist", "role": "enemy", "cell": 64, "delivered": true,
+      "look": "Dark hooded robed caster with a glowing staff (delivered).",
+      "members": [
+        {"id": "void_shaman", "variant": "indigo robes, void-blue staff glow"},
+        {"id": "court_warlock", "variant": "crimson and gold court robes"},
+        {"id": "bone_acolyte", "variant": "bone-white robes, skull mask, pale green glow"},
+        {"id": "grave_archon", "variant": "grave-pale robes with green soulfire"},
+        {"id": "vault_watcher", "variant": "grey robes, sealed lips, a hanging lantern"},
+        {"id": "mote_drinker", "variant": "deep-sea teal robes speckled with glowing stolen voice-motes"},
+        {"id": "echo_of_the_guild", "variant": "translucent violet shade of a guild mage"},
+        {"id": "vestibule_archivist", "variant": "ash-grey robes, chained book at the belt"},
+        {"id": "chantry_cleric", "variant": "white and gold vestments, golden censer glow"},
+        {"id": "gilded_creditor", "variant": "gold-leaf robes hung with coins"}
+      ]
+    },
+    {
+      "key": "wisp", "name": "Shadow Wisp", "role": "enemy", "cell": 64,
+      "look": "Small floating shadow spirit, about 30 px tall: a ragged leafy body of black-green smoke, one glowing violet eye, small bat wings, a wispy tail instead of legs. Hovers with a faint shadow on the sole line (see portraits/shadow_wisp.jpg).",
+      "moves": "attack: darts forward and bites; cast: spits a violet shadow bolt.",
+      "members": [{"id": "shadow_wisp"}]
+    },
+    {
+      "key": "blighted_orc", "name": "Blighted Orc", "role": "enemy", "cell": 64,
+      "look": "Broad grey-green orc warrior covered in sickly blight boils, crude rusted cleaver, bone-and-hide armour, hunched shoulders.",
+      "moves": "attack: overhead cleaver chop.",
+      "members": [
+        {"id": "blighted_orc"},
+        {"id": "blighted_stalker", "variant": "leaner tracker with a fur cloak and darker skin, a hunting knife in place of the cleaver (recolour is enough)"}
+      ]
+    },
+    {
+      "key": "spider", "name": "Brood Spider", "role": "enemy", "cell": 64,
+      "look": "Low, wide giant arachnid (about 30 px tall, 56 px long) with razor foreclaws, a bloated abdomen, clusters of red eyes, glossy black-purple chitin dripping obsidian venom. Offspring of the Broodmothers.",
+      "moves": "attack: rears and slashes with the foreclaws; cast: spits a venom glob.",
+      "members": [
+        {"id": "brood_stalker"},
+        {"id": "corrupted_webweaver", "variant": "white web-silk draped over the body, pale violet sheen"},
+        {"id": "toxic_hatchling", "variant": "a hatchling: bright toxic green, drawn smaller (sprites.json scale 0.75)", "scale": 0.75}
+      ]
+    },
+    {
+      "key": "assassin", "name": "Black Guild Assassin", "role": "enemy", "cell": 64,
+      "look": "Lithe masked assassin of the Black Guild: charcoal wrappings, a half-face mask, silver-threaded obsidian kunai, crouched forward stance (Zephyr's former brothers).",
+      "moves": "attack: dashing double slash; cast: throws a fan of kunai.",
+      "members": [
+        {"id": "shadowblade"},
+        {"id": "black_guild_stalker", "variant": "a poisoned blade dripping green"},
+        {"id": "umbral_cutthroat", "variant": "void indigo wrappings with a faint blue glow"},
+        {"id": "guild_garrote", "variant": "a garrote wire between the hands instead of kunai, heavier build"},
+        {"id": "nocturne_lesson", "variant": "a translucent violet shade, smoke trailing from the edges"}
+      ]
+    },
+    {
+      "key": "skeleton", "name": "Crypt Skeleton", "role": "enemy", "cell": 64,
+      "look": "Skeletal legionnaire in a rusted half-helm and scraps of a purple burial tabard, notched sword and round shield.",
+      "moves": "attack: shield bash into a sword thrust.",
+      "members": [{"id": "crypt_guard"}]
+    },
+    {
+      "key": "skeleton_archer", "name": "Skeletal Sniper", "role": "enemy", "cell": 64,
+      "look": "Skeleton archer with a long yew bow, tattered purple hood, a quiver of black-fletched arrows.",
+      "moves": "attack and cast: draws and looses an arrow (impact/release on the loose).",
+      "members": [{"id": "skeletal_sniper"}]
+    },
+    {
+      "key": "ghoul", "name": "Silt Ghoul", "role": "enemy", "cell": 64,
+      "look": "Hunched, mud-caked ghoul with long clawed arms, hollow glowing eyes, ragged burial cloth, dripping grey silt.",
+      "moves": "attack: lunging two-claw rake.",
+      "members": [
+        {"id": "silt_ghoul"},
+        {"id": "drowned_husk", "variant": "a drowned pilgrim: waterlogged pale-blue skin, seaweed and pilgrim beads"},
+        {"id": "shrine_grasper", "variant": "candle-wax drips on the shoulders, longer grasping arms"}
+      ]
+    },
+    {
+      "key": "penitent_knight", "name": "Penitent Templar", "role": "enemy", "cell": 64,
+      "look": "Undead templar knight in cracked gilded plate with a sun emblem, bound in iron chains, a hollow-eyed helm leaking violet light; carries a greatsword (Galahault's fallen order).",
+      "moves": "attack: two-handed downward greatsword strike; cast: holy-violet flash from the sun emblem.",
+      "members": [
+        {"id": "penitent_templar"},
+        {"id": "penitent_vowbreaker", "variant": "darker tarnished plate, broken sword, heavier chains"}
+      ]
+    },
+    {
+      "key": "wraith", "name": "Spectral Reaper", "role": "enemy", "cell": 64,
+      "look": "Floating hooded wraith in tattered purple-black robes with no legs, skeletal hands, a long scythe, cold violet eyes; hovers with its robe tips above the sole line.",
+      "moves": "attack: wide scythe sweep; cast: a spectral bolt from the hand.",
+      "members": [
+        {"id": "spectral_reaper"},
+        {"id": "umbral_ghost", "variant": "void indigo, more translucent, no scythe-glint"}
+      ]
+    },
+    {
+      "key": "automaton", "name": "Clockwork Ironclad", "role": "enemy", "cell": 64,
+      "look": "Clockwork knight automaton: riveted barrel chest, visible gears at the joints, glowing core behind a grille, tower shield and a piston mace; stiff, mechanical stance.",
+      "moves": "attack: piston-driven mace slam; cast: core vents a steam burst.",
+      "members": [
+        {"id": "iron_warden"},
+        {"id": "clockwork_phalanx", "variant": "polished brass with a larger shield"},
+        {"id": "bog_ironclad", "variant": "moss and rust, swamp weed caught in the gears"},
+        {"id": "aqueduct_sentinel", "variant": "verdigris bronze with razor claws in place of the mace"},
+        {"id": "citadel_ironclad", "variant": "obsidian-black plating, red core"},
+        {"id": "obsidian_warden", "variant": "obsidian-black plating, violet core"}
+      ]
+    },
+    {
+      "key": "clockwork_tripod", "name": "Clockwork Tripod", "role": "enemy", "cell": 64,
+      "look": "Three-legged clockwork walker with a turret body and a mounted steam ballista; brass boiler, smoking chimney.",
+      "moves": "attack and cast: the ballista recoils and fires a bolt.",
+      "members": [
+        {"id": "steam_arbalest"},
+        {"id": "tripod_scorcher", "variant": "a flame nozzle in place of the ballista, orange-hot boiler"}
+      ]
+    },
+    {
+      "key": "obelisk", "name": "Walking Obelisk", "role": "enemy", "cell": 64,
+      "look": "A rune-carved stone monolith on stubby stone legs, runes glowing as it gathers power, a single eye-rune near the top.",
+      "moves": "attack: topples forward and slams; cast: fires a beam from the eye-rune.",
+      "members": [
+        {"id": "walking_obelisk"},
+        {"id": "celestial_spire", "variant": "white-gold crystal spire, golden runes, no legs (floats)"},
+        {"id": "gallery_of_doubts", "variant": "a mirror-faced obelisk in a silver frame, the party's doubts flickering in the glass"}
+      ]
+    },
+    {
+      "key": "leech", "name": "Trench Leech", "role": "enemy", "cell": 64,
+      "look": "A blind giant leech rearing up from the floor, segmented slick body, a round toothed maw, knotted with faintly glowing motes of stolen voices.",
+      "moves": "attack: lunges and latches with the maw; cast: spits a glob.",
+      "members": [
+        {"id": "marsh_leech", "variant": "swamp brown-green"},
+        {"id": "umbral_leech", "variant": "void indigo"},
+        {"id": "chorus_leech"}
+      ]
+    },
+    {
+      "key": "thorn_druid", "name": "Thorn Choir Druid", "role": "enemy", "cell": 64,
+      "look": "Antlered forest druid in a cloak of leaves and thorns, a briar staff, glowing green eyes; corrupted guardian of the grove.",
+      "moves": "cast: raises the briar staff and lashes thorns forward.",
+      "members": [
+        {"id": "canopy_warden"},
+        {"id": "thorn_choir_singer", "variant": "glass-vine cloak, mouth open in song, obsidian venom streaks"},
+        {"id": "void_briar_binder", "variant": "void-tainted purple thorns, Inquisition chains on the staff"}
+      ]
+    },
+    {
+      "key": "treant", "name": "Glassvine Colossus", "role": "enemy", "cell": 64,
+      "look": "A massive walking golem of braided vines and bark (fills most of the cell), crystalline glass shards growing from the vines, glowing green heart in the chest.",
+      "moves": "attack: a heavy two-armed vine slam.",
+      "members": [
+        {"id": "glassvine_colossus"},
+        {"id": "thornvined_guardian", "variant": "thorny bark, no glass, a moss crown"}
+      ]
+    },
+    {
+      "key": "tendril", "name": "Void Tendril", "role": "enemy", "cell": 64,
+      "look": "A single thick tentacle rising out of a dark pool on the floor, suckers along its length, a hooked tip, dripping liquid silence.",
+      "moves": "attack: whips down and lashes; cast: flings a glob of void.",
+      "members": [
+        {"id": "void_tendril"},
+        {"id": "root_lash", "variant": "a gnarled green root rising from moss instead of a pool"}
+      ]
+    },
+    {
+      "key": "archon", "name": "Archon Custodian", "role": "enemy", "cell": 64,
+      "look": "Golden armoured celestial sentinel with folded light-wings, a faceless gold helm, a halberd of solidified harmonic light.",
+      "moves": "attack: halberd thrust; cast: a ring of light from the wings.",
+      "members": [
+        {"id": "archon_custodian"},
+        {"id": "glinted_vow_clade", "variant": "a gilded reflection: polished mirror-gold, coins in the wing feathers"}
+      ]
+    },
+    {
+      "key": "nullifier", "name": "Echo Nullifier", "role": "enemy", "cell": 64,
+      "look": "Silent Inquisition enforcer: grey high-collared coat, a stitched leather mask with no mouth, sound-dampening discs on a bandolier.",
+      "moves": "attack and cast: hurls a humming silencing disc.",
+      "members": [
+        {"id": "echo_nullifier"},
+        {"id": "nullifier_sibilant", "variant": "paler grey, a hissing silver mouth-grille"}
+      ]
+    }
+  ],
+  "mirrors": [
+    {"id": "shadow_of_the_knight", "of": "cedric"},
+    {"id": "shadow_of_the_warden", "of": "lyra"},
+    {"id": "shadow_of_the_blade", "of": "zephyr"},
+    {"id": "shadow_of_the_invocator", "of": "hero"}
+  ],
+  "bosses": [
+    {
+      "id": "grave_broodmother", "name": "Grave Broodmother", "cell": 128, "placeholder": "template_caster",
+      "look": "Colossal arachnid queen crawling from a vaulted ceiling: bone-white carapace etched like grave stones, a swollen egg sac with hatchlings clinging to her back, eight barbed legs, a crown of eyes.",
+      "moves": "attack: Bite (lunging fangs); cast: Spawn Hatchlings (the egg sac bursts); charge_ultimate / ultimate: Venomous Brood Cataclysm (rears up, venom raining from her abdomen)."
+    },
+    {
+      "id": "blighted_broodmother", "name": "Blighted Broodmother", "cell": 128, "variant_of": "grave_broodmother",
+      "look": "The Grave Broodmother corrupted: glossy obsidian chitin dripping black venom, glowing green blight veins. A recolour of grave_broodmother is enough (deliver blighted_broodmother.json only if it should differ in shape).",
+      "moves": "as Grave Broodmother."
+    },
+    {
+      "id": "bog_behemoth", "name": "Bog Behemoth", "cell": 128, "placeholder": "template_brute",
+      "look": "A towering swamp titan of mud, roots and rotting willow bark, moss hanging from its shoulders, glowing corrosive-green eyes and maw, one arm a club of tangled roots.",
+      "moves": "attack: Trample (a stomp); cast: Bog Breath (acid breath); charge_ultimate / ultimate: Primeval Tectonic Tremor (both fists into the ground, the floor splitting)."
+    },
+    {
+      "id": "ancient_mire_wyrm", "name": "Ancient Mire Wyrm", "cell": 128, "placeholder": "template_brute",
+      "look": "An ancient serpentine wyrm rising out of the silt (lower body submerged at the sole line), mud-plated scales, a fanned crest, corrosive yellow eyes.",
+      "moves": "attack: Tail Lash; cast: Silt Breath; charge_ultimate / ultimate: Acidic Silt Torrent (rears high, a torrent of acid silt from the jaws)."
+    },
+    {
+      "id": "executioner_kaelen", "name": "Grand Executioner Kaelen", "cell": 96, "placeholder": "template_sniper",
+      "look": "A massive hooded executioner of the Inquisition: black leather hood, bare scarred arms, a blood-red sash, twin heavy execution axes; Black Guild sigil on the belt.",
+      "moves": "attack: Executioner Cut (cross-chop with both axes); cast: Shadow Fan (hurls a fan of shadow blades); Blink Strike (vanishes in smoke and reappears); charge_ultimate / ultimate: Headsman's Crimson Guillotine (axes raised overhead, a crimson arc)."
+    },
+    {
+      "id": "sir_galahault", "name": "Sir Galahault, the Obsidian Grandmaster", "cell": 96, "placeholder": "template_brute",
+      "look": "Petrified golden paladin (portraits/galahault.jpg): golden plate cracked through with black obsidian veins, a sun emblem on the breastplate, a plumed golden helm, a greatsword; tattered golden cape.",
+      "moves": "attack: Oathbreaker Smite; cast: Dawn Judgment (sun emblem flares); Petrified Aegis (crouch behind the sword, stone creeping over the gold); charge_ultimate / ultimate: Eclipse of the Corrupted Dawn (sword raised, the sun emblem eclipsed black)."
+    },
+    {
+      "id": "master_nocturne", "name": "Master Nocturne", "cell": 96, "placeholder": "template_sniper",
+      "look": "Spymaster of the Mute (portraits/nocturne.jpg): tall, deep purple hood and laced dark leathers, pale face, violet smoke curling around him, many hidden blades.",
+      "moves": "attack: Silent Kill (vanishing lunge); cast: Murder of Blades (a spray of kunai); charge_ultimate / ultimate: Thousand Blade Umbral Requiem (rises into smoke, blades orbiting him)."
+    },
+    {
+      "id": "warmaster_ouros", "name": "Clockwork Warmaster Ouros", "cell": 128, "placeholder": "template_brute",
+      "look": "Iron Bastion Sovereign (portraits/ouros.jpg): a towering crowned brass-and-iron automaton king, glowing orange eyes, gears and steam pipes on the shoulders, a gear-toothed greataxe.",
+      "moves": "attack: Gear Cleave; Overdrive (vents steam, core glowing); cast: Bellow of Iron (chest grille opens, electric shockwave); charge_ultimate / ultimate: Omega Core Cataclysm Beam (core opens, a beam from the chest)."
+    },
+    {
+      "id": "commander_vaelor", "name": "Commander Vaelor, the Voice-Thief", "cell": 96, "placeholder": "template_brute",
+      "look": "Hand of Malakor (portraits/vaelor.jpg): grey-haired commander in black spiked plate and a black cape, a longsword and the Void Horn hanging at his belt.",
+      "moves": "attack: Standard Charge (shoulder charge with the banner-sword); cast: Void Horn Blast (raises the horn); Summon Spectral Legion; charge_ultimate / ultimate: Phantasmal Vanguard Hellstorm (horn to lips, spectral legion swirling)."
+    },
+    {
+      "id": "abyssal_leviathan", "name": "Abyssal Leviathan", "cell": 128, "placeholder": "template_brute",
+      "look": "A colossal void leviathan breaching from a lake of liquid silence (body below the sole line hidden in dark water), an armoured head with a huge maw, void tendrils lashing from its sides, star-like pale eyes.",
+      "moves": "attack: Tidal Maw (lunging bite); cast: Drowning Silence (tendrils spread, sound draining); Void Spawn; charge_ultimate / ultimate: Abyssal Trench Tsunami (rears into a towering wave)."
+    },
+    {
+      "id": "grand_inquisitor_malakor", "name": "Grand Inquisitor Malakor, the Mute Sovereign", "cell": 96, "placeholder": "template_brute",
+      "look": "The final boss (portraits/malakor.jpg): pale face with red eyes, slicked black hair, a silver mesh mouth-guard, a towering high collar, black and gold rune-embroidered robes over armour, spiked pauldrons.",
+      "moves": "attack: Sever Echo; cast: Nullifying Word / Choir of Silence (a gesture, silencing sigils); charge_ultimate / ultimate: Cords of Severance (below a third of his health: silver cords lash out from the mouth-guard). Please include a second phase (p2_idle, p2_attack, p2_cast): the mouth-guard torn away, levitating, robes streaming upward."
+    }
+  ]
+}

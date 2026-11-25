@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""Apply art/sprite_roster.json to the game and write the artist's brief.
+
+  python3 art/apply_sprite_roster.py          # update enemies.json + sprites.json, write art/SPRITE_BRIEFS.md
+  python3 art/apply_sprite_roster.py --check  # only verify every enemy is in the roster exactly once
+
+- enemies.json `spriteId`: a family member draws its family's sheet; a member with its own recolour gets its own
+  key (a variant of the family, so a recoloured sheet named after it takes over when delivered); bosses get
+  their own key; the Mirror Gallery shadows are dark recolours of the hero sheets.
+- sprites.json: placeholders (the nearest delivered template) for every family and boss whose art hasn't
+  arrived, so the game looks as before until each sheet lands; variants; the mirror recolours.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+GAME = os.path.join(ROOT, "app/src/main/assets/game")
+SHEETS = os.path.join(GAME, "sprites/sheets")
+ROLE_PLACEHOLDER = {"Vanguard": "template_brute", "Sniper": "template_sniper", "Occultist": "template_caster", "Summoner": "template_caster"}
+
+
+def load(path):
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def delivered(key: str) -> bool:
+    return os.path.isfile(os.path.join(SHEETS, f"{key}.json"))
+
+
+def shadow_palette(hero_key: str) -> dict[str, str]:
+    """A dark violet 'doubt-shadow' recolour of a hero sheet: each colour keeps its brightness."""
+    from PIL import Image
+    import numpy as np
+    meta = load(os.path.join(SHEETS, f"{hero_key}.json"))["meta"]
+    a = np.asarray(Image.open(os.path.join(SHEETS, meta["image"])).convert("RGBA")).reshape(-1, 4)
+    colours = np.unique(a[a[:, 3] > 0][:, :3], axis=0)
+    dark, light = np.array([12, 8, 24]), np.array([132, 104, 200])
+    out = {}
+    for c in colours:
+        lum = (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255
+        t = min(1.0, lum ** 0.85 * 1.1)
+        n = (dark + (light - dark) * t).round().astype(int)
+        out["#%02X%02X%02X" % tuple(c)] = "#%02X%02X%02X" % tuple(n)
+    return out
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--check", action="store_true")
+    args = ap.parse_args()
+    roster = load(os.path.join(ROOT, "art/sprite_roster.json"))
+    enemies_path = os.path.join(GAME, "enemies/enemies.json")
+    enemies_doc = load(enemies_path)
+    enemies = {e["id"]: e for e in enemies_doc["enemies"]}
+
+    sprite_of: dict[str, str] = {}
+    settings: dict[str, dict] = {}
+    seen: list[str] = []
+
+    for fam in roster["families"]:
+        key = fam["key"]
+        if not delivered(key):
+            subtitle = enemies[fam["members"][0]["id"]]["subtitle"]
+            settings[key] = {"placeholder": ROLE_PLACEHOLDER.get(subtitle, "template_brute")}
+        for m in fam["members"]:
+            seen.append(m["id"])
+            if m.get("variant"):
+                sprite_of[m["id"]] = m["id"]
+                entry = {"base": key}
+                if m.get("scale"):
+                    entry["scale"] = m["scale"]
+                settings[m["id"]] = entry
+            else:
+                sprite_of[m["id"]] = key
+    for mirror in roster["mirrors"]:
+        seen.append(mirror["id"])
+        sprite_of[mirror["id"]] = mirror["id"]
+        settings[mirror["id"]] = {"base": mirror["of"], "palette": shadow_palette(mirror["of"]) if not args.check else {}}
+    for boss in roster["bosses"]:
+        seen.append(boss["id"])
+        sprite_of[boss["id"]] = boss["id"]
+        if boss.get("variant_of"):
+            settings[boss["id"]] = {"base": boss["variant_of"]}
+        elif not delivered(boss["id"]):
+            settings[boss["id"]] = {"placeholder": boss["placeholder"]}
+
+    missing = sorted(set(enemies) - set(seen))
+    unknown = sorted(set(seen) - set(enemies))
+    dupes = sorted({x for x in seen if seen.count(x) > 1})
+    bosses_out = sorted(e for e in enemies if enemies[e]["isBoss"] and e not in {b["id"] for b in roster["bosses"]})
+    problems = [f"not in the roster: {missing}"] * bool(missing) + [f"not an enemy: {unknown}"] * bool(unknown) + \
+        [f"listed twice: {dupes}"] * bool(dupes) + [f"bosses outside 'bosses': {bosses_out}"] * bool(bosses_out)
+    if problems:
+        print("\n".join(problems))
+        return 1
+    print(f"roster covers all {len(enemies)} enemies ({len(roster['families'])} families, {len(roster['bosses'])} bosses, "
+          f"{len(roster['mirrors'])} mirrors)")
+    if args.check:
+        return 0
+
+    for e in enemies_doc["enemies"]:
+        e["spriteId"] = sprite_of[e["id"]]
+    with open(enemies_path, "w", encoding="utf-8") as f:
+        json.dump(enemies_doc, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    with open(os.path.join(GAME, "sprites/sprites.json"), "w", encoding="utf-8") as f:
+        json.dump({"_doc": "Generated by art/apply_sprite_roster.py from art/sprite_roster.json; edit the roster, not this file. "
+                           "placeholder = drawn until the sprite's own sheet arrives; base = a recolour of another sheet.",
+                   "sprites": settings}, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    write_brief(roster, enemies)
+    print("wrote enemies.json, sprites/sprites.json, art/SPRITE_BRIEFS.md")
+    return 0
+
+
+def write_brief(roster, enemies):
+    def who(m):
+        e = enemies[m["id"]]
+        return f"{e['name']} ({e['subtitle']}, {e['family'].lower()}/{e['selfElement'].lower()})"
+
+    lines = ["# Echoes of the Logos: battle sprite brief", "",
+             "Generated from `art/sprite_roster.json` by `art/apply_sprite_roster.py`. The roster is the source of truth;",
+             "the game already points every enemy at the sprite keys below, so a sheet named after a key appears in battle",
+             "as soon as it's in `app/src/main/assets/game/sprites/sheets/`.", "",
+             "## Style (every sprite)", ""]
+    lines += [f"- {s}" for s in roster["style"]]
+    lines += ["", "## Animations (tags)", "",
+              "- **Regular enemies**: required " + ", ".join(roster["animations"]["enemy"]["required"]) +
+              "; recommended " + ", ".join(roster["animations"]["enemy"]["recommended"]) + ".",
+              "- **Bosses**: required " + ", ".join(roster["animations"]["boss"]["required"]) +
+              "; recommended " + ", ".join(roster["animations"]["boss"]["recommended"]) + ".", "",
+              "## Delivering a sprite", "",
+              "1. Save `<key>.png` and its Aseprite JSON export `<key>.json` (array or hash) in `app/src/main/assets/game/sprites/sheets/`,",
+              "   with the tags above and a `feet` slice. Keep previews out of that folder (`art/sprite-previews/`).",
+              "2. Run `python3 ../voice-rpg-engine/scripts/sprite_lint.py . --fix`, then `../voice-rpg-engine/scripts/sprite_coverage.sh echoes-of-logos`.",
+              "3. Look at it next to everyone else in the game's gallery: **SPRITES** tab.",
+              "4. A recolour member (listed under *Recolours*) needs no art: it uses its family's sheet until a recoloured",
+              "   `<member id>.json` is delivered (optional).", "",
+              "## Delivered", ""]
+    lines += [f"- `{k}`: {v}" for k, v in roster["drawn"].items()]
+    todo = [f for f in roster["families"] if not f.get("delivered")]
+    lines += ["", f"## To draw: {len(todo)} enemy families (64 px)", ""]
+    for f in todo:
+        lines += [f"### `{f['key']}`: {f['name']}", "", f"{f['look']}", ""]
+        if f.get("moves"):
+            lines += [f"*Moves*: {f['moves']}", ""]
+        plain = [m for m in f["members"] if not m.get("variant")]
+        rec = [m for m in f["members"] if m.get("variant")]
+        if plain:
+            lines += ["Draws: " + ", ".join(who(m) for m in plain), ""]
+        if rec:
+            lines += ["Recolours (optional sheets named after the id):"]
+            lines += [f"- `{m['id']}`: {who(m)}: {m['variant']}" for m in rec]
+            lines += [""]
+    lines += ["## Recolours of the delivered families", ""]
+    for f in roster["families"]:
+        if f.get("delivered"):
+            lines += [f"- **`{f['key']}`** ({f['name']}): " + "; ".join(
+                f"`{m['id']}` {m['variant']}" if m.get("variant") else f"`{m['id']}` as drawn" for m in f["members"])]
+    lines += ["", "## Mirror Gallery shadows (no art needed)", "",
+              "Dark violet recolours of the hero sheets, generated by the script: " +
+              ", ".join(f"`{m['id']}` ← `{m['of']}`" for m in roster["mirrors"]) + ".", "",
+              f"## To draw: {len(roster['bosses'])} bosses (each its own sprite)", ""]
+    for b in roster["bosses"]:
+        e = enemies[b["id"]]
+        lines += [f"### `{b['id']}`: {b['name']} ({b['cell']} px)", "", b["look"], "", f"*Moves*: {b['moves']}", "",
+                  f"Element: {e['family'].lower()}/{e['selfElement'].lower()}." + (f" Recolour of `{b['variant_of']}`." if b.get("variant_of") else ""), ""]
+    with open(os.path.join(ROOT, "art/SPRITE_BRIEFS.md"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines).rstrip() + "\n")
+
+
+if __name__ == "__main__":
+    sys.exit(main())

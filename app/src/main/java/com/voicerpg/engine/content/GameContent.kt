@@ -930,7 +930,7 @@ data class EnemyTemplate(
     val spriteTint: Color,
     val voiceAliases: List<String> = emptyList(),
     val soundBites: List<String> = emptyList(),
-    val scale: Float = if (isBoss) 2.0f else 1.0f,
+    val scale: Float = if (isBoss) com.voicerpg.engine.model.Enemy.DEFAULT_BOSS_SCALE else 1.0f,
     val taunts: List<String> = emptyList(),
     val hitReaction: com.voicerpg.engine.model.HitReaction = com.voicerpg.engine.model.HitReaction.FLINCH,
     val cutIn: com.voicerpg.engine.model.CutInSpec? = null
@@ -1016,10 +1016,20 @@ class GameContentPack(
         return null
     }
 
-    private fun direct(key: String): ResolvedSheet? {
+    /** Own sheet, then a variant's base, then a placeholder (each resolved the same way; cycles stop). */
+    private fun direct(key: String, seen: Set<String> = emptySet()): ResolvedSheet? {
+        if (key in seen) return null
         val setting = spriteSettings[key]
-        val sheet = spriteSheets[setting?.base ?: key] ?: return null
-        return ResolvedSheet(key, sheet, setting)
+        spriteSheets[key]?.let { return ResolvedSheet(key, it, setting) }
+        setting?.base?.let { base ->
+            val b = direct(base, seen + key) ?: return null
+            return ResolvedSheet(key, b.sheet, setting, b.isPlaceholder, b.missing)
+        }
+        setting?.placeholder?.let { stand ->
+            val p = direct(stand, seen + key) ?: return null
+            return ResolvedSheet(key, p.sheet, setting, isPlaceholder = true, missing = key)
+        }
+        return null
     }
 
     val heroCharacter: GameCharacter? = characters.values.firstOrNull { it.role == CharacterRole.HERO }

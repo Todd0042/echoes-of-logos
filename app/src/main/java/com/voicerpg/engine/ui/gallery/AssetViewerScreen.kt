@@ -312,6 +312,7 @@ object AssetCatalog {
 enum class GalleryTab {
     PORTRAITS,
     BACKGROUNDS,
+    SPRITES,
     JUKEBOX
 }
 
@@ -361,6 +362,9 @@ fun AssetViewerScreen(
                         lower.contains("background") || lower.contains("scene") || lower.contains("art") -> {
                             currentTab = GalleryTab.BACKGROUNDS
                         }
+                        lower.contains("sprite") || lower.contains("lineup") -> {
+                            currentTab = GalleryTab.SPRITES
+                        }
                         lower.contains("music") || lower.contains("jukebox") || lower.contains("song") -> {
                             currentTab = GalleryTab.JUKEBOX
                         }
@@ -372,6 +376,7 @@ fun AssetViewerScreen(
                                 GalleryTab.BACKGROUNDS -> selectedBackgroundIndex?.let {
                                     selectedBackgroundIndex = (it + 1) % backgrounds.size
                                 }
+                                GalleryTab.SPRITES -> Unit
                                 GalleryTab.JUKEBOX -> {
                                     val curIdx = musicTracks.indexOfFirst { it.assetPath == currentPlayingTrack }
                                     val nextIdx = if (curIdx >= 0) (curIdx + 1) % musicTracks.size else 0
@@ -387,6 +392,7 @@ fun AssetViewerScreen(
                                 GalleryTab.BACKGROUNDS -> selectedBackgroundIndex?.let {
                                     selectedBackgroundIndex = if (it > 0) it - 1 else backgrounds.size - 1
                                 }
+                                GalleryTab.SPRITES -> Unit
                                 GalleryTab.JUKEBOX -> {
                                     val curIdx = musicTracks.indexOfFirst { it.assetPath == currentPlayingTrack }
                                     val prevIdx = if (curIdx > 0) curIdx - 1 else musicTracks.size - 1
@@ -502,6 +508,12 @@ fun AssetViewerScreen(
                     modifier = Modifier.weight(1f)
                 )
                 TabButton(
+                    title = "SPRITES",
+                    isSelected = currentTab == GalleryTab.SPRITES,
+                    onClick = { currentTab = GalleryTab.SPRITES },
+                    modifier = Modifier.weight(1f)
+                )
+                TabButton(
                     title = "JUKEBOX (${musicTracks.size})",
                     isSelected = currentTab == GalleryTab.JUKEBOX,
                     onClick = { currentTab = GalleryTab.JUKEBOX },
@@ -530,6 +542,7 @@ fun AssetViewerScreen(
                             }
                         )
                     }
+                    GalleryTab.SPRITES -> SpriteLineupTab()
                     GalleryTab.JUKEBOX -> {
                         JukeboxPlayer(
                             musicTracks = musicTracks,

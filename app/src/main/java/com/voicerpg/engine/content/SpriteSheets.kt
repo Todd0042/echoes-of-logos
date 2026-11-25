@@ -43,7 +43,12 @@ data class SpriteSetting(
     /** ...with these colours swapped (ARGB ints). */
     val recolor: Map<Int, Int> = emptyMap(),
     /** Extra size for this sprite (a big variant), on top of the whole-number pixel scale. */
-    val scale: Float = 1f
+    val scale: Float = 1f,
+    /**
+     * Drawn until this sprite's own sheet exists (art on the way): the battle shows that sheet instead, and the
+     * sprite contract still counts this sprite as missing.
+     */
+    val placeholder: String? = null
 )
 
 object AsepriteParser {
@@ -111,7 +116,7 @@ object AsepriteParser {
 }
 
 /** DTOs for `game/sprites/sprites.json`. */
-data class SpriteSettingDto(val base: String? = null, val palette: Map<String, String>? = null, val scale: Float? = null)
+data class SpriteSettingDto(val base: String? = null, val palette: Map<String, String>? = null, val scale: Float? = null, val placeholder: String? = null)
 data class SpriteSettingsFileDto(val sprites: Map<String, SpriteSettingDto>? = null)
 
 internal fun SpriteSettingDto.toSetting(id: String): SpriteSetting = SpriteSetting(
@@ -122,7 +127,8 @@ internal fun SpriteSettingDto.toSetting(id: String): SpriteSetting = SpriteSetti
         val b = parseArgb(to) ?: return@mapNotNull null
         a to b
     }.toMap(),
-    scale = (scale ?: 1f).coerceIn(0.25f, 4f)
+    scale = (scale ?: 1f).coerceIn(0.25f, 4f),
+    placeholder = placeholder?.ifBlank { null }
 )
 
 /** `#RRGGBB` or `#AARRGGBB` → ARGB int (opaque when no alpha is given). */
@@ -137,7 +143,15 @@ internal fun parseArgb(hex: String): Int? {
 }
 
 /** A sheet as a combatant uses it: the sprite key it was found under, the sheet, and any variant settings. */
-data class ResolvedSheet(val key: String, val sheet: SpriteSheet, val setting: SpriteSetting?)
+data class ResolvedSheet(
+    val key: String,
+    val sheet: SpriteSheet,
+    val setting: SpriteSetting?,
+    /** The sheet stands in for art that hasn't arrived (a `placeholder`); the contract counts it as missing. */
+    val isPlaceholder: Boolean = false,
+    /** The sprite key whose art is still missing, when [isPlaceholder]. */
+    val missing: String? = null
+)
 
 /**
  * The sprite contract (docs/SPRITE_PLAN.md §3): what every game must ship before it can be released.
@@ -194,6 +208,9 @@ object SpriteContract {
     private fun checkSprite(pack: GameContentPack, who: String, key: String, role: Role): List<Violation> {
         val resolved = pack.resolveSheet(key)
         val variantBase = pack.spriteSettings[key]?.base
+        if (resolved != null && resolved.isPlaceholder) {
+            return listOf(Violation(who, key, "no sprite sheet yet (placeholder: ${resolved.sheet.id})"))
+        }
         if (resolved == null) {
             val problem = if (variantBase != null) "variant of $variantBase, which has no sprite sheet" else "no sprite sheet"
             return listOf(Violation(who, key, problem))

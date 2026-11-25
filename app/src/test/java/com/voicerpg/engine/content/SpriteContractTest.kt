@@ -115,4 +115,36 @@ class SpriteContractTest {
         assertFalse(SpriteContract.isEnforced(content.manifest, releaseBuild = false))
         assertTrue("a release build always checks", SpriteContract.isEnforced(content.manifest, releaseBuild = true))
     }
+
+    @Test
+    fun `a family waiting for its art plays a placeholder in battle, but the contract still wants the real sheet`() {
+        // The game maps its enemies to families; the orc family isn't drawn yet, so it stands in as the brute.
+        sheet("hero", PARTY)
+        sheet("template_brute", ENEMY)
+        sheet("template_sniper", ENEMY)
+        sheet("template_caster", ENEMY)
+        sheet("practice_dummy", ENEMY)
+        sheet("qqlord", BOSS, cell = 96)
+        File(pack, "sprites/sprites.json").writeText("""{ "sprites": {
+            "orc": { "placeholder": "template_brute" },
+            "ember_orc": { "base": "orc", "palette": { "#3A3A3A": "#8A2B1A" } }
+        } }""")
+        setSpriteId("template_minion", "ember_orc")
+        var content = load()
+        val stand = content.resolveSheet("ember_orc")!!
+        assertEquals("in battle: the placeholder's sheet", "template_brute", stand.sheet.id)
+        assertTrue(stand.isPlaceholder)
+        assertEquals(
+            listOf("template_minion (ember_orc): no sprite sheet yet (placeholder: template_brute)"),
+            SpriteContract.check(content).violations.map { it.toString() }
+        )
+
+        // The art arrives: the family's own sheet wins at once, and its variant follows.
+        sheet("orc", ENEMY)
+        content = load()
+        val real = content.resolveSheet("ember_orc")!!
+        assertEquals("orc", real.sheet.id)
+        assertFalse(real.isPlaceholder)
+        assertTrue(SpriteContract.check(content).passes)
+    }
 }

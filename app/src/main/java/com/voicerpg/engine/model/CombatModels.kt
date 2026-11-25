@@ -150,6 +150,11 @@ data class Enemy(
     val isTurnReady: Boolean get() = isAlive && atbGauge >= 1.0f
     val hpRatio: Float get() = if (isAlive) (currentHp.toFloat() / maxHp).coerceIn(0f, 1f) else 0f
     val atbRatio: Float get() = if (isAlive) atbGauge.coerceIn(0f, 1f) else 0f
+
+    companion object {
+        /** A boss's default `scale`: enlarges the small legacy grids. Boss sheets are drawn boss-sized already. */
+        const val DEFAULT_BOSS_SCALE = 2.0f
+    }
 }
 
 /** How an enemy's sprite reacts to a blow (enemies.json `hitReaction`). */

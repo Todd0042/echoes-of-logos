@@ -183,6 +183,19 @@ object SpriteLibrary {
 
 }
 
+/** How big an enemy's sprite is drawn, relative to its art. */
+object SpriteSizing {
+    /**
+     * [enemy]'s `scale` for [source]: legacy grids take it as is (bosses default to 2x the small grid); a sheet is
+     * drawn at its own size, so a boss's default enlargement doesn't apply to it, only what the content asks
+     * for beyond that default.
+     */
+    fun enemyFactor(enemy: Enemy, source: SpriteSource): Float = when (source) {
+        is GridSprite -> enemy.scale
+        is SheetSprite -> if (enemy.isBoss) enemy.scale / Enemy.DEFAULT_BOSS_SCALE else enemy.scale
+    }
+}
+
 /** The resting animation a combatant returns to between one-shots, from its combat state. */
 object SpriteBase {
     fun of(member: PartyMember, isActive: Boolean): AnimTag = when {

@@ -256,4 +256,16 @@ class SpriteAnimationTest {
         assertEquals("and its own idle", "p2_idle", lord.clipName)
         assertNotNull(lord.source)
     }
+
+    @Test
+    fun `a boss sheet is drawn at its own size, while text grids keep the boss enlargement`() {
+        val lordSheet = SpriteLibrary.source("qqlord")              // a 96 px boss sheet
+        val grid = SpriteLibrary.source("template_brute")           // a 20x26 text grid
+        val boss = brute().copy(isBoss = true, scale = Enemy.DEFAULT_BOSS_SCALE)
+        assertEquals("the sheet is already boss-sized", 1f, SpriteSizing.enemyFactor(boss, lordSheet), 0f)
+        assertEquals("the grid is enlarged as before", 2f, SpriteSizing.enemyFactor(boss, grid), 0f)
+        assertEquals("content asking for a bigger boss still gets it", 1.25f,
+            SpriteSizing.enemyFactor(boss.copy(scale = 2.5f), lordSheet), 0.001f)
+        assertEquals("a regular enemy keeps its own scale", 1.2f, SpriteSizing.enemyFactor(brute().copy(scale = 1.2f), lordSheet), 0.001f)
+    }
 }

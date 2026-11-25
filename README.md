@@ -132,6 +132,7 @@ Echoes of the Logos utilizes the engine's data-driven asset pipeline:
 - **`assets/game/story/`**: Over 350 branching narrative nodes and choice hubs serialized in compact JSON.
 - **`assets/game/characters/`**: Hero class definitions, starting stats, and affinity charts.
 - **`assets/game/commands/` & `localization/`**: Pre-compiled multilingual phrase dictionaries and speech recognition prompts.
+- **`assets/game/sprites/`**: 64 px side-view battle sprite sheets (Aseprite PNG + JSON) for the four heroes and the enemy families, and `sprites.json` (recolours, and placeholders for art on the way). The roster of every enemy's sprite family and each boss's own sprite, with the artist's briefs, is [`art/sprite_roster.json`](art/sprite_roster.json); `python3 art/apply_sprite_roster.py` applies it to `enemies.json` and `sprites.json` and writes [`art/SPRITE_BRIEFS.md`](art/SPRITE_BRIEFS.md). The engine's sprite contract blocks a release build until every family and boss is drawn (`../voice-rpg-engine/scripts/sprite_coverage.sh echoes-of-logos`).
 
 ---
 
@@ -184,6 +185,7 @@ Echoes of the Logos includes **224 automated unit tests** verifying multilingual
 ## 8. Clean-Room Provenance & Non-Commercial Licensing
 
 - **Clean-Room Audio & Narrative:** All storyline text, character concepts, and sound effects are original creations.
+- **AI-Assisted Battle Sprites:** the battle sprite sheets are AI-assisted (made with Antigravity from the game's own portraits and briefs), cleaned with the engine's `sprite_lint.py`.
 - **PolyForm Noncommercial 1.0.0:** Free for personal and hobbyist use. For commercial licensing, contact **[todd.0042.git@gmail.com](mailto:todd.0042.git@gmail.com)**.
 - **Media License**: the images, artwork and audio made for this project (paths listed in [LICENSE-MEDIA](LICENSE-MEDIA)) are © Todd0042 under **[CC BY-NC 4.0](LICENSE-MEDIA)**: free to share and adapt with credit for non-commercial purposes; commercial use requires permission.
 

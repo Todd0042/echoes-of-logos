@@ -13,7 +13,7 @@
       "xpReward": 45,
       "movesetId": "void_wisp",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "wisp",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -29,7 +29,7 @@
       "xpReward": 60,
       "movesetId": "flesh_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "blighted_orc",
       "spriteTint": "#EF5350"
     },
     {
@@ -45,7 +45,7 @@
       "xpReward": 55,
       "movesetId": "flesh_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "corrupted_archer",
       "spriteTint": "#EF5350"
     },
     {
@@ -61,7 +61,7 @@
       "xpReward": 70,
       "movesetId": "void_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "void_shaman",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -77,7 +77,7 @@
       "xpReward": 70,
       "movesetId": "undead_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "skeleton",
       "spriteTint": "#7E57C2"
     },
     {
@@ -93,7 +93,7 @@
       "xpReward": 60,
       "movesetId": "undead_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "skeleton_archer",
       "spriteTint": "#7E57C2"
     },
     {
@@ -109,7 +109,7 @@
       "xpReward": 90,
       "movesetId": "undead_summoner",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "bone_acolyte",
       "spriteTint": "#7E57C2"
     },
     {
@@ -141,7 +141,7 @@
       "xpReward": 90,
       "movesetId": "flesh_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "gate_captain",
       "spriteTint": "#EF5350"
     },
     {
@@ -157,7 +157,7 @@
       "xpReward": 60,
       "movesetId": "flesh_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "castle_arbalest",
       "spriteTint": "#EF5350"
     },
     {
@@ -173,7 +173,7 @@
       "xpReward": 80,
       "movesetId": "flesh_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "court_warlock",
       "spriteTint": "#EF5350"
     },
     {
@@ -189,7 +189,7 @@
       "xpReward": 600,
       "movesetId": "boss_broodmother",
       "isBoss": true,
-      "spriteId": "template_caster",
+      "spriteId": "grave_broodmother",
       "spriteTint": "#EF5350"
     },
     {
@@ -205,7 +205,7 @@
       "xpReward": 80,
       "movesetId": "construct_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "bog_ironclad",
       "spriteTint": "#78909C"
     },
     {
@@ -221,7 +221,7 @@
       "xpReward": 70,
       "movesetId": "flesh_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "mire_stalker",
       "spriteTint": "#EF5350"
     },
     {
@@ -237,7 +237,7 @@
       "xpReward": 90,
       "movesetId": "void_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "void_briar_binder",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -253,7 +253,7 @@
       "xpReward": 500,
       "movesetId": "boss_behemoth",
       "isBoss": true,
-      "spriteId": "template_brute",
+      "spriteId": "bog_behemoth",
       "spriteTint": "#66BB6A"
     },
     {
@@ -269,7 +269,7 @@
       "xpReward": 50,
       "movesetId": "beast_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "marsh_leech",
       "spriteTint": "#EF5350"
     },
     {
@@ -285,7 +285,7 @@
       "xpReward": 55,
       "movesetId": "assassin_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "obsidian_tracker",
       "spriteTint": "#EF5350"
     },
     {
@@ -301,7 +301,7 @@
       "xpReward": 60,
       "movesetId": "flesh_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "blighted_stalker",
       "spriteTint": "#EF5350"
     },
     {
@@ -317,7 +317,7 @@
       "xpReward": 65,
       "movesetId": "construct_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "aqueduct_sentinel",
       "spriteTint": "#78909C"
     },
     {
@@ -333,7 +333,7 @@
       "xpReward": 55,
       "movesetId": "beast_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "spider",
       "spriteTint": "#EF5350"
     },
     {
@@ -349,7 +349,7 @@
       "xpReward": 550,
       "movesetId": "boss_wyrm",
       "isBoss": true,
-      "spriteId": "template_brute",
+      "spriteId": "ancient_mire_wyrm",
       "spriteTint": "#EF5350"
     },
     {
@@ -365,7 +365,7 @@
       "xpReward": 55,
       "movesetId": "undead_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "ghoul",
       "spriteTint": "#7E57C2"
     },
     {
@@ -381,7 +381,7 @@
       "xpReward": 650,
       "movesetId": "boss_kaelen",
       "isBoss": true,
-      "spriteId": "template_sniper",
+      "spriteId": "executioner_kaelen",
       "spriteTint": "#EF5350"
     },
     {
@@ -397,7 +397,7 @@
       "xpReward": 60,
       "movesetId": "assassin_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "assassin",
       "spriteTint": "#EF5350"
     },
     {
@@ -413,7 +413,7 @@
       "xpReward": 700,
       "movesetId": "boss_galahault",
       "isBoss": true,
-      "spriteId": "template_brute",
+      "spriteId": "sir_galahault",
       "spriteTint": "#7E57C2",
       "cutIn": {
         "portrait": "portraits/galahault.jpg",
@@ -433,7 +433,7 @@
       "xpReward": 75,
       "movesetId": "undead_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "penitent_knight",
       "spriteTint": "#7E57C2"
     },
     {
@@ -449,7 +449,7 @@
       "xpReward": 70,
       "movesetId": "radiant_healer",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "chantry_cleric",
       "spriteTint": "#FFD54F"
     },
     {
@@ -465,7 +465,7 @@
       "xpReward": 700,
       "movesetId": "boss_broodmother",
       "isBoss": true,
-      "spriteId": "template_caster",
+      "spriteId": "blighted_broodmother",
       "spriteTint": "#EF5350"
     },
     {
@@ -481,7 +481,7 @@
       "xpReward": 55,
       "movesetId": "beast_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "corrupted_webweaver",
       "spriteTint": "#EF5350"
     },
     {
@@ -497,7 +497,7 @@
       "xpReward": 45,
       "movesetId": "beast_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "toxic_hatchling",
       "spriteTint": "#EF5350"
     },
     {
@@ -513,7 +513,7 @@
       "xpReward": 750,
       "movesetId": "boss_nocturne",
       "isBoss": true,
-      "spriteId": "template_sniper",
+      "spriteId": "master_nocturne",
       "spriteTint": "#EF5350",
       "cutIn": {
         "portrait": "portraits/nocturne.jpg",
@@ -533,7 +533,7 @@
       "xpReward": 70,
       "movesetId": "assassin_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "black_guild_stalker",
       "spriteTint": "#EF5350"
     },
     {
@@ -549,7 +549,7 @@
       "xpReward": 65,
       "movesetId": "void_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "umbral_cutthroat",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -565,7 +565,7 @@
       "xpReward": 80,
       "movesetId": "construct_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "clockwork_phalanx",
       "spriteTint": "#78909C"
     },
     {
@@ -581,7 +581,7 @@
       "xpReward": 900,
       "movesetId": "boss_ouros",
       "isBoss": true,
-      "spriteId": "template_brute",
+      "spriteId": "warmaster_ouros",
       "spriteTint": "#78909C",
       "cutIn": {
         "portrait": "portraits/ouros.jpg",
@@ -601,7 +601,7 @@
       "xpReward": 75,
       "movesetId": "construct_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "clockwork_tripod",
       "spriteTint": "#78909C"
     },
     {
@@ -617,7 +617,7 @@
       "xpReward": 900,
       "movesetId": "boss_vaelor",
       "isBoss": true,
-      "spriteId": "template_brute",
+      "spriteId": "commander_vaelor",
       "spriteTint": "#EF5350",
       "cutIn": {
         "portrait": "portraits/vaelor.jpg",
@@ -637,7 +637,7 @@
       "xpReward": 85,
       "movesetId": "construct_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "citadel_ironclad",
       "spriteTint": "#78909C"
     },
     {
@@ -653,7 +653,7 @@
       "xpReward": 85,
       "movesetId": "construct_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "obsidian_warden",
       "spriteTint": "#78909C"
     },
     {
@@ -669,7 +669,7 @@
       "xpReward": 80,
       "movesetId": "undead_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "wraith",
       "spriteTint": "#7E57C2"
     },
     {
@@ -685,7 +685,7 @@
       "xpReward": 1100,
       "movesetId": "boss_leviathan",
       "isBoss": true,
-      "spriteId": "template_brute",
+      "spriteId": "abyssal_leviathan",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -701,7 +701,7 @@
       "xpReward": 70,
       "movesetId": "void_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "tendril",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -717,7 +717,7 @@
       "xpReward": 95,
       "movesetId": "radiant_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "archon",
       "spriteTint": "#FFD54F"
     },
     {
@@ -733,7 +733,7 @@
       "xpReward": 85,
       "movesetId": "radiant_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "celestial_spire",
       "spriteTint": "#FFD54F"
     },
     {
@@ -749,7 +749,7 @@
       "xpReward": 2000,
       "movesetId": "boss_malakor",
       "isBoss": true,
-      "spriteId": "template_brute",
+      "spriteId": "grand_inquisitor_malakor",
       "spriteTint": "#424242",
       "cutIn": {
         "portrait": "portraits/malakor.jpg",
@@ -769,7 +769,7 @@
       "xpReward": 65,
       "movesetId": "silence_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "nullifier",
       "spriteTint": "#424242"
     },
     {
@@ -785,7 +785,7 @@
       "xpReward": 80,
       "movesetId": "undead_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "penitent_vowbreaker",
       "spriteTint": "#7E57C2"
     },
     {
@@ -801,7 +801,7 @@
       "xpReward": 80,
       "movesetId": "undead_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "grave_archon",
       "spriteTint": "#7E57C2"
     },
     {
@@ -817,7 +817,7 @@
       "xpReward": 80,
       "movesetId": "verdant_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "treant",
       "spriteTint": "#66BB6A"
     },
     {
@@ -833,7 +833,7 @@
       "xpReward": 70,
       "movesetId": "verdant_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "thorn_choir_singer",
       "spriteTint": "#66BB6A"
     },
     {
@@ -849,7 +849,7 @@
       "xpReward": 75,
       "movesetId": "flesh_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "guild_garrote",
       "spriteTint": "#EF5350"
     },
     {
@@ -865,7 +865,7 @@
       "xpReward": 80,
       "movesetId": "flesh_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "archive_enforcer",
       "spriteTint": "#EF5350"
     },
     {
@@ -881,7 +881,7 @@
       "xpReward": 75,
       "movesetId": "void_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "vault_watcher",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -897,7 +897,7 @@
       "xpReward": 85,
       "movesetId": "construct_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "automaton",
       "spriteTint": "#78909C"
     },
     {
@@ -913,7 +913,7 @@
       "xpReward": 80,
       "movesetId": "construct_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "tripod_scorcher",
       "spriteTint": "#78909C"
     },
     {
@@ -929,7 +929,7 @@
       "xpReward": 75,
       "movesetId": "flesh_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "plaza_legionnaire",
       "spriteTint": "#EF5350"
     },
     {
@@ -945,7 +945,7 @@
       "xpReward": 85,
       "movesetId": "construct_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "obelisk",
       "spriteTint": "#78909C"
     },
     {
@@ -961,7 +961,7 @@
       "xpReward": 75,
       "movesetId": "undead_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "drowned_husk",
       "spriteTint": "#7E57C2"
     },
     {
@@ -977,7 +977,7 @@
       "xpReward": 65,
       "movesetId": "undead_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "shrine_grasper",
       "spriteTint": "#7E57C2"
     },
     {
@@ -993,7 +993,7 @@
       "xpReward": 78,
       "movesetId": "void_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "umbral_leech",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1009,7 +1009,7 @@
       "xpReward": 75,
       "movesetId": "void_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "leech",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1025,7 +1025,7 @@
       "xpReward": 78,
       "movesetId": "void_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "mote_drinker",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1041,7 +1041,7 @@
       "xpReward": 85,
       "movesetId": "radiant_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "gilded_creditor",
       "spriteTint": "#FFD54F"
     },
     {
@@ -1057,7 +1057,7 @@
       "xpReward": 85,
       "movesetId": "radiant_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "glinted_vow_clade",
       "spriteTint": "#FFD54F"
     },
     {
@@ -1073,7 +1073,7 @@
       "xpReward": 82,
       "movesetId": "verdant_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "thornvined_guardian",
       "spriteTint": "#66BB6A"
     },
     {
@@ -1089,7 +1089,7 @@
       "xpReward": 70,
       "movesetId": "verdant_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "root_lash",
       "spriteTint": "#66BB6A"
     },
     {
@@ -1105,7 +1105,7 @@
       "xpReward": 82,
       "movesetId": "verdant_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "thorn_druid",
       "spriteTint": "#66BB6A"
     },
     {
@@ -1121,7 +1121,7 @@
       "xpReward": 78,
       "movesetId": "void_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "nocturne_lesson",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1137,7 +1137,7 @@
       "xpReward": 80,
       "movesetId": "void_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "umbral_ghost",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1153,7 +1153,7 @@
       "xpReward": 80,
       "movesetId": "void_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "echo_of_the_guild",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1169,7 +1169,7 @@
       "xpReward": 90,
       "movesetId": "silence_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "nullifier_warden",
       "spriteTint": "#424242"
     },
     {
@@ -1185,7 +1185,7 @@
       "xpReward": 80,
       "movesetId": "silence_sniper",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "nullifier_sibilant",
       "spriteTint": "#424242"
     },
     {
@@ -1201,7 +1201,7 @@
       "xpReward": 85,
       "movesetId": "silence_caster",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "vestibule_archivist",
       "spriteTint": "#424242"
     },
     {
@@ -1217,7 +1217,7 @@
       "xpReward": 110,
       "movesetId": "shadow_knight",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "shadow_of_the_knight",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1233,7 +1233,7 @@
       "xpReward": 110,
       "movesetId": "shadow_warden",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "shadow_of_the_warden",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1249,7 +1249,7 @@
       "xpReward": 110,
       "movesetId": "shadow_blade",
       "isBoss": false,
-      "spriteId": "template_sniper",
+      "spriteId": "shadow_of_the_blade",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1265,7 +1265,7 @@
       "xpReward": 120,
       "movesetId": "shadow_invocator",
       "isBoss": false,
-      "spriteId": "template_caster",
+      "spriteId": "shadow_of_the_invocator",
       "spriteTint": "#5C6BC0"
     },
     {
@@ -1281,7 +1281,7 @@
       "xpReward": 120,
       "movesetId": "silence_bruiser",
       "isBoss": false,
-      "spriteId": "template_brute",
+      "spriteId": "gallery_of_doubts",
       "spriteTint": "#424242"
     }
   ]

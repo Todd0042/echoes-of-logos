@@ -139,6 +139,7 @@ private fun EnemyCard(
         else -> CharacterStance.READY
     }
 
+    val sprite = remember(enemy.id, enemy.spriteId) { com.voicerpg.engine.ui.sprites.SpriteLibrary.source(com.voicerpg.engine.ui.sprites.SpriteLibrary.keyFor(enemy)) }
     var cardCoords by remember { mutableStateOf<LayoutCoordinates?>(null) }
 
     LaunchedEffect(cardCoords, arenaCoordinates) {
@@ -165,8 +166,8 @@ private fun EnemyCard(
         isTargeted = enemy.isAlive && enemy.isTargeted,
         stance = stance,
         isFlippedHorizontally = true,
-        pixelSize = (if (isCompact) 1.65.dp else 2.2.dp) * enemy.scale,
-        sprite = remember(enemy.id, enemy.spriteId) { com.voicerpg.engine.ui.sprites.SpriteLibrary.source(com.voicerpg.engine.ui.sprites.SpriteLibrary.keyFor(enemy)) },
+        pixelSize = (if (isCompact) 1.65.dp else 2.2.dp) * com.voicerpg.engine.ui.sprites.SpriteSizing.enemyFactor(enemy, sprite),
+        sprite = sprite,
         baseAnim = com.voicerpg.engine.ui.sprites.SpriteBase.of(enemy),
         depthScale = depthScale,
         sliverAlpha = if (hasBossBar) null else BattleHud.sliverAlpha(enemy, fx, hasBossBar = false),
