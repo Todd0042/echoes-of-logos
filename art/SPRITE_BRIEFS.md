@@ -43,6 +43,8 @@ Every fighter, enemy and boss is mapped to a sprite key below. A sheet named aft
 
 ### `template_brute`: Obsidian Brute ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/template_brute.png` + `template_brute.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Hulking soldier in dark spiked plate with a heavy axe (delivered).
 
 Draws: Iron Vanguard (Vanguard, flesh/physical)
@@ -55,6 +57,8 @@ Recolours:
 
 ### `template_sniper`: Hooded Marksman ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/template_sniper.png` + `template_sniper.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Crouched hooded crossbow marksman (delivered).
 
 Recolours:
@@ -64,6 +68,8 @@ Recolours:
 - `mire_stalker`: Mire Stalker (Sniper, flesh/nature): swamp hunter: mossy green camouflage cloak, reeds in the hood
 
 ### `template_caster`: Hooded Occultist ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/template_caster.png` + `template_caster.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
 
 Dark hooded robed caster with a glowing staff (delivered).
 
@@ -81,6 +87,8 @@ Recolours:
 
 ### `wisp`: Shadow Wisp ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/wisp.png` + `wisp.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Small floating shadow spirit, about 30 px tall: a ragged leafy body of black-green smoke, one glowing violet eye, small bat wings, a wispy tail instead of legs. Hovers with a faint shadow on the sole line (see portraits/shadow_wisp.jpg).
 
 *Moves*: attack: darts forward and bites; cast: spits a violet shadow bolt.
@@ -88,6 +96,8 @@ Small floating shadow spirit, about 30 px tall: a ragged leafy body of black-gre
 Draws: Shadow Wisp (Sniper, void/shadow)
 
 ### `blighted_orc`: Blighted Orc ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/blighted_orc.png` + `blighted_orc.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
 
 Broad grey-green orc warrior covered in sickly blight boils, crude rusted cleaver, bone-and-hide armour, hunched shoulders.
 
@@ -100,6 +110,8 @@ Recolours:
 
 ### `spider`: Brood Spider ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/spider.png` + `spider.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Low, wide giant arachnid (about 30 px tall, 56 px long) with razor foreclaws, a bloated abdomen, clusters of red eyes, glossy black-purple chitin dripping obsidian venom. Offspring of the Broodmothers.
 
 *Moves*: attack: rears and slashes with the foreclaws; cast: spits a venom glob.
@@ -111,6 +123,8 @@ Recolours:
 - `toxic_hatchling`: Toxic Hatchling (Sniper, flesh/shadow): a hatchling: bright toxic green, drawn smaller (sprites.json scale 0.75)
 
 ### `assassin`: Black Guild Assassin ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/assassin.png` + `assassin.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
 
 Lithe masked assassin of the Black Guild: charcoal wrappings, a half-face mask, silver-threaded obsidian kunai, crouched forward stance (Zephyr's former brothers).
 
@@ -126,6 +140,8 @@ Recolours:
 
 ### `skeleton`: Crypt Skeleton ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/skeleton.png` + `skeleton.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Skeletal legionnaire in a rusted half-helm and scraps of a purple burial tabard, notched sword and round shield.
 
 *Moves*: attack: shield bash into a sword thrust.
@@ -134,6 +150,8 @@ Draws: Crypt Guard (Vanguard, undead/physical)
 
 ### `skeleton_archer`: Skeletal Sniper ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/skeleton_archer.png` + `skeleton_archer.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Skeleton archer with a long yew bow, tattered purple hood, a quiver of black-fletched arrows.
 
 *Moves*: attack and cast: draws and looses an arrow (impact/release on the loose).
@@ -141,6 +159,8 @@ Skeleton archer with a long yew bow, tattered purple hood, a quiver of black-fle
 Draws: Skeletal Sniper (Sniper, undead/physical)
 
 ### `ghoul`: Silt Ghoul ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/ghoul.png` + `ghoul.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
 
 Hunched, mud-caked ghoul with long clawed arms, hollow glowing eyes, ragged burial cloth, dripping grey silt.
 
@@ -154,6 +174,8 @@ Recolours:
 
 ### `penitent_knight`: Penitent Templar ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/penitent_knight.png` + `penitent_knight.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Undead templar knight in cracked gilded plate with a sun emblem, bound in iron chains, a hollow-eyed helm leaking violet light; carries a greatsword (Galahault's fallen order).
 
 *Moves*: attack: two-handed downward greatsword strike; cast: holy-violet flash from the sun emblem.
@@ -165,6 +187,8 @@ Recolours:
 
 ### `wraith`: Spectral Reaper ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/wraith.png` + `wraith.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Floating hooded wraith in tattered purple-black robes with no legs, skeletal hands, a long scythe, cold violet eyes; hovers with its robe tips above the sole line.
 
 *Moves*: attack: wide scythe sweep; cast: a spectral bolt from the hand.
@@ -175,6 +199,8 @@ Recolours:
 - `umbral_ghost`: Umbral Ghost (Vanguard, void/shadow): void indigo, more translucent, no scythe-glint
 
 ### `automaton`: Clockwork Ironclad ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/automaton.png` + `automaton.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
 
 Clockwork knight automaton: riveted barrel chest, visible gears at the joints, glowing core behind a grille, tower shield and a piston mace; stiff, mechanical stance.
 
@@ -191,6 +217,8 @@ Recolours:
 
 ### `clockwork_tripod`: Clockwork Tripod ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/clockwork_tripod.png` + `clockwork_tripod.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Three-legged clockwork walker with a turret body and a mounted steam ballista; brass boiler, smoking chimney.
 
 *Moves*: attack and cast: the ballista recoils and fires a bolt.
@@ -201,6 +229,8 @@ Recolours:
 - `tripod_scorcher`: Tripod Scorcher (Sniper, construct/pyromancy): a flame nozzle in place of the ballista, orange-hot boiler
 
 ### `obelisk`: Walking Obelisk ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/obelisk.png` + `obelisk.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
 
 A rune-carved stone monolith on stubby stone legs, runes glowing as it gathers power, a single eye-rune near the top.
 
@@ -214,6 +244,8 @@ Recolours:
 
 ### `leech`: Trench Leech ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/leech.png` + `leech.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 A blind giant leech rearing up from the floor, segmented slick body, a round toothed maw, knotted with faintly glowing motes of stolen voices.
 
 *Moves*: attack: lunges and latches with the maw; cast: spits a glob.
@@ -225,6 +257,8 @@ Recolours:
 - `umbral_leech`: Umbral Leech (Vanguard, void/shadow): void indigo
 
 ### `thorn_druid`: Thorn Choir Druid ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/thorn_druid.png` + `thorn_druid.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
 
 Antlered forest druid in a cloak of leaves and thorns, a briar staff, glowing green eyes; corrupted guardian of the grove.
 
@@ -238,6 +272,8 @@ Recolours:
 
 ### `treant`: Glassvine Colossus ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/treant.png` + `treant.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 A massive walking golem of braided vines and bark (fills most of the cell), crystalline glass shards growing from the vines, glowing green heart in the chest.
 
 *Moves*: attack: a heavy two-armed vine slam.
@@ -248,6 +284,8 @@ Recolours:
 - `thornvined_guardian`: Thornvined Guardian (Vanguard, verdant/nature): thorny bark, no glass, a moss crown
 
 ### `tendril`: Void Tendril ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/tendril.png` + `tendril.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
 
 A single thick tentacle rising out of a dark pool on the floor, suckers along its length, a hooked tip, dripping liquid silence.
 
@@ -260,6 +298,8 @@ Recolours:
 
 ### `archon`: Archon Custodian ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/archon.png` + `archon.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
+
 Golden armoured celestial sentinel with folded light-wings, a faceless gold helm, a halberd of solidified harmonic light.
 
 *Moves*: attack: halberd thrust; cast: a ring of light from the wings.
@@ -270,6 +310,8 @@ Recolours:
 - `glinted_vow_clade`: Glinted Vow Clade (Vanguard, radiant/holy): a gilded reflection: polished mirror-gold, coins in the wing feathers
 
 ### `nullifier`: Echo Nullifier ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/nullifier.png` + `nullifier.json` · **enemy** · **64x64** cells · tags: idle, attack (impact=4), hurt (+ windup, cast (release=4), death)
 
 Silent Inquisition enforcer: grey high-collared coat, a stitched leather mask with no mouth, sound-dampening discs on a bandolier.
 
@@ -288,6 +330,8 @@ Dark violet recolours of the party sheets, generated by the script: `shadow_of_t
 
 ### `grave_broodmother`: Grave Broodmother (128 px) ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/grave_broodmother.png` + `grave_broodmother.json` · **boss** · **128x128** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
+
 Colossal arachnid queen crawling from a vaulted ceiling: bone-white carapace etched like grave stones, a swollen egg sac with hatchlings clinging to her back, eight barbed legs, a crown of eyes.
 
 *Moves*: attack: Bite (lunging fangs); cast: Spawn Hatchlings (the egg sac bursts); charge_ultimate / ultimate: Venomous Brood Cataclysm (rears up, venom raining from her abdomen).
@@ -304,6 +348,8 @@ Element: flesh/shadow. A recolour of `grave_broodmother` (no art needed unless i
 
 ### `bog_behemoth`: Bog Behemoth (128 px) ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/bog_behemoth.png` + `bog_behemoth.json` · **boss** · **128x128** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
+
 A towering swamp titan of mud, roots and rotting willow bark, moss hanging from its shoulders, glowing corrosive-green eyes and maw, one arm a club of tangled roots.
 
 *Moves*: attack: Trample (a stomp); cast: Bog Breath (acid breath); charge_ultimate / ultimate: Primeval Tectonic Tremor (both fists into the ground, the floor splitting).
@@ -311,6 +357,8 @@ A towering swamp titan of mud, roots and rotting willow bark, moss hanging from 
 Element: verdant/nature.
 
 ### `ancient_mire_wyrm`: Ancient Mire Wyrm (128 px) ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/ancient_mire_wyrm.png` + `ancient_mire_wyrm.json` · **boss** · **128x128** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
 
 An ancient serpentine wyrm rising out of the silt (lower body submerged at the sole line), mud-plated scales, a fanned crest, corrosive yellow eyes.
 
@@ -320,6 +368,8 @@ Element: flesh/nature.
 
 ### `executioner_kaelen`: Grand Executioner Kaelen (96 px) ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/executioner_kaelen.png` + `executioner_kaelen.json` · **boss** · **96x96** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
+
 A massive hooded executioner of the Inquisition: black leather hood, bare scarred arms, a blood-red sash, twin heavy execution axes; Black Guild sigil on the belt.
 
 *Moves*: attack: Executioner Cut (cross-chop with both axes); cast: Shadow Fan (hurls a fan of shadow blades); Blink Strike (vanishes in smoke and reappears); charge_ultimate / ultimate: Headsman's Crimson Guillotine (axes raised overhead, a crimson arc).
@@ -327,6 +377,8 @@ A massive hooded executioner of the Inquisition: black leather hood, bare scarre
 Element: flesh/shadow.
 
 ### `sir_galahault`: Sir Galahault, the Obsidian Grandmaster (96 px) ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/sir_galahault.png` + `sir_galahault.json` · **boss** · **96x96** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
 
 Petrified golden paladin (portraits/galahault.jpg): golden plate cracked through with black obsidian veins, a sun emblem on the breastplate, a plumed golden helm, a greatsword; tattered golden cape.
 
@@ -336,6 +388,8 @@ Element: undead/holy.
 
 ### `master_nocturne`: Master Nocturne (96 px) ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/master_nocturne.png` + `master_nocturne.json` · **boss** · **96x96** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
+
 Spymaster of the Mute (portraits/nocturne.jpg): tall, deep purple hood and laced dark leathers, pale face, violet smoke curling around him, many hidden blades.
 
 *Moves*: attack: Silent Kill (vanishing lunge); cast: Murder of Blades (a spray of kunai); charge_ultimate / ultimate: Thousand Blade Umbral Requiem (rises into smoke, blades orbiting him).
@@ -343,6 +397,8 @@ Spymaster of the Mute (portraits/nocturne.jpg): tall, deep purple hood and laced
 Element: flesh/shadow.
 
 ### `warmaster_ouros`: Clockwork Warmaster Ouros (128 px) ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/warmaster_ouros.png` + `warmaster_ouros.json` · **boss** · **128x128** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
 
 Iron Bastion Sovereign (portraits/ouros.jpg): a towering crowned brass-and-iron automaton king, glowing orange eyes, gears and steam pipes on the shoulders, a gear-toothed greataxe.
 
@@ -352,6 +408,8 @@ Element: construct/physical.
 
 ### `commander_vaelor`: Commander Vaelor, the Voice-Thief (96 px) ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/commander_vaelor.png` + `commander_vaelor.json` · **boss** · **96x96** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
+
 Hand of Malakor (portraits/vaelor.jpg): grey-haired commander in black spiked plate and a black cape, a longsword and the Void Horn hanging at his belt.
 
 *Moves*: attack: Standard Charge (shoulder charge with the banner-sword); cast: Void Horn Blast (raises the horn); Summon Spectral Legion; charge_ultimate / ultimate: Phantasmal Vanguard Hellstorm (horn to lips, spectral legion swirling).
@@ -360,6 +418,8 @@ Element: flesh/shadow.
 
 ### `abyssal_leviathan`: Abyssal Leviathan (128 px) ✅ delivered
 
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/abyssal_leviathan.png` + `abyssal_leviathan.json` · **boss** · **128x128** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
+
 A colossal void leviathan breaching from a lake of liquid silence (body below the sole line hidden in dark water), an armoured head with a huge maw, void tendrils lashing from its sides, star-like pale eyes.
 
 *Moves*: attack: Tidal Maw (lunging bite); cast: Drowning Silence (tendrils spread, sound draining); Void Spawn; charge_ultimate / ultimate: Abyssal Trench Tsunami (rears into a towering wave).
@@ -367,6 +427,8 @@ A colossal void leviathan breaching from a lake of liquid silence (body below th
 Element: void/shadow.
 
 ### `grand_inquisitor_malakor`: Grand Inquisitor Malakor, the Mute Sovereign (96 px) ✅ delivered
+
+> **Deliver:** `app/src/main/assets/game/sprites/sheets/grand_inquisitor_malakor.png` + `grand_inquisitor_malakor.json` · **boss** · **96x96** cells · tags: idle, windup, attack (impact=4), cast (release=4), hurt, charge_ultimate, ultimate (release=5) (+ death)
 
 The final boss (portraits/malakor.jpg): pale face with red eyes, slicked black hair, a silver mesh mouth-guard, a towering high collar, black and gold rune-embroidered robes over armour, spiked pauldrons.
 

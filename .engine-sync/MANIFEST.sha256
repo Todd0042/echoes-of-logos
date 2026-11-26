@@ -183,7 +183,7 @@ d31dc00f071e7c04c492e51267171dff33f6540b0b64505d54f633b8115c63ee  app/src/test/j
 4bca8f63b215cde10e2d4376022a23fadd78fdf146a427fd1a7839fd6b413f60  app/src/test/java/com/voicerpg/engine/combat/EconomyActionsTest.kt
 a91644cf14a400fee597bcb39f85a2a2b2c8031db15092b9afdd20a9a8fdac7e  app/src/test/java/com/voicerpg/engine/combat/EnemyTelegraphTest.kt
 1967e638e7fc120af58010197b916e7b76b9ded31513ee862c915b17d150c67f  app/src/test/java/com/voicerpg/engine/combat/StatusSystemTest.kt
-2b7d12180e426ad4d217b628ce1dae797bed823da61341b8d6c8cbfb1502d645  app/src/test/java/com/voicerpg/engine/content/EngineDecoupledAssetsTest.kt
+296d5304c08a0c10e26e26efd3ae2d70e47d2198330466c757e855044b82e791  app/src/test/java/com/voicerpg/engine/content/EngineDecoupledAssetsTest.kt
 0f12b9a40c6c8c0e74be780bd24ae41cc9bdb9c642e7b5b9052f6bd30daac913  app/src/test/java/com/voicerpg/engine/content/GameSpriteContractTest.kt
 230dbbf85a5857ff8d90c42670e34474162ff4de32fc44f4a11b1bd16cee04a6  app/src/test/java/com/voicerpg/engine/content/PerspectiveAndSoundBitesTest.kt
 f0b66c1d8915350ebdbeecbf85098e37927c3a40f4b32084616dc54ee6c5b254  app/src/test/java/com/voicerpg/engine/content/PresentationConfigTest.kt

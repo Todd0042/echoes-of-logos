@@ -127,7 +127,8 @@ class EngineDecoupledAssetsTest {
     fun testEnemyMovesetsAndSpritesDecoupled() {
         val pack = loadPack()
         assertTrue("Enemy movesets should not be empty", pack.enemyMovesets.isNotEmpty())
-        assertTrue("Enemy sprites should not be empty", pack.enemySprites.isNotEmpty())
+        // Enemies are drawn from sprite sheets or (until a game's art arrives) legacy text grids: one or the other.
+        assertTrue("Enemy sprites (sheets or text grids) should not be empty", pack.enemySprites.isNotEmpty() || pack.spriteSheets.isNotEmpty())
 
         // Every enemy's moveset and sprite resolve (a blank id means the engine's defaults).
         for (enemy in pack.enemyTemplates.values) {

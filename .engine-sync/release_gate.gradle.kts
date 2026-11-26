@@ -10,3 +10,9 @@ val releasePackaging = setOf("packageRelease", "packageReleaseBundle", "signRele
 tasks.matching { it.name in releasePackaging }.configureEach {
     dependsOn("testReleaseUnitTest")
 }
+
+// Unit tests read the game's content straight from src/main/assets, so it is a test input: a content-only change
+// (a new sprite sheet, an enemy flagged as a boss) re-runs the tests instead of reporting an old result.
+tasks.withType<Test>().configureEach {
+    inputs.dir("src/main/assets").withPropertyName("gameContent").withPathSensitivity(PathSensitivity.RELATIVE)
+}
