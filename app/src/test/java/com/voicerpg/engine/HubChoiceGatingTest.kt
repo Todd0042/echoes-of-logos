@@ -1,71 +1,109 @@
 package com.voicerpg.engine
 
+import com.voicerpg.engine.audio.CombatNarrator
+import com.voicerpg.engine.audio.SpeechManager
 import com.voicerpg.engine.content.GameContent
-import com.voicerpg.engine.model.DialogueChoice
-import com.voicerpg.engine.model.DialogueNode
-import com.voicerpg.engine.model.DialogueSpeaker
-import com.voicerpg.engine.model.HubCompletion
-import com.voicerpg.engine.model.SpeakerSide
+import com.voicerpg.engine.testing.TemplateFixture
+import com.voicerpg.engine.viewmodel.StoryViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import java.io.File
+import java.nio.file.Files
 
+/**
+ * Hub gating with the engine's real rule (StoryViewModel.isChoiceLocked), on a small story added to the template
+ * pack. In a hub (a node with `hubCompletion`) the dialogue choices (a completion flag, staying in the scene, no
+ * battle) are open from the start; the choices that move the story on (a battle, a new scene, or no completion flag
+ * at all) wait until every dialogue choice is done. A way on is never one of the dialogue choices itself, so it
+ * can't wait on itself: the camp pattern (an entry with "sit by the fire" and "rest and move on") is open at once.
+ */
 class HubChoiceGatingTest {
 
-    private fun isChoiceLocked(choice: DialogueChoice, node: DialogueNode, flags: Map<String, Boolean>): Boolean {
-        if (choice.requiredFlags.isNotEmpty() && !choice.requiredFlags.all { flags[it] == true }) {
-            return true
-        }
-        val completion = node.hubCompletion
-        if (completion != null && completion.requiredFlags.isNotEmpty()) {
-            val isHubDialogueChoice = choice.completionFlag != null && completion.requiredFlags.contains(choice.completionFlag)
-            if (!isHubDialogueChoice) {
-                val allDialogueDone = completion.requiredFlags.all { flags[it] == true }
-                if (!allDialogueDone) {
-                    return true
-                }
-            }
-        }
-        return false
+    private lateinit var pack: File
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
+    private lateinit var vm: StoryViewModel
+
+    @Before
+    fun setUp() {
+        pack = Files.createTempDirectory("hub-pack").toFile()
+        TemplateFixture.dir().copyRecursively(pack)
+        val file = File(pack, "story/nodes.json")
+        val json = com.google.gson.JsonParser.parseString(file.readText()).asJsonObject
+        val extra = com.google.gson.JsonParser.parseString(NODES).asJsonArray
+        extra.forEach { json.getAsJsonArray("nodes").add(it) }
+        file.writeText(json.toString())
+        GameContent.reset()
+        GameContent.initializeFromDirectory(pack)
+        vm = StoryViewModel(SpeechManager(), CombatNarrator(), scopeOverride = scope)
+    }
+
+    @After
+    fun tearDown() {
+        scope.cancel()
+        GameContent.reset()
+        pack.deleteRecursively()
+    }
+
+    private fun node(id: String) = GameContent.nodes.getValue(id)
+    private fun locked(nodeId: String, choiceId: String, vararg flags: String) =
+        node(nodeId).let { n -> vm.isChoiceLocked(n.choices.first { it.id == choiceId }, n, flags.associateWith { true }) }
+
+    @Test
+    fun `a hub opens its ways on only once every dialogue choice is done`() {
+        assertFalse(locked("qq_hub", "talk_a"))
+        assertFalse(locked("qq_hub", "talk_b"))
+        assertTrue("the battle waits", locked("qq_hub", "fight"))
+        assertTrue("so does leaving the scene", locked("qq_hub", "leave"))
+        assertTrue("one talk isn't enough", locked("qq_hub", "fight", "flag_a"))
+        assertFalse(locked("qq_hub", "fight", "flag_a", "flag_b"))
+        assertFalse(locked("qq_hub", "leave", "flag_a", "flag_b"))
     }
 
     @Test
-    fun testHubAdvancingChoiceLockedUntilAllDialoguePlayed() {
-        val hub = DialogueNode(
-            id = "test_hub",
-            speaker = DialogueSpeaker.NARRATOR,
-            side = SpeakerSide.CENTER_NARRATOR,
-            text = "Welcome to the hub.",
-            hubCompletion = HubCompletion(
-                requiredFlags = listOf("flag_a", "flag_b"),
-                redirectToNodeId = "next_chapter"
-            ),
-            choices = listOf(
-                DialogueChoice(id = "c_a", text = "Option A", voiceKeywords = listOf("a"), nextNodeId = "branch_a", completionFlag = "flag_a"),
-                DialogueChoice(id = "c_b", text = "Option B", voiceKeywords = listOf("b"), nextNodeId = "branch_b", completionFlag = "flag_b"),
-                DialogueChoice(id = "c_battle", text = "Engage Boss", voiceKeywords = listOf("boss"), nextNodeId = "boss_battle", completionFlag = "flag_boss")
-            )
-        )
+    fun `a camp entry with 'sit by the fire' and 'rest and move on' is open at once`() {
+        // The Echoes camp pattern that locked both choices: "rest" has a completion flag AND leaves the scene.
+        assertFalse("sit by the fire", locked("qq_camp", "sit"))
+        assertFalse("rest and move on", locked("qq_camp", "rest"))
+    }
 
-        val choiceA = hub.choices[0]
-        val choiceB = hub.choices[1]
-        val choiceBattle = hub.choices[2]
+    @Test
+    fun `a skip-ahead with its own flag waits for the talks, not for itself`() {
+        assertFalse(locked("qq_skip_hub", "talk_a"))
+        assertTrue("before the talk", locked("qq_skip_hub", "skip"))
+        assertFalse("after the talk the skip opens (it never waits on its own flag)", locked("qq_skip_hub", "skip", "flag_a"))
+    }
 
-        val flags0 = emptyMap<String, Boolean>()
-        // Dialogue choices are unlocked on entry
-        assertFalse("Choice A should be unlocked", isChoiceLocked(choiceA, hub, flags0))
-        assertFalse("Choice B should be unlocked", isChoiceLocked(choiceB, hub, flags0))
-        // Battle choice is locked on entry
-        assertTrue("Battle choice must be locked before any dialogue", isChoiceLocked(choiceBattle, hub, flags0))
-
-        // Complete 1 of 2 dialogue options
-        val flags1 = mapOf("flag_a" to true)
-        assertFalse("Choice B should still be unlocked", isChoiceLocked(choiceB, hub, flags1))
-        assertTrue("Battle choice must remain locked until ALL dialogue options complete", isChoiceLocked(choiceBattle, hub, flags1))
-
-        // Complete both dialogue options
-        val flags2 = mapOf("flag_a" to true, "flag_b" to true)
-        assertFalse("Battle choice must be UNLOCKED once all dialogue options are complete", isChoiceLocked(choiceBattle, hub, flags2))
+    private companion object {
+        val NODES = """[
+          {"id":"qq_hub","speakerId":"narrator","side":"CENTER_NARRATOR","text":"Hub.",
+           "hubCompletion":{"requiredFlags":["flag_a","flag_b"],"redirectToNodeId":"qq_done"},
+           "choices":[
+             {"id":"talk_a","text":"Talk A","voiceKeywords":["a"],"nextNodeId":"qq_talk_a","completionFlag":"flag_a"},
+             {"id":"talk_b","text":"Talk B","voiceKeywords":["b"],"nextNodeId":"qq_talk_b","completionFlag":"flag_b"},
+             {"id":"fight","text":"Fight","voiceKeywords":["fight"],"nextNodeId":"qq_battle","completionFlag":"flag_fight"},
+             {"id":"leave","text":"Leave","voiceKeywords":["leave"],"nextNodeId":"qq_next_scene"}]},
+          {"id":"qq_camp","speakerId":"narrator","side":"CENTER_NARRATOR","text":"Camp.",
+           "hubCompletion":{"requiredFlags":["flag_a","flag_b"],"redirectToNodeId":"qq_done"},
+           "choices":[
+             {"id":"sit","text":"Sit by the fire","voiceKeywords":["sit"],"nextNodeId":"qq_hub"},
+             {"id":"rest","text":"Rest and move on","voiceKeywords":["rest"],"nextNodeId":"qq_next_scene","completionFlag":"flag_rest"}]},
+          {"id":"qq_skip_hub","speakerId":"narrator","side":"CENTER_NARRATOR","text":"Hub with a skip.",
+           "hubCompletion":{"requiredFlags":["flag_a"],"redirectToNodeId":"qq_done"},
+           "choices":[
+             {"id":"talk_a","text":"Talk A","voiceKeywords":["a"],"nextNodeId":"qq_talk_a","completionFlag":"flag_a"},
+             {"id":"skip","text":"Skip ahead","voiceKeywords":["skip"],"nextNodeId":"qq_next_scene","completionFlag":"flag_skip"}]},
+          {"id":"qq_talk_a","speakerId":"narrator","side":"CENTER_NARRATOR","text":"A.","nextNodeId":"qq_hub"},
+          {"id":"qq_talk_b","speakerId":"narrator","side":"CENTER_NARRATOR","text":"B.","nextNodeId":"qq_hub"},
+          {"id":"qq_battle","speakerId":"narrator","side":"CENTER_NARRATOR","text":"Battle.","triggerBattleEncounterId":"template_solo_battle","nextNodeId":"qq_done"},
+          {"id":"qq_next_scene","speakerId":"narrator","side":"CENTER_NARRATOR","text":"Elsewhere.","changeSceneId":"scene_proving_grounds","nextNodeId":"qq_done"},
+          {"id":"qq_done","speakerId":"narrator","side":"CENTER_NARRATOR","text":"Done."}
+        ]"""
     }
 }

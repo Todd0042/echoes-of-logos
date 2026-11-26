@@ -147,17 +147,16 @@ class StoryViewModel(
         // 2. Hub gating: In a hub node (declaring hubCompletion), all dialogue options
         // (choices with completionFlag that do not trigger battle) must be completed
         // before advancing choices (e.g. battles, scene transitions) are unlocked.
+        // A way on (a battle, a new scene, or no completion flag) is never one of the dialogue choices it waits for,
+        // so it can't wait on itself (a camp's "rest and move on" with its own flag used to lock the whole node).
         val completion = node.hubCompletion
-        val targetNode = StoryScript.ALL_NODES[choice.nextNodeId]
-        val isBattleOrAdvance = choice.completionFlag == null ||
-            targetNode?.triggerBattleEncounterId != null ||
-            targetNode?.changeSceneId != null
+        fun isWayOn(c: DialogueChoice): Boolean {
+            val target = StoryScript.ALL_NODES[c.nextNodeId]
+            return c.completionFlag == null || target?.triggerBattleEncounterId != null || target?.changeSceneId != null
+        }
 
-        if (completion != null && isBattleOrAdvance) {
-            val dialogueChoices = node.choices.filter { other ->
-                val otherTarget = StoryScript.ALL_NODES[other.nextNodeId]
-                other.completionFlag != null && otherTarget?.triggerBattleEncounterId == null
-            }
+        if (completion != null && isWayOn(choice)) {
+            val dialogueChoices = node.choices.filterNot(::isWayOn)
             if (dialogueChoices.isNotEmpty()) {
                 val allDialogueDone = dialogueChoices.all { flags[it.completionFlag] == true }
                 if (!allDialogueDone) {
