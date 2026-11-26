@@ -55,17 +55,8 @@
     "gilded_creditor": {
       "base": "template_caster"
     },
-    "wisp": {
-      "placeholder": "template_sniper"
-    },
-    "blighted_orc": {
-      "placeholder": "template_brute"
-    },
     "blighted_stalker": {
       "base": "blighted_orc"
-    },
-    "spider": {
-      "placeholder": "template_sniper"
     },
     "corrupted_webweaver": {
       "base": "spider"
@@ -73,9 +64,6 @@
     "toxic_hatchling": {
       "base": "spider",
       "scale": 0.75
-    },
-    "assassin": {
-      "placeholder": "template_sniper"
     },
     "black_guild_stalker": {
       "base": "assassin"
@@ -89,35 +77,17 @@
     "nocturne_lesson": {
       "base": "assassin"
     },
-    "skeleton": {
-      "placeholder": "template_brute"
-    },
-    "skeleton_archer": {
-      "placeholder": "template_sniper"
-    },
-    "ghoul": {
-      "placeholder": "template_brute"
-    },
     "drowned_husk": {
       "base": "ghoul"
     },
     "shrine_grasper": {
       "base": "ghoul"
     },
-    "penitent_knight": {
-      "placeholder": "template_brute"
-    },
     "penitent_vowbreaker": {
       "base": "penitent_knight"
     },
-    "wraith": {
-      "placeholder": "template_sniper"
-    },
     "umbral_ghost": {
       "base": "wraith"
-    },
-    "automaton": {
-      "placeholder": "template_brute"
     },
     "clockwork_phalanx": {
       "base": "automaton"
@@ -134,14 +104,8 @@
     "obsidian_warden": {
       "base": "automaton"
     },
-    "clockwork_tripod": {
-      "placeholder": "template_sniper"
-    },
     "tripod_scorcher": {
       "base": "clockwork_tripod"
-    },
-    "obelisk": {
-      "placeholder": "template_caster"
     },
     "celestial_spire": {
       "base": "obelisk"
@@ -149,17 +113,11 @@
     "gallery_of_doubts": {
       "base": "obelisk"
     },
-    "leech": {
-      "placeholder": "template_sniper"
-    },
     "marsh_leech": {
       "base": "leech"
     },
     "umbral_leech": {
       "base": "leech"
-    },
-    "thorn_druid": {
-      "placeholder": "template_caster"
     },
     "thorn_choir_singer": {
       "base": "thorn_druid"
@@ -167,26 +125,14 @@
     "void_briar_binder": {
       "base": "thorn_druid"
     },
-    "treant": {
-      "placeholder": "template_brute"
-    },
     "thornvined_guardian": {
       "base": "treant"
-    },
-    "tendril": {
-      "placeholder": "template_sniper"
     },
     "root_lash": {
       "base": "tendril"
     },
-    "archon": {
-      "placeholder": "template_brute"
-    },
     "glinted_vow_clade": {
       "base": "archon"
-    },
-    "nullifier": {
-      "placeholder": "template_sniper"
     },
     "nullifier_sibilant": {
       "base": "nullifier"
@@ -229,38 +175,8 @@
         "#B6CBC5": "#775DB4"
       }
     },
-    "grave_broodmother": {
-      "placeholder": "template_caster"
-    },
     "blighted_broodmother": {
       "base": "grave_broodmother"
-    },
-    "bog_behemoth": {
-      "placeholder": "template_brute"
-    },
-    "ancient_mire_wyrm": {
-      "placeholder": "template_brute"
-    },
-    "executioner_kaelen": {
-      "placeholder": "template_sniper"
-    },
-    "sir_galahault": {
-      "placeholder": "template_brute"
-    },
-    "master_nocturne": {
-      "placeholder": "template_sniper"
-    },
-    "warmaster_ouros": {
-      "placeholder": "template_brute"
-    },
-    "commander_vaelor": {
-      "placeholder": "template_brute"
-    },
-    "abyssal_leviathan": {
-      "placeholder": "template_brute"
-    },
-    "grand_inquisitor_malakor": {
-      "placeholder": "template_brute"
     }
   }
 }

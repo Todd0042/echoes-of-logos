@@ -36,10 +36,39 @@ as soon as it's in `app/src/main/assets/game/sprites/sheets/`.
 - `template_brute`: Obsidian Brute family (delivered)
 - `template_sniper`: Hooded Marksman family (delivered)
 - `template_caster`: Hooded Occultist family (delivered)
+- `wisp`: Shadow Wisp family (delivered)
+- `blighted_orc`: Blighted Orc family (delivered)
+- `spider`: Brood Spider family (delivered)
+- `assassin`: Black Guild Assassin family (delivered)
+- `skeleton`: Crypt Skeleton family (delivered)
+- `skeleton_archer`: Skeletal Sniper family (delivered)
+- `ghoul`: Silt Ghoul family (delivered)
+- `penitent_knight`: Penitent Templar family (delivered)
+- `wraith`: Spectral Reaper family (delivered)
+- `automaton`: Clockwork Ironclad family (delivered)
+- `clockwork_tripod`: Clockwork Tripod family (delivered)
+- `obelisk`: Walking Obelisk family (delivered)
+- `leech`: Trench Leech family (delivered)
+- `thorn_druid`: Thorn Choir Druid family (delivered)
+- `treant`: Glassvine Colossus family (delivered)
+- `tendril`: Void Tendril family (delivered)
+- `archon`: Archon Custodian family (delivered)
+- `nullifier`: Echo Nullifier family (delivered)
+- `grave_broodmother`: Grave Broodmother (delivered)
+- `blighted_broodmother`: Blighted Broodmother (recolour of `grave_broodmother`)
+- `bog_behemoth`: Bog Behemoth (delivered)
+- `ancient_mire_wyrm`: Ancient Mire Wyrm (delivered)
+- `executioner_kaelen`: Grand Executioner Kaelen (delivered)
+- `sir_galahault`: Sir Galahault, the Obsidian Grandmaster (delivered)
+- `master_nocturne`: Master Nocturne (delivered)
+- `warmaster_ouros`: Clockwork Warmaster Ouros (delivered)
+- `commander_vaelor`: Commander Vaelor, the Voice-Thief (delivered)
+- `abyssal_leviathan`: Abyssal Leviathan (delivered)
+- `grand_inquisitor_malakor`: Grand Inquisitor Malakor, the Mute Sovereign (delivered)
 
-## To draw: 18 enemy families (64 px)
+## Enemy families: 0 still to draw (64 px)
 
-### `wisp`: Shadow Wisp
+### `wisp`: Shadow Wisp (delivered)
 
 Small floating shadow spirit, about 30 px tall: a ragged leafy body of black-green smoke, one glowing violet eye, small bat wings, a wispy tail instead of legs. Hovers with a faint shadow on the sole line (see portraits/shadow_wisp.jpg).
 
@@ -47,7 +76,7 @@ Small floating shadow spirit, about 30 px tall: a ragged leafy body of black-gre
 
 Draws: Shadow Wisp (Sniper, void/shadow)
 
-### `blighted_orc`: Blighted Orc
+### `blighted_orc`: Blighted Orc (delivered)
 
 Broad grey-green orc warrior covered in sickly blight boils, crude rusted cleaver, bone-and-hide armour, hunched shoulders.
 
@@ -58,7 +87,7 @@ Draws: Blighted Orc (Vanguard, flesh/physical)
 Recolours (optional sheets named after the id):
 - `blighted_stalker`: Blighted Stalker (Vanguard, flesh/physical): leaner tracker with a fur cloak and darker skin, a hunting knife in place of the cleaver (recolour is enough)
 
-### `spider`: Brood Spider
+### `spider`: Brood Spider (delivered)
 
 Low, wide giant arachnid (about 30 px tall, 56 px long) with razor foreclaws, a bloated abdomen, clusters of red eyes, glossy black-purple chitin dripping obsidian venom. Offspring of the Broodmothers.
 
@@ -70,7 +99,7 @@ Recolours (optional sheets named after the id):
 - `corrupted_webweaver`: Corrupted Webweaver (Sniper, flesh/shadow): white web-silk draped over the body, pale violet sheen
 - `toxic_hatchling`: Toxic Hatchling (Sniper, flesh/shadow): a hatchling: bright toxic green, drawn smaller (sprites.json scale 0.75)
 
-### `assassin`: Black Guild Assassin
+### `assassin`: Black Guild Assassin (delivered)
 
 Lithe masked assassin of the Black Guild: charcoal wrappings, a half-face mask, silver-threaded obsidian kunai, crouched forward stance (Zephyr's former brothers).
 
@@ -84,7 +113,7 @@ Recolours (optional sheets named after the id):
 - `guild_garrote`: Guild Garrote (Vanguard, flesh/shadow): a garrote wire between the hands instead of kunai, heavier build
 - `nocturne_lesson`: Nocturne Lesson (Sniper, void/shadow): a translucent violet shade, smoke trailing from the edges
 
-### `skeleton`: Crypt Skeleton
+### `skeleton`: Crypt Skeleton (delivered)
 
 Skeletal legionnaire in a rusted half-helm and scraps of a purple burial tabard, notched sword and round shield.
 
@@ -92,7 +121,7 @@ Skeletal legionnaire in a rusted half-helm and scraps of a purple burial tabard,
 
 Draws: Crypt Guard (Vanguard, undead/physical)
 
-### `skeleton_archer`: Skeletal Sniper
+### `skeleton_archer`: Skeletal Sniper (delivered)
 
 Skeleton archer with a long yew bow, tattered purple hood, a quiver of black-fletched arrows.
 
@@ -100,7 +129,7 @@ Skeleton archer with a long yew bow, tattered purple hood, a quiver of black-fle
 
 Draws: Skeletal Sniper (Sniper, undead/physical)
 
-### `ghoul`: Silt Ghoul
+### `ghoul`: Silt Ghoul (delivered)
 
 Hunched, mud-caked ghoul with long clawed arms, hollow glowing eyes, ragged burial cloth, dripping grey silt.
 
@@ -112,7 +141,7 @@ Recolours (optional sheets named after the id):
 - `drowned_husk`: Drowned Husk (Vanguard, undead/shadow): a drowned pilgrim: waterlogged pale-blue skin, seaweed and pilgrim beads
 - `shrine_grasper`: Shrine Grasper (Sniper, undead/shadow): candle-wax drips on the shoulders, longer grasping arms
 
-### `penitent_knight`: Penitent Templar
+### `penitent_knight`: Penitent Templar (delivered)
 
 Undead templar knight in cracked gilded plate with a sun emblem, bound in iron chains, a hollow-eyed helm leaking violet light; carries a greatsword (Galahault's fallen order).
 
@@ -123,7 +152,7 @@ Draws: Penitent Templar (Vanguard, undead/holy)
 Recolours (optional sheets named after the id):
 - `penitent_vowbreaker`: Penitent Vowbreaker (Vanguard, undead/holy): darker tarnished plate, broken sword, heavier chains
 
-### `wraith`: Spectral Reaper
+### `wraith`: Spectral Reaper (delivered)
 
 Floating hooded wraith in tattered purple-black robes with no legs, skeletal hands, a long scythe, cold violet eyes; hovers with its robe tips above the sole line.
 
@@ -134,7 +163,7 @@ Draws: Spectral Reaper (Sniper, undead/shadow)
 Recolours (optional sheets named after the id):
 - `umbral_ghost`: Umbral Ghost (Vanguard, void/shadow): void indigo, more translucent, no scythe-glint
 
-### `automaton`: Clockwork Ironclad
+### `automaton`: Clockwork Ironclad (delivered)
 
 Clockwork knight automaton: riveted barrel chest, visible gears at the joints, glowing core behind a grille, tower shield and a piston mace; stiff, mechanical stance.
 
@@ -149,7 +178,7 @@ Recolours (optional sheets named after the id):
 - `citadel_ironclad`: Citadel Ironclad (Vanguard, construct/physical): obsidian-black plating, red core
 - `obsidian_warden`: Obsidian Warden (Vanguard, construct/physical): obsidian-black plating, violet core
 
-### `clockwork_tripod`: Clockwork Tripod
+### `clockwork_tripod`: Clockwork Tripod (delivered)
 
 Three-legged clockwork walker with a turret body and a mounted steam ballista; brass boiler, smoking chimney.
 
@@ -160,7 +189,7 @@ Draws: Steam Arbalest (Sniper, construct/physical)
 Recolours (optional sheets named after the id):
 - `tripod_scorcher`: Tripod Scorcher (Sniper, construct/pyromancy): a flame nozzle in place of the ballista, orange-hot boiler
 
-### `obelisk`: Walking Obelisk
+### `obelisk`: Walking Obelisk (delivered)
 
 A rune-carved stone monolith on stubby stone legs, runes glowing as it gathers power, a single eye-rune near the top.
 
@@ -172,7 +201,7 @@ Recolours (optional sheets named after the id):
 - `celestial_spire`: Celestial Spire (Occultist, radiant/holy): white-gold crystal spire, golden runes, no legs (floats)
 - `gallery_of_doubts`: Gallery of Doubts (Vanguard, silence/shadow): a mirror-faced obelisk in a silver frame, the party's doubts flickering in the glass
 
-### `leech`: Trench Leech
+### `leech`: Trench Leech (delivered)
 
 A blind giant leech rearing up from the floor, segmented slick body, a round toothed maw, knotted with faintly glowing motes of stolen voices.
 
@@ -184,7 +213,7 @@ Recolours (optional sheets named after the id):
 - `marsh_leech`: Marsh Leech (Sniper, flesh/nature): swamp brown-green
 - `umbral_leech`: Umbral Leech (Vanguard, void/shadow): void indigo
 
-### `thorn_druid`: Thorn Choir Druid
+### `thorn_druid`: Thorn Choir Druid (delivered)
 
 Antlered forest druid in a cloak of leaves and thorns, a briar staff, glowing green eyes; corrupted guardian of the grove.
 
@@ -196,7 +225,7 @@ Recolours (optional sheets named after the id):
 - `thorn_choir_singer`: Thorn Choir Singer (Occultist, verdant/nature): glass-vine cloak, mouth open in song, obsidian venom streaks
 - `void_briar_binder`: Void Briar Binder (Occultist, void/nature): void-tainted purple thorns, Inquisition chains on the staff
 
-### `treant`: Glassvine Colossus
+### `treant`: Glassvine Colossus (delivered)
 
 A massive walking golem of braided vines and bark (fills most of the cell), crystalline glass shards growing from the vines, glowing green heart in the chest.
 
@@ -207,7 +236,7 @@ Draws: Glassvine Colossus (Vanguard, verdant/nature)
 Recolours (optional sheets named after the id):
 - `thornvined_guardian`: Thornvined Guardian (Vanguard, verdant/nature): thorny bark, no glass, a moss crown
 
-### `tendril`: Void Tendril
+### `tendril`: Void Tendril (delivered)
 
 A single thick tentacle rising out of a dark pool on the floor, suckers along its length, a hooked tip, dripping liquid silence.
 
@@ -218,7 +247,7 @@ Draws: Void Tendril (Sniper, void/shadow)
 Recolours (optional sheets named after the id):
 - `root_lash`: Root Lash (Sniper, verdant/nature): a gnarled green root rising from moss instead of a pool
 
-### `archon`: Archon Custodian
+### `archon`: Archon Custodian (delivered)
 
 Golden armoured celestial sentinel with folded light-wings, a faceless gold helm, a halberd of solidified harmonic light.
 
@@ -229,7 +258,7 @@ Draws: Archon Custodian (Vanguard, radiant/holy)
 Recolours (optional sheets named after the id):
 - `glinted_vow_clade`: Glinted Vow Clade (Vanguard, radiant/holy): a gilded reflection: polished mirror-gold, coins in the wing feathers
 
-### `nullifier`: Echo Nullifier
+### `nullifier`: Echo Nullifier (delivered)
 
 Silent Inquisition enforcer: grey high-collared coat, a stitched leather mask with no mouth, sound-dampening discs on a bandolier.
 
@@ -250,9 +279,9 @@ Recolours (optional sheets named after the id):
 
 Dark violet recolours of the hero sheets, generated by the script: `shadow_of_the_knight` ← `cedric`, `shadow_of_the_warden` ← `lyra`, `shadow_of_the_blade` ← `zephyr`, `shadow_of_the_invocator` ← `hero`.
 
-## To draw: 11 bosses (each its own sprite)
+## Bosses: 0 still to draw (each its own sprite)
 
-### `grave_broodmother`: Grave Broodmother (128 px)
+### `grave_broodmother`: Grave Broodmother (128 px) (delivered)
 
 Colossal arachnid queen crawling from a vaulted ceiling: bone-white carapace etched like grave stones, a swollen egg sac with hatchlings clinging to her back, eight barbed legs, a crown of eyes.
 
@@ -268,7 +297,7 @@ The Grave Broodmother corrupted: glossy obsidian chitin dripping black venom, gl
 
 Element: flesh/shadow. Recolour of `grave_broodmother`.
 
-### `bog_behemoth`: Bog Behemoth (128 px)
+### `bog_behemoth`: Bog Behemoth (128 px) (delivered)
 
 A towering swamp titan of mud, roots and rotting willow bark, moss hanging from its shoulders, glowing corrosive-green eyes and maw, one arm a club of tangled roots.
 
@@ -276,7 +305,7 @@ A towering swamp titan of mud, roots and rotting willow bark, moss hanging from 
 
 Element: verdant/nature.
 
-### `ancient_mire_wyrm`: Ancient Mire Wyrm (128 px)
+### `ancient_mire_wyrm`: Ancient Mire Wyrm (128 px) (delivered)
 
 An ancient serpentine wyrm rising out of the silt (lower body submerged at the sole line), mud-plated scales, a fanned crest, corrosive yellow eyes.
 
@@ -284,7 +313,7 @@ An ancient serpentine wyrm rising out of the silt (lower body submerged at the s
 
 Element: flesh/nature.
 
-### `executioner_kaelen`: Grand Executioner Kaelen (96 px)
+### `executioner_kaelen`: Grand Executioner Kaelen (96 px) (delivered)
 
 A massive hooded executioner of the Inquisition: black leather hood, bare scarred arms, a blood-red sash, twin heavy execution axes; Black Guild sigil on the belt.
 
@@ -292,7 +321,7 @@ A massive hooded executioner of the Inquisition: black leather hood, bare scarre
 
 Element: flesh/shadow.
 
-### `sir_galahault`: Sir Galahault, the Obsidian Grandmaster (96 px)
+### `sir_galahault`: Sir Galahault, the Obsidian Grandmaster (96 px) (delivered)
 
 Petrified golden paladin (portraits/galahault.jpg): golden plate cracked through with black obsidian veins, a sun emblem on the breastplate, a plumed golden helm, a greatsword; tattered golden cape.
 
@@ -300,7 +329,7 @@ Petrified golden paladin (portraits/galahault.jpg): golden plate cracked through
 
 Element: undead/holy.
 
-### `master_nocturne`: Master Nocturne (96 px)
+### `master_nocturne`: Master Nocturne (96 px) (delivered)
 
 Spymaster of the Mute (portraits/nocturne.jpg): tall, deep purple hood and laced dark leathers, pale face, violet smoke curling around him, many hidden blades.
 
@@ -308,7 +337,7 @@ Spymaster of the Mute (portraits/nocturne.jpg): tall, deep purple hood and laced
 
 Element: flesh/shadow.
 
-### `warmaster_ouros`: Clockwork Warmaster Ouros (128 px)
+### `warmaster_ouros`: Clockwork Warmaster Ouros (128 px) (delivered)
 
 Iron Bastion Sovereign (portraits/ouros.jpg): a towering crowned brass-and-iron automaton king, glowing orange eyes, gears and steam pipes on the shoulders, a gear-toothed greataxe.
 
@@ -316,7 +345,7 @@ Iron Bastion Sovereign (portraits/ouros.jpg): a towering crowned brass-and-iron 
 
 Element: construct/physical.
 
-### `commander_vaelor`: Commander Vaelor, the Voice-Thief (96 px)
+### `commander_vaelor`: Commander Vaelor, the Voice-Thief (96 px) (delivered)
 
 Hand of Malakor (portraits/vaelor.jpg): grey-haired commander in black spiked plate and a black cape, a longsword and the Void Horn hanging at his belt.
 
@@ -324,7 +353,7 @@ Hand of Malakor (portraits/vaelor.jpg): grey-haired commander in black spiked pl
 
 Element: flesh/shadow.
 
-### `abyssal_leviathan`: Abyssal Leviathan (128 px)
+### `abyssal_leviathan`: Abyssal Leviathan (128 px) (delivered)
 
 A colossal void leviathan breaching from a lake of liquid silence (body below the sole line hidden in dark water), an armoured head with a huge maw, void tendrils lashing from its sides, star-like pale eyes.
 
@@ -332,7 +361,7 @@ A colossal void leviathan breaching from a lake of liquid silence (body below th
 
 Element: void/shadow.
 
-### `grand_inquisitor_malakor`: Grand Inquisitor Malakor, the Mute Sovereign (96 px)
+### `grand_inquisitor_malakor`: Grand Inquisitor Malakor, the Mute Sovereign (96 px) (delivered)
 
 The final boss (portraits/malakor.jpg): pale face with red eyes, slicked black hair, a silver mesh mouth-guard, a towering high collar, black and gold rune-embroidered robes over armour, spiked pauldrons.
 
