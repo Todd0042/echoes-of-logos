@@ -1,5 +1,5 @@
 {
-  "_doc": "Echoes of the Logos battle sprite roster: every enemy's sprite family, every boss's own sprite, with briefs for the artist. Source of truth for enemies.json spriteId and sprites.json; apply with art/apply_sprite_roster.py. Spec: ../voice-rpg-engine/docs/SPRITE_PLAN.md.",
+  "_doc": "Echoes of the Logos battle sprite roster: every enemy's sprite family, every boss's own sprite, with briefs for the artist. Source of truth for enemies.json spriteId and sprites.json; apply with ../voice-rpg-engine/scripts/sprite_roster.py echoes-of-logos --apply. Spec: ../voice-rpg-engine/docs/SPRITE_PLAN.md.",
   "style": [
     "16-bit SNES-era JRPG battle sprite, side view, facing RIGHT (the engine mirrors enemies to face the party).",
     "Match the delivered heroes and templates: limited palette (4-8 colours per sprite), 1 px dark outline, no anti-aliasing, transparent background.",
