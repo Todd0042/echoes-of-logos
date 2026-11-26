@@ -618,7 +618,7 @@ fun StoryScreen(
                                 verticalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 currentNode.choices.forEachIndexed { index, choice ->
-                                    val isCompleted = choice.completionFlag != null && storyState.narrativeFlags[choice.completionFlag] == true
+                                    val isCompleted = storyViewModel.isChoiceCompleted(choice)
                                     val isLocked = storyViewModel.isChoiceLocked(choice)
                                     DialogueChoiceItem(
                                         index = index + 1,
@@ -782,7 +782,7 @@ fun StoryScreen(
                                         ) {
                                             rowChoices.forEachIndexed { colIndex, choice ->
                                                 val originalIndex = rowIndex * 2 + colIndex
-                                                val isCompleted = choice.completionFlag != null && storyState.narrativeFlags[choice.completionFlag] == true
+                                                val isCompleted = storyViewModel.isChoiceCompleted(choice)
                                                 val isLocked = storyViewModel.isChoiceLocked(choice)
                                                 DialogueChoiceItem(
                                                     index = originalIndex + 1,
@@ -797,7 +797,7 @@ fun StoryScreen(
                                     } else {
                                         val choice = rowChoices.first()
                                         val originalIndex = rowIndex * 2
-                                        val isCompleted = choice.completionFlag != null && storyState.narrativeFlags[choice.completionFlag] == true
+                                        val isCompleted = storyViewModel.isChoiceCompleted(choice)
                                         val isLocked = storyViewModel.isChoiceLocked(choice)
                                         DialogueChoiceItem(
                                             index = originalIndex + 1,

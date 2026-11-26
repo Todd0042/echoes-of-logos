@@ -94,6 +94,8 @@ class StoryViewModel(
     companion object {
         /** Engine convention: a node setting this flag marks the playthrough complete. */
         const val GAME_COMPLETED_FLAG = "game_completed"
+        /** How far a hub branch is followed looking for its way back (longer runs are treated as moving on). */
+        const val MAX_BRANCH_LENGTH = 40
 
         /**
          * Chapter warp targets derived from scene data files (chapterIndex + entry node).
@@ -124,17 +126,49 @@ class StoryViewModel(
         return isChoiceLocked(choice, node, _state.value.narrativeFlags)
     }
 
+    /**
+     * Whether [choice] (an option of [node]) is done: its completion flag is set; or, among a real hub's options (a
+     * node with `hubCompletion`), its battle is won or the player has played its branch and the branch has nothing
+     * left to choose. A branch is a run of plain
+     * nodes leading back to [node]: played once its first node was visited or a flag it sets is set. A branch
+     * into a sub-hub is played once that sub-hub is finished (all its required flags set).
+     */
     fun isChoiceCompleted(
         choice: DialogueChoice,
         flags: Map<String, Boolean> = _state.value.narrativeFlags,
-        defeated: List<String> = _state.value.defeatedEncounters
+        defeated: List<String> = _state.value.defeatedEncounters,
+        node: DialogueNode? = _state.value.currentNode,
+        visited: Set<String> = _state.value.visitedNodeIds
     ): Boolean {
         if (choice.completionFlag != null && flags[choice.completionFlag] == true) {
             return true
         }
+        // Beyond its own flag, a choice is a task to tick off only among a real hub's options (a node with
+        // hubCompletion): a plain fork's options aren't, and a battle a story repeats (each day's rush) stays open.
+        val inHub = node == null || node.hubCompletion != null
         val target = StoryScript.ALL_NODES[choice.nextNodeId]
-        if (target?.triggerBattleEncounterId != null && defeated.contains(target.triggerBattleEncounterId)) {
+        if (inHub && target?.triggerBattleEncounterId != null && defeated.contains(target.triggerBattleEncounterId)) {
             return true
+        }
+        return node?.hubCompletion != null && isBranchPlayed(choice, node, flags, visited)
+    }
+
+    private fun isBranchPlayed(choice: DialogueChoice, hub: DialogueNode, flags: Map<String, Boolean>, visited: Set<String>): Boolean {
+        val path = mutableListOf<DialogueNode>()
+        var id: String? = choice.nextNodeId
+        repeat(MAX_BRANCH_LENGTH) {
+            val n = StoryScript.ALL_NODES[id] ?: return false
+            if (n.id == hub.id) {
+                // Back at the hub with nothing chosen on the way: played if the player went down it.
+                return path.isNotEmpty() && (path.first().id in visited || path.any { p -> p.setFlagOnEnter?.let { flags[it] == true } == true })
+            }
+            if (n.choices.isNotEmpty()) {
+                val sub = n.hubCompletion ?: return false
+                return n.id in visited && sub.requiredFlags.isNotEmpty() && sub.requiredFlags.all { flags[it] == true }
+            }
+            if (n.triggerBattleEncounterId != null || n.triggerMiniGameId != null || n.changeSceneId != null) return false
+            path += n
+            id = n.nextNodeIdFor(flags)
         }
         return false
     }
@@ -258,7 +292,7 @@ class StoryViewModel(
 
     private fun eligibleChoices(node: DialogueNode): List<DialogueChoice> =
         node.choices.filter { choice ->
-            val notCompleted = !isChoiceCompleted(choice, _state.value.narrativeFlags, _state.value.defeatedEncounters)
+            val notCompleted = !isChoiceCompleted(choice, _state.value.narrativeFlags, _state.value.defeatedEncounters, node)
             val notLocked = !isChoiceLocked(choice, node, _state.value.narrativeFlags)
             notCompleted && notLocked
         }
@@ -1266,7 +1300,7 @@ class StoryViewModel(
                 // If the hub still has an eligible choice that is not yet completed (e.g. an unlocked battle),
                 // do not redirect immediately; let the choice be presented and chosen.
                 val hasPendingChoice = effective.choices.any { choice ->
-                    val notCompleted = !isChoiceCompleted(choice, flags, _state.value.defeatedEncounters)
+                    val notCompleted = !isChoiceCompleted(choice, flags, _state.value.defeatedEncounters, effective)
                     val notLocked = !isChoiceLocked(choice, effective, flags)
                     notCompleted && notLocked && choice.nextNodeId != completion.redirectToNodeId
                 }
