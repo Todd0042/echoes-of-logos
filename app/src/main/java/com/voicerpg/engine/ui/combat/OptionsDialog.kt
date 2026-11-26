@@ -49,7 +49,8 @@ fun OptionsDialog(
     isEyesFreeMode: Boolean,
     isNarrationEnabled: Boolean,
     isAutoPlayEnabled: Boolean = false,
-    isCombatNarrationEnabled: Boolean = true,
+    isSpellCalloutsEnabled: Boolean = true,
+    isBattleReportsEnabled: Boolean = false,
     isPocketGuardEnabled: Boolean = true,
     isReadChoicesEnabled: Boolean,
     isAutoReadHubChoices: Boolean = true,
@@ -64,7 +65,8 @@ fun OptionsDialog(
     onToggleEyesFreeMode: () -> Unit,
     onToggleNarration: () -> Unit,
     onToggleAutoPlay: () -> Unit = {},
-    onToggleCombatNarration: () -> Unit = {},
+    onToggleSpellCallouts: () -> Unit = {},
+    onToggleBattleReports: () -> Unit = {},
     onTogglePocketGuard: () -> Unit = {},
     onToggleReadChoices: () -> Unit,
     onToggleAutoReadHubChoices: () -> Unit = {},
@@ -91,9 +93,9 @@ fun OptionsDialog(
     if (!isOpen) return
 
     val activePreset = when {
-        isEyesFreeMode && isPocketGuardEnabled && isCombatNarrationEnabled && isAutoListen -> PlaystylePreset.POCKET_WALK
-        isEyesFreeMode && !isPocketGuardEnabled && isCombatNarrationEnabled && isAutoListen -> PlaystylePreset.STORYBOOK
-        !isEyesFreeMode && !isCombatNarrationEnabled && !isAutoListen -> PlaystylePreset.CLASSIC_TACTICAL
+        isEyesFreeMode && isPocketGuardEnabled && isBattleReportsEnabled && isAutoListen -> PlaystylePreset.POCKET_WALK
+        isEyesFreeMode && !isPocketGuardEnabled && isBattleReportsEnabled && isAutoListen -> PlaystylePreset.STORYBOOK
+        !isEyesFreeMode && isSpellCalloutsEnabled && !isBattleReportsEnabled && !isAutoListen -> PlaystylePreset.CLASSIC_TACTICAL
         else -> PlaystylePreset.CUSTOM
     }
 
@@ -298,14 +300,26 @@ fun OptionsDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Toggle: Read Combat Actions Aloud
+                // Toggle: Spell callouts (the spell and its resonance)
                 OptionToggleRow(
-                    title = "⚔️ Read Combat Actions Aloud",
-                    subtitle = "Phone speaks player turns, spell damage, and enemy attacks aloud (screen on or off).",
-                    voiceHint = "Voice command: \"Combat narration\" or \"Read combat\"",
-                    checked = isCombatNarrationEnabled,
+                    title = "🔮 Spell Callouts",
+                    subtitle = "Each cast is called out with its resonance (\"Fireball! Master!\") and its one-word result (Weak!, Broken!).",
+                    voiceHint = "Voice command: \"Spell callouts\"",
+                    checked = isSpellCalloutsEnabled,
+                    activeColor = Color(0xFFBA68C8),
+                    onCheckedChange = { onToggleSpellCallouts() }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Toggle: Battle reports (everything else; pocket mode always keeps the essentials)
+                OptionToggleRow(
+                    title = "📜 Battle Reports",
+                    subtitle = "Damage, heals, enemy moves and whose turn it is, in a few words each. Pocket mode always keeps the essentials.",
+                    voiceHint = "Voice command: \"Battle reports\"",
+                    checked = isBattleReportsEnabled,
                     activeColor = Color(0xFFFF7043),
-                    onCheckedChange = { onToggleCombatNarration() }
+                    onCheckedChange = { onToggleBattleReports() }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

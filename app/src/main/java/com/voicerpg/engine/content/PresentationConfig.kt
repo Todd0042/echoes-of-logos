@@ -18,7 +18,9 @@ data class PresentationConfig(
     val streak: Streak = Streak(),
     val telegraph: Telegraph = Telegraph(),
     val deathEffect: DeathEffect = DeathEffect.SHATTER,
-    val music: Music = Music()
+    val music: Music = Music(),
+    /** Rewording of combat's spoken lines, by key (audio/CombatLines.DEFAULTS lists the keys and defaults). */
+    val speechLines: Map<String, String> = emptyMap()
 ) {
     /** Words shown on damage numbers; `{tier}` becomes the tier name (MYTHIC). */
     data class Labels(val weak: String = "WEAK!", val resist: String = "RESIST", val crit: String = "{tier}!") {
@@ -57,7 +59,8 @@ internal data class PresentationFileDto(
     val streak: StreakDto? = null,
     val telegraph: TelegraphDto? = null,
     val deathEffect: String? = null,
-    val music: MusicDto? = null
+    val music: MusicDto? = null,
+    val speechLines: Map<String, String>? = null
 ) {
     data class LabelsDto(val weak: String? = null, val resist: String? = null, val crit: String? = null)
     data class CutInDto(val minTier: String? = null)
@@ -90,7 +93,8 @@ internal data class PresentationFileDto(
             music = PresentationConfig.Music(
                 intensityTrack = music?.intensityTrack?.takeIf { it.isNotBlank() },
                 lowHpThreshold = music?.lowHpThreshold?.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: d.music.lowHpThreshold
-            )
+            ),
+            speechLines = speechLines.orEmpty().filterValues { it.isNotBlank() }
         )
     }
 

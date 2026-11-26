@@ -61,6 +61,10 @@ object IntentParser {
                 lower.contains("auto listen") || lower.contains("hands free") || lower.contains("auto mic") ||
                         lower.contains("automatic listening") -> MetaCommand.TOGGLE_AUTO_LISTEN
 
+                lower.contains("callout") -> MetaCommand.TOGGLE_SPELL_CALLOUTS
+
+                lower.contains("battle report") || lower.contains("combat report") -> MetaCommand.TOGGLE_BATTLE_REPORTS
+
                 lower.contains("toggle narration") || lower == "narration" || lower.contains("narration on") ||
                         lower.contains("narration off") || lower.contains("read dialogue") || lower.contains("toggle speech") -> MetaCommand.TOGGLE_NARRATION
 

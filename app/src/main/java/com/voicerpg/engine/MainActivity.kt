@@ -162,7 +162,8 @@ class MainActivity : ComponentActivity() {
             val isEyesFreeMode by combatNarrator.isEyesFreeMode.collectAsState()
             val isPocketGuardLocked by combatNarrator.isPocketGuardLocked.collectAsState()
             val isPocketGuardEnabled by combatNarrator.isPocketGuardEnabled.collectAsState()
-            val isCombatNarrationEnabled by combatNarrator.isCombatNarrationEnabled.collectAsState()
+            val isSpellCalloutsEnabled by combatNarrator.isSpellCalloutsEnabled.collectAsState()
+            val isBattleReportsEnabled by combatNarrator.isBattleReportsEnabled.collectAsState()
             val speechState by speechManager.speechState.collectAsState()
             val rmsLevel by speechManager.rmsLevel.collectAsState()
             val isTtsSpeaking by combatNarrator.isSpeaking.collectAsState()
@@ -440,7 +441,8 @@ class MainActivity : ComponentActivity() {
                         isEyesFreeMode = isEyesFreeMode,
                         isNarrationEnabled = isNarrationEnabled,
                         isAutoPlayEnabled = storyState.isPureStoryMode,
-                        isCombatNarrationEnabled = isCombatNarrationEnabled,
+                        isSpellCalloutsEnabled = isSpellCalloutsEnabled,
+                        isBattleReportsEnabled = isBattleReportsEnabled,
                         isPocketGuardEnabled = isPocketGuardEnabled,
                         isReadChoicesEnabled = isReadChoicesEnabled,
                         isAutoReadHubChoices = isAutoReadHubChoices,
@@ -463,8 +465,12 @@ class MainActivity : ComponentActivity() {
                         onToggleAutoPlay = {
                             storyViewModel.toggleAutoPlay()
                         },
-                        onToggleCombatNarration = {
-                            combatNarrator.toggleCombatNarrationEnabled()
+                        onToggleSpellCallouts = {
+                            combatNarrator.toggleSpellCalloutsEnabled()
+                            storyViewModel.persistCurrentState()
+                        },
+                        onToggleBattleReports = {
+                            combatNarrator.toggleBattleReportsEnabled()
                             storyViewModel.persistCurrentState()
                         },
                         onTogglePocketGuard = {
@@ -475,7 +481,8 @@ class MainActivity : ComponentActivity() {
                             when (preset) {
                                 PlaystylePreset.POCKET_WALK -> {
                                     combatNarrator.setPocketGuardEnabled(true)
-                                    combatNarrator.setCombatNarrationEnabled(true)
+                                    combatNarrator.setSpellCalloutsEnabled(true)
+                                    combatNarrator.setBattleReportsEnabled(true)
                                     combatNarrator.setNarrationEnabled(true)
                                     combatNarrator.setReadChoicesEnabled(true)
                                     combatNarrator.setAutoReadHubChoices(true)
@@ -485,7 +492,8 @@ class MainActivity : ComponentActivity() {
                                 }
                                 PlaystylePreset.STORYBOOK -> {
                                     combatNarrator.setPocketGuardEnabled(false)
-                                    combatNarrator.setCombatNarrationEnabled(true)
+                                    combatNarrator.setSpellCalloutsEnabled(true)
+                                    combatNarrator.setBattleReportsEnabled(true)
                                     combatNarrator.setNarrationEnabled(true)
                                     combatNarrator.setReadChoicesEnabled(true)
                                     combatNarrator.setEyesFreeMode(true, lockGuard = false)
@@ -494,7 +502,8 @@ class MainActivity : ComponentActivity() {
                                 }
                                 PlaystylePreset.CLASSIC_TACTICAL -> {
                                     combatNarrator.setPocketGuardEnabled(false)
-                                    combatNarrator.setCombatNarrationEnabled(false)
+                                    combatNarrator.setSpellCalloutsEnabled(true)
+                                    combatNarrator.setBattleReportsEnabled(false)
                                     combatNarrator.setNarrationEnabled(true)
                                     combatNarrator.setReadChoicesEnabled(false)
                                     combatNarrator.setEyesFreeMode(false, lockGuard = false)

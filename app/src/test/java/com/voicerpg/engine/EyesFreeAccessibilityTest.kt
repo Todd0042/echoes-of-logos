@@ -174,8 +174,10 @@ class EyesFreeAccessibilityTest {
         // When running in unit tests without hardware TTS, suspend functions return immediately without hanging
         dummyNarrator.setEyesFreeMode(true)
         dummyNarrator.speakSuspend("Testing speech suspend")
-        dummyNarrator.narrateEnemyActionSuspend("Blighted Orc", "Aethel", 25, false)
-        dummyNarrator.narrateSpellCastSuspend("Aethel", "Fireball", "Blighted Orc", 65, false, "Solar")
+        dummyNarrator.setCombatActive(true)
+        dummyNarrator.sayAndWait(com.voicerpg.engine.audio.CombatSpeech.CALLOUT, "Fireball! Master!")
+        dummyNarrator.reportDamage(listOf("Orc" to 65), listOf("Orc"))
+        dummyNarrator.reportEnemyHit(listOf("Aethel" to 25), status = null, fallen = emptyList())
         dummyNarrator.narrateReinforcementsSuspend(1, listOf("Minion"))
         dummyNarrator.narrateConclusionSuspend(true)
         assertFalse(dummyNarrator.isSpeaking.value)

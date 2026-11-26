@@ -386,14 +386,14 @@ class NarrationAndOptionsTest {
     }
 
     @Test
-    fun testCombatNarrationAndPocketGuardDecoupling() {
-        // Default states
-        assertTrue(narrator.isCombatNarrationEnabled.value)
+    fun testCombatSpeechSettingsAndPocketGuardDecoupling() {
+        // Defaults: spell callouts on, battle reports off (pocket mode keeps the essential reports regardless).
+        assertTrue(narrator.isSpellCalloutsEnabled.value)
+        assertFalse(narrator.isBattleReportsEnabled.value)
         assertTrue(narrator.isPocketGuardEnabled.value)
 
-        // Turn off combat narration
-        narrator.setCombatNarrationEnabled(false)
-        assertFalse(narrator.isCombatNarrationEnabled.value)
+        narrator.setSpellCalloutsEnabled(false)
+        narrator.setBattleReportsEnabled(true)
 
         // Turn off pocket touch guard
         narrator.setPocketGuardEnabled(false)
@@ -410,23 +410,44 @@ class NarrationAndOptionsTest {
         narrator.lockPocketGuard()
         assertTrue(narrator.isPocketGuardLocked.value)
 
-        // Verify persistence via StoryViewModel
+        // Both combat speech settings persist and come back
         storyViewModel.persistCurrentState()
         val save = saveManager.load()
         assertNotNull(save)
         assertTrue(save!!.isPocketGuardEnabled)
-        assertFalse(save.isCombatNarrationEnabled)
+        assertEquals(false, save.isSpellCalloutsEnabled)
+        assertEquals(true, save.isBattleReportsEnabled)
 
-        // Test restoring from save
         val freshNarrator = CombatNarrator(context = null)
-        val freshVm = StoryViewModel(
-            speechManager = speechManager,
-            combatNarrator = freshNarrator,
-            saveManager = saveManager,
-            scopeOverride = CoroutineScope(Dispatchers.Default)
-        )
-        assertFalse(freshNarrator.isCombatNarrationEnabled.value)
+        StoryViewModel(speechManager = speechManager, combatNarrator = freshNarrator, saveManager = saveManager,
+            scopeOverride = CoroutineScope(Dispatchers.Default))
+        assertFalse(freshNarrator.isSpellCalloutsEnabled.value)
+        assertTrue(freshNarrator.isBattleReportsEnabled.value)
         assertTrue(freshNarrator.isPocketGuardEnabled.value)
+    }
+
+    @Test
+    fun testOldSaveWithOneCombatNarrationToggleMigratesToBothSettings() {
+        storyViewModel.persistCurrentState()
+        val current = saveManager.load()!!
+        for (old in listOf(true, false)) {
+            // A save from before the split: only the single toggle, no new fields.
+            saveManager.save(current.copy(isCombatNarrationEnabled = old, isSpellCalloutsEnabled = null, isBattleReportsEnabled = null))
+            val fresh = CombatNarrator(context = null)
+            StoryViewModel(speechManager = speechManager, combatNarrator = fresh, saveManager = saveManager,
+                scopeOverride = CoroutineScope(Dispatchers.Default))
+            assertEquals("callouts follow the old toggle ($old)", old, fresh.isSpellCalloutsEnabled.value)
+            assertEquals("reports follow the old toggle ($old)", old, fresh.isBattleReportsEnabled.value)
+        }
+    }
+
+    @Test
+    fun testCombatSpeechVoiceCommandsParsing() {
+        assertEquals(MetaCommand.TOGGLE_SPELL_CALLOUTS, IntentParser.parse("spell callouts").metaCommand)
+        assertEquals(MetaCommand.TOGGLE_SPELL_CALLOUTS, IntentParser.parse("callouts off").metaCommand)
+        assertEquals(MetaCommand.TOGGLE_BATTLE_REPORTS, IntentParser.parse("battle reports").metaCommand)
+        assertEquals(MetaCommand.TOGGLE_BATTLE_REPORTS, IntentParser.parse("combat reports on").metaCommand)
+        assertEquals("story narration is still its own command", MetaCommand.TOGGLE_NARRATION, IntentParser.parse("toggle narration").metaCommand)
     }
 
     @Test

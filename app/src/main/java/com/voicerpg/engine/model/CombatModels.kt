@@ -55,7 +55,9 @@ data class Spell(
     /** Game-written chants per tier name (BASIC..TRANSCENDENTAL) for hands-free presets; English only. */
     val presetChants: Map<String, String> = emptyMap(),
     /** Recorded clips played when this spell is cast (one at random). */
-    val soundBites: List<String> = emptyList()
+    val soundBites: List<String> = emptyList(),
+    /** A shorter name for the spoken spell callout (spells.json `calloutName`); blank = [name]. */
+    val calloutName: String = ""
 ) {
     val isCleanse: Boolean get() = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true)
 
@@ -100,6 +102,9 @@ data class PartyMember(
     val isUntargetable: Boolean = false,
     val spriteAlpha: Float? = null
 ) {
+    /** The name combat speech uses ("Cedric" for "Sir Cedric"). */
+    val spokenName: String get() = com.voicerpg.engine.audio.CombatLines.shortName(name)
+
     val isAlive: Boolean get() = (isGhost || currentHp > 0) && stance != CharacterStance.DEAD
     val isTurnReady: Boolean get() = isAlive && atbGauge >= 1.0f
     val hpRatio: Float get() = if (isGhost) 1.0f else if (isAlive) (currentHp.toFloat() / maxHp).coerceIn(0f, 1f) else 0f
@@ -144,8 +149,13 @@ data class Enemy(
     val taunts: List<String> = emptyList(),
     val hitReaction: HitReaction = HitReaction.FLINCH,
     /** A portrait panel for its ultimate (enemies.json `cutIn`). */
-    val cutIn: CutInSpec? = null
+    val cutIn: CutInSpec? = null,
+    /** How combat speech names it (enemies.json `shortName`); blank = the last word of [name]. */
+    val shortName: String = ""
 ) {
+    /** The name combat speech uses ("Orc" for "Blighted Orc"). */
+    val spokenName: String get() = com.voicerpg.engine.audio.CombatLines.shortName(name, shortName)
+
     val isAlive: Boolean get() = currentHp > 0
     val isTurnReady: Boolean get() = isAlive && atbGauge >= 1.0f
     val hpRatio: Float get() = if (isAlive) (currentHp.toFloat() / maxHp).coerceIn(0f, 1f) else 0f
@@ -193,6 +203,10 @@ enum class MetaCommand {
     LOCK_SCREEN,
     TOGGLE_AUTO_LISTEN,
     TOGGLE_NARRATION,
+    /** Options → Spell callouts ("spell callouts", "callouts"). */
+    TOGGLE_SPELL_CALLOUTS,
+    /** Options → Battle reports ("battle reports", "combat reports"). */
+    TOGGLE_BATTLE_REPORTS,
     TOGGLE_READ_CHOICES,
     TOGGLE_SPEAKER_ATTRIBUTION,
     TOGGLE_MUSIC,

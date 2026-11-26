@@ -237,6 +237,8 @@ data class SpellGraphicsDto(
 data class SpellDto(
     val id: String = "",
     val name: String = "",
+    /** What the spell callout says when [name] is too long to call out ("Rent Freeze!"). */
+    val calloutName: String? = null,
     val school: String = "PHYSICAL",
     val basePower: Int = 0,
     val mpCost: Int = 0,
@@ -325,6 +327,8 @@ data class EnemySpellsFileDto(
 data class EnemyDto(
     val id: String = "",
     val name: String = "",
+    /** How combat speech names it ("Orc" for "Blighted Orc"); blank = the last word of [name]. */
+    val shortName: String? = null,
     val subtitle: String = "",
     val family: String = "FLESH",
     val selfElement: String = "",
@@ -933,7 +937,8 @@ data class EnemyTemplate(
     val scale: Float = if (isBoss) com.voicerpg.engine.model.Enemy.DEFAULT_BOSS_SCALE else 1.0f,
     val taunts: List<String> = emptyList(),
     val hitReaction: com.voicerpg.engine.model.HitReaction = com.voicerpg.engine.model.HitReaction.FLINCH,
-    val cutIn: com.voicerpg.engine.model.CutInSpec? = null
+    val cutIn: com.voicerpg.engine.model.CutInSpec? = null,
+    val shortName: String = ""
 ) {
     fun toEnemy(
         instanceId: String? = null,
@@ -970,7 +975,8 @@ data class EnemyTemplate(
             scale = scale,
             taunts = taunts,
             hitReaction = hitReaction,
-            cutIn = cutIn
+            cutIn = cutIn,
+            shortName = if (nameOverride != null) "" else shortName
         )
     }
 }
@@ -1405,6 +1411,7 @@ class GameContentLoader(private val source: ContentSource) {
 
     private fun SpellDto.toSpell(): Spell = Spell(
         id = id,
+        calloutName = calloutName?.trim().orEmpty(),
         name = name.ifBlank { id },
         school = runCatching { SpellSchool.valueOf(school) }.getOrDefault(SpellSchool.PHYSICAL),
         basePower = basePower,
@@ -1527,6 +1534,7 @@ class GameContentLoader(private val source: ContentSource) {
     private fun EnemyDto.toTemplate(): EnemyTemplate = EnemyTemplate(
         id = id,
         name = name.ifBlank { id },
+        shortName = shortName?.trim().orEmpty(),
         subtitle = subtitle,
         family = family,
         selfElement = selfElement,

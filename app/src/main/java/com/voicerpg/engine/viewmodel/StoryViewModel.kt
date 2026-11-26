@@ -568,7 +568,8 @@ class StoryViewModel(
             )
             combatNarrator.setEyesFreeMode(existingSave.isEyesFreeMode, lockGuard = false)
             combatNarrator.setPocketGuardEnabled(existingSave.isPocketGuardEnabled)
-            combatNarrator.setCombatNarrationEnabled(existingSave.isCombatNarrationEnabled)
+            combatNarrator.setSpellCalloutsEnabled(existingSave.spellCallouts)
+            combatNarrator.setBattleReportsEnabled(existingSave.battleReports)
             combatNarrator.setNarrationEnabled(existingSave.isNarrationEnabled)
             combatNarrator.setReadChoicesEnabled(existingSave.isReadChoicesEnabled)
             combatNarrator.setAutoReadHubChoices(existingSave.isAutoReadHubChoices)
@@ -668,7 +669,8 @@ class StoryViewModel(
         )
         combatNarrator.setEyesFreeMode(existingSave.isEyesFreeMode, lockGuard = false)
         combatNarrator.setPocketGuardEnabled(existingSave.isPocketGuardEnabled)
-        combatNarrator.setCombatNarrationEnabled(existingSave.isCombatNarrationEnabled)
+        combatNarrator.setSpellCalloutsEnabled(existingSave.spellCallouts)
+        combatNarrator.setBattleReportsEnabled(existingSave.battleReports)
         combatNarrator.setNarrationEnabled(existingSave.isNarrationEnabled)
         combatNarrator.setReadChoicesEnabled(existingSave.isReadChoicesEnabled)
         combatNarrator.setAutoReadHubChoices(existingSave.isAutoReadHubChoices)
@@ -1401,7 +1403,9 @@ class StoryViewModel(
             recentDialogueLog = s.dialogueHistory.takeLast(60),
             isEyesFreeMode = combatNarrator.isEyesFreeMode.value,
             isPocketGuardEnabled = combatNarrator.isPocketGuardEnabled.value,
-            isCombatNarrationEnabled = combatNarrator.isCombatNarrationEnabled.value,
+            isCombatNarrationEnabled = combatNarrator.isSpellCalloutsEnabled.value || combatNarrator.isBattleReportsEnabled.value,
+            isSpellCalloutsEnabled = combatNarrator.isSpellCalloutsEnabled.value,
+            isBattleReportsEnabled = combatNarrator.isBattleReportsEnabled.value,
             isAutoListen = speechManager.isAutoListen.value,
             isAutoPlayEnabled = s.isPureStoryMode,
             isChimeMuted = speechManager.isChimeMuted.value,
