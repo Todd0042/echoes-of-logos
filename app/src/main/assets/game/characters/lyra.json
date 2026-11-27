@@ -24,6 +24,7 @@
     "startAtb": 0.35,
     "spellIds": [
       "soothing_rain",
+      "bloom_renewal",
       "briar_entangle",
       "deep_root"
     ],
@@ -33,7 +34,7 @@
   },
   "spellGrants": [
     {
-      "flag": "lyra_trial_complete",
+      "flag": "ch7_wyrm_defeated",
       "spellIds": [
         "verdant_cataclysm"
       ]

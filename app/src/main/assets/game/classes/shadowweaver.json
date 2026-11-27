@@ -10,8 +10,7 @@
   "preferredSchool": "SHADOW",
   "starterSpellIds": [
     "shadow_spike",
-    "void_drain",
-    "umbral_veil",
+    "mending_word",
     "attune"
   ],
   "voiceKeywords": [
@@ -21,5 +20,19 @@
     "warlock",
     "necromancer",
     "void"
+  ],
+  "spellGrants": [
+    {
+      "flag": "ch3_sentinels_complete",
+      "spellIds": [
+        "void_drain"
+      ]
+    },
+    {
+      "flag": "ch7_wyrm_defeated",
+      "spellIds": [
+        "umbral_veil"
+      ]
+    }
   ]
 }

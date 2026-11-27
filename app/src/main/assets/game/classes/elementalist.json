@@ -10,8 +10,7 @@
   "preferredSchool": "PYROMANCY",
   "starterSpellIds": [
     "fireball",
-    "frost_spike",
-    "chain_lightning",
+    "mending_word",
     "attune"
   ],
   "voiceKeywords": [
@@ -21,5 +20,19 @@
     "wizard",
     "sorcerer",
     "magus"
+  ],
+  "spellGrants": [
+    {
+      "flag": "ch3_sentinels_complete",
+      "spellIds": [
+        "frost_spike"
+      ]
+    },
+    {
+      "flag": "ch7_wyrm_defeated",
+      "spellIds": [
+        "chain_lightning"
+      ]
+    }
   ]
 }

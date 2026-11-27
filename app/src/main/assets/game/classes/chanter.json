@@ -10,8 +10,7 @@
   "preferredSchool": "HOLY",
   "starterSpellIds": [
     "temporal_stasis",
-    "haste_cadence",
-    "resonant_surge",
+    "mending_word",
     "attune"
   ],
   "voiceKeywords": [
@@ -21,5 +20,19 @@
     "vocalist",
     "skald",
     "cantor"
+  ],
+  "spellGrants": [
+    {
+      "flag": "ch3_sentinels_complete",
+      "spellIds": [
+        "haste_cadence"
+      ]
+    },
+    {
+      "flag": "ch7_wyrm_defeated",
+      "spellIds": [
+        "resonant_surge"
+      ]
+    }
   ]
 }

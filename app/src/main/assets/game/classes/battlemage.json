@@ -10,8 +10,7 @@
   "preferredSchool": "PHYSICAL",
   "starterSpellIds": [
     "flame_strike",
-    "arcane_barrier",
-    "thunder_cleave",
+    "mending_word",
     "attune"
   ],
   "voiceKeywords": [
@@ -21,5 +20,19 @@
     "warrior",
     "battle",
     "blade"
+  ],
+  "spellGrants": [
+    {
+      "flag": "ch3_sentinels_complete",
+      "spellIds": [
+        "arcane_barrier"
+      ]
+    },
+    {
+      "flag": "ch7_wyrm_defeated",
+      "spellIds": [
+        "thunder_cleave"
+      ]
+    }
   ]
 }
