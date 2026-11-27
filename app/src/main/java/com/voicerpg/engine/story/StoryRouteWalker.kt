@@ -26,6 +26,53 @@ object StoryRouteWalker {
     )
 
     private const val MAX_STEPS = 2500
+    /** A hub is revisited once per option; more than this means the walk is going round in circles. */
+    private const val MAX_VISITS = 40
+
+    /** One way through the game: a campaign track, a route flag (e.g. a department) or a hero class. */
+    data class RouteSpec(val label: String, val player: PlayerCustomization, val routeFlag: String? = null)
+
+    /** A story fight on a route: the state of the story when it starts, and how far along the route it is. */
+    data class RouteBattle(
+        val encounterId: String,
+        val nodeId: String,
+        val flags: Map<String, Boolean>,
+        val player: PlayerCustomization,
+        val partyStats: List<SavedCharacterStats>,
+        /** Position along the route, 0 (start) .. 1 (end). */
+        val progress: Float
+    )
+
+    /**
+     * Every way through the game: each campaign track (with its preset hero), else each route choice (e.g. each
+     * department), else each hero class the player can pick, else the one story.
+     */
+    fun routes(): List<RouteSpec> {
+        val tracks = GameContent.manifest.campaignTracks
+        if (tracks.size > 1) {
+            return tracks.map { t -> RouteSpec(t.displayName.ifBlank { t.id }, t.hero?.toCustomization(t, PlayerCustomization(campaignTrackId = t.id)) ?: PlayerCustomization(campaignTrackId = t.id)) }
+        }
+        val routeChoices = availableRouteChoices()
+        if (routeChoices.isNotEmpty()) {
+            return routeChoices.map { (flag, _) -> RouteSpec(flag, PlayerCustomization(name = "Hero"), routeFlag = flag) }
+        }
+        val classes = GameContent.classes
+        if (classes.size > 1) {
+            return classes.map { c -> RouteSpec(c.id, PlayerCustomization(name = "Hero", heroClassId = c.id)) }
+        }
+        return listOf(RouteSpec("story", PlayerCustomization(name = "Hero", heroClassId = classes.firstOrNull()?.id ?: "")))
+    }
+
+    /** The story fights on [route] in play order, each with the flags, hero and party it starts with. */
+    fun battlesOn(route: RouteSpec): List<RouteBattle> {
+        val walked = walk(route.player, emptyMap(), stopAtNodeId = null, routeFlagOverride = route.routeFlag)
+        val total = walked.size.coerceAtLeast(1)
+        return walked.mapIndexedNotNull { i, step ->
+            val encounterId = step.node.triggerBattleEncounterId ?: return@mapIndexedNotNull null
+            val player = route.player.copy(heroClassId = step.heroClassId ?: route.player.heroClassId)
+            RouteBattle(encounterId, step.node.id, step.flags, player, buildPartyStats(player, step.flags), i.toFloat() / (total - 1).coerceAtLeast(1))
+        }.distinctBy { it.encounterId }
+    }
 
     fun startNodeFor(player: PlayerCustomization): DialogueNode {
         val tracks = GameContent.manifest.campaignTracks
@@ -134,7 +181,9 @@ object StoryRouteWalker {
         val flags: Map<String, Boolean>,
         val visitedNodeIds: Set<String>,
         val decisionsMade: List<String>,
-        val defeatedEncounters: List<String>
+        val defeatedEncounters: List<String>,
+        /** A hero class a story choice assigned on the way (e.g. a department), if any. */
+        val heroClassId: String? = null
     )
 
     private fun walk(
@@ -156,13 +205,14 @@ object StoryRouteWalker {
         val defeated = linkedSetOf<String>()
         val visitCounts = mutableMapOf<String, Int>()
         val steps = mutableListOf<WalkStep>()
+        var assignedClass: String? = null
 
         var node: DialogueNode? = start
         var count = 0
         while (node != null && count++ < MAX_STEPS) {
             val visits = (visitCounts[node.id] ?: 0) + 1
             visitCounts[node.id] = visits
-            if (visits > 4) break
+            if (visits > MAX_VISITS) break
 
             node.changeSceneId?.let { scId -> GameContent.scenes[scId]?.let { currentScene = it } }
             node.setFlagOnEnter?.let { flags[it] = true }
@@ -175,30 +225,47 @@ object StoryRouteWalker {
                 flags = flags.toMap(),
                 visitedNodeIds = visited.toSet(),
                 decisionsMade = decisions.toList(),
-                defeatedEncounters = defeated.toList()
+                defeatedEncounters = defeated.toList(),
+                heroClassId = assignedClass
             )
             if (stopAtNodeId != null && node.id == stopAtNodeId) break
 
-            val hubRedirect = node.hubCompletion?.let { hc ->
-                if (hc.requiredFlags.all { flags[it] == true }) hc.redirectToNodeId else null
-            }
-            if (hubRedirect != null) {
-                node = GameContent.nodes[hubRedirect]
+            // The story's own hub redirect (StoryChoiceRules), so the walk sees the choices a player sees.
+            val effectiveHub = StoryChoiceRules.effectiveHub(node, flags, defeated.toList(), visited)
+            if (effectiveHub.id != node.id) {
+                node = effectiveHub
                 continue
             }
 
             if (node.choices.isNotEmpty()) {
-                val eligible = node.choices.filter { ch ->
-                    ch.requiredFlags.all { flags[it] == true } &&
-                        (ch.completionFlag == null || flags[ch.completionFlag] != true)
+                // The story's own rules (done and locked choices, played hub branches), so a replay sees what a
+                // player sees; a hub's unfinished options first, as Pure Story Mode plays it.
+                val eligible = StoryChoiceRules.eligible(node, flags, defeated.toList(), visited)
+                val routeChoice = if (prefix.isNotBlank() && chosenRouteFlag != null) eligible.firstOrNull { it.completionFlag == chosenRouteFlag } else null
+                // A branch into a battle not fought yet comes first (a player can take every fight a hub offers before
+                // finishing it; the balance simulator must see them all), then the hub's unfinished options.
+                fun leadsToNewBattle(c: com.voicerpg.engine.model.DialogueChoice): Boolean {
+                    var id: String? = c.nextNodeId
+                    repeat(6) {
+                        val n = GameContent.nodes[id] ?: return false
+                        n.triggerBattleEncounterId?.let { return it !in defeated }
+                        if (n.choices.isNotEmpty()) return false
+                        id = n.nextNodeIdFor(flags)
+                    }
+                    return false
                 }
-                val picked = if (prefix.isNotBlank() && chosenRouteFlag != null) {
-                    eligible.firstOrNull { it.completionFlag == chosenRouteFlag } ?: eligible.firstOrNull()
-                } else {
-                    eligible.firstOrNull()
-                } ?: break
+                val picked = routeChoice
+                    ?: eligible.firstOrNull(::leadsToNewBattle)
+                    ?: eligible.firstOrNull { it.completionFlag != null && flags[it.completionFlag] != true && (prefix.isBlank() || !it.completionFlag.startsWith(prefix)) }
+                    ?: eligible.firstOrNull()
+                if (picked == null) {
+                    // Nothing left to choose here: the story moves on by the node's own next step, as advancing does.
+                    node = node.nextNodeIdFor(flags)?.let { GameContent.nodes[it] } ?: break
+                    continue
+                }
                 decisions += picked.id
                 picked.completionFlag?.let { flags[it] = true }
+                picked.assignHeroClassId?.takeIf { it.isNotBlank() }?.let { assignedClass = it }
                 node = GameContent.nodes[picked.nextNodeId]
                 continue
             }

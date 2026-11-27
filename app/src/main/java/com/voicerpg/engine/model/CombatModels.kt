@@ -147,6 +147,8 @@ data class Enemy(
     val ultimateChargeLeft: Int = 0,
     /** The round it was last staggered in (one stagger per enemy per round); 0 = never. */
     val staggeredRound: Int = 0,
+    /** Its own turns left during which a new stun doesn't take (StatusSystem.STUN_FATIGUE_TURNS). */
+    val stunFatigue: Int = 0,
     /** Sprite size multiplier (enemies.json `scale`; bosses default 2.0). */
     val scale: Float = 1f,
     /** Lines it may shout when it telegraphs a move (enemies.json `taunts`). */

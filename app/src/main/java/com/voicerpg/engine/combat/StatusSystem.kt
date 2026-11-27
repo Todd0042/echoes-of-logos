@@ -69,17 +69,26 @@ object StatusSystem {
      * ATB speed multiplier from all active statuses. Immobility is a deep crawl, never a
      * hard 0: statuses only tick at the actor's turn, so a frozen gauge would deadlock.
      */
+    /** Slows stacked together (chill and root) never take a fighter below this share of its speed. */
+    const val SLOW_FLOOR = 0.4f
+
+    /** Turns after a stun ends during which a regular enemy (or a boss) shrugs off another stun. */
+    const val STUN_FATIGUE_TURNS = 2
+    const val BOSS_STUN_FATIGUE_TURNS = 3
+
+    fun isStun(s: StatusInstance): Boolean = s.status == StatusId.OVERLOAD || s.status == StatusId.FREEZE
+
     fun speedMult(statuses: List<StatusInstance>): Float {
-        var m = 1f
-        for (s in statuses) m *= when (s.status) {
-            StatusId.CHILL -> (1f - s.potPct * 2f).coerceIn(0.4f, 0.8f)
-            StatusId.ROOT -> (1f - s.potPct).coerceIn(0.2f, 0.65f)
-            StatusId.OVERLOAD -> 0.2f
-            StatusId.FREEZE -> 0.15f
-            StatusId.BLESS -> 1.25f
-            else -> 1f
+        var slow = 1f
+        var other = 1f
+        for (s in statuses) when (s.status) {
+            StatusId.CHILL -> slow *= (1f - s.potPct * 2f).coerceIn(0.4f, 0.8f)
+            StatusId.ROOT -> slow *= (1f - s.potPct).coerceIn(0.2f, 0.65f)
+            // A stun (overload, freeze) is the turn it skips; it doesn't also slow the gauge (that cost about five turns).
+            StatusId.BLESS -> other *= 1.25f
+            else -> {}
         }
-        return m.coerceAtLeast(0f)
+        return (slow.coerceAtLeast(SLOW_FLOOR) * other).coerceAtLeast(0f)
     }
 
     fun isStunned(statuses: List<StatusInstance>): Boolean =

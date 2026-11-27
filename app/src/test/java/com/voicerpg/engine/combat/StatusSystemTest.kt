@@ -60,8 +60,9 @@ class StatusSystemTest {
     fun `overload and freeze stun - chill and root slow but do not stun`() {
         val overload = listOf(StatusSystem.apply(StatusId.OVERLOAD, "MASTER", EnemyFamily.FLESH, 50f)!!)
         assertTrue(StatusSystem.isStunned(overload))
-        val crawl = StatusSystem.speedMult(overload)
-        assertTrue("stun must crawl (never a deadlocked gauge), got $crawl", crawl in 0.05f..0.25f)
+        // The stun is the turn it skips; the gauge keeps its pace (a crawl on top of the skip cost about five turns).
+        val pace = StatusSystem.speedMult(overload)
+        assertTrue("a stun doesn't slow the gauge, got $pace", pace == 1f)
         val chill = listOf(StatusSystem.apply(StatusId.CHILL, "ADEPT", EnemyFamily.FLESH, 50f)!!)
         val slow = StatusSystem.speedMult(chill)
         assertTrue("chilled speed $slow must be slowed but not immobile", slow in 0.3f..0.85f)

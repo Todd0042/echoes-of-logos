@@ -7,6 +7,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voicerpg.engine.combat.AffinityTable
+import com.voicerpg.engine.combat.AutoPlayer
+import com.voicerpg.engine.combat.AutoPolicy
 import com.voicerpg.engine.combat.BattleCue
 import com.voicerpg.engine.combat.CombatTiming
 import com.voicerpg.engine.combat.DamageInputs
@@ -728,7 +730,8 @@ class CombatViewModel(
             }
             val aliveHeroes = _state.value.party.filter { it.isAlive && !it.isGhost && !it.isUntargetable }.ifEmpty { mortalHeroes }
 
-            // 2. Begin-of-enemy-turn status effects: DoT ticks and stun/bind skips.
+            // 2. Begin-of-enemy-turn status effects: DoT ticks and stun/bind skips; stun fatigue wears off by a turn.
+            _state.update { s -> s.copy(enemies = s.enemies.map { if (it.id == enemy.id && it.stunFatigue > 0) it.copy(stunFatigue = it.stunFatigue - 1) else it }) }
             val livingSelf = _state.value.enemies.firstOrNull { it.id == enemy.id } ?: return@launch
             if (livingSelf.statuses.isNotEmpty()) {
                 val wasStunned = StatusSystem.isStunned(livingSelf.statuses)
@@ -1437,106 +1440,37 @@ class CombatViewModel(
         _state.value = _state.value.copy(isPureStoryMode = enabled)
     }
 
+    /** How auto-played heroes choose (Pure Story Mode: fastest) and the resonance their casts land at (x1.8). */
+    var autoPolicy: AutoPolicy = AutoPolicy.FASTEST
+        private set
+    var autoResonance: Float = PURE_STORY_RESONANCE
+        private set
+
+    /** The battle simulator plays with another policy and resonance (Pure Story Mode keeps the defaults). */
+    fun configureAutoPlay(policy: AutoPolicy, resonance: Float) {
+        autoPolicy = policy
+        autoResonance = resonance.coerceIn(1f, 3f)
+    }
+
+    /** The difficulty preset for story encounters (balance.json); null = the game's own. */
+    var difficultyOverride: String? = null
+
+    /** Told every auto-played move (the simulator counts heals and restores). */
+    var autoActionListener: ((PartyMember, Spell) -> Unit)? = null
+
     fun triggerAutoHeroAction(hero: PartyMember): Spell? {
         if (_state.value.phase != CombatPhase.PLAYER_INPUT) return null
-        val aliveEnemies = _state.value.enemies.filter { it.isAlive }
-
-        val isSupportOnly = hero.isGhost || !hero.canAttack || hero.spells.none { !it.isHeal && !it.cleansesDebuffs && it.basePower > 0 }
-        val nonHealSpells = hero.spells.filter { !it.isHeal && !it.cleansesDebuffs }
-        val affordableSpells = nonHealSpells.filter { it.mpCost <= hero.currentMp }
-
-        val chosenSpell = if (_state.value.isPureStoryMode && !isSupportOnly) {
-            val lowestAlly = _state.value.party.filter { it.isAlive && !it.isGhost }.minByOrNull { it.hpRatio }
-            val affordableHeals = hero.spells.filter { it.isHeal && it.mpCost <= hero.currentMp }
-            if (lowestAlly != null && lowestAlly.hpRatio < 0.25f && affordableHeals.isNotEmpty()) {
-                affordableHeals.maxByOrNull { it.healPctOfMax.takeIf { p -> p > 0f } ?: it.basePower.toFloat() }
-            } else {
-                val offensive = affordableSpells.filter { it.manaRestorePct == 0f && !it.isGuard && it.basePower > 0 }
-                fun multFor(spell: Spell, enemy: Enemy): Float {
-                    val knownWeak = _state.value.bestiaryWeaknesses[enemy.bestiaryKey].orEmpty()
-                    return if (spell.school.name in knownWeak) 2.0f else 1.0f
-                }
-                offensive.maxByOrNull { spell ->
-                    if (spell.hitsAll) aliveEnemies.sumOf { (spell.basePower * multFor(spell, it)).toDouble() }
-                    else aliveEnemies.maxOfOrNull { (spell.basePower * multFor(spell, it)).toDouble() } ?: 0.0
-                }
-                    ?: affordableSpells.firstOrNull { it.manaRestorePct > 0f }
-                    ?: nonHealSpells.firstOrNull { it.mpCost == 0 }
-                    ?: nonHealSpells.firstOrNull()
-            }
-        } else if (isSupportOnly) {
-            val affordable = hero.spells.filter { it.mpCost <= hero.currentMp }
-            val pool = if (affordable.isNotEmpty()) affordable else hero.spells
-            val lowestAlly = _state.value.party.filter { it.isAlive && !it.isGhost }.minByOrNull { it.hpRatio }
-            val debuffedAlly = _state.value.party.filter { it.isAlive && !it.isGhost }.firstOrNull { it.statuses.any { s -> s.isDebuffOnTarget } }
-
-            when {
-                // 1. If any living ally has debuffs and hero has a cleanse spell, prioritize cleansing
-                debuffedAlly != null && pool.any { it.cleansesDebuffs || it.isCleanse } -> {
-                    pool.firstOrNull { it.cleansesDebuffs || it.isCleanse }
-                }
-                // 2. If any living ally is injured and hero has a heal spell, prioritize healing
-                lowestAlly != null && lowestAlly.hpRatio < 0.85f && pool.any { it.isHeal } -> {
-                    pool.firstOrNull { it.isHeal }
-                }
-                // 3. Otherwise prefer guard, mana restore, heal, cleanse, or any available ability
-                else -> {
-                    pool.firstOrNull { it.isGuard || it.manaRestorePct > 0f }
-                        ?: pool.firstOrNull { it.isHeal }
-                        ?: pool.firstOrNull { it.cleansesDebuffs || it.isCleanse }
-                        ?: pool.firstOrNull()
-                }
-            }
-        } else if (aliveEnemies.size > 1) {
-            // 1. Always prefer AoE damage spells when there is more than 1 enemy
-            val affordableAoe = affordableSpells.filter { it.hitsAll && it.manaRestorePct == 0f && !it.isGuard }
-            if (affordableAoe.isNotEmpty()) {
-                affordableAoe.maxByOrNull { it.basePower } ?: affordableAoe.first()
-            } else {
-                val zeroCostAoe = nonHealSpells.filter { it.mpCost == 0 && it.hitsAll && it.manaRestorePct == 0f && !it.isGuard }
-                if (zeroCostAoe.isNotEmpty()) {
-                    zeroCostAoe.maxByOrNull { it.basePower } ?: zeroCostAoe.first()
-                } else {
-                    val offensive = affordableSpells.filter { it.manaRestorePct == 0f && !it.isGuard }
-                    offensive.maxByOrNull { it.basePower }
-                        ?: affordableSpells.firstOrNull { it.manaRestorePct > 0f }
-                        ?: nonHealSpells.firstOrNull { it.mpCost == 0 }
-                        ?: nonHealSpells.firstOrNull()
-                }
-            }
-        } else {
-            // Single enemy on field: use strongest offensive spell
-            val offensive = affordableSpells.filter { it.manaRestorePct == 0f && !it.isGuard }
-            offensive.maxByOrNull { it.basePower }
-                ?: affordableSpells.firstOrNull { it.manaRestorePct > 0f }
-                ?: nonHealSpells.firstOrNull { it.mpCost == 0 }
-                ?: nonHealSpells.firstOrNull()
-        }
-
-        if (chosenSpell != null) {
-            val aliveEnemy = _state.value.enemies.firstOrNull { it.isAlive && it.isTargeted }
-                ?: _state.value.enemies.firstOrNull { it.isAlive }
-            val chant = when {
-                chosenSpell.cleansesDebuffs || chosenSpell.isCleanse -> {
-                    val debuffedAlly = _state.value.party.filter { it.isAlive && !it.isGhost }.firstOrNull { it.statuses.any { s -> s.isDebuffOnTarget } }
-                    if (chosenSpell.hitsAll) "${chosenSpell.name} all"
-                    else if (debuffedAlly != null) "${chosenSpell.name} ${debuffedAlly.name}"
-                    else "${chosenSpell.name} all"
-                }
-                chosenSpell.isHeal || chosenSpell.isGuard -> {
-                    val lowestAlly = _state.value.party.filter { it.isAlive && !it.isGhost }.minByOrNull { it.hpRatio }
-                    if (chosenSpell.hitsAll) "${chosenSpell.name} all"
-                    else if (lowestAlly != null) "${chosenSpell.name} ${lowestAlly.name}"
-                    else chosenSpell.name
-                }
-                chosenSpell.manaRestorePct > 0f -> "attune"
-                chosenSpell.hitsAll -> "${chosenSpell.name} all"
-                aliveEnemy != null -> "${chosenSpell.name} ${aliveEnemy.name}"
-                else -> chosenSpell.name
-            }
-            submitTypedChant(chant)
-        }
-        return chosenSpell
+        val choice = AutoPlayer.choose(
+            policy = autoPolicy,
+            hero = hero,
+            party = _state.value.party,
+            enemies = _state.value.enemies,
+            knownWeak = { enemy -> _state.value.bestiaryWeaknesses[enemy.bestiaryKey].orEmpty() },
+            usesMana = GameContent.usesMana
+        ) ?: return null
+        autoActionListener?.invoke(hero, choice.spell)
+        submitTypedChant(choice.chant)
+        return choice.spell
     }
 
     fun openOptions() {
@@ -2092,8 +2026,10 @@ class CombatViewModel(
                 acousticProfile = acoustic,
                 ignoreNoveltyDecay = forcedAcoustic != null
             )
+            // Auto-played casts land at a fixed resonance (Pure Story Mode x1.8; the simulator sets its own).
             val resonance = if (_state.value.isPureStoryMode && typed) {
-                evaluated.copy(tier = ResonanceTier.MASTER, damageMultiplier = 1.8f, bonusPercent = 80)
+                val bonus = ((autoResonance - 1f) * 100f).roundToInt()
+                evaluated.copy(tier = ResonanceTier.fromBonusPercent(bonus), damageMultiplier = autoResonance, bonusPercent = bonus)
             } else evaluated
 
             val isSuperLogos = resonance.bonusPercent >= 100
@@ -2470,7 +2406,10 @@ class CombatViewModel(
                 random
             )
             val effectiveDamage = strike.damage
-            HitOutcome(enemy, effectiveDamage, strike.affinity, statusId?.let { StatusSystem.apply(it, resonance.tier.name, familyOf(enemy), effectiveDamage.toFloat()) })
+            // A stun doesn't take on an enemy still stunned or just out of one (stun fatigue): control buys time.
+            val landed = statusId?.let { StatusSystem.apply(it, resonance.tier.name, familyOf(enemy), effectiveDamage.toFloat()) }
+                ?.takeUnless { StatusSystem.isStun(it) && (enemy.stunFatigue > 0 || StatusSystem.isStunned(enemy.statuses)) }
+            HitOutcome(enemy, effectiveDamage, strike.affinity, landed)
         }
         val totalDamage = hits.sumOf { it.damage }
 
@@ -2499,7 +2438,10 @@ class CombatViewModel(
                     currentHp = newHp,
                     atbGauge = if (newHp <= 0) 0f else enemy.atbGauge,
                     isDamagedFlash = true,
-                    statuses = StatusSystem.merge(enemy.statuses, hit.landed)
+                    statuses = StatusSystem.merge(enemy.statuses, hit.landed),
+                    stunFatigue = if (hit.landed != null && StatusSystem.isStun(hit.landed))
+                        hit.landed.turnsLeft + if (enemy.isBoss) StatusSystem.BOSS_STUN_FATIGUE_TURNS else StatusSystem.STUN_FATIGUE_TURNS
+                    else enemy.stunFatigue
                 )
             } ?: enemy
         }
@@ -2695,7 +2637,15 @@ class CombatViewModel(
             } else member.copy(spells = knownSpellsOf(member.id).ifEmpty { member.spells })
         })
 
-        startEncounter(partyToUse, encounter.enemies.map { decorateEnemy(it) }, encounter.environment, encounter.environmentId)
+        // The difficulty preset (balance.json) scales every story enemy.
+        val preset = GameContent.balance.preset(difficultyOverride)
+        val enemies = encounter.enemies.map { decorateEnemy(it) }.map { e ->
+            if (preset.enemyHp == 1f && preset.enemyAttack == 1f) e else {
+                val hp = (e.maxHp * preset.enemyHp).roundToInt().coerceAtLeast(1)
+                e.copy(maxHp = hp, currentHp = hp, baseAttack = (e.baseAttack * preset.enemyAttack).roundToInt().coerceAtLeast(1))
+            }
+        }
+        startEncounter(partyToUse, enemies, encounter.environment, encounter.environmentId)
     }
 
     /** Persisted damaged HP/MP carry into the next fight; fresh battle with clean statuses. */
@@ -2825,6 +2775,9 @@ class CombatViewModel(
         /** How far a stagger pushes an enemy's gauge back. */
         const val STAGGER_GAUGE = 0.35f
         const val WEAKNESS_AFFINITY = 1.5f
+
+        /** Pure Story Mode's auto-played casts land at Master (x1.8). */
+        const val PURE_STORY_RESONANCE = 1.8f
         /** Below this a hit was resisted (the same line the damage numbers use for RESIST). */
         const val RESIST_AFFINITY = 0.95f
 

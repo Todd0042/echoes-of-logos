@@ -627,6 +627,33 @@ data class StatusCatalogFileDto(
     val statuses: Map<String, StatusDefDto>? = null
 )
 
+/** `combat/balance.json`: how the game's fights are balanced and its difficulty presets (plan E10). */
+data class BalanceFileDto(
+    /** The resonance multiplier fights are balanced at (x1.5 = the lower end of the mid range). */
+    val balanceResonance: Float? = null,
+    /** The preset in play; `"normal"` when not given. */
+    val difficulty: String? = null,
+    /** Named presets scaling the enemies: `{ "hard": { "enemyHp": 1.3, "enemyAttack": 1.2 } }`. */
+    val difficulties: Map<String, DifficultyDto>? = null,
+    /** 1 = the game's fights must meet the balance targets (BalanceContractTest); a report is written either way. */
+    val enforce: Int? = null
+)
+
+data class DifficultyDto(val enemyHp: Float? = null, val enemyAttack: Float? = null)
+
+/** A difficulty preset: multipliers on every story enemy's HP and attack. */
+data class DifficultyPreset(val enemyHp: Float = 1f, val enemyAttack: Float = 1f)
+
+data class BalanceSettings(
+    val balanceResonance: Float = 1.5f,
+    val difficulty: String = "normal",
+    val difficulties: Map<String, DifficultyPreset> = mapOf("normal" to DifficultyPreset()),
+    val enforce: Boolean = false
+) {
+    /** The preset called [name] (or the game's own), normal when unknown. */
+    fun preset(name: String? = null): DifficultyPreset = difficulties[name ?: difficulty] ?: difficulties["normal"] ?: DifficultyPreset()
+}
+
 data class AffinityMatrixFileDto(
     val floor: Float = 0.8f,
     val ceiling: Float = 2.0f,
@@ -1025,6 +1052,7 @@ class GameContentPack(
     val environments: Map<String, EnvironmentDefinition> = emptyMap(),
     val statusCatalog: Map<String, StatusDef> = emptyMap(),
     val affinityMatrix: AffinityMatrix? = null,
+    val balance: BalanceSettings = BalanceSettings(),
     val presentation: PresentationConfig = PresentationConfig(),
     val thesaurusRoots: Map<SpellSchool, List<String>> = emptyMap(),
     val metrics: Map<String, MetricDefinition> = emptyMap(),
@@ -1337,6 +1365,18 @@ class GameContentLoader(private val source: ContentSource) {
         val statusCatalog = (read("combat/status_catalog.json", StatusCatalogFileDto::class.java)?.statuses ?: emptyMap())
             .mapValues { (_, dto) -> dto.toStatusDef() }
 
+        val balanceDto = read("combat/balance.json", BalanceFileDto::class.java)
+        val balance = balanceDto?.let { b ->
+            val presets = (b.difficulties ?: emptyMap()).mapValues { (_, d) ->
+                DifficultyPreset(enemyHp = (d.enemyHp ?: 1f).coerceIn(0.25f, 4f), enemyAttack = (d.enemyAttack ?: 1f).coerceIn(0.25f, 4f))
+            }
+            BalanceSettings(
+                balanceResonance = (b.balanceResonance ?: 1.5f).coerceIn(1f, 3f),
+                difficulty = b.difficulty?.ifBlank { null } ?: "normal",
+                difficulties = mapOf("normal" to DifficultyPreset()) + presets,
+                enforce = (b.enforce ?: 0) == 1
+            )
+        } ?: BalanceSettings()
         val affinityMatrixDto = read("combat/affinity_matrix.json", AffinityMatrixFileDto::class.java)
         val affinityMatrix = affinityMatrixDto?.let {
             AffinityMatrix(
@@ -1445,6 +1485,7 @@ class GameContentLoader(private val source: ContentSource) {
             environments = environments,
             statusCatalog = statusCatalog,
             affinityMatrix = affinityMatrix,
+            balance = balance,
             presentation = presentation,
             thesaurusRoots = thesaurusRoots,
             metrics = metrics,
@@ -1906,6 +1947,8 @@ object GameContent {
     val environments: Map<String, EnvironmentDefinition> get() = pack.environments
     val statusCatalog: Map<String, StatusDef> get() = pack.statusCatalog
     val affinityMatrix: AffinityMatrix? get() = pack.affinityMatrix
+    /** `combat/balance.json` (defaults when the game has none). */
+    val balance: BalanceSettings get() = pack.balance
     fun schoolDisplayName(school: SpellSchool): String =
         affinityMatrix?.schoolNames?.get(school.name)?.takeIf { it.isNotBlank() } ?: school.displayName
     fun familyDisplayName(family: String): String =
