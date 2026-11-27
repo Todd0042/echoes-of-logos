@@ -21,12 +21,5 @@
     "vocalist",
     "skald",
     "cantor"
-  ],
-  "growth": {
-    "maxHp": 11,
-    "maxMp": 16,
-    "speed": 1,
-    "defense": 1,
-    "potencyPct": 0.05
-  }
+  ]
 }

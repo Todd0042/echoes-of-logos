@@ -9,7 +9,6 @@ import com.google.gson.annotations.SerializedName
 import com.voicerpg.engine.combat.EnemyMove
 import com.voicerpg.engine.combat.Moveset
 import com.voicerpg.engine.combat.PhaseRule
-import com.voicerpg.engine.combat.StatGrowth
 import com.voicerpg.engine.combat.StatusDef
 import com.voicerpg.engine.combat.StatusTier
 import com.voicerpg.engine.model.SpellGraphics
@@ -117,16 +116,6 @@ data class ResonanceProfileDto(
     }
 }
 
-data class GrowthDto(
-    val maxHp: Int = 18,
-    val maxMp: Int = 8,
-    val speed: Int = 1,
-    val defense: Int = 1,
-    val potencyPct: Float = 0.03f
-) {
-    fun toStatGrowth(): StatGrowth = StatGrowth(maxHp, maxMp, speed, defense, potencyPct)
-}
-
 data class CharacterCombatDto(
     val maxHp: Int = 100,
     val maxMp: Int = 50,
@@ -140,7 +129,6 @@ data class CharacterCombatDto(
     val spriteAlpha: Float? = null,
     val spellIds: List<String>? = null,
     val spells: List<SpellDto>? = null,
-    val growth: GrowthDto? = null,
     /** Portrait panel for MYTHIC+ casts: { portrait, color, quote }. */
     val cutIn: com.voicerpg.engine.model.CutInSpec? = null
 )
@@ -214,7 +202,6 @@ data class ClassDto(
     val preferredSchool: String = "PHYSICAL",
     val starterSpellIds: List<String>? = null,
     val voiceKeywords: List<String>? = null,
-    val growth: GrowthDto? = null,
     val portraitAsset: String? = null
 )
 
@@ -336,7 +323,6 @@ data class EnemyDto(
     val attack: Int = 10,
     val defense: Int = 0,
     val speed: Int = 50,
-    val xpReward: Int = 60,
     val movesetId: String = "",
     val isBoss: Boolean = false,
     val spriteId: String = "",
@@ -813,7 +799,6 @@ data class HeroClassDef(
     val preferredSchool: SpellSchool,
     val starterSpellIds: List<String>,
     val voiceKeywords: List<String>,
-    val growth: StatGrowth,
     val portraitAsset: String? = null
 )
 
@@ -829,7 +814,6 @@ data class CharacterCombat(
     val avatarTint: Color,
     val startAtb: Float,
     val spells: List<Spell>,
-    val growth: StatGrowth,
     val isGhost: Boolean = false,
     val canAttack: Boolean = true,
     val isUntargetable: Boolean = false,
@@ -909,8 +893,6 @@ data class GameCharacter(
             currentMp = c.maxMp,
             maxMp = c.maxMp,
             speed = c.speed,
-            level = 1,
-            xp = 0,
             spellIds = c.spells.map { it.id }
         )
     }
@@ -927,7 +909,6 @@ data class EnemyTemplate(
     val attack: Int,
     val defense: Int,
     val speed: Int,
-    val xpReward: Int,
     val movesetId: String,
     val isBoss: Boolean,
     val spriteId: String,
@@ -967,7 +948,6 @@ data class EnemyTemplate(
             spriteId = spriteId,
             family = family,
             selfElement = selfElement,
-            xpReward = xpReward,
             movesetId = movesetId,
             atbGauge = atbGauge,
             voiceAliases = voiceAliases,
@@ -1167,7 +1147,6 @@ class GameContentPack(
             preferredSchool = SpellSchool.PHYSICAL,
             starterSpellIds = emptyList(),
             voiceKeywords = listOf("adventurer", "hero"),
-            growth = StatGrowth(14, 10, 1, 1, 0.035f),
             portraitAsset = null
         )
     }
@@ -1443,7 +1422,6 @@ class GameContentLoader(private val source: ContentSource) {
         preferredSchool = runCatching { SpellSchool.valueOf(preferredSchool) }.getOrDefault(SpellSchool.PHYSICAL),
         starterSpellIds = starterSpellIds ?: emptyList(),
         voiceKeywords = voiceKeywords ?: emptyList(),
-        growth = (growth ?: GrowthDto()).toStatGrowth(),
         portraitAsset = portraitAsset
     )
 
@@ -1471,7 +1449,6 @@ class GameContentLoader(private val source: ContentSource) {
                 avatarTint = parseHexColor(c.avatarTint, Color(0xFF4FC3F7)),
                 startAtb = c.startAtb,
                 spells = allSpells,
-                growth = (c.growth ?: GrowthDto()).toStatGrowth(),
                 isGhost = c.isGhost,
                 canAttack = c.canAttack,
                 isUntargetable = c.isUntargetable,
@@ -1542,7 +1519,6 @@ class GameContentLoader(private val source: ContentSource) {
         attack = attack,
         defense = defense,
         speed = speed,
-        xpReward = xpReward,
         movesetId = movesetId,
         isBoss = isBoss,
         spriteId = spriteId,

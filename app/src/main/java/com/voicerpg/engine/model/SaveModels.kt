@@ -91,8 +91,6 @@ data class SavedCharacterStats(
     val currentMp: Int,
     val maxMp: Int,
     val speed: Int,
-    val level: Int = 1,
-    val xp: Int = 0,
     val spellIds: List<String> = emptyList()
 ) {
     companion object {
@@ -106,8 +104,6 @@ data class SavedCharacterStats(
                 currentMp = member.currentMp,
                 maxMp = member.maxMp,
                 speed = member.speed,
-                level = member.level,
-                xp = member.xp,
                 spellIds = member.spells.map { it.id }
             )
         }
@@ -115,7 +111,8 @@ data class SavedCharacterStats(
 }
 
 data class GameSaveData(
-    val saveVersion: Int = 1,
+    /** Format version; saves older than [CURRENT_VERSION] are cleared on load (see SaveManager). */
+    val saveVersion: Int = CURRENT_VERSION,
     val saveTimestamp: Long = System.currentTimeMillis(),
     val totalPlaytimeSeconds: Long = 0L,
 
@@ -181,4 +178,12 @@ data class GameSaveData(
 
     /** The saved battle reports setting; a save from before the split uses its single combat narration toggle. */
     val battleReports: Boolean get() = isBattleReportsEnabled ?: isCombatNarrationEnabled
+
+    companion object {
+        /**
+         * 2: levels and XP removed, spells worked out from story flags. Older saves (1, or 0 when the field is
+         * missing) are cleared rather than converted.
+         */
+        const val CURRENT_VERSION = 2
+    }
 }

@@ -37,7 +37,6 @@ class DamageResolverTest {
         val resolved = DamageResolver.resolve(
             DamageInputs(
                 spellBasePower = 100f,
-                attackerLevel = 1,
                 affinity = 2.0f,
                 resonanceMultiplier = 3.0f,
                 targetDefense = 0
@@ -68,16 +67,9 @@ class DamageResolverTest {
     }
 
     @Test
-    fun `level potency is a shallow foundation`() {
-        val l1 = DamageResolver.levelPower(100f, 1)
-        val l10 = DamageResolver.levelPower(100f, 10)
-        assertTrue("level 10 should only be ~27% stronger, got ${l10 / l1}", l10 / l1 < 1.35f)
-    }
-
-    @Test
     fun `heals scale with voice and never go negative`() {
         repeat(50) { seed ->
-            val heal = DamageResolver.resolveHeal(100f, 1, 1.0f, random = Random(seed))
+            val heal = DamageResolver.resolveHeal(100f, 1.0f, random = Random(seed))
             assertTrue(heal in 80..120)
         }
     }

@@ -27,13 +27,6 @@
       "venom_flurry",
       "quiet_lungs"
     ],
-    "growth": {
-      "maxHp": 13,
-      "maxMp": 8,
-      "speed": 2,
-      "defense": 1,
-      "potencyPct": 0.04
-    },
     "cutIn": {
       "quote": "Silence is my blade."
     }

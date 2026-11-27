@@ -43,8 +43,8 @@ class EconomyActionsTest {
             !siphon.isHeal && siphon.lifesteal && !siphon.hitsAll)
 
         // Party-wide potency split: 4 targets of a 110 heal must cost less each than a focused heal
-        val single = DamageResolver.resolveHeal(110f, 1, 1.5f, partyWide = false, random = kotlin.random.Random(42))
-        val party = DamageResolver.resolveHeal(110f, 1, 1.5f, partyWide = true, random = kotlin.random.Random(42))
+        val single = DamageResolver.resolveHeal(110f, 1.5f, partyWide = false, random = kotlin.random.Random(42))
+        val party = DamageResolver.resolveHeal(110f, 1.5f, partyWide = true, random = kotlin.random.Random(42))
         assertTrue("party=$party single=$single", party in (single * 0.55).toInt()..(single * 0.75).toInt())
     }
 

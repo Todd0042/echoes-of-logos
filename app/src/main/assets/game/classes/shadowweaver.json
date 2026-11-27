@@ -21,12 +21,5 @@
     "warlock",
     "necromancer",
     "void"
-  ],
-  "growth": {
-    "maxHp": 13,
-    "maxMp": 12,
-    "speed": 2,
-    "defense": 1,
-    "potencyPct": 0.04
-  }
+  ]
 }

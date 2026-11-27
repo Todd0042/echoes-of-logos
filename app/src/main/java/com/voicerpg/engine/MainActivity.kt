@@ -282,6 +282,8 @@ class MainActivity : ComponentActivity() {
                                 isAutoListen = isAutoListen,
                                 onContinue = { storyViewModel.continueGame() },
                                 onNewGame = { storyViewModel.startNewGameFlow() },
+                                startupNotice = storyState.startupNotice,
+                                onDismissStartupNotice = { storyViewModel.dismissStartupNotice() },
                                 onSelectSlot = { slot -> storyViewModel.selectSlot(slot) },
                                 onDeleteSlot = { slot -> storyViewModel.deleteSlot(slot) },
                                 onContinueSlot = { slot -> storyViewModel.continueGame(slot) },

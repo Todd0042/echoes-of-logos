@@ -18,8 +18,6 @@ import com.voicerpg.engine.combat.EnemyMove
 import com.voicerpg.engine.combat.Intent
 import com.voicerpg.engine.combat.Moveset
 import com.voicerpg.engine.combat.MovesetTable
-import com.voicerpg.engine.combat.Progression
-import com.voicerpg.engine.combat.ProgressMember
 import com.voicerpg.engine.combat.School
 import com.voicerpg.engine.combat.StatusId
 import com.voicerpg.engine.combat.StatusInstance
@@ -338,23 +336,19 @@ class CombatViewModel(
 
     var onContinueStory: (() -> Unit)? = null
 
-    // Persisted progression (level/xp + damaged HP/MP carry) applied when encounters start.
+    // Persisted HP/MP carry (and companion spells) applied when encounters start.
     private var importedStats: List<SavedCharacterStats> = emptyList()
     fun applySavedStats(stats: List<SavedCharacterStats>) {
         importedStats = stats
     }
 
-    private var lastVictoryOutcomes: List<com.voicerpg.engine.combat.ProgressOutcome> = emptyList()
-    val recentLevelUps: List<com.voicerpg.engine.combat.ProgressOutcome> get() = lastVictoryOutcomes.filter { it.levelsGained > 0 }
-
-    /** Lore-faithful combat doctrine from EnemyCodex: family, self-element, defense, xp, moveset. */
+    /** Lore-faithful combat doctrine from EnemyCodex: family, self-element, defense, moveset. */
     private fun decorateEnemy(enemy: Enemy): Enemy {
         val codex = EnemyCodex.entryOf(enemy.name)
         return enemy.copy(
             family = codex?.family ?: enemy.family,
             selfElement = codex?.selfElement?.ifEmpty { null } ?: enemy.selfElement.ifEmpty { null } ?: "",
             defense = if (codex != null) maxOf(codex.defense, enemy.defense) else enemy.defense,
-            xpReward = codex?.baseXp ?: enemy.xpReward,
             movesetId = codex?.moveset?.ifEmpty { null } ?: enemy.movesetId.ifEmpty { null } ?: ""
         )
     }
@@ -1016,13 +1010,12 @@ class CombatViewModel(
         )
     }
 
-    /** Shared victory conclusion: award XP, narrate, arm the continue/listen loop. */
+    /** Shared victory conclusion: narrate, arm the continue/listen loop. */
     private fun concludeVictory() {
         conclusionTransitionJob?.cancel()
         conclusionWatchdogJob?.cancel()
         _state.value = _state.value.copy(phase = CombatPhase.BATTLE_WON)
         cue(BattleCue.BattleEnd(victory = true))
-        val levelUpLines = awardVictoryXp()
 
         fun proceedToStory() {
             if (_state.value.phase == CombatPhase.BATTLE_WON && _state.value.isPureStoryMode) {
@@ -1031,11 +1024,7 @@ class CombatViewModel(
             }
         }
 
-        val fullVictoryText = if (!levelUpLines.isNullOrBlank()) {
-            "$levelUpLines ${com.voicerpg.engine.content.GameContent.manifest.victoryLine}"
-        } else {
-            com.voicerpg.engine.content.GameContent.manifest.victoryLine
-        }
+        val fullVictoryText = com.voicerpg.engine.content.GameContent.manifest.victoryLine
         if (_state.value.isPureStoryMode) {
             val wordCount = fullVictoryText.split(Regex("\\s+")).count { it.isNotBlank() }
             val estimatedDurationMs = maxOf(4000L, ((wordCount / 2.0f) * 1000L).toLong() + 3000L)
@@ -1050,7 +1039,6 @@ class CombatViewModel(
 
         combatNarrator.narrateConclusion(
             isVictory = true,
-            extraPrefix = levelUpLines,
             force = _state.value.isPureStoryMode
         ) {
             conclusionWatchdogJob?.cancel()
@@ -1109,57 +1097,6 @@ class CombatViewModel(
                 relistenAfter(150)
             }
         }
-    }
-
-    private fun awardVictoryXp(): String? {
-        val party = _state.value.party
-        if (party.isEmpty()) return null
-        val totalXp = _state.value.enemies.filterNot { it.isAlive }.sumOf { it.xpReward } +
-                if (_state.value.enemies.any { it.isBoss }) 300 else 0
-        val roster = party.map {
-            ProgressMember(
-                id = it.id,
-                classKey = Progression.classKey(it.id, it.loreClass),
-                level = it.level,
-                xp = it.xp,
-                alive = it.isAlive
-            )
-        }
-        val outcomes = Progression.awardXp(roster, totalXp)
-        lastVictoryOutcomes = outcomes
-        if (outcomes.isEmpty()) return null
-        _state.value = _state.value.copy(
-            party = _state.value.party.map { hero ->
-                val o = outcomes.firstOrNull { it.memberId == hero.id } ?: return@map hero
-                if (o.levelsGained == 0) hero
-                else hero.copy(
-                    level = o.newLevel,
-                    xp = o.newXp,
-                    maxHp = hero.maxHp + o.dMaxHp,
-                    currentHp = hero.currentHp + o.dMaxHp,
-                    maxMp = hero.maxMp + o.dMaxMp,
-                    currentMp = hero.currentMp + o.dMaxMp,
-                    speed = hero.speed + o.dSpeed,
-                    defense = hero.defense + o.dDefense
-                )
-            }
-        )
-        val levelUps = outcomes.filter { it.levelsGained > 0 }
-        if (levelUps.isNotEmpty()) {
-            val lines = levelUps.joinToString(" ") { "${it.memberId} ascends to level ${it.newLevel}!" }
-            levelUps.forEach { o ->
-                val hero = _state.value.party.firstOrNull { it.id == o.memberId }
-                val (lx, ly) = partyFloatSlot(o.memberId)
-                val fct = FloatingCombatText(text = "LEVEL ${hero?.level ?: o.newLevel}!", color = Color(0xFFFFD700), startX = lx, startY = ly, isCrit = true)
-                _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts + fct)
-                activeScope.launch {
-                    delay(1600)
-                    _state.value = _state.value.copy(floatingTexts = _state.value.floatingTexts.filterNot { f -> f.id == fct.id })
-                }
-            }
-            return lines
-        }
-        return null
     }
 
     private fun checkAndTransitionNextTurn() {
@@ -2292,7 +2229,6 @@ class CombatViewModel(
         val healAmount = if (spell.basePower > 0) {
             DamageResolver.resolveHeal(
                 spellBasePower = spell.basePower.toFloat(),
-                attackerLevel = caster.level,
                 resonanceMultiplier = resonance.damageMultiplier,
                 partyWide = targetsToHeal.size > 1,
                 random = random
@@ -2370,7 +2306,6 @@ class CombatViewModel(
             val strike = DamageResolver.resolve(
                 DamageInputs(
                     spellBasePower = spell.basePower.toFloat(),
-                    attackerLevel = caster.level,
                     affinity = eff,
                     resonanceMultiplier = resonance.damageMultiplier,
                     targetDefense = enemy.defense,
@@ -2537,9 +2472,7 @@ class CombatViewModel(
             spells = spells,
             avatarTint = tint,
             speed = heroStats?.speed ?: customization.heroClass.startingSpeed,
-            atbGauge = if (_state.value.phase == CombatPhase.INACTIVE) 0f else (_state.value.party.firstOrNull { it.id == "hero" }?.atbGauge ?: 0f),
-            level = heroStats?.level ?: 1,
-            xp = heroStats?.xp ?: 0
+            atbGauge = if (_state.value.phase == CombatPhase.INACTIVE) 0f else (_state.value.party.firstOrNull { it.id == "hero" }?.atbGauge ?: 0f)
         )
 
         val updatedParty = _state.value.party.map {
@@ -2594,7 +2527,7 @@ class CombatViewModel(
         startEncounter(partyToUse, encounter.enemies.map { decorateEnemy(it) }, encounter.environment, encounter.environmentId)
     }
 
-    /** Persisted level/xp + damaged HP/MP carry into the next fight; fresh battle with clean statuses. */
+    /** Persisted damaged HP/MP carry into the next fight; fresh battle with clean statuses. */
     internal fun applyImportedProgression(members: List<PartyMember>): List<PartyMember> {
         return members.map { member ->
             val saved = importedStats.firstOrNull { it.id == member.id } ?: return@map member
@@ -2613,8 +2546,6 @@ class CombatViewModel(
             }
 
             member.copy(
-                level = saved.level,
-                xp = saved.xp,
                 maxHp = saved.maxHp,
                 maxMp = saved.maxMp,
                 currentHp = currentHp,

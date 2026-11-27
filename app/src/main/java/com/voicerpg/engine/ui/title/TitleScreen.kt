@@ -63,6 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.window.Dialog
 import com.voicerpg.engine.audio.SpeechState
 import com.voicerpg.engine.content.GameContent
@@ -125,6 +126,8 @@ fun TitleScreen(
         defeatLine = "Defeat. Your voice fades.",
         titleBackgroundAsset = null
     ),
+    startupNotice: String? = null,
+    onDismissStartupNotice: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -183,6 +186,24 @@ fun TitleScreen(
                     )
                 )
         )
+
+        // One-time notice (e.g. saves from an older version were cleared); tap to dismiss.
+        if (startupNotice != null) {
+            Text(
+                text = startupNotice,
+                color = Color.White,
+                fontSize = 13.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 12.dp, start = 16.dp, end = 16.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color(0xE0263238))
+                    .clickable { onDismissStartupNotice() }
+                    .padding(horizontal = 14.dp, vertical = 10.dp)
+                    .zIndex(2f)
+            )
+        }
 
         // Main Title Screen Content
         Column(

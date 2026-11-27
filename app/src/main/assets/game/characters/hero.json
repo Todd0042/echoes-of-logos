@@ -23,13 +23,6 @@
       "chain_lightning",
       "attune"
     ],
-    "growth": {
-      "maxHp": 14,
-      "maxMp": 12,
-      "speed": 1,
-      "defense": 1,
-      "potencyPct": 0.04
-    },
     "cutIn": {
       "quote": "The Logos answers my voice!"
     }

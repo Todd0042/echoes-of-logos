@@ -9,54 +9,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class ProgressionTest {
-
-    @Test
-    fun `xp curve follows 80 plus 60 times level`() {
-        assertEquals(140, Progression.xpToNext(1))
-        assertEquals(680, Progression.xpToNext(10))
-    }
-
-    @Test
-    fun `multi level ups carry leftover xp and fallen members still gain at half share`() {
-        val roster = listOf(
-            ProgressMember("hero", "hero/elementalist", level = 1, xp = 0, alive = true),
-            ProgressMember("cedric", "cedric/templar", level = 1, xp = 0, alive = false)
-        )
-        val outcomes = Progression.awardXp(roster, 900)
-        val hero = outcomes.first { it.memberId == "hero" }
-        val cedric = outcomes.first { it.memberId == "cedric" }
-        assertTrue("hero must gain multiple levels from a big pool, got ${hero.levelsGained}", hero.levelsGained >= 2)
-        assertTrue("fallen cedric still gains", cedric.levelsGained >= 1)
-        assertTrue(hero.newXp < Progression.xpToNext(hero.newLevel))
-    }
-
-    @Test
-    fun `growth is shallow - level 20 stays well under a transcendental chant`() {
-        val at20 = DamageResolver.levelPower(100f, 20)
-        assertTrue("level potency at 20 = $at20 must stay below 2x", at20 < 200f)
-    }
-
-    @Test
-    fun `class keys map to real growth rows`() {
-        // Hero keys by declared hero class id and resolves to that class's growth curve.
-        val heroClassId = GameContent.classes.first().id
-        val heroKey = Progression.classKey("hero", heroClassId)
-        assertEquals("hero/$heroClassId", heroKey)
-        val expectedHeroGrowth = GameContent.classes.first { it.id == heroClassId }.growth
-        assertEquals(expectedHeroGrowth, Progression.growthFor(heroKey))
-
-        // Companions key by their own character id and resolve to the character's growth.
-        assertEquals("cedric", Progression.classKey("cedric", null))
-        val heroCharGrowth = GameContent.heroCharacter?.combat?.growth
-        if (heroCharGrowth != null) {
-            assertEquals(heroCharGrowth, Progression.growthFor("hero"))
-        }
-        // Unknown members still resolve to the engine default growth, never a crash.
-        assertTrue("unknown members resolve to the engine default growth", Progression.growthFor("__no_such_party_member__") == Progression.DEFAULT_GROWTH)
-    }
-}
-
 class EnemyBrainTest {
 
     private val boss = MovesetTable.movesetFor("boss_template")!!

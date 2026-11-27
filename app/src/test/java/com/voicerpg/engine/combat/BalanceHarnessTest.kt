@@ -108,7 +108,6 @@ class BalanceHarnessTest {
             val outcome = DamageResolver.resolve(
                 DamageInputs(
                     spellBasePower = 35f,
-                    attackerLevel = 3,
                     affinity = 1.0f,
                     resonanceMultiplier = 1.35f,
                     targetDefense = 0

@@ -73,7 +73,9 @@ data class StoryState(
     val pendingSelectedRegion: String = "",
     val selectedLanguage: String = "en",
     val selectedRegion: String = "",
-    val showFirstLaunchLanguagePrompt: Boolean = false
+    val showFirstLaunchLanguagePrompt: Boolean = false,
+    /** A one-time message for the title screen (e.g. saves from an older version were cleared); null when none. */
+    val startupNotice: String? = null
 )
 
 class StoryViewModel(
@@ -101,6 +103,9 @@ class StoryViewModel(
          * Chapter warp targets derived from scene data files (chapterIndex + entry node).
          * No chapters are hardcoded in the engine.
          */
+        /** Shown and spoken once when saves from an older version were cleared on start. */
+        const val OLD_SAVES_CLEARED_NOTICE = "Saves from an earlier version of the game were cleared."
+
         val DEBUG_CHAPTER_TARGETS: List<DebugChapterTarget>
             get() = GameContent.scenes.values
                 .distinctBy { it.chapterIndex }
@@ -598,6 +603,19 @@ class StoryViewModel(
                 showFirstLaunchLanguagePrompt = !globalSettings.isLanguageSetupCompleted
             )
         }
+
+        // Saves from an older format were cleared while the slots were read: say so once, on the title screen.
+        saveManager.load(SaveManager.STORY_MODE_SLOT)
+        if (saveManager.takeClearedOutdatedSaves() > 0) {
+            val notice = com.voicerpg.engine.localization.TranslationManager.translate(OLD_SAVES_CLEARED_NOTICE)
+            _state.value = _state.value.copy(startupNotice = notice)
+            combatNarrator.speak(notice, force = true)
+        }
+    }
+
+    /** Hides the title screen's one-time notice. */
+    fun dismissStartupNotice() {
+        _state.value = _state.value.copy(startupNotice = null)
     }
 
     /**
@@ -1377,8 +1395,6 @@ class StoryViewModel(
                 currentMp = member.currentMp,
                 maxMp = member.maxMp,
                 speed = member.speed,
-                level = member.level,
-                xp = member.xp,
                 spellIds = mergedSpells
             )
         }

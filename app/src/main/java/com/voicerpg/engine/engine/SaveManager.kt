@@ -82,6 +82,12 @@ class SaveManager(private val context: Context? = null) {
         }
     }
 
+    /** Saves from an older format [load] has cleared and nobody has been told about yet. */
+    private var clearedOutdatedSaves: Int = 0
+
+    /** How many older-format saves were cleared since the last call (for a one-time notice); resets to 0. */
+    fun takeClearedOutdatedSaves(): Int = clearedOutdatedSaves.also { clearedOutdatedSaves = 0 }
+
     init {
         migrateLegacySaveIfNeeded()
     }
@@ -179,7 +185,14 @@ class SaveManager(private val context: Context? = null) {
             }
 
             if (json.isNullOrBlank()) return null
-            gson.fromJson(json, GameSaveData::class.java)
+            val data = gson.fromJson(json, GameSaveData::class.java)
+            if (data.saveVersion < GameSaveData.CURRENT_VERSION) {
+                // A save from an older format (e.g. with levels) is cleared, not converted.
+                deleteSave(validSlot)
+                clearedOutdatedSaves++
+                return null
+            }
+            data
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -247,8 +260,6 @@ class SaveManager(private val context: Context? = null) {
             currentMp = heroClass.startingMp,
             maxMp = heroClass.startingMp,
             speed = heroClass.startingSpeed,
-            level = 1,
-            xp = 0,
             spellIds = starterSpells.map { it.id }
         )
 

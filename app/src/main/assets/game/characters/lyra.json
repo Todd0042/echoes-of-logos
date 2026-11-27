@@ -27,13 +27,6 @@
       "briar_entangle",
       "deep_root"
     ],
-    "growth": {
-      "maxHp": 15,
-      "maxMp": 10,
-      "speed": 1,
-      "defense": 1,
-      "potencyPct": 0.04
-    },
     "cutIn": {
       "quote": "The grove sings through me!"
     }
