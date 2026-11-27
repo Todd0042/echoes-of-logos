@@ -10,8 +10,9 @@ Per-enemy defenses for all **79 enemies** in [`enemies.json`](../app/src/main/as
 - Every other school uses the family table in [`affinity_matrix.json`](../app/src/main/assets/game/combat/affinity_matrix.json)
   (a school equal to the enemy's `selfElement` drops to 0.8). Some foes keep a family x2 on top of their own
   weakness (Verdant x2 to fire, Construct x2 to lightning, Undead x2 to holy); the reasons below say so where it matters.
-- **`armor`**: flat damage taken off every hit after defense (omitted = 0). `piercing` spells ignore it;
-  **no Echoes spell is `piercing` yet**, so armor is currently a straight reduction for everyone.
+- **`armor`**: armour is for blows. Its value comes off every **physical** hit after defense (omitted = 0). Lightning
+  conducts through it and hits an armoured foe **x1.25**; fire, frost, holy, shadow and nature ignore it.
+- **`neutral`**: schools that hit the enemy at x1.0 whatever its family and own element.
 - Weaknesses are learned by hitting (the "Weak!" callout) and remembered in the save's bestiary.
 
 Design rules followed: every boss has one clear weakness and a resistance; weaknesses follow each enemy's
@@ -42,7 +43,7 @@ Shadow is Zephyr (chapter 8 on) or a Shadowweaver Aethel; fire, frost and lightn
 
 | Enemy | First fight | Family | Weak (x2.0) | Resist (x0.8) | Armor | Why |
 |---|---|---|---|---|---|---|
-| Shadow Wisp | `prologue_solo` | Void | Pyromancy, Shadow | Cryomancy | - | Obsidian-glass husk of a stolen voice: flame shatters the glass (as the prologue says) and an umbral siphon drinks the voice out; born of the cold mist. |
+| Shadow Wisp | `prologue_solo` | Void | Pyromancy | Cryomancy | - | Obsidian-glass husk of a stolen voice: flame shatters the glass (as the prologue says); born of the cold mist. Shadow is **neutral** on it (x1.0), not resisted, since it's the first fight. |
 | Blighted Orc | `forest_ambush` | Flesh | Pyromancy | Shadow | 3 | Blight-rotted hide dries and burns; the corruption that made him drinks shadow. Scrap plate. |
 | Corrupted Archer | `forest_ambush` | Flesh | Electromancy | Pyromancy | - | Wiry sniper on a taut string: a jolt spoils his aim; his rain-soaked bog cloak won't catch. |
 | Void Shaman | `forest_ambush` | Void | Holy | Electromancy | - | A priest of the Silence: dawn-light unmakes his rites; the void he channels swallows the spark. |
@@ -149,9 +150,8 @@ With the family table alone (before this pass) there were **2 hard gaps** and 46
 weakness to hit at all:
 
 1. **Prologue, Shadowweaver vs Shadow Wisps** (solo fight): Shadow is x0.8 on Void and on a Shadow-element foe, and
-   a Shadowweaver has nothing else. Fixed by giving the wisp **Pyromancy and Shadow** weaknesses (the prologue's own
-   line: "the flame shattered their obsidian bodies"; the umbral siphon drinks the stolen voice out). This is the one
-   deliberate oddity in the table: a "Shadow" wisp that is weak to Shadow.
+   a Shadowweaver has nothing else. Fixed by making Shadow **neutral** on the wisp (x1.0, no resistance this early)
+   and giving it a **Pyromancy** weakness (the prologue's own line: "the flame shattered their obsidian bodies").
 2. **Chapter 6, Chanter vs Bog Behemoth**: Verdant resists lightning, holy and nature, which is the Chanter's whole
    party. Fixed with an **Electromancy** weakness (a waterlogged bulk conducts lightning).
 
