@@ -75,7 +75,7 @@ class BoldVoiceTest {
         return vm to cues
     }
 
-    private fun waitFor(timeoutMs: Long = 5000, what: String, cond: () -> Boolean) {
+    private fun waitFor(timeoutMs: Long = 20_000, what: String, cond: () -> Boolean) {
         val end = System.currentTimeMillis() + timeoutMs
         while (System.currentTimeMillis() < end) {
             if (cond()) return

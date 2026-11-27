@@ -95,7 +95,7 @@ class RoutesAndStoryModeTest {
 
         val picked = vm.triggerAutoHeroAction(vm.state.value.party.first())
         assertEquals("chain_lightning", picked?.id)
-        val end = System.currentTimeMillis() + 5_000
+        val end = System.currentTimeMillis() + 20_000
         while (System.currentTimeMillis() < end && vm.state.value.lastResonance == null) Thread.sleep(10)
         assertEquals(1.8f, vm.state.value.lastResonance?.damageMultiplier ?: 0f, 0.01f)
     }

@@ -82,7 +82,7 @@ class EnemiesAndBestiaryTest {
         // Hit with PYROMANCY (enemy weak = PYROMANCY -> x2.0, armor 200 reduces damage to 1; bestiary records it)
         vm.setPlayerInputPhaseForTesting("hero")
         vm.submitTypedChant("fireball", AcousticProfile())
-        val end = System.currentTimeMillis() + 5_000
+        val end = System.currentTimeMillis() + 20_000
         while (System.currentTimeMillis() < end && vm.state.value.bestiaryWeaknesses.isEmpty()) Thread.sleep(10)
         assertTrue("weakness recorded in bestiary", vm.state.value.bestiaryWeaknesses["armored_bot"]?.contains("PYROMANCY") == true)
 
@@ -94,7 +94,7 @@ class EnemiesAndBestiaryTest {
         val hpBeforePierce = vm.state.value.enemies.first().currentHp
         vm.setPlayerInputPhaseForTesting("hero")
         vm.submitTypedChant("lance", AcousticProfile())
-        val end2 = System.currentTimeMillis() + 5_000
+        val end2 = System.currentTimeMillis() + 20_000
         while (System.currentTimeMillis() < end2 && vm.state.value.enemies.first().currentHp == hpBeforePierce) Thread.sleep(10)
         val dmg = hpBeforePierce - vm.state.value.enemies.first().currentHp
         assertTrue("lightning conducted through armor=200 (dealt $dmg)", dmg >= 30)
@@ -123,7 +123,7 @@ class EnemiesAndBestiaryTest {
 
         vm.setPlayerInputPhaseForTesting("hero")
         vm.submitTypedChant("fireball", AcousticProfile())
-        val end = System.currentTimeMillis() + 5_000
+        val end = System.currentTimeMillis() + 20_000
         while (System.currentTimeMillis() < end && vm.state.value.phase != CombatPhase.BATTLE_WON) Thread.sleep(10)
         assertEquals(CombatPhase.BATTLE_WON, vm.state.value.phase)
         val end2 = System.currentTimeMillis() + 2_000

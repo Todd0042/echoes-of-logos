@@ -171,7 +171,9 @@ object SpriteLibrary {
         GameContent.pack.resolveSheet(key)?.let { r ->
             return SheetSprite(key, r.sheet, r.setting?.recolor ?: emptyMap(), r.setting?.scale ?: 1f)
         }
-        return GridSprite(key, PixelSpriteData.definitionFor(key))
+        // No sheet yet: the roster's placeholder (or a variant's base) may name a legacy text grid to draw.
+        val gridKey = GameContent.pack.gridKeyFor(key) ?: key
+        return GridSprite(key, PixelSpriteData.definitionFor(gridKey))
     }
 
     /** The sprite key of a party member (its character id) and of an enemy (its `spriteId`, else its id). */

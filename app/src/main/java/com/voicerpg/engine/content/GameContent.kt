@@ -1078,6 +1078,17 @@ class GameContentPack(
      * The sheet a sprite key draws: a variant of a sheet, the sheet itself, or the sheet named by the
      * character or enemy template with that id. Null when only a legacy text grid (or nothing) exists.
      */
+    /**
+     * The legacy text-grid key to draw [key] with when it has no sheet: the roster's placeholder, or a variant's
+     * base's placeholder, when that is a grid (enemy_sprites.json); null when the chain ends nowhere.
+     */
+    fun gridKeyFor(key: String, seen: Set<String> = emptySet()): String? {
+        if (key in seen) return null
+        if (enemySprites.containsKey(key)) return key
+        val setting = spriteSettings[key] ?: return null
+        return setting.placeholder?.let { gridKeyFor(it, seen + key) } ?: setting.base?.let { gridKeyFor(it, seen + key) }
+    }
+
     fun resolveSheet(key: String): ResolvedSheet? {
         direct(key)?.let { return it }
         characters[key]?.spriteId?.takeIf { it.isNotBlank() && it != key }?.let { id -> direct(id)?.let { return it } }

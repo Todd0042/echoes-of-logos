@@ -30,7 +30,7 @@ b7a9a936b4046ef1051bea803f48efb9ce8c0d28ef7f6f1b6056def0093aee56  app/src/main/j
 0ff8d815b97d9ebcdbf6f5cc780ca352cdcab6687321c04947294a05a5fba76f  app/src/main/java/com/voicerpg/engine/combat/MusicIntensityRule.kt
 dd3c067c6c2a2539d8ef2ececaf1e2e4fb12cff8bf2d5016905bb4bca2b8f869  app/src/main/java/com/voicerpg/engine/combat/StatusCatalogTable.kt
 f1a87bca62aace3770d200dbacda8468ba68cbb29c67341fdd9ebb886e06ca94  app/src/main/java/com/voicerpg/engine/combat/StatusSystem.kt
-71a7c87c9093fc1f23cc1d99ad7f39db2c5e3569bf0530ea219d68c319d0a2c2  app/src/main/java/com/voicerpg/engine/content/GameContent.kt
+9856a8982ed66e7539dddfe28fbf1b51b567490130f1a4bb11a19e2cc1931812  app/src/main/java/com/voicerpg/engine/content/GameContent.kt
 6929c215fa5a4d75d66b5ed3241c90dfa81d63f92952f5ba5c1c12c954d26f1e  app/src/main/java/com/voicerpg/engine/content/PresentationConfig.kt
 6124a481afa7a55b149bb4f75ca9f799a5118fcdf6317e174573386388402049  app/src/main/java/com/voicerpg/engine/content/SpriteSheets.kt
 6ac43f5c37fd4aa41f174ccaafa011937b6883fe17a1469cd2bcab6ef5314c13  app/src/main/java/com/voicerpg/engine/engine/IncidentManager.kt
@@ -109,7 +109,7 @@ d4704445c0f2df8063170211a80495582da7433e0a081666d7216f1989664d8c  app/src/main/j
 11595d9ff3f0b33194e2bc238e79d0a8f874a75cb93a8d2d68f239146e1f67df  app/src/main/java/com/voicerpg/engine/ui/sprites/PixelSpriteData.kt
 dbd1d55bc2a4c21cedf8098070caf4b077291db8ae35de2b6af09f1b93dac6ba  app/src/main/java/com/voicerpg/engine/ui/sprites/SpriteAnimator.kt
 4023368c4a943dc26ad87c545c4d4f3e5d9c1edaa0e55d2920566d4ed4e19232  app/src/main/java/com/voicerpg/engine/ui/sprites/SpriteCanvas.kt
-11b5819c9f4c60f132d9f5517a7bacfabd3b4bcc50b4cf0abf7bcd7cc178195d  app/src/main/java/com/voicerpg/engine/ui/sprites/SpriteSources.kt
+b5b821a721bb073636c09eb99b00bc6550673a25464524d9145c77358468abb6  app/src/main/java/com/voicerpg/engine/ui/sprites/SpriteSources.kt
 2b9c46b35ff5e8199f712e993dc63a3c57fdd33b914448d455f385934feba0c9  app/src/main/java/com/voicerpg/engine/ui/story/DialogueBacklogDialog.kt
 a19c8815bfe81272b3e8ab11f47a0ab4fe8fde2f80fa90ce0a279915142a7ad0  app/src/main/java/com/voicerpg/engine/ui/story/StoryAssetLoader.kt
 662f6af42fcb7a39777f68a3a451121b0c53ce080385d40aa1a4cb790cefc640  app/src/main/java/com/voicerpg/engine/ui/story/StoryScreen.kt
@@ -181,8 +181,8 @@ b63f7ff509c61a39a25fc7c2c761f9e92c4ee3d00f26be84560475eb958b33e8  app/src/test/j
 596ba966a6e2ff2033525992d35e9418eb75682a93e6e17126db0590f8d96445  app/src/test/java/com/voicerpg/engine/combat/ArmorLightningAndStunsTest.kt
 48a72ddce6d4328707dac091dbe3c6f163fed4a755b5475eac5657251db8721e  app/src/test/java/com/voicerpg/engine/combat/BalanceHarnessTest.kt
 36b0ac1437cbb8610e175635372c31d4f39d556818523af04e3dc8b3b3d25373  app/src/test/java/com/voicerpg/engine/combat/BattleAudioTest.kt
-ff822452f37e3927e3e6c50aeabf814aae3004e4a1e9efe0503b05296c16d465  app/src/test/java/com/voicerpg/engine/combat/BattleCueTest.kt
-c4e1b6bb2b8cc433aef46b8ac978b5caa87cce18cc2c0c995cad3ac93f6bfe64  app/src/test/java/com/voicerpg/engine/combat/BoldVoiceTest.kt
+6687fd9f7fec63b752e433d4f1fc8eec1d497922bb1574bbdcb09847aee127e2  app/src/test/java/com/voicerpg/engine/combat/BattleCueTest.kt
+87c5d664c319c38556881f08439400158fafb16fe25e323d2eff7d6a843461e4  app/src/test/java/com/voicerpg/engine/combat/BoldVoiceTest.kt
 a89f76a75dfcc51d718d09bcf33c71fe79a676c984303b564859480b18c35309  app/src/test/java/com/voicerpg/engine/combat/CombatLinesLengthTest.kt
 de4321dea4e542af0c10148d7e0a14245e1a3ebb95ee8aaecaf517efe9d39359  app/src/test/java/com/voicerpg/engine/combat/CombatPacingTest.kt
 d31dc00f071e7c04c492e51267171dff33f6540b0b64505d54f633b8115c63ee  app/src/test/java/com/voicerpg/engine/combat/CombatSpeechTest.kt
@@ -191,9 +191,9 @@ ed5bf25095c1b5f8170daab00aa308ed002592a9dcb3a28a3468705b25544598  app/src/test/j
 c21d0b697290d87668c6794a7d791ba25a99188e4819c5b536d44a3ad005e5d5  app/src/test/java/com/voicerpg/engine/combat/DamageResolverTest.kt
 ae44e2d6d1906c3ead3edb2073bfaff1dd833c0783293a8ba2dbd001f174fe8f  app/src/test/java/com/voicerpg/engine/combat/DoctrineIntegrationTest.kt
 516e738f9378d0dd9ee284fe28caa47d752930990e44760a5a0fc5524ddbb981  app/src/test/java/com/voicerpg/engine/combat/EconomyActionsTest.kt
-920f3a76c94e92f7cbd479c5ecc8d7859797119435fd33055ddcfd33f54912af  app/src/test/java/com/voicerpg/engine/combat/EnemiesAndBestiaryTest.kt
+6e01e2a8be3198fa2aea98a3a4159916be015bfdc4034ca413053d7f54d79e42  app/src/test/java/com/voicerpg/engine/combat/EnemiesAndBestiaryTest.kt
 a91644cf14a400fee597bcb39f85a2a2b2c8031db15092b9afdd20a9a8fdac7e  app/src/test/java/com/voicerpg/engine/combat/EnemyTelegraphTest.kt
-6b296aad044c823d4d9f225382a962663158090197f81ed9af450ed2ced19923  app/src/test/java/com/voicerpg/engine/combat/HealsAndRolesTest.kt
+f6cef4bfc18d49a89af3810ec4dff7c60426542e1b1d347426d25731720262e6  app/src/test/java/com/voicerpg/engine/combat/HealsAndRolesTest.kt
 e51e48b6b2bd3bc708b6dffd84cc1b68a53a058cb7d010d6f711b53bf5710839  app/src/test/java/com/voicerpg/engine/combat/NoLevelsTest.kt
 a7c78b06f034aae12576dae1e7d692dc803fa1be8d8e0018416e7cce1f9a5ea0  app/src/test/java/com/voicerpg/engine/combat/NoManaGameTest.kt
 140a9e55ee3a021ecad9d8369281e480be784f975fd41e5e5437e7b355bd54ab  app/src/test/java/com/voicerpg/engine/combat/StatusSystemTest.kt
@@ -204,6 +204,7 @@ e45b25d74e7c573a8184622bbc33ecfa75573d09a0867bf6f57d4723c36fadd9  app/src/test/j
 230dbbf85a5857ff8d90c42670e34474162ff4de32fc44f4a11b1bd16cee04a6  app/src/test/java/com/voicerpg/engine/content/PerspectiveAndSoundBitesTest.kt
 f0b66c1d8915350ebdbeecbf85098e37927c3a40f4b32084616dc54ee6c5b254  app/src/test/java/com/voicerpg/engine/content/PresentationConfigTest.kt
 61d746e029d4100bda5f0bdef8f97111f6f9c400c2884ec5f43015558b898b92  app/src/test/java/com/voicerpg/engine/content/ResonanceCalibrationContractTest.kt
+966e267ce63b8fc3c67aa41d0c56ec2133e8eb6948a1c1e696bb47b4537b091d  app/src/test/java/com/voicerpg/engine/content/RosterPlaceholderGridTest.kt
 941bc3f5f0849960ba5d4ce70446ef6423bbb987b83f8ca90b8451cb4784b220  app/src/test/java/com/voicerpg/engine/content/SelfieFilterConfigTest.kt
 b368b03884db484de6bd3b9a7ff747b1847540b95773a0902bcbb62964f9e9dc  app/src/test/java/com/voicerpg/engine/content/SpriteContractTest.kt
 f9bc7a57df6c9c7f423ed1037eb0b961c3cdcd1a8e3d8f2d403bb8ef792d3c71  app/src/test/java/com/voicerpg/engine/content/TemplateFixtureContentTest.kt
@@ -217,8 +218,8 @@ ef57db88c22b27f049dfda0b048ee6e0a3ab1e7fab404d19e9aa7267f9cf9737  app/src/test/j
 154bc8551e60eae3dead78319a9f9f4bdc94d00ab33e784001ab994427a6c6c5  app/src/test/java/com/voicerpg/engine/story/FlagRoutesTest.kt
 767b2d7ecd6d25f9b7022c1805d9a47cc0694dab2422eb66baa72ed6a40442b1  app/src/test/java/com/voicerpg/engine/story/HubBranchCompletionTest.kt
 85f1530894a271708b3992ff630c67880738ab7a79ecdb3e5914ca2bf89f8255  app/src/test/java/com/voicerpg/engine/story/MultiSlotHeroIdentityTest.kt
-748637b3f9f3273546caf23bd3db0cb63fa038756cce552ffc200863502af5e2  app/src/test/java/com/voicerpg/engine/story/RoutesAndStoryModeTest.kt
-f11b0cf09648e8b1854d37f1dfaf2085e3bf2dfa759cd038bc228c49c33ce60c  app/src/test/java/com/voicerpg/engine/story/SpellsFromTheStoryTest.kt
+632ca6d35df5ce67675b7a15157e6ff041c6a045a7c590c454e43e5d5a7cfed4  app/src/test/java/com/voicerpg/engine/story/RoutesAndStoryModeTest.kt
+341a6ca9c93cd700337cc8c0f33501196fefe450f48f3c5f6d18b644e24c238e  app/src/test/java/com/voicerpg/engine/story/SpellsFromTheStoryTest.kt
 cd1d9fca51d5f6ea6301fd300ce2d3ea90908a045d424fe606a71907cd133695  app/src/test/java/com/voicerpg/engine/story/StoryAutoPlayRandomChoiceTest.kt
 13f827e5ac66df06c10772655a136e105c69cef17132da513a52eb69362bd163  app/src/test/java/com/voicerpg/engine/story/StoryAutoPlayReachesTheEndTest.kt
 dff70162fc8978e707988c742784686315a0a5344f9f9ec7d75a2ff015b37645  app/src/test/java/com/voicerpg/engine/story/StoryNoDeadEndsTest.kt

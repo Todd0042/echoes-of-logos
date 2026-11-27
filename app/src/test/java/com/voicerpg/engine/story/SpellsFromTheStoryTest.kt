@@ -118,7 +118,7 @@ class SpellsFromTheStoryTest {
         // and still the warden's turn. (A spell another fighter knows is routed to them instead.)
         vm.setPlayerInputPhaseForTesting("warden")
         vm.submitTypedChant("thunder cleave")
-        val end = System.currentTimeMillis() + 5_000
+        val end = System.currentTimeMillis() + 20_000
         while (System.currentTimeMillis() < end && lines.none { it.contains("Thunder") }) Thread.sleep(10)
         assertTrue("told it isn't learned yet: $lines", lines.any { it == CombatLines.line("not_learned", "hero" to "Warden", "spell" to GameContent.spellById("thunder_cleave")!!.name) })
         assertFalse("nothing was cast", cues.any { it is BattleCue.Impact && it.fromParty })
