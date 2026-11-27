@@ -390,13 +390,15 @@ private fun TutorialCommandDock(
                     )
                 }
 
-                Text(
-                    text = "MP ${activeMember.currentMp}/${activeMember.maxMp}",
-                    color = MpBlue,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace
-                )
+                if (activeMember.maxMp > 0) {
+                    Text(
+                        text = "MP ${activeMember.currentMp}/${activeMember.maxMp}",
+                        color = MpBlue,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
             }
 
             // Hero Spells Bar (Clickable)
@@ -822,7 +824,7 @@ private fun CharacterJoinPreviewCard(charDef: com.voicerpg.engine.engine.Tutoria
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(text = "HP: ${charDef.maxHp}", color = Color(0xFF81C784), fontSize = 11.sp, fontFamily = FontFamily.Monospace)
-                Text(text = "MP: ${charDef.maxMp}", color = MpBlue, fontSize = 11.sp, fontFamily = FontFamily.Monospace)
+                if (charDef.maxMp > 0) Text(text = "MP: ${charDef.maxMp}", color = MpBlue, fontSize = 11.sp, fontFamily = FontFamily.Monospace)
                 Text(text = "Speed: ${charDef.speed}", color = LogosGold, fontSize = 11.sp, fontFamily = FontFamily.Monospace)
             }
         }
@@ -928,7 +930,7 @@ private fun PracticeCastPromptCard(
 
                 if (spellDef != null) {
                     Text(
-                        text = "${spellDef.school.displayName} (${spellDef.mpCost} MP)",
+                        text = if (spellDef.mpCost > 0) "${spellDef.school.displayName} (${spellDef.mpCost} MP)" else spellDef.school.displayName,
                         color = spellDef.school.themeColor,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,

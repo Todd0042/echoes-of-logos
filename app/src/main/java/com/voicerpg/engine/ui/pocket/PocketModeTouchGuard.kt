@@ -263,7 +263,7 @@ fun PocketModeTouchGuard(
                                         fontFamily = FontFamily.Monospace
                                     )
                                     Text(
-                                        text = "HP ${hero.currentHp}/${hero.maxHp}  MP ${hero.currentMp}/${hero.maxMp}",
+                                        text = "HP ${hero.currentHp}/${hero.maxHp}" + if (hero.maxMp > 0) "  MP ${hero.currentMp}/${hero.maxMp}" else "",
                                         color = Color(0xFF9E9E9E),
                                         fontSize = 10.sp,
                                         fontFamily = FontFamily.Monospace

@@ -23,14 +23,31 @@ import java.io.File
  * The fixture is engine-owned and synced to every game with the engine tests. Never edit it to make a
  * game's test pass: game-specific tests belong in the game's own test package (com.voicerpg.game).
  */
-class TemplateFixture : ExternalResource() {
+class TemplateFixture(
+    /**
+     * Optional edit of a throwaway copy of the fixture before it loads (e.g. a manifest switch), so a
+     * mechanics test can run the same template content under a different game setting.
+     */
+    private val customize: ((File) -> Unit)? = null
+) : ExternalResource() {
+    private var copy: File? = null
+
     override fun before() {
         GameContent.reset()
-        GameContent.initializeFromDirectory(dir())
+        val source = dir()
+        val loadFrom = if (customize == null) source else {
+            val tmp = kotlin.io.path.createTempDirectory("template-pack").toFile()
+            source.copyRecursively(tmp, overwrite = true)
+            customize.invoke(tmp)
+            copy = tmp
+            tmp
+        }
+        GameContent.initializeFromDirectory(loadFrom)
     }
 
     override fun after() {
         GameContent.reset() // the next test class loads the game's own content again
+        copy?.deleteRecursively()
     }
 
     companion object {

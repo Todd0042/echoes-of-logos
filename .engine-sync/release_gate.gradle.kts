@@ -1,3 +1,4 @@
+import java.time.Duration
 // .engine-sync/release_gate.gradle.kts: installed by voice-rpg-engine (scripts/sync_engine_to_games.sh); don't edit
 // in the game. Applied from app/build.gradle.kts.
 //
@@ -15,4 +16,6 @@ tasks.matching { it.name in releasePackaging }.configureEach {
 // (a new sprite sheet, an enemy flagged as a boss) re-runs the tests instead of reporting an old result.
 tasks.withType<Test>().configureEach {
     inputs.dir("src/main/assets").withPropertyName("gameContent").withPathSensitivity(PathSensitivity.RELATIVE)
+    // A test that waits forever (e.g. for a step the game's content doesn't have) fails the run instead of hanging it.
+    timeout.set(Duration.ofMinutes(20))
 }

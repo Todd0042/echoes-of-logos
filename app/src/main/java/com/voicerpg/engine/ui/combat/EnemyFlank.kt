@@ -1,28 +1,32 @@
 package com.voicerpg.engine.ui.combat
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.voicerpg.engine.model.CharacterStance
 import com.voicerpg.engine.model.Enemy
 import com.voicerpg.engine.ui.fx.CombatantFx
 import com.voicerpg.engine.ui.sprites.PixelCharacterView
 
+/**
+ * The enemies' side of the arena: the group in formation ([BattleFormation]), full size (each at its own `scale`),
+ * facing the party, bosses at the back by default ([BattleFormation.enemyFrontOrder]); [frontIds] overrides who
+ * stands in front, front first.
+ */
 @Composable
 fun EnemyFlank(
     enemies: List<Enemy>,
@@ -34,98 +38,42 @@ fun EnemyFlank(
     onSpriteBounds: ((String, androidx.compose.ui.geometry.Rect) -> Unit)? = null,
     /** Enemies whose health runs in a boss bar on top (BattleHud): they get no sliver on the field. */
     bossBarIds: Set<String> = emptySet(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    frontIds: List<String>? = null
 ) {
-    val isLargeHorde = enemies.size > 3
-
-    if (!isLargeHorde) {
-        // Diagonal SNES-style staggered enemy formation
-        StageColumn(
-            modifier = modifier.fillMaxHeight().padding(end = 10.dp),
-            horizontalAlignment = Alignment.End
-        ) {
-            enemies.forEachIndexed { index, enemy ->
-                val depthRatio = if (enemies.size <= 1) 0.5f else index.toFloat() / (enemies.size - 1)
-                val depthScale = 0.92f + depthRatio * 0.14f
-                val staggerX = (-index * 10).dp
-                EnemyCard(
-                    enemy = enemy,
-                    isCompact = false,
-                    depthScale = depthScale,
-                    onSelectEnemy = onSelectEnemy,
-                    onPositionEnemy = onPositionEnemy,
-                    arenaCoordinates = arenaCoordinates,
-                    fx = fxOf?.invoke(enemy.id),
-                    onSpriteBounds = onSpriteBounds,
-                    hasBossBar = enemy.id in bossBarIds,
-                    modifier = Modifier.offset(x = staggerX)
-                )
-            }
+    val density = LocalDensity.current.density
+    val figures = remember(enemies.map { Triple(it.id, it.spriteId, it.scale) }, density) { enemies.map { BattleFormation.figureOf(it, density) } }
+    StageFormation(
+        figures = figures,
+        facingRight = false,
+        activeId = null,
+        frontOrder = frontIds ?: BattleFormation.enemyFrontOrder(enemies),
+        modifier = modifier.fillMaxHeight(),
+        fighter = { i ->
+            val enemy = enemies[i]
+            EnemyCard(
+                enemy = enemy,
+                onPositionEnemy = onPositionEnemy,
+                arenaCoordinates = arenaCoordinates,
+                fx = fxOf?.invoke(enemy.id),
+                onSpriteBounds = onSpriteBounds,
+                hasBossBar = enemy.id in bossBarIds
+            )
+        },
+        hitTarget = { i ->
+            val enemy = enemies[i]
+            Box(
+                Modifier
+                    .semantics { contentDescription = enemy.name }
+                    .clickable(enabled = enemy.isAlive) { onSelectEnemy(enemy) }
+            )
         }
-    } else {
-        // 2-Column Staggered JRPG Formation (4 to 6 enemies)
-        // Front row (closer to heroes) and Back row (rearguard); bosses take the back row
-        val (bosses, others) = enemies.partition { it.isBoss }
-        val frontRow = others.filterIndexed { index, _ -> index % 2 == 0 }
-        val backRow = bosses + others.filterIndexed { index, _ -> index % 2 != 0 }
-
-        Row(
-            modifier = modifier.fillMaxHeight().padding(end = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End)
-        ) {
-            // Front Row (closer to heroes)
-            StageColumn(
-                modifier = Modifier.fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                depth = BattleStage.FRONT_COLUMN
-            ) {
-                frontRow.forEachIndexed { index, enemy ->
-                    val depthScale = 0.96f + index * 0.05f
-                    EnemyCard(
-                        enemy = enemy,
-                        isCompact = true,
-                        depthScale = depthScale,
-                        onSelectEnemy = onSelectEnemy,
-                        onPositionEnemy = onPositionEnemy,
-                        arenaCoordinates = arenaCoordinates,
-                        fx = fxOf?.invoke(enemy.id),
-                        onSpriteBounds = onSpriteBounds,
-                        hasBossBar = enemy.id in bossBarIds
-                    )
-                }
-            }
-
-            // Back Row (rearguard)
-            StageColumn(
-                modifier = Modifier.fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                depth = BattleStage.BACK_COLUMN
-            ) {
-                backRow.forEachIndexed { index, enemy ->
-                    val depthScale = 0.88f + index * 0.04f
-                    EnemyCard(
-                        enemy = enemy,
-                        isCompact = true,
-                        depthScale = depthScale,
-                        onSelectEnemy = onSelectEnemy,
-                        onPositionEnemy = onPositionEnemy,
-                        arenaCoordinates = arenaCoordinates,
-                        fx = fxOf?.invoke(enemy.id),
-                        onSpriteBounds = onSpriteBounds,
-                        hasBossBar = enemy.id in bossBarIds
-                    )
-                }
-            }
-        }
-    }
+    )
 }
 
 @Composable
 private fun EnemyCard(
     enemy: Enemy,
-    isCompact: Boolean,
-    depthScale: Float = 1f,
-    onSelectEnemy: (Enemy) -> Unit,
     onPositionEnemy: ((String, Offset) -> Unit)? = null,
     arenaCoordinates: LayoutCoordinates? = null,
     fx: CombatantFx? = null,
@@ -166,17 +114,17 @@ private fun EnemyCard(
         isTargeted = enemy.isAlive && enemy.isTargeted,
         stance = stance,
         isFlippedHorizontally = true,
-        pixelSize = (if (isCompact) 1.65.dp else 2.2.dp) * com.voicerpg.engine.ui.sprites.SpriteSizing.enemyFactor(enemy, sprite),
+        pixelSize = BattleFormation.ENEMY_PIXEL_DP.dp * com.voicerpg.engine.ui.sprites.SpriteSizing.enemyFactor(enemy, sprite),
         sprite = sprite,
         baseAnim = com.voicerpg.engine.ui.sprites.SpriteBase.of(enemy),
-        depthScale = depthScale,
         sliverAlpha = if (hasBossBar) null else BattleHud.sliverAlpha(enemy, fx, hasBossBar = false),
         fx = fx,
         onSpriteLayout = if (onSpriteBounds == null) null else { coords ->
             val arena = arenaCoordinates
             if (arena != null && arena.isAttached && coords.isAttached) onSpriteBounds(enemy.id, arena.localBoundingBoxOf(coords))
         },
-        onClick = if (enemy.isAlive) { { onSelectEnemy(enemy) } } else null,
+        // Taps land on the formation's hit target over the body (StageFormation), not on the whole card.
+        onClick = null,
         modifier = modifier.onGloballyPositioned { cardCoords = it }
     )
 }

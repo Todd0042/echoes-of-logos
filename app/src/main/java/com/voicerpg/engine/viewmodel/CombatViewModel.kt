@@ -1845,7 +1845,8 @@ class CombatViewModel(
             "attune", "breathe", "breath", "steady", "concentrate", "center", "centre",
             "recover mana", "restore mana", "focus", "still", "hush", "deep root", "quiet lungs"
         )
-        val isBreathUtterance = BREATH_KEYWORDS.any { lower.contains(it) }
+        // Only a game with mana has attune; elsewhere these are ordinary words ("focus", "steady").
+        val isBreathUtterance = GameContent.usesMana && BREATH_KEYWORDS.any { lower.contains(it) }
 
         fun spellMatchesUtterance(spell: Spell): Boolean {
             if (spell.manaRestorePct != 0f) return false

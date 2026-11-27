@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -75,6 +76,45 @@ object BattleHud {
         val ultimateCharge: Float?
     )
 
+    /** How the party chips share their row: [compact] chips for big parties, [scrolls] only if even those don't fit. */
+    data class ChipLayout(val compact: Boolean, val chipWidthDp: Float, val spacingDp: Float, val scrolls: Boolean)
+
+    /** Parties this big use compact chips (short name, gauges only). */
+    const val COMPACT_FROM = 5
+    const val FULL_CHIP_MIN_DP = 64f
+    const val FULL_CHIP_MAX_DP = 92f
+    const val FULL_CHIP_SPACING_DP = 4f
+    const val COMPACT_CHIP_MIN_DP = 34f
+    const val COMPACT_CHIP_MAX_DP = 64f
+    const val COMPACT_CHIP_SPACING_DP = 3f
+    const val COMPACT_CHIP_PADDING_DP = 3f
+    const val COMPACT_NAME_SP = 7f
+    /** A compact chip's name is at most this many characters. */
+    const val SHORT_NAME_CHARS = 6
+
+    /** Width math for [count] chips in a row [rowWidthDp] wide. */
+    fun chipLayout(count: Int, rowWidthDp: Float): ChipLayout {
+        val compact = count >= COMPACT_FROM
+        val (min, max, gap) = if (compact) Triple(COMPACT_CHIP_MIN_DP, COMPACT_CHIP_MAX_DP, COMPACT_CHIP_SPACING_DP)
+        else Triple(FULL_CHIP_MIN_DP, FULL_CHIP_MAX_DP, FULL_CHIP_SPACING_DP)
+        val n = count.coerceAtLeast(1)
+        val share = (rowWidthDp - (n - 1) * gap) / n
+        return ChipLayout(compact, share.coerceIn(min, max), gap, scrolls = share < min)
+    }
+
+    /**
+     * A name short enough for a compact chip: its first word of four or more letters (a title like "Sir" is
+     * skipped), else its first word, cut to [SHORT_NAME_CHARS].
+     */
+    fun shortName(name: String): String {
+        val words = name.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
+        val word = words.firstOrNull { it.length > 3 } ?: words.firstOrNull() ?: return name
+        return word.take(SHORT_NAME_CHARS)
+    }
+
+    /** About how wide [text] is in a compact chip's monospace name (0.6 em per character). */
+    fun compactNameWidthDp(text: String): Float = text.length * COMPACT_NAME_SP * 0.6f
+
     /** At most this many boss bars stack on top (a third boss shares the field's slivers instead). */
     const val MAX_BOSS_BARS = 2
 
@@ -135,59 +175,92 @@ private fun Gauge(ratio: Float, color: Color, height: Dp, modifier: Modifier = M
 }
 
 /**
- * One chip per hero (name, HP, and HP/MP/turn gauges), the acting hero outlined in gold. Tapping a living hero
- * selects them. Chips share the row's width and scroll sideways if a large party doesn't fit.
+ * One chip per hero, the acting hero outlined in gold; tapping a living hero selects them. Up to four: name, HP and
+ * HP/MP/turn gauges, scrolling sideways if they don't fit. Five or six: compact chips sharing the row evenly (short
+ * name, HP bar, MP bar for a hero with mana, turn gauge), so six fit a phone's row ([BattleHud.chipLayout]).
  */
 @Composable
 fun PartyChips(chips: List<BattleHud.PartyChip>, onSelect: (String) -> Unit, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier.horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        chips.forEach { chip ->
-            val border = when {
-                chip.isActive -> LogosGold
-                chip.isReady -> Color(0xFFFFB74D)
-                else -> Color(0xFF37474F)
-            }
-            Column(
-                modifier = Modifier
-                    .widthIn(min = 64.dp, max = 92.dp)
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(if (chip.isActive) Color(0xFF2A2412) else Color(0xFF161A22))
-                    .border(1.dp, border, RoundedCornerShape(5.dp))
-                    .clickable(enabled = !chip.isFallen) { onSelect(chip.id) }
-                    .padding(horizontal = 5.dp, vertical = 3.dp)
-                    .graphicsLayer { alpha = if (chip.isFallen) 0.55f else 1f }
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = if (chip.isFallen) "💀 ${chip.name}" else chip.name,
-                        color = if (chip.isActive) LogosGold else Color(0xFFE0E0E0),
-                        fontSize = 8.5.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
-                    Spacer(Modifier.width(3.dp))
-                    Text(
-                        text = "${chip.hp}",
-                        color = BattleHud.hpColor(chip.hpRatio),
-                        fontSize = 8.sp,
-                        fontFamily = FontFamily.Monospace,
-                        maxLines = 1
-                    )
-                }
-                Spacer(Modifier.height(2.dp))
-                Gauge(chip.hpRatio, BattleHud.hpColor(chip.hpRatio), 3.dp, Modifier.fillMaxWidth())
-                Spacer(Modifier.height(1.dp))
-                Gauge(chip.mpRatio, MpBlue, 2.dp, Modifier.fillMaxWidth())
-                Spacer(Modifier.height(1.dp))
-                Gauge(chip.atbRatio, if (chip.isReady) LogosGold else Color(0xFFFF9800), 2.dp, Modifier.fillMaxWidth())
+    BoxWithConstraints(modifier = modifier) {
+        val layout = BattleHud.chipLayout(chips.size, maxWidth.value)
+        val rowModifier = if (layout.scrolls || !layout.compact) Modifier.horizontalScroll(rememberScrollState()) else Modifier.fillMaxWidth()
+        Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(layout.spacingDp.dp)) {
+            chips.forEach { chip ->
+                val width = if (layout.compact && !layout.scrolls) Modifier.weight(1f).widthIn(max = BattleHud.COMPACT_CHIP_MAX_DP.dp)
+                else if (layout.compact) Modifier.width(BattleHud.COMPACT_CHIP_MIN_DP.dp)
+                else Modifier.widthIn(min = BattleHud.FULL_CHIP_MIN_DP.dp, max = BattleHud.FULL_CHIP_MAX_DP.dp)
+                if (layout.compact) CompactChip(chip, onSelect, width) else FullChip(chip, onSelect, width)
             }
         }
+    }
+}
+
+private fun chipBorder(chip: BattleHud.PartyChip): Color = when {
+    chip.isActive -> LogosGold
+    chip.isReady -> Color(0xFFFFB74D)
+    else -> Color(0xFF37474F)
+}
+
+private fun Modifier.chipFrame(chip: BattleHud.PartyChip, onSelect: (String) -> Unit, hPad: Dp): Modifier = this
+    .clip(RoundedCornerShape(5.dp))
+    .background(if (chip.isActive) Color(0xFF2A2412) else Color(0xFF161A22))
+    .border(1.dp, chipBorder(chip), RoundedCornerShape(5.dp))
+    .clickable(enabled = !chip.isFallen) { onSelect(chip.id) }
+    .padding(horizontal = hPad, vertical = 3.dp)
+    .graphicsLayer { alpha = if (chip.isFallen) 0.55f else 1f }
+
+@Composable
+private fun ChipGauges(chip: BattleHud.PartyChip) {
+    Spacer(Modifier.height(2.dp))
+    Gauge(chip.hpRatio, BattleHud.hpColor(chip.hpRatio), 3.dp, Modifier.fillMaxWidth())
+    if (chip.maxMp > 0) {
+        Spacer(Modifier.height(1.dp))
+        Gauge(chip.mpRatio, MpBlue, 2.dp, Modifier.fillMaxWidth())
+    }
+    Spacer(Modifier.height(1.dp))
+    Gauge(chip.atbRatio, if (chip.isReady) LogosGold else Color(0xFFFF9800), 2.dp, Modifier.fillMaxWidth())
+}
+
+@Composable
+private fun FullChip(chip: BattleHud.PartyChip, onSelect: (String) -> Unit, modifier: Modifier) {
+    Column(modifier = modifier.chipFrame(chip, onSelect, hPad = 5.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = if (chip.isFallen) "💀 ${chip.name}" else chip.name,
+                color = if (chip.isActive) LogosGold else Color(0xFFE0E0E0),
+                fontSize = 8.5.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f, fill = false)
+            )
+            Spacer(Modifier.width(3.dp))
+            Text(
+                text = "${chip.hp}",
+                color = BattleHud.hpColor(chip.hpRatio),
+                fontSize = 8.sp,
+                fontFamily = FontFamily.Monospace,
+                maxLines = 1
+            )
+        }
+        ChipGauges(chip)
+    }
+}
+
+@Composable
+private fun CompactChip(chip: BattleHud.PartyChip, onSelect: (String) -> Unit, modifier: Modifier) {
+    Column(modifier = modifier.chipFrame(chip, onSelect, hPad = BattleHud.COMPACT_CHIP_PADDING_DP.dp)) {
+        Text(
+            text = BattleHud.shortName(chip.name),
+            color = if (chip.isFallen) Color(0xFF90A4AE) else if (chip.isActive) LogosGold else Color(0xFFE0E0E0),
+            fontSize = BattleHud.COMPACT_NAME_SP.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Monospace,
+            maxLines = 1,
+            overflow = TextOverflow.Clip
+        )
+        ChipGauges(chip)
     }
 }
 

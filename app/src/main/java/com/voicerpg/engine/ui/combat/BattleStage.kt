@@ -1,9 +1,12 @@
 package com.voicerpg.engine.ui.combat
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
@@ -34,21 +37,16 @@ object BattleStage {
     fun floorBottomY(arenaHeight: Float, insetPx: Float): Float = arenaHeight - insetPx
 
     /**
-     * The y of the feet of combatant [index] of [count] (0 = back of the formation), in arena pixels.
-     * [depth] narrows the column to part of the floor: a horde's back column stands deeper (0..0.75),
-     * its front column nearer (0.25..1).
+     * The y of the feet of combatant [index] of [count] in a diagonal column (0 = back of the formation), in arena
+     * pixels: the column spreads from just below the horizon to the bottom; a lone combatant stands toward the front.
      */
-    fun feetY(index: Int, count: Int, arenaHeight: Float, insetPx: Float, depth: ClosedFloatingPointRange<Float> = 0f..1f): Float {
+    fun feetY(index: Int, count: Int, arenaHeight: Float, insetPx: Float): Float {
         val top = horizonY(arenaHeight)
         val bottom = floorBottomY(arenaHeight, insetPx).coerceAtLeast(top + 1f)
         val within = if (count <= 1) SOLO else index.toFloat() / (count - 1)
-        val d = depth.start + (depth.endInclusive - depth.start) * within
-        val t = BACK_ROW + (1f - BACK_ROW) * d
+        val t = BACK_ROW + (1f - BACK_ROW) * within
         return top + (bottom - top) * t
     }
-
-    val BACK_COLUMN = 0f..0.75f
-    val FRONT_COLUMN = 0.25f..1f
 
     /** Where painted battle art usually puts its horizon, for environments that don't say. */
     const val DEFAULT_ART_HORIZON = 0.55f
@@ -78,30 +76,64 @@ object BattleStage {
 }
 
 /**
- * Lays its children out as one depth column of the formation: child i stands with its bottom edge (its
- * feet) at [BattleStage.feetY], horizontally aligned by [horizontalAlignment]. Later children draw in front.
- * Fills the arena's height; children may overlap like rows of a real formation.
+ * Lays one side's fighters out in formation ([BattleFormation]) over the whole flank. [fighter] draws fighter i
+ * with its feet at the bottom centre of what it draws; it is placed there and scaled about its feet. [hitTarget]
+ * is fighter i's tap target, laid over its body only, so a fighter partly behind another is still tapped where it
+ * shows. Both are drawn in the formation's order: back rows first, the active fighter last.
  */
 @Composable
-fun StageColumn(
+fun StageFormation(
+    figures: List<BattleFormation.Figure>,
+    facingRight: Boolean,
+    activeId: String?,
+    frontOrder: List<String>?,
     modifier: Modifier = Modifier,
-    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-    depth: ClosedFloatingPointRange<Float> = 0f..1f,
-    content: @Composable () -> Unit
+    fighter: @Composable (index: Int) -> Unit,
+    hitTarget: @Composable (index: Int) -> Unit
 ) {
-    Layout(content = content, modifier = modifier) { measurables, constraints ->
-        val loose = constraints.copy(minWidth = 0, minHeight = 0)
-        val placeables = measurables.map { it.measure(loose) }
-        // As wide as the widest combatant (a parent that forces a width, like a weighted flank, still wins).
-        val width = (placeables.maxOfOrNull { it.width } ?: 0).coerceIn(constraints.minWidth, constraints.maxWidth)
-        val height = if (constraints.hasBoundedHeight) constraints.maxHeight else placeables.sumOf { it.height }
-        val inset = BattleStage.FLOOR_INSET.toPx()
-        layout(width, height) {
-            placeables.forEachIndexed { i, p ->
-                val feet = BattleStage.feetY(i, placeables.size, height.toFloat(), inset, depth)
-                val x = horizontalAlignment.align(p.width, width, layoutDirection)
-                p.place(x, (feet - p.height).roundToInt())
+    val cache = remember { FormationCache() }
+    val content = @Composable {
+        figures.indices.forEach { i ->
+            key(figures[i].id) {
+                fighter(i)
+                hitTarget(i)
             }
         }
+    }
+    Layout(content = content, modifier = modifier) { measurables, constraints ->
+        val width = if (constraints.hasBoundedWidth) constraints.maxWidth else constraints.minWidth
+        val height = if (constraints.hasBoundedHeight) constraints.maxHeight else constraints.minHeight
+        val stage = BattleFormation.Stage.of(width.toFloat(), height.toFloat(), density, facingRight)
+        val formation = cache.get(figures, stage, activeId, frontOrder)
+        layout(width, height) {
+            figures.indices.forEach { i ->
+                val p = formation.placements[i]
+                val f = figures[i]
+                val view = measurables.getOrNull(2 * i)?.measure(Constraints())
+                val hit = measurables.getOrNull(2 * i + 1)
+                view?.placeWithLayer((p.x - view.width / 2f).roundToInt(), (p.feetY - view.height).roundToInt(), zIndex = 2f * p.z) {
+                    scaleX = p.scale
+                    scaleY = p.scale
+                    transformOrigin = TransformOrigin(0.5f, 1f)
+                }
+                if (hit != null) {
+                    val body = p.body(f)
+                    val box = hit.measure(Constraints.fixed(body.width.roundToInt().coerceAtLeast(1), body.height.roundToInt().coerceAtLeast(1)))
+                    box.place(body.left.roundToInt(), body.top.roundToInt(), zIndex = 2f * p.z + 1f)
+                }
+            }
+        }
+    }
+}
+
+/** Keeps the last formation, so it is only worked out again when the fighters, the flank or the active one change. */
+private class FormationCache {
+    private var key: List<Any?>? = null
+    private var value: BattleFormation.Formation? = null
+
+    fun get(figures: List<BattleFormation.Figure>, stage: BattleFormation.Stage, activeId: String?, frontOrder: List<String>?): BattleFormation.Formation {
+        val k = listOf(figures, stage, activeId, frontOrder)
+        value?.let { if (k == key) return it }
+        return BattleFormation.place(figures, stage, activeId, frontOrder).also { key = k; value = it }
     }
 }

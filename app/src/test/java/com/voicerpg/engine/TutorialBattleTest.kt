@@ -68,9 +68,12 @@ class TutorialBattleTest {
     }
 
     private suspend fun TutorialBattleViewModel.fastForwardUntil(predicate: (TutorialBattleStep) -> Boolean) {
-        while (!predicate(state.value.currentStep)) {
+        // Bounded: a step this tutorial doesn't have fails the test instead of waiting forever.
+        repeat(TutorialBattleContent.STEPS.size + 5) {
+            if (predicate(state.value.currentStep)) return
             advanceAndSettle()
         }
+        throw AssertionError("The tutorial never reached the expected step (it has ${TutorialBattleContent.STEPS.size} steps)")
     }
 
     private fun TutorialBattleStep.practiceSpellName(): String =
@@ -145,6 +148,8 @@ class TutorialBattleTest {
 
     @Test
     fun testAutoActionBreathRestoresMana() = runBlocking {
+        // Only a game with mana has the tutorial's breath step.
+        org.junit.Assume.assumeTrue("this game has no mana", com.voicerpg.engine.content.GameContent.usesMana)
         viewModel.fastForwardUntil { it is TutorialBattleStep.AutoAction }
 
         assertTrue(viewModel.state.value.currentStep is TutorialBattleStep.AutoAction)

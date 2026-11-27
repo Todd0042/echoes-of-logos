@@ -47,6 +47,8 @@ import java.io.File
 data class ManifestDto(
     /** 1 = the game opts in to the sprite contract (docs/SPRITE_PLAN.md); a release build checks it regardless. */
     val spriteContract: Int = 0,
+    /** "mana" (default): spells cost MP and fighters attune. "none": no MP, no costs, no attune anywhere. */
+    val combatResource: String = "mana",
     val gameTitle: String = "VoiceRPG Engine",
     val gameSubtitle: String = "",
     val worldName: String = "the realm",
@@ -666,6 +668,8 @@ data class CommandCatalogDto(
 
 data class GameManifest(
     val spriteContract: Int = 0,
+    /** "mana" or "none" (see ManifestDto.combatResource). */
+    val combatResource: String = "mana",
     val gameTitle: String,
     val gameSubtitle: String,
     val worldName: String = "the realm",
@@ -1184,6 +1188,9 @@ class FileContentSource(private val rootDir: File) : ContentSource {
 
 /** Parses the JSON content tree into a resolved [GameContentPack]. */
 class GameContentLoader(private val source: ContentSource) {
+    /** False for a game without mana: spells load free, fighters with no MP, mana-restore spells left out. */
+    private var usesMana = true
+
 
     private companion object {
         const val SPRITE_SHEET_DIR = "sprites/sheets"
@@ -1195,8 +1202,9 @@ class GameContentLoader(private val source: ContentSource) {
 
     fun load(): GameContentPack {
         val manifestDto = read("manifest.json", ManifestDto::class.java) ?: ManifestDto()
+        usesMana = !manifestDto.combatResource.equals("none", ignoreCase = true)
         val catalogSpells = (read("spells/spells.json", SpellFileDto::class.java)?.spells ?: emptyList())
-            .map { it.toSpell() }
+            .mapNotNull { it.toSpellOrNull() }
             .associateBy { it.id }
 
         val characterDtos = source.listFiles("characters")
@@ -1204,7 +1212,7 @@ class GameContentLoader(private val source: ContentSource) {
             .filter { it.id.isNotBlank() }
 
         val characterSpells = characterDtos.flatMap { c ->
-            (c.combat?.spells ?: c.spells ?: emptyList()).map { it.toSpell() }
+            (c.combat?.spells ?: c.spells ?: emptyList()).mapNotNull { it.toSpellOrNull() }
         }.associateBy { it.id }
 
         val spells = catalogSpells + characterSpells
@@ -1317,6 +1325,7 @@ class GameContentLoader(private val source: ContentSource) {
         val pack = GameContentPack(
             manifest = GameManifest(
                 spriteContract = manifestDto.spriteContract,
+                combatResource = if (manifestDto.combatResource.equals("none", ignoreCase = true)) "none" else "mana",
                 gameTitle = manifestDto.gameTitle,
                 gameSubtitle = manifestDto.gameSubtitle,
                 worldName = manifestDto.worldName,
@@ -1388,6 +1397,16 @@ class GameContentLoader(private val source: ContentSource) {
         null
     }
 
+    /**
+     * The spell as this game uses it. Without mana: free, a spell that only restores mana is left out, and one that
+     * also does something else (a heal that restores mana too) keeps the rest.
+     */
+    private fun SpellDto.toSpellOrNull(): Spell? {
+        if (usesMana) return toSpell()
+        val onlyRestoresMana = manaRestorePct > 0f && !isHeal && basePower == 0 && !isGuard && !cleansesDebuffs && status == null
+        return if (onlyRestoresMana) null else toSpell().copy(mpCost = 0, manaRestorePct = 0f)
+    }
+
     private fun SpellDto.toSpell(): Spell = Spell(
         id = id,
         calloutName = calloutName?.trim().orEmpty(),
@@ -1416,11 +1435,11 @@ class GameContentLoader(private val source: ContentSource) {
         subtitle = subtitle,
         description = description,
         startingHp = startingHp,
-        startingMp = startingMp,
+        startingMp = if (usesMana) startingMp else 0,
         startingSpeed = startingSpeed,
         startingBaseAttack = startingBaseAttack,
         preferredSchool = runCatching { SpellSchool.valueOf(preferredSchool) }.getOrDefault(SpellSchool.PHYSICAL),
-        starterSpellIds = starterSpellIds ?: emptyList(),
+        starterSpellIds = (starterSpellIds ?: emptyList()).filter { it in spells },
         voiceKeywords = voiceKeywords ?: emptyList(),
         portraitAsset = portraitAsset
     )
@@ -1438,12 +1457,12 @@ class GameContentLoader(private val source: ContentSource) {
             allowedVoiceRegions = allowedVoiceRegions ?: emptyList()
         )
         val combat = combat?.let { c ->
-            val embeddedSpells = (c.spells ?: this.spells ?: emptyList()).map { it.toSpell() }
+            val embeddedSpells = (c.spells ?: this.spells ?: emptyList()).mapNotNull { it.toSpellOrNull() }
             val referencedSpells = (c.spellIds ?: emptyList()).mapNotNull { spells[it] }
             val allSpells = (embeddedSpells + referencedSpells).distinctBy { it.id }
             CharacterCombat(
                 maxHp = c.maxHp,
-                maxMp = c.maxMp,
+                maxMp = if (usesMana) c.maxMp else 0,
                 speed = c.speed,
                 defense = c.defense,
                 avatarTint = parseHexColor(c.avatarTint, Color(0xFF4FC3F7)),
@@ -1785,6 +1804,9 @@ object GameContent {
 
     // --- Convenience accessors ---
     val manifest: GameManifest get() = pack.manifest
+
+    /** Whether this game has mana (MP, costs, attune); false when its manifest says `"combatResource": "none"`. */
+    val usesMana: Boolean get() = pack.manifest.combatResource != "none"
     val scenes: Map<String, StoryScene> get() = pack.scenes
     val nodes: Map<String, DialogueNode> get() = pack.nodes
     val characters: Map<String, GameCharacter> get() = pack.characters
