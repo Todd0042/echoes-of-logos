@@ -220,6 +220,8 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(storyState.activeEncounter) {
                 storyState.activeEncounter?.let { encounter ->
                     combatViewModel.applyStoryFlags(storyState.narrativeFlags)
+                    combatViewModel.applyBestiary(storyState.bestiaryWeaknesses)
+                    combatViewModel.onBestiaryUpdated = { storyViewModel.recordBestiaryWeaknesses(it) }
                     combatViewModel.applySavedStats(storyState.partyStats)
                     combatViewModel.startEncounter(encounter)
                     combatViewModel.setPureStoryMode(storyState.isPureStoryMode)

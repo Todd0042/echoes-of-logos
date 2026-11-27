@@ -841,6 +841,11 @@ class CombatNarrator(
             return
         }
 
+        lineSinkForTesting?.let { sink ->
+            sink(CombatSpeech.FEEDBACK, text) { onDone?.invoke() }
+            return
+        }
+
         if (tts == null || !isTtsInitialized) {
             onDone?.invoke()
             return
@@ -970,14 +975,24 @@ class CombatNarrator(
         speak(text, force = true, onDone = onDone)
     }
 
-    fun narrateEnemies(enemies: List<Enemy>, onDone: (() -> Unit)? = null) {
+    fun narrateEnemies(
+        enemies: List<Enemy>,
+        knownWeaknesses: Map<String, Set<String>> = emptyMap(),
+        onDone: (() -> Unit)? = null
+    ) {
         if (!_isCombatActive.value) {
             onDone?.invoke()
             return
         }
         val alive = enemies.filter { it.isAlive }
         val targeted = alive.firstOrNull { it.isTargeted }?.name ?: alive.firstOrNull()?.name
-        val list = alive.mapIndexed { idx, e -> "Enemy ${idx + 1}, ${e.name} with ${e.currentHp} HP" }.joinToString(". ")
+        val list = alive.mapIndexed { idx, e ->
+            val weakNames = knownWeaknesses[e.bestiaryKey].orEmpty()
+                .mapNotNull { id -> com.voicerpg.engine.model.SpellSchool.entries.firstOrNull { it.name.equals(id, ignoreCase = true) } }
+                .map { com.voicerpg.engine.content.GameContent.schoolDisplayName(it) }
+            val weakNote = if (weakNames.isNotEmpty()) ", weak to ${weakNames.joinToString(", ")}" else ""
+            "Enemy ${idx + 1}, ${e.name} with ${e.currentHp} HP$weakNote"
+        }.joinToString(". ")
         val text = "${alive.size} enemies remaining. $list. Current target is $targeted."
         speak(text, force = true, onDone = onDone)
     }

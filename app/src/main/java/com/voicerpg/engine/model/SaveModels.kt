@@ -137,6 +137,8 @@ data class GameSaveData(
     val totalDamageDealt: Long = 0L,
     val totalBattlesWon: Int = 0,
     val highestResonanceTier: String = "BASIC",
+    /** Bestiary: enemy key -> set of SpellSchool names whose weakness was discovered in battle. */
+    val bestiaryWeaknesses: Map<String, Set<String>> = emptyMap(),
 
     // 6. User Accessibility & Audio Options
     val isEyesFreeMode: Boolean = false,

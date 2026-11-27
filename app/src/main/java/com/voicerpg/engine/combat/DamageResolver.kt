@@ -15,7 +15,8 @@ data class DamageInputs(
     val targetDefense: Int = 0,
     val defenseMultiplier: Float = 1.0f,
     val targetGuarding: Boolean = false,
-    val attackerWeakened: Boolean = false
+    val attackerWeakened: Boolean = false,
+    val targetArmor: Int = 0
 )
 
 data class ResolvedStrike(
@@ -45,6 +46,7 @@ object DamageResolver {
         if (inputs.attackerWeakened) dmg *= WEAKEN_MULTIPLIER
         dmg -= inputs.targetDefense * inputs.defenseMultiplier
         if (inputs.targetGuarding) dmg *= GUARD_MULTIPLIER
+        dmg -= inputs.targetArmor
         val finalDamage = max(1, dmg.toInt())
         return ResolvedStrike(
             damage = finalDamage,

@@ -77,7 +77,9 @@ data class StoryState(
     /** A one-time message for the title screen (e.g. saves from an older version were cleared); null when none. */
     val startupNotice: String? = null,
     /** "Lyra learns Thornwall." lines for spells the party learned on entering the current node; empty otherwise. */
-    val spellsLearned: List<String> = emptyList()
+    val spellsLearned: List<String> = emptyList(),
+    /** Bestiary: enemy key -> set of SpellSchool names whose weakness was discovered in battle. */
+    val bestiaryWeaknesses: Map<String, Set<String>> = emptyMap()
 )
 
 class StoryViewModel(
@@ -568,6 +570,7 @@ class StoryViewModel(
                 decisionsMade = existingSave.decisionsMade,
                 narrativeFlags = existingSave.narrativeFlags,
                 defeatedEncounters = existingSave.defeatedEncounters,
+                bestiaryWeaknesses = existingSave.bestiaryWeaknesses,
                 achievements = existingSave.achievements,
                 partyStats = existingSave.partyStats,
                 hasExistingSave = true,
@@ -682,6 +685,7 @@ class StoryViewModel(
             narrativeFlags = existingSave.narrativeFlags,
             visitedNodeIds = restoredVisited,
             defeatedEncounters = existingSave.defeatedEncounters,
+            bestiaryWeaknesses = existingSave.bestiaryWeaknesses,
             achievements = existingSave.achievements,
             partyStats = existingSave.partyStats,
             currentSlot = targetSlot,
@@ -1402,6 +1406,10 @@ class StoryViewModel(
         persistCurrentState()
     }
 
+    fun recordBestiaryWeaknesses(weaknesses: Map<String, Set<String>>) {
+        _state.value = _state.value.copy(bestiaryWeaknesses = weaknesses)
+    }
+
     fun persistCurrentState() {
         val s = _state.value
         val slot = s.currentSlot
@@ -1415,6 +1423,7 @@ class StoryViewModel(
             visitedNodeIds = s.visitedNodeIds.toList(),
             partyStats = s.partyStats,
             defeatedEncounters = s.defeatedEncounters,
+            bestiaryWeaknesses = s.bestiaryWeaknesses,
             achievements = s.achievements,
             recentDialogueLog = s.dialogueHistory.takeLast(60),
             isEyesFreeMode = combatNarrator.isEyesFreeMode.value,

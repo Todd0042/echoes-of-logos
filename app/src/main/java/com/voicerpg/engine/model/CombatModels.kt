@@ -61,7 +61,9 @@ data class Spell(
     /** Fraction of target max HP healed (multiplied by resonance); 0 = use flat [basePower]. */
     val healPctOfMax: Float = 0f,
     /** `"ally"` for single-target ally heals/restores (defaults to caster if unnamed or enemy targeted). */
-    val target: String = ""
+    val target: String = "",
+    /** True when this spell ignores enemy [Enemy.armor]. */
+    val piercing: Boolean = false
 ) {
     val isCleanse: Boolean get() = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true)
     val targetsAlly: Boolean get() = target.equals("ally", ignoreCase = true)
@@ -153,10 +155,20 @@ data class Enemy(
     /** A portrait panel for its ultimate (enemies.json `cutIn`). */
     val cutIn: CutInSpec? = null,
     /** How combat speech names it (enemies.json `shortName`); blank = the last word of [name]. */
-    val shortName: String = ""
+    val shortName: String = "",
+    /** Template id from enemies.json, used for bestiary weakness tracking. */
+    val templateId: String = "",
+    /** School ids this enemy is weak to (x2.0, overrides family table). */
+    val weak: List<String> = emptyList(),
+    /** School ids this enemy resists (x0.8, overrides family table). */
+    val resist: List<String> = emptyList(),
+    /** Flat damage reduction per hit (ignored by piercing spells). */
+    val armor: Int = 0
 ) {
     /** The name combat speech uses ("Orc" for "Blighted Orc"). */
     val spokenName: String get() = com.voicerpg.engine.audio.CombatLines.shortName(name, shortName)
+    /** Key used in the save's bestiary for learned weaknesses. */
+    val bestiaryKey: String get() = templateId.ifBlank { name }
 
     val isAlive: Boolean get() = currentHp > 0
     val isTurnReady: Boolean get() = isAlive && atbGauge >= 1.0f
@@ -252,7 +264,9 @@ data class BossPhaseRule(
     val reducePartyToHpPct: Float? = null,
     val executeBelowHpPct: Float? = null,
     val summonEnemyId: String? = null,
-    val summonCount: Int = 0
+    val summonCount: Int = 0,
+    val weak: List<String>? = null,
+    val resist: List<String>? = null
 )
 
 /** Scripted mid-battle party addition, declared per encounter in data files. */
@@ -274,7 +288,11 @@ data class EncounterDefinition(
     val bossPhases: List<BossPhaseRule> = emptyList(),
     val midBattleJoin: MidBattleJoin? = null,
     /** Overrides `presentation.json` music.intensityTrack for this fight. */
-    val intensityTrack: String? = null
+    val intensityTrack: String? = null,
+    /** Silences tag callouts, taunts, and victory fanfare for solemn story fights. */
+    val solemn: Boolean = false,
+    /** Optional closing line spoken at the end of a solemn encounter. */
+    val endLine: String = ""
 )
 
 data class FloatingCombatText(

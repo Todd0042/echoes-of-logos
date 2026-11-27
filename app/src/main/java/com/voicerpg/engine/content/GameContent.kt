@@ -249,7 +249,8 @@ data class SpellDto(
     /** Optional chants per resonance tier ("BASIC".."TRANSCENDENTAL") used by hands-free presets. */
     val presetChants: Map<String, String>? = null,
     /** Optional recorded clips (asset paths, e.g. audio/quotes/x.ogg); one plays at random. */
-    val soundBites: List<String>? = null
+    val soundBites: List<String>? = null,
+    val piercing: Boolean = false
 )
 
 data class SpellFileDto(val spells: List<SpellDto>? = null)
@@ -342,7 +343,10 @@ data class EnemyDto(
     val taunts: List<String>? = null,
     /** flinch | stagger | comic_spin */
     val hitReaction: String? = null,
-    val cutIn: com.voicerpg.engine.model.CutInSpec? = null
+    val cutIn: com.voicerpg.engine.model.CutInSpec? = null,
+    val weak: List<String>? = null,
+    val resist: List<String>? = null,
+    val armor: Int = 0
 )
 
 data class EnemyFileDto(val enemies: List<EnemyDto>? = null)
@@ -368,7 +372,9 @@ data class BossPhaseDto(
     val reducePartyToHpPct: Float? = null,
     val executeBelowHpPct: Float? = null,
     val summonEnemyId: String? = null,
-    val summonCount: Int = 0
+    val summonCount: Int = 0,
+    val weak: List<String>? = null,
+    val resist: List<String>? = null
 )
 
 data class MidBattleJoinDto(
@@ -389,7 +395,9 @@ data class EncounterDto(
     val bossPhases: List<BossPhaseDto>? = null,
     val midBattleJoin: MidBattleJoinDto? = null,
     /** A second music track for when this fight turns desperate (crossfaded in). */
-    val intensityTrack: String? = null
+    val intensityTrack: String? = null,
+    val solemn: Boolean = false,
+    val endLine: String? = null
 )
 
 data class EncounterFileDto(val encounters: List<EncounterDto>? = null)
@@ -621,7 +629,9 @@ data class AffinityMatrixFileDto(
     val ceiling: Float = 2.0f,
     val sameElementImpairment: Float = 0.8f,
     val matrix: Map<String, Map<String, Float>>? = null,
-    val narrations: Map<String, String>? = null
+    val narrations: Map<String, String>? = null,
+    val schoolNames: Map<String, String>? = null,
+    val familyNames: Map<String, String>? = null
 )
 
 data class ThesaurusFileDto(
@@ -791,7 +801,9 @@ data class AffinityMatrix(
     val ceiling: Float,
     val sameElementImpairment: Float,
     val matrix: Map<String, Map<String, Float>>,
-    val narrations: Map<String, String>
+    val narrations: Map<String, String>,
+    val schoolNames: Map<String, String> = emptyMap(),
+    val familyNames: Map<String, String> = emptyMap()
 )
 
 /** A playable/voice hero class archetype loaded from assets/game/classes/<name>.json. */
@@ -940,7 +952,10 @@ data class EnemyTemplate(
     val taunts: List<String> = emptyList(),
     val hitReaction: com.voicerpg.engine.model.HitReaction = com.voicerpg.engine.model.HitReaction.FLINCH,
     val cutIn: com.voicerpg.engine.model.CutInSpec? = null,
-    val shortName: String = ""
+    val shortName: String = "",
+    val weak: List<String> = emptyList(),
+    val resist: List<String> = emptyList(),
+    val armor: Int = 0
 ) {
     fun toEnemy(
         instanceId: String? = null,
@@ -977,7 +992,11 @@ data class EnemyTemplate(
             taunts = taunts,
             hitReaction = hitReaction,
             cutIn = cutIn,
-            shortName = if (nameOverride != null) "" else shortName
+            shortName = if (nameOverride != null) "" else shortName,
+            templateId = id,
+            weak = weak,
+            resist = resist,
+            armor = armor
         )
     }
 }
@@ -1321,7 +1340,9 @@ class GameContentLoader(private val source: ContentSource) {
                 ceiling = it.ceiling,
                 sameElementImpairment = it.sameElementImpairment,
                 matrix = it.matrix ?: emptyMap(),
-                narrations = it.narrations ?: emptyMap()
+                narrations = it.narrations ?: emptyMap(),
+                schoolNames = it.schoolNames ?: emptyMap(),
+                familyNames = it.familyNames ?: emptyMap()
             )
         }
 
@@ -1468,7 +1489,8 @@ class GameContentLoader(private val source: ContentSource) {
         graphics = graphics?.toSpellGraphics(),
         cleansesDebuffs = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true),
         presetChants = presetChants?.mapKeys { it.key.uppercase() } ?: emptyMap(),
-        soundBites = soundBites.orEmpty().filter { it.isNotBlank() }
+        soundBites = soundBites.orEmpty().filter { it.isNotBlank() },
+        piercing = piercing
     )
 
     private fun ClassDto.toDef(spells: Map<String, Spell>): HeroClassDef = HeroClassDef(
@@ -1590,7 +1612,10 @@ class GameContentLoader(private val source: ContentSource) {
         scale = scale?.takeIf { it.isFinite() }?.coerceIn(0.5f, 3f) ?: if (isBoss) 2.0f else 1.0f,
         taunts = taunts.orEmpty().filter { it.isNotBlank() },
         hitReaction = com.voicerpg.engine.model.HitReaction.parse(hitReaction),
-        cutIn = cutIn
+        cutIn = cutIn,
+        weak = weak.orEmpty().map { it.trim().uppercase() }.filter { it.isNotBlank() },
+        resist = resist.orEmpty().map { it.trim().uppercase() }.filter { it.isNotBlank() },
+        armor = armor.coerceAtLeast(0)
     )
 
     private fun EncounterDto.toDefinition(
@@ -1629,7 +1654,9 @@ class GameContentLoader(private val source: ContentSource) {
                     reducePartyToHpPct = it.reducePartyToHpPct,
                     executeBelowHpPct = it.executeBelowHpPct,
                     summonEnemyId = it.summonEnemyId,
-                    summonCount = it.summonCount
+                    summonCount = it.summonCount,
+                    weak = it.weak?.map { s -> s.trim().uppercase() },
+                    resist = it.resist?.map { s -> s.trim().uppercase() }
                 )
             },
             midBattleJoin = midBattleJoin?.let {
@@ -1640,7 +1667,9 @@ class GameContentLoader(private val source: ContentSource) {
                     afterEnemyActions = it.afterEnemyActions
                 )
             },
-            intensityTrack = intensityTrack?.takeIf { it.isNotBlank() }
+            intensityTrack = intensityTrack?.takeIf { it.isNotBlank() },
+            solemn = solemn,
+            endLine = endLine?.trim().orEmpty()
         )
     }
 
@@ -1871,6 +1900,10 @@ object GameContent {
     val environments: Map<String, EnvironmentDefinition> get() = pack.environments
     val statusCatalog: Map<String, StatusDef> get() = pack.statusCatalog
     val affinityMatrix: AffinityMatrix? get() = pack.affinityMatrix
+    fun schoolDisplayName(school: SpellSchool): String =
+        affinityMatrix?.schoolNames?.get(school.name)?.takeIf { it.isNotBlank() } ?: school.displayName
+    fun familyDisplayName(family: String): String =
+        affinityMatrix?.familyNames?.get(family.uppercase())?.takeIf { it.isNotBlank() } ?: family
     val presentation: PresentationConfig get() = pack.presentation
     val thesaurusRoots: Map<SpellSchool, List<String>> get() = pack.thesaurusRoots
     val selfieConfig: SelfieFilterConfig get() = manifest.selfieConfig

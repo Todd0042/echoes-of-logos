@@ -76,7 +76,9 @@ data class CombatState(
     val currentEnvironmentId: String = "",
     val isEyesFreeMode: Boolean = false,
     val isOptionsOpen: Boolean = false,
-    val isPureStoryMode: Boolean = false
+    val isPureStoryMode: Boolean = false,
+    val bestiaryWeaknesses: Map<String, Set<String>> = emptyMap(),
+    val isSolemn: Boolean = false
 ) {
     val activePartyMember: PartyMember?
         get() = party.firstOrNull { it.id == activePartyMemberId }
@@ -178,6 +180,14 @@ class CombatViewModel(
     private var intensityJob: Job? = null
     private var intensityOn = false
     private var bossPhaseShifted = false
+    private var encounterSolemn = false
+    private var encounterEndLine = ""
+    var onBestiaryUpdated: ((Map<String, Set<String>>) -> Unit)? = null
+
+    fun applyBestiary(weaknesses: Map<String, Set<String>>) {
+        val normalized = weaknesses.mapValues { (_, v) -> v.map { it.uppercase() }.toSet() }
+        _state.update { it.copy(bestiaryWeaknesses = normalized) }
+    }
 
     private fun partyHpRatio(party: List<PartyMember>): Float {
         val mortal = party.filter { !it.isGhost }
@@ -636,7 +646,7 @@ class CombatViewModel(
             val move = plans.getValue(enemy.id)
             val intent = Intent.of(move, Intent.isUltimate(enemy.isBoss, move))
             cue(BattleCue.Telegraph(enemy.id, move.name, intent, move.intentIcon ?: intent.icon))
-            if (enemy.taunts.isNotEmpty() && random.nextFloat() < TAUNT_CHANCE) {
+            if (!encounterSolemn && enemy.taunts.isNotEmpty() && random.nextFloat() < TAUNT_CHANCE) {
                 val line = enemy.taunts[random.nextInt(enemy.taunts.size)]
                 cue(BattleCue.Taunt(enemy.id, line))
                 // A taunt is flavour: spoken in pocket mode only, and never over another line.
@@ -948,8 +958,8 @@ class CombatViewModel(
                 } else hero
             }
 
-            // DRAIN moves convert half the damage dealt into enemy healing.
-            val healedHp = if (move.kind == "DRAIN") (totalDamage / 2).coerceAtMost(refreshedSelf.maxHp - refreshedSelf.currentHp) else 0
+            // Enemies never heal or drain HP (plan E6).
+            val healedHp = 0
 
             val updatedEnemies = _state.value.enemies.map {
                 if (it.id == enemy.id) it.copy(
@@ -1064,6 +1074,28 @@ class CombatViewModel(
             }
         }
 
+        if (encounterSolemn) {
+            val done: () -> Unit = {
+                conclusionWatchdogJob?.cancel()
+                conclusionWatchdogJob = null
+                if (_state.value.isPureStoryMode) {
+                    conclusionTransitionJob?.cancel()
+                    conclusionTransitionJob = activeScope.launch {
+                        delay(1500L)
+                        proceedToStory()
+                    }
+                } else if (speechManager.isAutoListen.value) {
+                    relistenAfter(150)
+                }
+            }
+            if (encounterEndLine.isNotBlank()) {
+                combatNarrator.speak(encounterEndLine, force = true, onDone = done)
+            } else {
+                done()
+            }
+            return
+        }
+
         combatNarrator.narrateConclusion(
             isVictory = true,
             force = _state.value.isPureStoryMode
@@ -1106,6 +1138,28 @@ class CombatViewModel(
                     proceedToStory()
                 }
             }
+        }
+
+        if (encounterSolemn) {
+            val done: () -> Unit = {
+                conclusionWatchdogJob?.cancel()
+                conclusionWatchdogJob = null
+                if (_state.value.isPureStoryMode) {
+                    conclusionTransitionJob?.cancel()
+                    conclusionTransitionJob = activeScope.launch {
+                        delay(1500L)
+                        proceedToStory()
+                    }
+                } else if (speechManager.isAutoListen.value) {
+                    relistenAfter(150)
+                }
+            }
+            if (encounterEndLine.isNotBlank()) {
+                combatNarrator.speak(encounterEndLine, force = true, onDone = done)
+            } else {
+                done()
+            }
+            return
         }
 
         combatNarrator.narrateConclusion(
@@ -1494,7 +1548,7 @@ class CombatViewModel(
                 }
             }
             MetaCommand.CHECK_ENEMIES -> {
-                combatNarrator.narrateEnemies(_state.value.enemies) {
+                combatNarrator.narrateEnemies(_state.value.enemies, _state.value.bestiaryWeaknesses) {
                     if (_state.value.phase == CombatPhase.PLAYER_INPUT && speechManager.isAutoListen.value) {
                         relistenAfter(100)
                     }
@@ -2110,12 +2164,14 @@ class CombatViewModel(
 
             // What the cast did: its one-word result (a callout), then the report. Combat waits for both.
             val damageHits = hits.filter { it.kind == BattleCue.HitKind.DAMAGE }
-            combatNarrator.sayAndWait(CombatSpeech.CALLOUT, CombatLines.tags(
-                weak = damageHits.any { it.affinity >= WEAKNESS_AFFINITY },
-                resisted = damageHits.any { it.affinity < RESIST_AFFINITY },
-                broken = broken,
-                streak = streak
-            ))
+            if (!encounterSolemn) {
+                combatNarrator.sayAndWait(CombatSpeech.CALLOUT, CombatLines.tags(
+                    weak = damageHits.any { it.affinity >= WEAKNESS_AFFINITY },
+                    resisted = damageHits.any { it.affinity < RESIST_AFFINITY },
+                    broken = broken,
+                    streak = streak
+                ))
+            }
             reportCast(hits, aliveBefore, parsed.spell)
 
             // 5. Reset active hero's ATB gauge to 0 and record lastActedHeroId for round-robin rotation
@@ -2374,7 +2430,11 @@ class CombatViewModel(
         val weakenedCaster = StatusSystem.isWeakened(caster.statuses)
         data class HitOutcome(val enemy: Enemy, val damage: Int, val affinity: Float, val landed: StatusInstance?)
         val hits = targetList.map { enemy ->
-            val eff = AffinityTable.effectiveness(school, familyOf(enemy), School.fromNameOrNull(enemy.selfElement))
+            val eff = when {
+                enemy.weak.any { it.equals(school.name, ignoreCase = true) } -> 2.0f
+                enemy.resist.any { it.equals(school.name, ignoreCase = true) } -> 0.8f
+                else -> AffinityTable.effectiveness(school, familyOf(enemy), School.fromNameOrNull(enemy.selfElement))
+            }
             val strike = DamageResolver.resolve(
                 DamageInputs(
                     spellBasePower = spell.basePower.toFloat(),
@@ -2382,7 +2442,8 @@ class CombatViewModel(
                     resonanceMultiplier = resonance.damageMultiplier,
                     targetDefense = enemy.defense,
                     defenseMultiplier = StatusSystem.defenseMult(enemy.statuses),
-                    attackerWeakened = weakenedCaster
+                    attackerWeakened = weakenedCaster,
+                    targetArmor = if (spell.piercing) 0 else enemy.armor
                 ),
                 random
             )
@@ -2394,6 +2455,24 @@ class CombatViewModel(
             HitOutcome(enemy, effectiveDamage, strike.affinity, statusId?.let { StatusSystem.apply(it, resonance.tier.name, familyOf(enemy), effectiveDamage.toFloat()) })
         }
         val totalDamage = hits.sumOf { it.damage }
+
+        val discovered = hits.filter { it.affinity >= WEAKNESS_AFFINITY }.map { it.enemy.bestiaryKey }
+        if (discovered.isNotEmpty()) {
+            val updatedBestiary = _state.value.bestiaryWeaknesses.toMutableMap()
+            var changed = false
+            discovered.forEach { key ->
+                val cur = updatedBestiary[key].orEmpty()
+                if (school.name !in cur) {
+                    updatedBestiary[key] = cur + school.name
+                    changed = true
+                }
+            }
+            if (changed) {
+                val frozen = updatedBestiary.toMap()
+                _state.update { it.copy(bestiaryWeaknesses = frozen) }
+                onBestiaryUpdated?.invoke(frozen)
+            }
+        }
 
         val updatedEnemies = currentEnemies.map { enemy ->
             hits.firstOrNull { it.enemy.id == enemy.id }?.let { hit ->
@@ -2560,6 +2639,8 @@ class CombatViewModel(
     fun startEncounter(encounter: EncounterDefinition) {
         lastEncounterDefinition = encounter
         currentEncounterId = encounter.id
+        encounterSolemn = encounter.solemn
+        encounterEndLine = encounter.endLine
         _combatantPositions.clear()
         sfxManager.mute(false)
         musicManager?.playCombatMusic()
@@ -2646,7 +2727,9 @@ class CombatViewModel(
             enemies = enemies.map { decorateEnemy(it).let { e -> e.copy(atbGauge = e.atbGauge.coerceAtLeast(0.25f)) } }.take(6),
             currentEnvironment = environment,
             currentEnvironmentId = environmentId,
-            isPureStoryMode = _state.value.isPureStoryMode
+            isPureStoryMode = _state.value.isPureStoryMode,
+            bestiaryWeaknesses = _state.value.bestiaryWeaknesses,
+            isSolemn = encounterSolemn
         )
         cue(BattleCue.BattleStart(currentEncounterId))
         startAtbLoop()
