@@ -44,8 +44,8 @@ fb452d146966d556479a6771bfd4bec4eb7d22bd6cc3a9dd7146f79e8a77f4bf  app/src/main/j
 59877009d964ee626c54d0966c9049417564c51a3adc17242fec8fe7511d6204  app/src/main/java/com/voicerpg/engine/engine/StoryChoiceMatcher.kt
 bf0b4500a044f252533efe4776168535e57b0e5474e3456f73f085c3cb142cab  app/src/main/java/com/voicerpg/engine/engine/StoryRecapEngine.kt
 2e465b12b8ece13248f55965dd593c2f85eddc3931ad3515ca8bdf13d96cc7ca  app/src/main/java/com/voicerpg/engine/engine/StoryScript.kt
-700a5cf788be482fd074f97051bf1e51c6cca680c4f852a909a423c367bdd102  app/src/main/java/com/voicerpg/engine/engine/TutorialBattleContent.kt
-6a6e9d728c15556966a98b0f4f94fed0157c23da13c3480c624d0af21fd881c7  app/src/main/java/com/voicerpg/engine/localization/BuiltInDictionaries.kt
+8039c39a4edd10d42840caf169b3a1ead1f1eb9b4e6d346557f54114309fab20  app/src/main/java/com/voicerpg/engine/engine/TutorialBattleContent.kt
+d35d51872b64a6eee36940831b77566fea847f2149270db162665b4685579f32  app/src/main/java/com/voicerpg/engine/localization/BuiltInDictionaries.kt
 ef32f53a8298c8a3daee81d1ddb8eb2aa44e634f0a891eb8b025bc86f63f8b66  app/src/main/java/com/voicerpg/engine/localization/TranslationHelper.kt
 f2597174b52ac570b50c05eacc2ff716a9d7cdfea2bde42d838ed3d708991f56  app/src/main/java/com/voicerpg/engine/localization/TranslationManager.kt
 b5fd40f701d545e49da28c49c93a8097a198c523f0f543265f7a022386941f10  app/src/main/java/com/voicerpg/engine/model/AcousticProfile.kt

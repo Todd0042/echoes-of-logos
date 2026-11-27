@@ -181,7 +181,7 @@ object TutorialBattleContent {
             speaker = narrator
         )
         steps += TutorialBattleStep.IntroPopup(
-            text = "In real combat, you will speak voice commands to cast spells. The more vivid and dramatic your words, the more powerful your magic becomes. Let us begin.",
+            text = "In real combat, you will speak voice commands to cast spells, target foes by name, heal allies when needed, and watch for 'Weak!' callouts. The more vivid your words, the stronger your magic.",
             speaker = narrator
         )
         steps += TutorialBattleStep.CharacterJoin(
