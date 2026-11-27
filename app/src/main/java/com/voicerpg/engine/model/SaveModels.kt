@@ -53,7 +53,12 @@ data class TrackHeroPreset(
     val secondaryColor: String = "#B71C1C",
     /** Clips played when the hero is picked; [soundBiteLabel] captions them on the card. */
     val soundBites: List<String> = emptyList(),
-    val soundBiteLabel: String = ""
+    val soundBiteLabel: String = "",
+    /**
+     * The track is told by one of the game's characters (characters/<id>.json): the party starts with that character
+     * instead of a class-based hero, so the protagonist fights with their own kit, sprite and stats, once.
+     */
+    val characterId: String = ""
 ) {
     /** The player this preset produces on [track], with [fallback] filling anything the preset leaves out. */
     fun toCustomization(track: CampaignTrackDef, fallback: PlayerCustomization): PlayerCustomization = fallback.copy(
@@ -62,7 +67,8 @@ data class TrackHeroPreset(
         heroClassId = heroClassId.ifBlank { fallback.heroClassId },
         auraColor = auraColor?.let { a -> AuraColor.entries.firstOrNull { it.name.equals(a, ignoreCase = true) } } ?: fallback.auraColor,
         customPortraitAsset = portraitAsset ?: fallback.customPortraitAsset,
-        campaignTrackId = track.id
+        campaignTrackId = track.id,
+        heroCharacterId = characterId
     )
 }
 
@@ -77,8 +83,14 @@ data class PlayerCustomization(
     val auraColor: AuraColor = AuraColor.SAPPHIRE_FROST,
     val voiceAffinityBonusSchool: SpellSchool = SpellSchool.PHYSICAL,
     val customPortraitAsset: String? = null,
-    val campaignTrackId: String = "track_a"
+    val campaignTrackId: String = "track_a",
+    /** The character file this player's hero is (a track told by a character); blank = a class-based hero. */
+    val heroCharacterId: String = ""
 ) {
+    /** [heroCharacterId] if set; read null-safely, since a save written before the field leaves it null. */
+    val protagonistCharacterId: String?
+        get() = (heroCharacterId as String?)?.ifBlank { null }
+
     val heroClass get() = GameContent.classById(heroClassId)
 }
 

@@ -278,6 +278,15 @@ object StoryRouteWalker {
 
     private fun buildPartyStats(player: PlayerCustomization, flags: Map<String, Boolean>): List<SavedCharacterStats> {
         val party = mutableListOf<SavedCharacterStats>()
+        // A track told by one of the game's characters: that character is the hero, not a class hero beside them.
+        val protagonist = player.protagonistCharacterId?.let { GameContent.characterById(it)?.toSavedStats() }
+        if (protagonist != null) {
+            party += protagonist
+            GameContent.characters.values
+                .filter { it.id != protagonist.id && it.id != "hero" && it.joinWhenFlag != null && flags[it.joinWhenFlag] == true }
+                .forEach { c -> c.toPartyMember()?.let { party += SavedCharacterStats.fromPartyMember(it) } }
+            return party
+        }
         val heroChar = GameContent.heroCharacter
         val heroClass = GameContent.classById(player.heroClassId)
         val heroHp = heroChar?.combat?.maxHp ?: heroClass.startingHp

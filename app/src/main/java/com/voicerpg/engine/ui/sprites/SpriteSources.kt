@@ -175,7 +175,7 @@ object SpriteLibrary {
     }
 
     /** The sprite key of a party member (its character id) and of an enemy (its `spriteId`, else its id). */
-    fun keyFor(member: PartyMember): String = member.id
+    fun keyFor(member: PartyMember): String = member.spriteKey.ifBlank { member.id }
     fun keyFor(enemy: Enemy): String = enemy.spriteId.ifBlank { enemy.id }
 
     /** Whether [key] has a real sheet (or a variant of one), not just a legacy grid. */

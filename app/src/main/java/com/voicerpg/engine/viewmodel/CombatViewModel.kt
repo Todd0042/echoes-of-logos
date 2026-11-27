@@ -664,6 +664,8 @@ class CombatViewModel(
      * @return true if this member's turn was consumed (skipped or they fell), false if they may act.
      */
     private fun beginPartyMemberTurn(heroId: String): Boolean {
+        // Stun fatigue wears off by one of their turns.
+        _state.update { s -> s.copy(party = s.party.map { if (it.id == heroId && it.stunFatigue > 0) it.copy(stunFatigue = it.stunFatigue - 1) else it }) }
         val member = _state.value.party.firstOrNull { it.id == heroId } ?: return false
         if (member.statuses.isEmpty()) return false
 
@@ -950,13 +952,16 @@ class CombatViewModel(
                             StatusSystem.apply(moveStatusId, "ADEPT", EnemyFamily.FLESH, damage.toFloat())
                         }
                     } else null
+                    // Stun fatigue, as for enemies: a hero still stunned or just out of one shrugs off a new stun.
+                    val landed = landedStatus?.takeUnless { StatusSystem.isStun(it) && (hero.stunFatigue > 0 || StatusSystem.isStunned(hero.statuses)) }
                     hero.copy(
                         currentHp = newHp,
                         currentMp = if (isFallen) 0 else hero.currentMp,
                         atbGauge = if (isFallen) 0f else hero.atbGauge,
                         stance = if (isFallen) CharacterStance.DEAD else CharacterStance.DAMAGED,
                         isGuarding = false,
-                        statuses = StatusSystem.merge(hero.statuses, landedStatus)
+                        statuses = StatusSystem.merge(hero.statuses, landed),
+                        stunFatigue = if (landed != null && StatusSystem.isStun(landed)) landed.turnsLeft + StatusSystem.STUN_FATIGUE_TURNS else hero.stunFatigue
                     )
                 } else hero
             }
@@ -2391,6 +2396,7 @@ class CombatViewModel(
             val eff = when {
                 enemy.weak.any { it.equals(school.name, ignoreCase = true) } -> 2.0f
                 enemy.resist.any { it.equals(school.name, ignoreCase = true) } -> 0.8f
+                enemy.neutral.any { it.equals(school.name, ignoreCase = true) } -> 1.0f
                 else -> AffinityTable.effectiveness(school, familyOf(enemy), School.fromNameOrNull(enemy.selfElement))
             }
             val strike = DamageResolver.resolve(
@@ -2401,7 +2407,8 @@ class CombatViewModel(
                     targetDefense = enemy.defense,
                     defenseMultiplier = StatusSystem.defenseMult(enemy.statuses),
                     attackerWeakened = weakenedCaster,
-                    targetArmor = if (spell.piercing) 0 else enemy.armor
+                    targetArmor = enemy.armor,
+                    school = school
                 ),
                 random
             )
@@ -2631,10 +2638,11 @@ class CombatViewModel(
                     name = activeCustomization.name,
                     loreClass = activeCustomization.heroClass.title,
                     spells = spells,
+                    spriteKey = GameContent.spriteKeyFor("hero", storyFlags),
                     avatarTint = tint,
                     speed = activeCustomization.heroClass.startingSpeed
                 )
-            } else member.copy(spells = knownSpellsOf(member.id).ifEmpty { member.spells })
+            } else member.copy(spells = knownSpellsOf(member.id).ifEmpty { member.spells }, spriteKey = GameContent.spriteKeyFor(member.id, storyFlags))
         })
 
         // The difficulty preset (balance.json) scales every story enemy.

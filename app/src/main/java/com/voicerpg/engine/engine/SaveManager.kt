@@ -270,7 +270,11 @@ class SaveManager(private val context: Context? = null) {
             currentSceneId = initialSceneId,
             currentNodeId = initialNodeId,
             decisionsMade = emptyList(),
-            partyStats = listOf(initialHeroStats),
+            // A track told by one of the game's characters starts with that character instead of the class hero.
+            partyStats = listOf(
+                customization.protagonistCharacterId?.let { com.voicerpg.engine.content.GameContent.characterById(it)?.toSavedStats() }
+                    ?: initialHeroStats
+            ),
             defeatedEncounters = emptyList(),
             unlockedCompanions = listOf("hero"),
             achievements = listOf(manifest.startingAchievementId),

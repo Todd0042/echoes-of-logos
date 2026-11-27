@@ -28,7 +28,7 @@ import java.io.File
 import java.util.Collections
 
 /**
- * E6: Per-enemy weak/resist overrides, flat armor vs piercing spells, no enemy DRAIN healing,
+ * E6: Per-enemy weak/resist overrides, armour (stops blows; lightning conducts through it), no enemy DRAIN healing,
  * learned-weakness bestiary in "Enemies" report, custom school display names, and solemn encounters.
  */
 class EnemiesAndBestiaryTest {
@@ -57,7 +57,7 @@ class EnemiesAndBestiaryTest {
     }
 
     @Test
-    fun `enemy weak, resist, armor, piercing, and learned weakness in Enemies report`() {
+    fun `enemy weak, resist, armor, lightning through armour, and learned weakness in Enemies report`() {
         val lines = Collections.synchronizedList(mutableListOf<String>())
         val vm = makeVm(lines)
         vm.applyPlayerCustomization(PlayerCustomization(name = "Hero", heroClassId = "elementalist"))
@@ -97,7 +97,7 @@ class EnemiesAndBestiaryTest {
         val end2 = System.currentTimeMillis() + 5_000
         while (System.currentTimeMillis() < end2 && vm.state.value.enemies.first().currentHp == hpBeforePierce) Thread.sleep(10)
         val dmg = hpBeforePierce - vm.state.value.enemies.first().currentHp
-        assertTrue("piercing ignored armor=200 (dealt $dmg)", dmg >= 30)
+        assertTrue("lightning conducted through armor=200 (dealt $dmg)", dmg >= 30)
     }
 
     @Test
@@ -145,8 +145,8 @@ class EnemiesAndBestiaryTest {
             }
             edit("spells/spells.json") { root ->
                 root.getAsJsonArray("spells").add(JsonObject().apply {
-                    addProperty("id", "pierce_lance"); addProperty("name", "Pierce Lance"); addProperty("school", "PHYSICAL")
-                    addProperty("basePower", 45); addProperty("mpCost", 0); addProperty("piercing", true)
+                    addProperty("id", "pierce_lance"); addProperty("name", "Pierce Lance"); addProperty("school", "ELECTROMANCY")
+                    addProperty("basePower", 45); addProperty("mpCost", 0)
                     add("aliases", JsonArray().apply { add("lance") })
                 })
             }

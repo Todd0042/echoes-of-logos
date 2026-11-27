@@ -190,6 +190,8 @@ object SpriteContract {
         val violations = mutableListOf<Violation>()
         val fighters = pack.characters.values.filter { it.combat != null && it.role != CharacterRole.NARRATOR }
         fighters.sortedBy { it.id }.forEach { c -> violations += checkSprite(pack, c.id, c.id, Role.PARTY) }
+        // Costumes are fighters' sprites too.
+        fighters.sortedBy { it.id }.forEach { c -> c.costumes.forEach { violations += checkSprite(pack, "${c.id} (costume)", it.spriteId, Role.PARTY) } }
 
         val enemies = pack.enemyTemplates.values.sortedBy { it.id }
         val keyOf = enemies.associate { it.id to it.spriteId.ifBlank { it.id } }

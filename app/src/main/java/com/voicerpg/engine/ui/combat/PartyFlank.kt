@@ -106,7 +106,7 @@ private fun PartyFlankMemberItem(
         isGhost = member.isGhost,
         spriteAlpha = member.spriteAlpha,
         pixelSize = BattleFormation.PARTY_PIXEL_DP.dp,
-        sprite = remember(member.id) { SpriteLibrary.source(SpriteLibrary.keyFor(member)) },
+        sprite = remember(member.id, member.spriteKey) { SpriteLibrary.source(SpriteLibrary.keyFor(member)) },
         baseAnim = SpriteBase.of(member, isActive = isActiveTurn),
         fx = fx,
         // Taps land on the formation's hit target over the body (StageFormation), not on the whole card.

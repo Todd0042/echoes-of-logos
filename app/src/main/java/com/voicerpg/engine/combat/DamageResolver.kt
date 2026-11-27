@@ -16,7 +16,9 @@ data class DamageInputs(
     val defenseMultiplier: Float = 1.0f,
     val targetGuarding: Boolean = false,
     val attackerWeakened: Boolean = false,
-    val targetArmor: Int = 0
+    val targetArmor: Int = 0,
+    /** The attack's school: armour stops physical blows only, and lightning conducts through it. */
+    val school: School? = null
 )
 
 data class ResolvedStrike(
@@ -28,6 +30,8 @@ data class ResolvedStrike(
 
 object DamageResolver {
     const val CRIT_CHANCE = 0.08f
+    /** Lightning on an armoured target (armour conducts). */
+    const val LIGHTNING_VS_ARMOR = 1.25f
     const val CRIT_MULTIPLIER = 1.5f
     const val VARIANCE_MIN = 0.9f
     const val VARIANCE_MAX = 1.1f
@@ -46,7 +50,13 @@ object DamageResolver {
         if (inputs.attackerWeakened) dmg *= WEAKEN_MULTIPLIER
         dmg -= inputs.targetDefense * inputs.defenseMultiplier
         if (inputs.targetGuarding) dmg *= GUARD_MULTIPLIER
-        dmg -= inputs.targetArmor
+        // Armour is for blows: it takes its value off a physical hit; lightning conducts through metal and hits
+        // an armoured target 25% harder; other magic ignores it.
+        if (inputs.targetArmor > 0) when (inputs.school) {
+            School.PHYSICAL, null -> dmg -= inputs.targetArmor
+            School.ELECTROMANCY -> dmg *= LIGHTNING_VS_ARMOR
+            else -> {}
+        }
         val finalDamage = max(1, dmg.toInt())
         return ResolvedStrike(
             damage = finalDamage,

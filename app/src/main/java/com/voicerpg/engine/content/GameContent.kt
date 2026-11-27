@@ -191,6 +191,8 @@ data class CharacterDto(
     val combat: CharacterCombatDto? = null,
     val spells: List<SpellDto>? = null,
     val joinWhenFlag: String? = null,
+    /** Costume changes at story moments: `[ { "flag": "shop_opened", "spriteId": "todd_shop" } ]`; the latest set wins. */
+    val costumes: List<CostumeDto>? = null,
     val spellGrants: List<SpellGrantDto>? = null
 )
 
@@ -251,8 +253,7 @@ data class SpellDto(
     /** Optional chants per resonance tier ("BASIC".."TRANSCENDENTAL") used by hands-free presets. */
     val presetChants: Map<String, String>? = null,
     /** Optional recorded clips (asset paths, e.g. audio/quotes/x.ogg); one plays at random. */
-    val soundBites: List<String>? = null,
-    val piercing: Boolean = false
+    val soundBites: List<String>? = null
 )
 
 data class SpellFileDto(val spells: List<SpellDto>? = null)
@@ -348,6 +349,8 @@ data class EnemyDto(
     val cutIn: com.voicerpg.engine.model.CutInSpec? = null,
     val weak: List<String>? = null,
     val resist: List<String>? = null,
+    /** Schools that hit it at x1.0 whatever its family and own element. */
+    val neutral: List<String>? = null,
     val armor: Int = 0
 )
 
@@ -858,6 +861,11 @@ enum class CharacterRole { HERO, NPC, NARRATOR }
 
 data class SpellGrant(val flag: String, val spellIds: List<String>)
 
+data class CostumeDto(val flag: String = "", val spriteId: String = "")
+
+/** From the story moment [flag] on, the character fights with the sprite [spriteId]. */
+data class Costume(val flag: String, val spriteId: String)
+
 /**
  * A fighter's spells across the whole story: the [starting] kit, then each grant, learned when its story flag is
  * set. Only additions: nothing is replaced. A fighter joining late knows every grant whose flag is already set.
@@ -918,6 +926,7 @@ data class GameCharacter(
     val preferredVoiceId: String?,
     val combat: CharacterCombat?,
     val joinWhenFlag: String?,
+    val costumes: List<Costume> = emptyList(),
     val spellGrants: List<SpellGrant>,
     val gender: String? = null,
     val allowedVoiceRegions: List<String> = emptyList(),
@@ -986,6 +995,7 @@ data class EnemyTemplate(
     val shortName: String = "",
     val weak: List<String> = emptyList(),
     val resist: List<String> = emptyList(),
+    val neutral: List<String> = emptyList(),
     val armor: Int = 0
 ) {
     fun toEnemy(
@@ -1027,6 +1037,7 @@ data class EnemyTemplate(
             templateId = id,
             weak = weak,
             resist = resist,
+            neutral = neutral,
             armor = armor
         )
     }
@@ -1152,6 +1163,10 @@ class GameContentPack(
             grants = character?.spellGrants?.map { g -> g.flag to g.spellIds.mapNotNull { spells[it] } } ?: emptyList()
         )
     }
+
+    /** The sprite [memberId] fights with given the story [flags]: their latest costume whose flag is set, else their own. */
+    fun spriteKeyFor(memberId: String, flags: Map<String, Boolean>): String =
+        characters[memberId]?.costumes?.lastOrNull { flags[it.flag] == true }?.spriteId ?: memberId
 
     /** The spells [memberId] knows with these story [flags] set (see [SpellKit]). */
     fun knownSpells(memberId: String, heroClassId: String?, flags: Map<String, Boolean>): List<Spell> =
@@ -1535,8 +1550,7 @@ class GameContentLoader(private val source: ContentSource) {
         graphics = graphics?.toSpellGraphics(),
         cleansesDebuffs = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true),
         presetChants = presetChants?.mapKeys { it.key.uppercase() } ?: emptyMap(),
-        soundBites = soundBites.orEmpty().filter { it.isNotBlank() },
-        piercing = piercing
+        soundBites = soundBites.orEmpty().filter { it.isNotBlank() }
     )
 
     private fun ClassDto.toDef(spells: Map<String, Spell>): HeroClassDef = HeroClassDef(
@@ -1601,6 +1615,7 @@ class GameContentLoader(private val source: ContentSource) {
             preferredVoiceId = preferredVoiceId,
             combat = combat,
             joinWhenFlag = joinWhenFlag,
+            costumes = (costumes ?: emptyList()).filter { it.flag.isNotBlank() && it.spriteId.isNotBlank() }.map { Costume(it.flag, it.spriteId) },
             spellGrants = (spellGrants ?: emptyList()).map {
                 SpellGrant(it.flag, it.spellIds ?: emptyList())
             },
@@ -1661,6 +1676,7 @@ class GameContentLoader(private val source: ContentSource) {
         cutIn = cutIn,
         weak = weak.orEmpty().map { it.trim().uppercase() }.filter { it.isNotBlank() },
         resist = resist.orEmpty().map { it.trim().uppercase() }.filter { it.isNotBlank() },
+        neutral = neutral.orEmpty().map { it.trim().uppercase() }.filter { it.isNotBlank() },
         armor = armor.coerceAtLeast(0)
     )
 
@@ -1973,6 +1989,7 @@ object GameContent {
     fun spellsForClass(classId: String?): List<Spell> = pack.spellsForClass(classId)
     fun spellKitFor(memberId: String, heroClassId: String? = null): SpellKit = pack.spellKitFor(memberId, heroClassId)
     fun knownSpells(memberId: String, heroClassId: String?, flags: Map<String, Boolean>): List<Spell> = pack.knownSpells(memberId, heroClassId, flags)
+    fun spriteKeyFor(memberId: String, flags: Map<String, Boolean>): String = pack.spriteKeyFor(memberId, flags)
     fun voiceAliasesFor(memberId: String?): List<String> = pack.voiceAliasesFor(memberId)
     fun enemyTemplateById(id: String?): EnemyTemplate? = pack.enemyTemplateById(id)
     fun enemySpriteById(id: String?): SpriteDefinition? = pack.enemySpriteById(id)

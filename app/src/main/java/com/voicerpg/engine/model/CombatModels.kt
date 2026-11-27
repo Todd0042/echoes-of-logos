@@ -63,7 +63,6 @@ data class Spell(
     /** `"ally"` for single-target ally heals/restores (defaults to caster if unnamed or enemy targeted). */
     val target: String = "",
     /** True when this spell ignores enemy [Enemy.armor]. */
-    val piercing: Boolean = false
 ) {
     val isCleanse: Boolean get() = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true)
     val targetsAlly: Boolean get() = target.equals("ally", ignoreCase = true)
@@ -101,6 +100,10 @@ data class PartyMember(
     val atbGauge: Float = 0f,
     val defense: Int = 0,
     val statuses: List<StatusInstance> = emptyList(),
+    /** Their own turns left during which a new stun doesn't take, as for enemies. */
+    val stunFatigue: Int = 0,
+    /** The sprite they fight with now (a costume from the story); blank = their own (their id). */
+    val spriteKey: String = "",
     val isGuarding: Boolean = false,
     val isGhost: Boolean = false,
     val canAttack: Boolean = true,
@@ -147,8 +150,6 @@ data class Enemy(
     val ultimateChargeLeft: Int = 0,
     /** The round it was last staggered in (one stagger per enemy per round); 0 = never. */
     val staggeredRound: Int = 0,
-    /** Its own turns left during which a new stun doesn't take (StatusSystem.STUN_FATIGUE_TURNS). */
-    val stunFatigue: Int = 0,
     /** Sprite size multiplier (enemies.json `scale`; bosses default 2.0). */
     val scale: Float = 1f,
     /** Lines it may shout when it telegraphs a move (enemies.json `taunts`). */
@@ -164,8 +165,12 @@ data class Enemy(
     val weak: List<String> = emptyList(),
     /** School ids this enemy resists (x0.8, overrides family table). */
     val resist: List<String> = emptyList(),
-    /** Flat damage reduction per hit (ignored by piercing spells). */
-    val armor: Int = 0
+    /** School ids that hit this enemy at x1.0 whatever its family and own element. */
+    val neutral: List<String> = emptyList(),
+    /** Armour: damage taken off every physical blow; lightning conducts through it (DamageResolver). */
+    val armor: Int = 0,
+    /** Its own turns left during which a new stun doesn't take (StatusSystem.STUN_FATIGUE_TURNS). */
+    val stunFatigue: Int = 0
 ) {
     /** The name combat speech uses ("Orc" for "Blighted Orc"). */
     val spokenName: String get() = com.voicerpg.engine.audio.CombatLines.shortName(name, shortName)
