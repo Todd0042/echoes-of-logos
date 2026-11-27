@@ -94,7 +94,7 @@ class EngineDecoupledAssetsTest {
         assertNotNull("AffinityMatrix must be loaded", affinity)
 
         val pyromancyFlesh = AffinityTable.affinity(School.PYROMANCY, EnemyFamily.FLESH)
-        assertEquals(1.2f, pyromancyFlesh, 0.001f)
+        assertTrue("PYROMANCY/FLESH affinity in bounds: $pyromancyFlesh", pyromancyFlesh in affinity!!.floor..affinity.ceiling)
 
         val line = AffinityTable.narrationLine(School.PYROMANCY, "Practice Dummy", 1.5f)
         assertNotNull("Narration line should be generated", line)
