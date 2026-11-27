@@ -8,14 +8,14 @@
 
 # 🔮 Echoes of the Logos: High-Fantasy Voice JRPG
 
-[![Version](https://img.shields.io/badge/Version-1.8.0--preview-ff2a85.svg)](https://github.com/Todd0042/echoes-of-logos/releases)
+[![Version](https://img.shields.io/badge/Version-1.8.1--preview-ff2a85.svg)](https://github.com/Todd0042/echoes-of-logos/releases)
 [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-00f0ff.svg)](LICENSE)
 [![Platform: Android 8.0+](https://img.shields.io/badge/Platform-Android%208.0%2B%20(API%2026%2B)-3DDC84.svg?logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-7F52FF.svg?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![UI: Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose%202024.10.01-4285F4.svg?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![Engine: VoiceRPG](https://img.shields.io/badge/Engine-VoiceRPG%20v2.0.0-teal.svg)](https://github.com/Todd0042/voice-rpg-engine)
 [![16 KB Page Size](https://img.shields.io/badge/16%20KB-Compatible-success.svg)](https://developer.android.com/16kb-page-size)
-[![Unit Tests](https://img.shields.io/badge/Unit%20Tests-368%20Passing-39ff14.svg)](app/src/test/java/com/voicerpg/engine/)
+[![Unit Tests](https://img.shields.io/badge/Unit%20Tests-375%20Passing-39ff14.svg)](app/src/test/java/com/voicerpg/engine/)
 [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Creator-F16061?style=flat&logo=ko-fi&logoColor=white)](https://ko-fi.com/todd0042)
 
 > **A voice-commanded high-fantasy JRPG for Android: speak your spells to fight tactical ATB battles across a 16-chapter story, with resonance scoring that rewards a well-delivered chant, bundled offline translations in five languages, and a screenless Pocket Mode that plays entirely by ear.**
@@ -329,7 +329,7 @@ The story screen ([`StoryScreen.kt`](app/src/main/java/com/voicerpg/engine/ui/st
 
 ### Running the tests
 
-The suite has **368 automated unit tests** (the engine's tests, run against this game's content): intent parsing, multilingual commands, combat, story graph and hub gating, saves, resonance, sprites and balance.
+The suite has **375 automated unit tests** (the engine's tests, run against this game's content): intent parsing, multilingual commands, combat, story graph and hub gating, saves, resonance, sprites and balance.
 
 ```bash
 # Run the unit tests

@@ -12,8 +12,8 @@ android {
         applicationId = "com.voicerpg.android"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.8.0-preview"
+        versionCode = 3
+        versionName = "1.8.1-preview"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
