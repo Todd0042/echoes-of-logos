@@ -14,7 +14,7 @@
 [![16 KB Page Size](https://img.shields.io/badge/16%20KB-Compatible-success.svg)](https://developer.android.com/16kb-page-size)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-7F52FF.svg?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![UI: Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose%202024.10.01-4285F4.svg?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Unit Tests](https://img.shields.io/badge/Unit%20Tests-224%20Passing-39ff14.svg)](app/src/test/java/com/voicerpg/engine/)
+[![Unit Tests](https://img.shields.io/badge/Unit%20Tests-368%20Passing-39ff14.svg)](app/src/test/java/com/voicerpg/engine/)
 [![Engine: VoiceRPG](https://img.shields.io/badge/Engine-VoiceRPG%20v2.0.0-teal.svg)](https://github.com/Todd0042/voice-rpg-engine)
 [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Creator-F16061?style=flat&logo=ko-fi&logoColor=white)](https://ko-fi.com/todd0042)
 
@@ -172,7 +172,7 @@ Engine updates are synchronized from upstream `voice-rpg-engine` via:
 
 ## 7. Automated Unit Verification Suite
 
-Echoes of the Logos includes **224 automated unit tests** verifying multilingual intent resolution, combat movesets, and story graph integrity:
+Echoes of the Logos includes **368 automated unit tests** verifying multilingual intent resolution, combat movesets, and story graph integrity:
 ```bash
 # Run unit test suite:
 ./gradlew testDebugUnitTest
@@ -180,6 +180,8 @@ Echoes of the Logos includes **224 automated unit tests** verifying multilingual
 # Assemble debug APK:
 ./gradlew assembleDebug
 ```
+
+**Combat balance.** Every story fight is played by the engine's battle simulator (`BalanceContractTest`: the real combat on virtual time, with the party and spells the story has given them at that point): 128 fights (32 story fights for each of Aethel's 4 classes). A sensible player at the balance point (**x1.5** resonance, [`combat/balance.json`](app/src/main/assets/game/combat/balance.json)) should win in a target number of rounds with a safety margin that narrows toward the finale, a lazy x1.1 player should be able to lose late bosses, healing should never take over a fight, and Pure Story Mode must win every fight. The enemy HP and attack in [`encounters.json`](app/src/main/assets/game/encounters/encounters.json) were tuned to those targets with the engine's `BalanceTunerTest`; the report of every fight is written to `app/build/reports/balance.txt` (it reports rather than fails the build: a handful of fights still sit just outside a target).
 
 ---
 

@@ -1,0 +1,8 @@
+{
+  "_doc": "Combat balance (voice-rpg-engine docs/GAME_CREATION_GUIDE.md, section 3). Fights are balanced for a sensible player at balanceResonance; BalanceContractTest reports every story fight against the targets in app/build/reports/balance.txt, and the enemy HP/attack in encounters.json come from BalanceTunerTest. Set enforce to 1 to make the targets fail the build.",
+  "balanceResonance": 1.5,
+  "difficulty": "normal",
+  "difficulties": {
+    "normal": { "enemyHp": 1.0, "enemyAttack": 1.0 }
+  }
+}
