@@ -327,11 +327,23 @@ object IntentParser {
               ?: defaultFallbackSpell()
         }
 
-        // If it's a heal or friendly cleanse spell and targeting was unset/first alive enemy/all enemies, default to party
-        val isAllySpell = matchedSpell.isHeal || matchedSpell.cleansesDebuffs || matchedSpell.isCleanse
-        if (isAllySpell && (target == TargetSelection.FIRST_ALIVE_ENEMY || target == TargetSelection.ALL_ENEMIES || target == TargetSelection.SPECIFIC_ENEMY)) {
-            target = TargetSelection.PARTY_LOWEST
-            targetEnemyId = null
+        // If it's a heal, friendly cleanse, or target-ally spell:
+        // - "target": "ally" (single target) aims at the named hero, or the caster if none / an enemy was targeted.
+        // - Otherwise, an enemy/unset target defaults to PARTY_LOWEST.
+        val isAllySpell = matchedSpell.isHeal || matchedSpell.cleansesDebuffs || matchedSpell.isCleanse || matchedSpell.targetsAlly
+        if (isAllySpell) {
+            if (matchedSpell.targetsAlly && !matchedSpell.hitsAll) {
+                if (targetHeroId != null) {
+                    target = TargetSelection.SPECIFIC_HERO
+                    targetEnemyId = null
+                } else if (target != TargetSelection.SELF) {
+                    target = TargetSelection.SELF
+                    targetEnemyId = null
+                }
+            } else if (target == TargetSelection.FIRST_ALIVE_ENEMY || target == TargetSelection.ALL_ENEMIES || target == TargetSelection.SPECIFIC_ENEMY) {
+                target = TargetSelection.PARTY_LOWEST
+                targetEnemyId = null
+            }
         }
 
         return ParsedIntent(

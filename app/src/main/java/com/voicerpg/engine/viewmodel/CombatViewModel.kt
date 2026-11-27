@@ -1859,10 +1859,10 @@ class CombatViewModel(
                 lower.contains("cure") || lower.contains("protect") || lower.contains("shield") ||
                 lower.contains("lay on hands") || lower.contains("soothing rain") ||
                 lower.contains("cleanse") || lower.contains("dispel") || lower.contains("purify")
-        val isSupportSpell = activeHero.spells.any { it.isHeal || it.isGuard || it.cleansesDebuffs || it.isCleanse }
+        val isSupportSpell = activeHero.spells.any { it.isHeal || it.isGuard || it.cleansesDebuffs || it.isCleanse || it.targetsAlly }
         val isHealSupportForOther = invokedOtherHero != null && isSupportSpell && (
             hasHealSupportKeyword || activeHero.spells.any { spell ->
-                (spell.isHeal || spell.isGuard || spell.cleansesDebuffs || spell.isCleanse) &&
+                (spell.isHeal || spell.isGuard || spell.cleansesDebuffs || spell.isCleanse || spell.targetsAlly) &&
                 (lower.contains(spell.name.lowercase()) || spell.aliases.any { a -> a.length >= 3 && lower.contains(a.lowercase()) })
             }
         )
@@ -2049,7 +2049,8 @@ class CombatViewModel(
             val isAttune = parsed.spell.manaRestorePct > 0f
             val isHeal = parsed.spell.isHeal || parsed.spell.cleansesDebuffs || parsed.spell.isCleanse
             val (style, targetIds) = when {
-                isAttune -> BattleCue.ReleaseStyle.ATTUNE to listOf(activeHero.id)
+                isAttune -> BattleCue.ReleaseStyle.ATTUNE to
+                    resolveManaTargets(activeHero, parsed.spell, parsed.targetHeroId).map { it.id }
                 isHeal -> BattleCue.ReleaseStyle.HEAL to
                     resolveHealTargets(activeHero, parsed.spell, parsed.target, parsed.targetHeroId).ifEmpty { listOf(activeHero) }.map { it.id }
                 else -> BattleCue.ReleaseStyle.PROJECTILE to
@@ -2083,7 +2084,7 @@ class CombatViewModel(
 
             val aliveBefore = aliveIds()
             val hits = if (isAttune) {
-                applyAttuneAction(activeHero, parsed.spell)
+                applyAttuneAction(activeHero, parsed.spell, parsed.targetHeroId)
             } else if (isHeal) {
                 applyHealAction(activeHero, parsed.spell, parsed.target, parsed.targetHeroId, resonance)
             } else {
@@ -2186,20 +2187,41 @@ class CombatViewModel(
         combatNarrator.sayAndWait(CombatSpeech.REPORT, text)
     }
 
+    private fun resolveManaTargets(
+        caster: PartyMember,
+        spell: Spell,
+        targetHeroId: String?
+    ): List<PartyMember> {
+        val currentParty = _state.value.party
+        return when {
+            spell.hitsAll -> currentParty.filter { it.isAlive }
+            spell.targetsAlly && targetHeroId != null -> {
+                val matched = currentParty.filter { it.id == targetHeroId && it.isAlive }
+                matched.ifEmpty { listOf(caster) }
+            }
+            else -> listOf(caster)
+        }
+    }
+
     /**
-     * Attune: the hero's free breath discipline. Costs the turn, restores a flat
-     * percentage of max MP. Deliberately resonance-INDEPENDENT: sustain can never
-     * inflate the voice multiplier.
+     * Attune / mana restore: restores a percentage of each target's max MP.
+     * Deliberately resonance-INDEPENDENT: sustain can never inflate the voice multiplier.
      */
-    private fun applyAttuneAction(member: PartyMember, spell: Spell): List<BattleCue.Hit> {
-        val restore = (member.maxMp * spell.manaRestorePct).roundToInt().coerceAtLeast(1)
+    private fun applyAttuneAction(
+        caster: PartyMember,
+        spell: Spell,
+        targetHeroId: String? = null
+    ): List<BattleCue.Hit> {
+        val targets = resolveManaTargets(caster, spell, targetHeroId)
+        val restoredById = targets.associate { it.id to (it.maxMp * spell.manaRestorePct).roundToInt().coerceAtLeast(1) }
         sfxManager.playSpellCast()
         _state.value = _state.value.copy(
-            party = _state.value.party.map {
-                if (it.id == member.id) it.copy(currentMp = (it.currentMp + restore).coerceAtMost(it.maxMp)) else it
+            party = _state.value.party.map { member ->
+                val restore = restoredById[member.id] ?: return@map member
+                member.copy(currentMp = (member.currentMp + restore).coerceAtMost(member.maxMp))
             }
         )
-        return listOf(BattleCue.Hit(member.id, restore, kind = BattleCue.HitKind.MANA))
+        return targets.map { BattleCue.Hit(it.id, restoredById.getValue(it.id), kind = BattleCue.HitKind.MANA) }
     }
 
     private fun resolveHealTargets(
@@ -2209,6 +2231,13 @@ class CombatViewModel(
         targetHeroId: String?
     ): List<PartyMember> {
         val currentParty = _state.value.party
+        if (spell.targetsAlly && !spell.hitsAll) {
+            return if (targetHeroId != null) {
+                currentParty.filter { it.id == targetHeroId && it.isAlive }.ifEmpty { listOf(caster) }
+            } else {
+                listOf(caster)
+            }
+        }
         return when {
             spell.hitsAll || target == TargetSelection.PARTY_LOWEST -> currentParty.filter { it.isAlive }
             targetHeroId != null -> {
@@ -2262,7 +2291,7 @@ class CombatViewModel(
         val currentParty = _state.value.party
         val targetsToHeal = resolveHealTargets(caster, spell, target, targetHeroId)
 
-        val healAmount = if (spell.basePower > 0) {
+        val flatHealAmount = if (spell.healPctOfMax <= 0f && spell.basePower > 0) {
             DamageResolver.resolveHeal(
                 spellBasePower = spell.basePower.toFloat(),
                 resonanceMultiplier = resonance.damageMultiplier,
@@ -2271,10 +2300,17 @@ class CombatViewModel(
             )
         } else 0
 
+        val healById = targetsToHeal.associate { hero ->
+            hero.id to if (spell.healPctOfMax > 0f) {
+                (hero.maxHp * spell.healPctOfMax * resonance.damageMultiplier).roundToInt().coerceAtLeast(1)
+            } else flatHealAmount
+        }
+
         var anyDebuffsCleansed = false
         val updatedParty = currentParty.map { hero ->
-            if (targetsToHeal.any { it.id == hero.id }) {
-                val newHp = (hero.currentHp + healAmount).coerceAtMost(hero.maxHp)
+            val amount = healById[hero.id]
+            if (amount != null) {
+                val newHp = (hero.currentHp + amount).coerceAtMost(hero.maxHp)
                 var currentStatuses = hero.statuses
                 if (spell.cleansesDebuffs || spell.isCleanse) {
                     val hadDebuffs = currentStatuses.any { it.isDebuffOnTarget }
@@ -2309,7 +2345,7 @@ class CombatViewModel(
                 floatingTexts = _state.value.floatingTexts.filterNot { it.id in idsToRemove }
             )
         }
-        return targetsToHeal.map { BattleCue.Hit(it.id, healAmount, kind = BattleCue.HitKind.HEAL) }
+        return targetsToHeal.map { BattleCue.Hit(it.id, healById[it.id] ?: 0, kind = BattleCue.HitKind.HEAL) }
     }
 
     private suspend fun applyDamageToEnemies(

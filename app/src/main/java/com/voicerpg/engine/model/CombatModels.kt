@@ -57,9 +57,14 @@ data class Spell(
     /** Recorded clips played when this spell is cast (one at random). */
     val soundBites: List<String> = emptyList(),
     /** A shorter name for the spoken spell callout (spells.json `calloutName`); blank = [name]. */
-    val calloutName: String = ""
+    val calloutName: String = "",
+    /** Fraction of target max HP healed (multiplied by resonance); 0 = use flat [basePower]. */
+    val healPctOfMax: Float = 0f,
+    /** `"ally"` for single-target ally heals/restores (defaults to caster if unnamed or enemy targeted). */
+    val target: String = ""
 ) {
     val isCleanse: Boolean get() = cleansesDebuffs || status.equals("CLEANSE", ignoreCase = true) || status.equals("DISPEL", ignoreCase = true)
+    val targetsAlly: Boolean get() = target.equals("ally", ignoreCase = true)
 
     val category: SpellCategory
         get() = when {
