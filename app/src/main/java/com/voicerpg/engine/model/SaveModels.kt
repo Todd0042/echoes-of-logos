@@ -90,8 +90,7 @@ data class SavedCharacterStats(
     val maxHp: Int,
     val currentMp: Int,
     val maxMp: Int,
-    val speed: Int,
-    val spellIds: List<String> = emptyList()
+    val speed: Int
 ) {
     companion object {
         fun fromPartyMember(member: PartyMember): SavedCharacterStats {
@@ -103,8 +102,7 @@ data class SavedCharacterStats(
                 maxHp = member.maxHp,
                 currentMp = member.currentMp,
                 maxMp = member.maxMp,
-                speed = member.speed,
-                spellIds = member.spells.map { it.id }
+                speed = member.speed
             )
         }
     }

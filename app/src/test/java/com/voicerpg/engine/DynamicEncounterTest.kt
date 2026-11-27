@@ -493,7 +493,7 @@ class DynamicEncounterTest {
     }
 
     @Test
-    fun testApplyImportedProgressionMapsSpells() {
+    fun testApplyImportedProgressionCarriesVitals() {
         val savedParty = listOf(
             SavedCharacterStats(
                 id = "cedric",
@@ -503,8 +503,7 @@ class DynamicEncounterTest {
                 maxHp = 420,
                 currentMp = 40,
                 maxMp = 90,
-                speed = 40,
-                spellIds = listOf("power_strike", "mending_touch", "aegis_guard")
+                speed = 40
             )
         )
         viewModel.applySavedStats(savedParty)
@@ -525,11 +524,7 @@ class DynamicEncounterTest {
 
         val cedric = viewModel.state.value.party.first { it.id == "cedric" }
         assertEquals("carried HP", 100, cedric.currentHp)
-        assertTrue(cedric.spells.any { it.id == "aegis_guard" })
-        // GameContent ships no breath/attune discipline for Cedric (breathSpellFor("cedric")
-        // returns null), so the imported kit's final spell is the last persisted spell rather
-        // than an engine-appended breath.
-        assertEquals("aegis_guard", cedric.spells.last().id)
+        assertEquals("carried MP", 40, cedric.currentMp)
     }
 
     @Test

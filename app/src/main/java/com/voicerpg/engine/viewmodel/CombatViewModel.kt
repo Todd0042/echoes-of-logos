@@ -338,6 +338,33 @@ class CombatViewModel(
 
     // Persisted HP/MP carry (and companion spells) applied when encounters start.
     private var importedStats: List<SavedCharacterStats> = emptyList()
+    /** The story's flags: each fighter knows the spells the story has given them (GameContent.knownSpells). */
+    private var storyFlags: Map<String, Boolean> = emptyMap()
+    fun applyStoryFlags(flags: Map<String, Boolean>) {
+        storyFlags = flags
+    }
+
+    /** What [memberId] knows now, from their kit and the story's flags. */
+    private fun knownSpellsOf(memberId: String): List<Spell> =
+        GameContent.knownSpells(memberId, activeCustomization.heroClassId, storyFlags)
+
+    /**
+     * The spell [utterance] names when it is in [hero]'s kit but not learned yet (and names no spell they know);
+     * null otherwise. An unlearned spell's full name wins over a generic alias (like "cleave" or "thunder")
+     * on a spell the hero already knows.
+     */
+    private fun notYetLearnedSpell(hero: PartyMember, utterance: String): Spell? {
+        val lower = utterance.lowercase()
+        val unlearned = GameContent.spellKitFor(hero.id, activeCustomization.heroClassId).all
+            .filter { s -> hero.spells.none { it.id == s.id } }
+        if (unlearned.isEmpty()) return null
+        if (hero.spells.any { lower.contains(it.name.lowercase()) }) return null
+        unlearned.firstOrNull { lower.contains(it.name.lowercase()) }?.let { return it }
+        fun aliased(s: Spell) = s.aliases.any { it.length >= 4 && lower.contains(it.lowercase()) }
+        if (hero.spells.any(::aliased)) return null
+        return unlearned.firstOrNull(::aliased)
+    }
+
     fun applySavedStats(stats: List<SavedCharacterStats>) {
         importedStats = stats
     }
@@ -1936,6 +1963,14 @@ class CombatViewModel(
         activeScope.launch {
             speechManager.cancel()
 
+            // 0-pre-a. A spell from this fighter's kit that the story hasn't given them yet: say so, keep the turn.
+            notYetLearnedSpell(activeHero, utterance)?.let { spell ->
+                combatNarrator.say(CombatSpeech.FEEDBACK, CombatLines.line("not_learned", "hero" to activeHero.name, "spell" to spell.name)) {
+                    if (speechManager.isAutoListen.value) relistenAfter(150)
+                }
+                return@launch
+            }
+
             // 0-pre. Parse FIRST (so we know the spell), then enforce MP: an unaffordable chant
             // fails softly WITHOUT burning the hero's turn.
             val parsed = IntentParser.parse(utterance, activeHero.spells, _state.value.enemies, _state.value.party)
@@ -2450,7 +2485,7 @@ class CombatViewModel(
         savedStats: List<SavedCharacterStats> = emptyList()
     ) {
         activeCustomization = customization
-        val spells = GameContent.spellsForClass(customization.heroClass.id)
+        val spells = knownSpellsOf("hero")
         val heroStats = savedStats.firstOrNull { it.id == "hero" }
         val hp = heroStats?.currentHp ?: customization.heroClass.startingHp
         val maxHp = heroStats?.maxHp ?: customization.heroClass.startingHp
@@ -2506,10 +2541,10 @@ class CombatViewModel(
             GameContent.createDuoParty()
         }
 
-        // Apply active player customization (custom name, class, starter spells, aura color) to the hero
+        // Every fighter knows what the story has given them; the hero also gets the player's name, class and aura.
         val partyToUse = applyImportedProgression(baseParty.map { member ->
             if (member.id == "hero") {
-                val spells = GameContent.spellsForClass(activeCustomization.heroClass.id)
+                val spells = knownSpellsOf("hero")
                 val tint = try {
                     Color(android.graphics.Color.parseColor(activeCustomization.auraColor.hexColor))
                 } catch (_: Exception) {
@@ -2522,7 +2557,7 @@ class CombatViewModel(
                     avatarTint = tint,
                     speed = activeCustomization.heroClass.startingSpeed
                 )
-            } else member
+            } else member.copy(spells = knownSpellsOf(member.id).ifEmpty { member.spells })
         })
 
         startEncounter(partyToUse, encounter.enemies.map { decorateEnemy(it) }, encounter.environment, encounter.environmentId)
@@ -2535,24 +2570,12 @@ class CombatViewModel(
             val revived = member.currentHp <= 0 || saved.currentHp <= 0
             val currentHp = if (revived) (saved.maxHp / 2).coerceAtLeast(1) else saved.currentHp.coerceAtMost(saved.maxHp)
 
-            // Resolve companion spells from saved stats if available
-            val updatedSpells = if (member.id != "hero" && saved.spellIds.isNotEmpty()) {
-                val companionSpells = saved.spellIds.mapNotNull { GameContent.spellById(it) }
-                val breath = GameContent.breathSpellFor(member.id)
-                if (companionSpells.isNotEmpty()) {
-                    (companionSpells.filter { it.manaRestorePct == 0f } + listOfNotNull(breath)).distinctBy { it.id }
-                } else member.spells
-            } else {
-                member.spells
-            }
-
             member.copy(
                 maxHp = saved.maxHp,
                 maxMp = saved.maxMp,
                 currentHp = currentHp,
                 currentMp = saved.currentMp.coerceAtMost(saved.maxMp),
                 speed = saved.speed,
-                spells = updatedSpells,
                 statuses = emptyList(),
                 isGuarding = false
             )

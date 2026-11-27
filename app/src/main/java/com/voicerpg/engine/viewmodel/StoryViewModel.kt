@@ -75,7 +75,9 @@ data class StoryState(
     val selectedRegion: String = "",
     val showFirstLaunchLanguagePrompt: Boolean = false,
     /** A one-time message for the title screen (e.g. saves from an older version were cleared); null when none. */
-    val startupNotice: String? = null
+    val startupNotice: String? = null,
+    /** "Lyra learns Thornwall." lines for spells the party learned on entering the current node; empty otherwise. */
+    val spellsLearned: List<String> = emptyList()
 )
 
 class StoryViewModel(
@@ -103,6 +105,12 @@ class StoryViewModel(
          * Chapter warp targets derived from scene data files (chapterIndex + entry node).
          * No chapters are hardcoded in the engine.
          */
+        /** "Lyra learns Thornwall." in the player's language. */
+        fun learnedLine(name: String, spell: String): String =
+            com.voicerpg.engine.localization.TranslationManager.translate(LEARNED_TEMPLATE).replace("{name}", name).replace("{spell}", spell)
+
+        const val LEARNED_TEMPLATE = "{name} learns {spell}."
+
         /** Shown and spoken once when saves from an older version were cleared on start. */
         const val OLD_SAVES_CLEARED_NOTICE = "Saves from an earlier version of the game were cleared."
 
@@ -1118,8 +1126,6 @@ class StoryViewModel(
 
     fun assignHeroClass(classId: String) {
         val heroClass = GameContent.classes.firstOrNull { it.id.equals(classId, ignoreCase = true) } ?: return
-        val starterSpells = GameContent.spellsForClass(heroClass.id)
-
         val updatedPlayer = _state.value.player.copy(
             heroClassId = classId,
             title = heroClass.title.ifBlank { _state.value.player.title },
@@ -1138,8 +1144,7 @@ class StoryViewModel(
                     maxHp = heroClass.startingHp,
                     currentMp = heroClass.startingMp,
                     maxMp = heroClass.startingMp,
-                    speed = heroClass.startingSpeed,
-                    spellIds = starterSpells.map { it.id }
+                    speed = heroClass.startingSpeed
                 )
             } else stat
         }
@@ -1231,18 +1236,15 @@ class StoryViewModel(
             }
         }
 
-        // Data-driven spell grants: character files may award spells when flags are set.
-        for (character in GameContent.characters.values) {
-            for (grant in character.spellGrants) {
-                if (grant.flag.isNotBlank() && updatedFlags[grant.flag] == true) {
-                    updatedPartyStats = updatedPartyStats.map { member ->
-                        if (member.id == character.id) {
-                            val missing = grant.spellIds.filterNot { it in member.spellIds }
-                            if (missing.isEmpty()) member else member.copy(spellIds = member.spellIds + missing)
-                        } else member
-                    }
-                }
-            }
+        // Spells come from the story (SpellKit): announce what the party already in it learned on this node. A
+        // fighter joining here arrives knowing what the story has passed, without an announcement per spell.
+        val heroClassId = _state.value.player.heroClassId
+        val previousFlags = _state.value.narrativeFlags
+        val spellsLearned = _state.value.partyStats.flatMap { member ->
+            val before = GameContent.knownSpells(member.id, heroClassId, previousFlags).map { it.id }.toSet()
+            val learned = GameContent.knownSpells(member.id, heroClassId, updatedFlags).filterNot { it.id in before }
+            val name = if (member.id == "hero") _state.value.player.name.ifBlank { member.name } else member.name
+            learned.map { spell -> learnedLine(name, spell.name) }
         }
 
         val sceneIdToUse = effectiveNode.changeSceneId ?: _state.value.currentScene.id
@@ -1297,7 +1299,8 @@ class StoryViewModel(
             partyStats = updatedPartyStats,
             dialogueHistory = updatedHistory,
             visitedNodeIds = updatedVisited,
-            dynamicMetrics = currentMetrics
+            dynamicMetrics = currentMetrics,
+            spellsLearned = spellsLearned
         )
 
         musicManager?.playTrack(targetScene.musicAsset)
@@ -1384,8 +1387,6 @@ class StoryViewModel(
 
     fun updatePartyStatsFromCombat(updatedParty: List<PartyMember>) {
         val mappedStats = updatedParty.map { member ->
-            val existing = _state.value.partyStats.firstOrNull { it.id == member.id }
-            val mergedSpells = (member.spells.map { it.id } + (existing?.spellIds ?: emptyList())).distinct()
             SavedCharacterStats(
                 id = member.id,
                 name = member.name,
@@ -1394,8 +1395,7 @@ class StoryViewModel(
                 maxHp = member.maxHp,
                 currentMp = member.currentMp,
                 maxMp = member.maxMp,
-                speed = member.speed,
-                spellIds = mergedSpells
+                speed = member.speed
             )
         }
         _state.value = _state.value.copy(partyStats = mappedStats)
@@ -2110,11 +2110,14 @@ class StoryViewModel(
         if (_state.value.gameScreen != GameScreen.STORY_EXPLORATION) return
         val node = _state.value.currentNode
         val effective = effectiveDialogueChoices(node)
+        // Learned spells are said after the node's own text, before any choices are read.
+        val learned = _state.value.spellsLearned.joinToString(" ")
+        val nodeText = if (learned.isBlank()) node.text else node.text + "\n\n" + learned
         val narrationText = if (effective.isEmpty() && node.choices.isNotEmpty()) {
             val sole = eligibleChoices(node).firstOrNull()
-            if (sole != null) node.text + "\n\nOne path remains. " + sole.text else node.text
+            if (sole != null) nodeText + "\n\nOne path remains. " + sole.text else nodeText
         } else {
-            node.text
+            nodeText
         }
         val isStoryMode = _state.value.isPureStoryMode
         val isPaused = _state.value.isStoryAutoPlayPaused

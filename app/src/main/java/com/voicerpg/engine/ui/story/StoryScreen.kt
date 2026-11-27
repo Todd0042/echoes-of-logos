@@ -577,6 +577,7 @@ fun StoryScreen(
                     // Retro Speech Bubble
                     RetroSpeechBubble(
                         node = currentNode,
+                        spellsLearned = storyState.spellsLearned,
                         onTapToAdvance = {
                             if (currentNode.choices.isEmpty()) {
                                 if (currentNode.id == "epilogue_credits" || currentNode.setFlagOnEnter == "game_completed") {
@@ -734,6 +735,7 @@ fun StoryScreen(
                     // Retro Speech Bubble
                     RetroSpeechBubble(
                         node = currentNode,
+                        spellsLearned = storyState.spellsLearned,
                         onTapToAdvance = {
                             if (currentNode.choices.isEmpty()) {
                                 if (currentNode.id == "epilogue_credits" || currentNode.setFlagOnEnter == "game_completed") {
@@ -984,6 +986,7 @@ private fun CharacterPortraitBust(
 @Composable
 private fun RetroSpeechBubble(
     node: DialogueNode,
+    spellsLearned: List<String> = emptyList(),
     onTapToAdvance: () -> Unit,
     isEyesFreeMode: Boolean = false,
     speakerBitmapOverride: ImageBitmap? = null,
@@ -1102,6 +1105,17 @@ private fun RetroSpeechBubble(
                 lineHeight = 17.sp,
                 fontWeight = FontWeight.Normal
             )
+            // Spells learned on this node ("Lyra learns Thornwall."), also spoken after the text.
+            spellsLearned.forEach { line ->
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "✦ $line",
+                    color = Color(0xFFFFD54F),
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }

@@ -56,7 +56,6 @@ class SaveSystemTest {
         assertEquals("elementalist", elemSave.player.heroClassId)
         assertEquals(240, elemSave.partyStats.first().maxHp)
         assertEquals(160, elemSave.partyStats.first().maxMp)
-        assertTrue(elemSave.partyStats.first().spellIds.contains("fireball"))
 
         // Battlemage
         val battleCustom = PlayerCustomization(
@@ -68,7 +67,6 @@ class SaveSystemTest {
         val battleSave = saveManager.createInitialSave(battleCustom)
         assertEquals(320, battleSave.partyStats.first().maxHp)
         assertEquals(110, battleSave.partyStats.first().maxMp)
-        assertTrue(battleSave.partyStats.first().spellIds.contains("flame_strike"))
 
         // Chanter
         val chanterCustom = PlayerCustomization(
@@ -80,7 +78,6 @@ class SaveSystemTest {
         val chanterSave = saveManager.createInitialSave(chanterCustom)
         assertEquals(220, chanterSave.partyStats.first().maxHp)
         assertEquals(180, chanterSave.partyStats.first().maxMp)
-        assertTrue(chanterSave.partyStats.first().spellIds.contains("temporal_stasis"))
 
         // Shadowweaver
         val shadowCustom = PlayerCustomization(
@@ -92,7 +89,6 @@ class SaveSystemTest {
         val shadowSave = saveManager.createInitialSave(shadowCustom)
         assertEquals(230, shadowSave.partyStats.first().maxHp)
         assertEquals(140, shadowSave.partyStats.first().maxMp)
-        assertTrue(shadowSave.partyStats.first().spellIds.contains("shadow_spike"))
     }
 
     @Test
@@ -393,7 +389,6 @@ class SaveSystemTest {
         assertEquals("Kaelen", savedHero.name)
         assertEquals(230, savedHero.maxHp)
         assertEquals(140, savedHero.maxMp)
-        assertEquals(hero.spells.size, savedHero.spellIds.size)
     }
 
     @Test

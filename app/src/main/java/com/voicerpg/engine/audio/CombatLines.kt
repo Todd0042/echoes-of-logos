@@ -60,7 +60,8 @@ object CombatLines {
         "victory" to "Victory!",
         "defeat" to "Defeat.",
         "no_mana" to "Not enough mana.",
-        "no_mana_attune" to "Not enough mana. Say attune."
+        "no_mana_attune" to "Not enough mana. Say attune.",
+        "not_learned" to "{hero} hasn't learned {spell} yet."
     )
 
     /** The most words a line of each kind may have once filled in (checked against every game's content). */

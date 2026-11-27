@@ -210,6 +210,7 @@ class MainActivity : ComponentActivity() {
             }
 
             LaunchedEffect(storyState.player) {
+                combatViewModel.applyStoryFlags(storyState.narrativeFlags)
                 combatViewModel.applyPlayerCustomization(
                     customization = storyState.player,
                     savedStats = storyState.partyStats
@@ -218,6 +219,7 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(storyState.activeEncounter) {
                 storyState.activeEncounter?.let { encounter ->
+                    combatViewModel.applyStoryFlags(storyState.narrativeFlags)
                     combatViewModel.applySavedStats(storyState.partyStats)
                     combatViewModel.startEncounter(encounter)
                     combatViewModel.setPureStoryMode(storyState.isPureStoryMode)

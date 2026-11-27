@@ -204,7 +204,9 @@ data class ClassDto(
     val preferredSchool: String = "PHYSICAL",
     val starterSpellIds: List<String>? = null,
     val voiceKeywords: List<String>? = null,
-    val portraitAsset: String? = null
+    val portraitAsset: String? = null,
+    /** Spells the class learns as the story goes on (`{ "flag": ..., "spellIds": [...] }`); see [SpellKit]. */
+    val spellGrants: List<SpellGrantDto>? = null
 )
 
 data class SpellGraphicsDto(
@@ -803,12 +805,26 @@ data class HeroClassDef(
     val preferredSchool: SpellSchool,
     val starterSpellIds: List<String>,
     val voiceKeywords: List<String>,
-    val portraitAsset: String? = null
+    val portraitAsset: String? = null,
+    val spellGrants: List<SpellGrant> = emptyList()
 )
 
 enum class CharacterRole { HERO, NPC, NARRATOR }
 
 data class SpellGrant(val flag: String, val spellIds: List<String>)
+
+/**
+ * A fighter's spells across the whole story: the [starting] kit, then each grant, learned when its story flag is
+ * set. Only additions: nothing is replaced. A fighter joining late knows every grant whose flag is already set.
+ */
+data class SpellKit(val starting: List<Spell>, val grants: List<Pair<String, List<Spell>>>) {
+    /** What the fighter knows with these story [flags] set. */
+    fun known(flags: Map<String, Boolean>): List<Spell> =
+        (starting + grants.filter { (flag, _) -> flag.isNotBlank() && flags[flag] == true }.flatMap { it.second }).distinctBy { it.id }
+
+    /** Every spell the kit ever holds. */
+    val all: List<Spell> get() = (starting + grants.flatMap { it.second }).distinctBy { it.id }
+}
 
 data class CharacterCombat(
     val maxHp: Int,
@@ -896,8 +912,7 @@ data class GameCharacter(
             maxHp = c.maxHp,
             currentMp = c.maxMp,
             maxMp = c.maxMp,
-            speed = c.speed,
-            spellIds = c.spells.map { it.id }
+            speed = c.speed
         )
     }
 }
@@ -1065,6 +1080,29 @@ class GameContentPack(
 
     fun spellsForClass(classId: String?): List<Spell> =
         classById(classId).starterSpellIds.mapNotNull { spells[it] }
+
+    /**
+     * A fighter's [SpellKit]. The hero with a declared class ([heroClassId]) uses that class's starting spells and
+     * grants; anyone else (and a hero without a class) their character file's combat spells and grants.
+     */
+    fun spellKitFor(memberId: String, heroClassId: String? = null): SpellKit {
+        val heroClass = if (memberId == "hero" && !heroClassId.isNullOrBlank()) classes.firstOrNull { it.id.equals(heroClassId, ignoreCase = true) } else null
+        if (heroClass != null) {
+            return SpellKit(
+                starting = heroClass.starterSpellIds.mapNotNull { spells[it] },
+                grants = heroClass.spellGrants.map { g -> g.flag to g.spellIds.mapNotNull { spells[it] } }
+            )
+        }
+        val character = characters[memberId] ?: (if (memberId == "hero") heroCharacter else null)
+        return SpellKit(
+            starting = character?.combat?.spells ?: emptyList(),
+            grants = character?.spellGrants?.map { g -> g.flag to g.spellIds.mapNotNull { spells[it] } } ?: emptyList()
+        )
+    }
+
+    /** The spells [memberId] knows with these story [flags] set (see [SpellKit]). */
+    fun knownSpells(memberId: String, heroClassId: String?, flags: Map<String, Boolean>): List<Spell> =
+        spellKitFor(memberId, heroClassId).known(flags)
 
     fun enemyTemplateById(id: String?): EnemyTemplate? = if (id == null) null else enemyTemplates[id]
 
@@ -1441,7 +1479,8 @@ class GameContentLoader(private val source: ContentSource) {
         preferredSchool = runCatching { SpellSchool.valueOf(preferredSchool) }.getOrDefault(SpellSchool.PHYSICAL),
         starterSpellIds = (starterSpellIds ?: emptyList()).filter { it in spells },
         voiceKeywords = voiceKeywords ?: emptyList(),
-        portraitAsset = portraitAsset
+        portraitAsset = portraitAsset,
+        spellGrants = (spellGrants ?: emptyList()).map { g -> SpellGrant(g.flag, (g.spellIds ?: emptyList()).filter { it in spells }) }
     )
 
     private fun CharacterDto.toCharacter(spells: Map<String, Spell>): GameCharacter {
@@ -1846,6 +1885,8 @@ object GameContent {
     fun environmentById(id: String?): EnvironmentDefinition? = pack.environmentById(id)
     fun spellById(id: String?): Spell? = pack.spellById(id)
     fun spellsForClass(classId: String?): List<Spell> = pack.spellsForClass(classId)
+    fun spellKitFor(memberId: String, heroClassId: String? = null): SpellKit = pack.spellKitFor(memberId, heroClassId)
+    fun knownSpells(memberId: String, heroClassId: String?, flags: Map<String, Boolean>): List<Spell> = pack.knownSpells(memberId, heroClassId, flags)
     fun voiceAliasesFor(memberId: String?): List<String> = pack.voiceAliasesFor(memberId)
     fun enemyTemplateById(id: String?): EnemyTemplate? = pack.enemyTemplateById(id)
     fun enemySpriteById(id: String?): SpriteDefinition? = pack.enemySpriteById(id)

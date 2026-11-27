@@ -248,7 +248,6 @@ class SaveManager(private val context: Context? = null) {
     ): GameSaveData {
         val validSlot = sanitizeSlot(slot)
         val heroClass = com.voicerpg.engine.content.GameContent.classById(customization.heroClassId)
-        val starterSpells = com.voicerpg.engine.content.GameContent.spellsForClass(heroClass.id)
         val manifest = com.voicerpg.engine.content.GameContent.manifest
 
         val initialHeroStats = SavedCharacterStats(
@@ -259,8 +258,7 @@ class SaveManager(private val context: Context? = null) {
             maxHp = heroClass.startingHp,
             currentMp = heroClass.startingMp,
             maxMp = heroClass.startingMp,
-            speed = heroClass.startingSpeed,
-            spellIds = starterSpells.map { it.id }
+            speed = heroClass.startingSpeed
         )
 
         val trackDef = manifest.campaignTracks.firstOrNull { it.id == customization.campaignTrackId }
