@@ -49,6 +49,8 @@ data class ManifestDto(
     val spriteContract: Int = 0,
     /** "mana" (default): spells cost MP and fighters attune. "none": no MP, no costs, no attune anywhere. */
     val combatResource: String = "mana",
+    /** Optional prefix for route-defining story flags (e.g. "role_" for Superstore departments). */
+    val routeFlagPrefix: String = "",
     val gameTitle: String = "VoiceRPG Engine",
     val gameSubtitle: String = "",
     val worldName: String = "the realm",
@@ -447,6 +449,7 @@ data class FlagRouteDto(
 data class NodeDto(
     /** Optional automatic branching on story flags (see DialogueNode.flagRoutes). */
     val flagRoutes: List<FlagRouteDto>? = null,
+    val checkpoint: String? = null,
     val id: String = "",
     val speakerId: String = "narrator",
     val side: String = "CENTER_NARRATOR",
@@ -684,6 +687,7 @@ data class GameManifest(
     val spriteContract: Int = 0,
     /** "mana" or "none" (see ManifestDto.combatResource). */
     val combatResource: String = "mana",
+    val routeFlagPrefix: String = "",
     val gameTitle: String,
     val gameSubtitle: String,
     val worldName: String = "the realm",
@@ -1387,6 +1391,7 @@ class GameContentLoader(private val source: ContentSource) {
             manifest = GameManifest(
                 spriteContract = manifestDto.spriteContract,
                 combatResource = if (manifestDto.combatResource.equals("none", ignoreCase = true)) "none" else "mana",
+                routeFlagPrefix = manifestDto.routeFlagPrefix.trim(),
                 gameTitle = manifestDto.gameTitle,
                 gameSubtitle = manifestDto.gameSubtitle,
                 worldName = manifestDto.worldName,
@@ -1725,7 +1730,8 @@ class GameContentLoader(private val source: ContentSource) {
         allowIncidents = if (blacklistIncidents == true) false else (allowIncidents ?: true),
         flagRoutes = (flagRoutes ?: emptyList())
             .filter { it.nextNodeId.isNotBlank() }
-            .map { FlagRoute(it.requiredFlags ?: emptyList(), it.nextNodeId) }
+            .map { FlagRoute(it.requiredFlags ?: emptyList(), it.nextNodeId) },
+        checkpoint = checkpoint?.trim().orEmpty()
     )
 
     private fun EnvironmentDefinitionDto.toDefinition(): EnvironmentDefinition = EnvironmentDefinition(

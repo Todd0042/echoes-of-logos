@@ -1004,11 +1004,36 @@ class StoryViewModel(
      * derived from scene data files. Only exposed through the debug-build Options dialog
      * (see BuildConfig.DEBUG_WARP_MENU).
      */
-    fun debugWarpToChapter(introNodeId: String) {
+    fun warpTargets(): List<DebugChapterTarget> =
+        com.voicerpg.engine.story.StoryRouteWalker.checkpointsFor(_state.value.player, _state.value.narrativeFlags)
+
+    fun debugWarpToChapter(introNodeId: String, routeFlagOverride: String? = null) {
         val introNode = StoryScript.ALL_NODES[introNodeId] ?: return
         cancelPendingAutoAdvance()
         combatNarrator.stop()
         speechManager.cancel()
+
+        val replayed = com.voicerpg.engine.story.StoryRouteWalker.replayTo(
+            targetNodeId = introNodeId,
+            player = _state.value.player,
+            currentFlags = _state.value.narrativeFlags,
+            routeFlagOverride = routeFlagOverride
+        )
+        if (replayed != null) {
+            _state.value = _state.value.copy(
+                currentScene = replayed.scene,
+                currentNode = formatNodeForPlayer(replayed.node, _state.value.player),
+                narrativeFlags = replayed.flags,
+                visitedNodeIds = replayed.visitedNodeIds,
+                decisionsMade = replayed.decisionsMade,
+                defeatedEncounters = replayed.defeatedEncounters,
+                partyStats = replayed.partyStats,
+                gameScreen = GameScreen.STORY_EXPLORATION,
+                activeEncounter = null
+            )
+            musicManager?.playTrack(replayed.scene.musicAsset)
+            return
+        }
 
         val introScene = StoryScript.ALL_SCENES.values.firstOrNull { it.initialNodeId == introNodeId }
             ?: _state.value.currentScene

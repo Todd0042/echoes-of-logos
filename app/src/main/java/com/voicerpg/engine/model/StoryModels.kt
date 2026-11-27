@@ -94,7 +94,9 @@ data class DialogueNode(
      * decides where the story goes next; otherwise [nextNodeId]. Lets one shared node send players
      * down different paths (a role chosen earlier, a campaign perspective) without asking them.
      */
-    val flagRoutes: List<FlagRoute> = emptyList()
+    val flagRoutes: List<FlagRoute> = emptyList(),
+    /** Optional checkpoint label for route-locked warp targets. */
+    val checkpoint: String = ""
 ) {
     /** Where "next" leads with these story flags: the first matching [flagRoutes] entry, else [nextNodeId]. */
     fun nextNodeIdFor(flags: Map<String, Boolean>): String? =

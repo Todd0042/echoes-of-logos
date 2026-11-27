@@ -1445,7 +1445,26 @@ class CombatViewModel(
         val nonHealSpells = hero.spells.filter { !it.isHeal && !it.cleansesDebuffs }
         val affordableSpells = nonHealSpells.filter { it.mpCost <= hero.currentMp }
 
-        val chosenSpell = if (isSupportOnly) {
+        val chosenSpell = if (_state.value.isPureStoryMode && !isSupportOnly) {
+            val lowestAlly = _state.value.party.filter { it.isAlive && !it.isGhost }.minByOrNull { it.hpRatio }
+            val affordableHeals = hero.spells.filter { it.isHeal && it.mpCost <= hero.currentMp }
+            if (lowestAlly != null && lowestAlly.hpRatio < 0.25f && affordableHeals.isNotEmpty()) {
+                affordableHeals.maxByOrNull { it.healPctOfMax.takeIf { p -> p > 0f } ?: it.basePower.toFloat() }
+            } else {
+                val offensive = affordableSpells.filter { it.manaRestorePct == 0f && !it.isGuard && it.basePower > 0 }
+                fun multFor(spell: Spell, enemy: Enemy): Float {
+                    val knownWeak = _state.value.bestiaryWeaknesses[enemy.bestiaryKey].orEmpty()
+                    return if (spell.school.name in knownWeak) 2.0f else 1.0f
+                }
+                offensive.maxByOrNull { spell ->
+                    if (spell.hitsAll) aliveEnemies.sumOf { (spell.basePower * multFor(spell, it)).toDouble() }
+                    else aliveEnemies.maxOfOrNull { (spell.basePower * multFor(spell, it)).toDouble() } ?: 0.0
+                }
+                    ?: affordableSpells.firstOrNull { it.manaRestorePct > 0f }
+                    ?: nonHealSpells.firstOrNull { it.mpCost == 0 }
+                    ?: nonHealSpells.firstOrNull()
+            }
+        } else if (isSupportOnly) {
             val affordable = hero.spells.filter { it.mpCost <= hero.currentMp }
             val pool = if (affordable.isNotEmpty()) affordable else hero.spells
             val lowestAlly = _state.value.party.filter { it.isAlive && !it.isGhost }.minByOrNull { it.hpRatio }
@@ -2067,12 +2086,15 @@ class CombatViewModel(
             }
 
             val acoustic = forcedAcoustic ?: speechManager.getLatestAcousticProfile()
-            val resonance = resonanceEngine.evaluate(
+            val evaluated = resonanceEngine.evaluate(
                 utterance = utterance,
                 school = parsed.spell.school,
                 acousticProfile = acoustic,
                 ignoreNoveltyDecay = forcedAcoustic != null
             )
+            val resonance = if (_state.value.isPureStoryMode && typed) {
+                evaluated.copy(tier = ResonanceTier.MASTER, damageMultiplier = 1.8f, bonusPercent = 80)
+            } else evaluated
 
             val isSuperLogos = resonance.bonusPercent >= 100
             val showBanner = resonance.bonusPercent >= 50
@@ -2447,11 +2469,7 @@ class CombatViewModel(
                 ),
                 random
             )
-            val effectiveDamage = if (_state.value.isPureStoryMode) {
-                (strike.damage * 2.5f).toInt().coerceAtLeast(100)
-            } else {
-                strike.damage
-            }
+            val effectiveDamage = strike.damage
             HitOutcome(enemy, effectiveDamage, strike.affinity, statusId?.let { StatusSystem.apply(it, resonance.tier.name, familyOf(enemy), effectiveDamage.toFloat()) })
         }
         val totalDamage = hits.sumOf { it.damage }

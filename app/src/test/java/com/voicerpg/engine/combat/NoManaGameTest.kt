@@ -98,6 +98,10 @@ class NoManaGameTest {
             vm.setPlayerInputPhaseForTesting("hero")
             vm.submitTypedChant(preset.chantText, preset.acousticProfile)
             waitFor("cast ${i + 1} to land") { cues.count { it is BattleCue.Impact && it.fromParty } > before }
+            waitFor("cast ${i + 1} to settle") {
+                vm.state.value.phase != com.voicerpg.engine.model.CombatPhase.INCANTATION_RESOLVING &&
+                    vm.state.value.phase != com.voicerpg.engine.model.CombatPhase.SPELL_VFX_PLAYING
+            }
         }
         // "Focus" is an attune word in mana games; here it is not swallowed as one.
         vm.setPlayerInputPhaseForTesting("hero")

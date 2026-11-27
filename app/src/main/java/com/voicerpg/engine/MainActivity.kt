@@ -596,7 +596,7 @@ class MainActivity : ComponentActivity() {
                     // Universal chapter warp & developer tools dialog
                     DebugWarpDialog(
                         isOpen = showDebugWarp,
-                        targets = StoryViewModel.DEBUG_CHAPTER_TARGETS,
+                        targets = storyViewModel.warpTargets(),
                         developerToolsEnabled = isDeveloperToolsEnabled,
                         onToggleDeveloperTools = { combatViewModel.toggleDeveloperTools() },
                         onWarpTo = { nodeId ->
